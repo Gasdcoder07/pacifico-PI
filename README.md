@@ -16,21 +16,25 @@ Sistema web para la administración de ventas, inventario, usuarios y sucursales
 ## 📖 Descripción
 - Pacífico POS es un sistema de punto de venta desarrollado para mejorar la organización y el control de un negocio para la ventas de productos.
 
-- La plataforma busca reunir en un solo lugar los procesos más importantes: ventas, productos, inventario, usuarios y sucursales. Esto permite consultar la información de manera más clara y facilita las actividades diarias del personal.
+La plataforma busca reunir en un solo lugar los procesos más importantes: ventas, productos, inventario, usuarios y sucursales. Esto permite consultar la información de manera más clara y facilita las actividades diarias del personal.
 
-- El proyecto utiliza una interfaz moderna y adaptable, por lo que puede visualizarse desde computadoras, tabletas y teléfonos para utilidad mas rapida y facil.
+El proyecto utiliza una interfaz moderna y adaptable, por lo que puede visualizarse desde computadoras, tabletas y teléfonos para utilidad mas rapida y facil.
 
 
 ## ✨ Funciones del sistema
-- Módulo                       ---                            Función                                             ---                         Estado
-- 🔐 Autenticación             --            Registro e inicio de sesión de usuarios.                             --                    🟡 En proceso
-- 👤 Usuarios                  --         Asociación de usuarios con roles y sucursales.                          --                    🟡 En proceso
-- 🛒 Punto de venta            --         Espacio destinado al registro y cobro de productos.                     --                    🟡 En proceso
-- 💰 Ventas                    --            Consulta y control de las ventas realizadas.                         --                    🟡 En proceso
-- 📦 Inventario                --              Administración de productos y existencias.                         --                    🟡 En proceso
-- 📊 Panel principal           --            Resumen general de la información del negocio.                       --                    🟡 En proceso
-- 🏪 Sucursales                --           Organización de la información por establecimiento.                   --                    🟡 En proceso
-- 📱 Diseño adaptable          --                  Visualización en computadora local.                            --                    🟢 Disponible
+| Módulo | Función | Estado |
+|:---|:---|:---:|
+| 🔐 **Autenticación** | Registro e inicio de sesión de usuarios. | 🟡 En proceso |
+| 👤 **Usuarios** | Asociación de usuarios con roles y sucursales. | 🟡 En proceso |
+| 🛒 **Punto de venta** | Espacio destinado al registro y cobro de productos. | 🟡 En proceso |
+| 💰 **Ventas** | Consulta y control de las ventas realizadas. | 🟡 En proceso |
+| 📦 **Inventario** | Administración de productos y existencias. | 🟡 En proceso |
+| 📊 **Panel principal** | Resumen general de la información del negocio. | 🟡 En proceso |
+| 🏪 **Sucursales** | Organización de la información por establecimiento. | 🟡 En proceso |
+| 📱 **Diseño adaptable** | Visualización en computadora local. | 🟢 Disponible |
+
+
+
 
 
 ## 🛠️ Tecnología
@@ -59,12 +63,13 @@ Crea un archivo llamado .env.local en la carpeta principal del proyecto:
 -------------------------------------------------------------------
 
 ## ▶️ Ejecución
-🟢 Inicia el servidor de desarrollo: npm run dev
-🟡 Después abre la siguiente dirección: http://localhost:3000
-🔴 Para detener el servidor, presiona Ctrl + C en la terminal.
+- 🟢 Inicia el servidor de desarrollo: npm run dev
+- 🟡 Después abre la siguiente dirección: http://localhost:3000
+- 🔴 Para detener el servidor, presiona Ctrl + C en la terminal.
 
 ## 📁 Estructura del proyecto
 pacifico-PI/
+
 |── app/
 
 |   |── (auth)/              # Inicio de sesión y registro
@@ -112,6 +117,14 @@ pacifico-PI/
 - Nelvin Antonio Frías Rodríguez
 - Manuel Isahit Martínez Contreras
 - Angel Emanuel Arres Naranjo
+
+## 📬 Contacto
+- 📧 aarres@ucol.mx
+- 📧 nfrias0@ucol.mx
+- 📧 mmartinez134@ucol.mx
+- 📧 bsebastian0@ucol.mx
+- 📧 gserna@ucol.mx
+- 📧 vvaca2@ucol.mx
 
 ## 📄 Licencia y uso
 - Este proyecto fue creado con fines académicos y educativos en la Universidad de Colima, en la facultad de ingeniería electromecánica, en la carrera de ingeniería en software campus El Naranjo en Manzanillo, Colima.
