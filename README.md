@@ -1,4 +1,4 @@
-## 🌊 Pacífico POS  Equipo 5️⃣
+## 🌊 Pacífico --- Equipo 5️⃣
 Sistema web para la administración de ventas, inventario, usuarios y sucursales.
 
 ## 📑 Contenido
@@ -14,7 +14,7 @@ Sistema web para la administración de ventas, inventario, usuarios y sucursales
 
 
 ## 📖 Descripción
-- Pacífico POS es un sistema de punto de venta desarrollado para mejorar la organización y el control de un negocio para la ventas de productos.
+Pacífico POS es un sistema de punto de venta desarrollado para mejorar la organización y el control de un negocio para la ventas de productos.
 
 La plataforma busca reunir en un solo lugar los procesos más importantes: ventas, productos, inventario, usuarios y sucursales. Esto permite consultar la información de manera más clara y facilita las actividades diarias del personal.
 
@@ -44,7 +44,7 @@ El proyecto utiliza una interfaz moderna y adaptable, por lo que puede visualiza
 - Tailwind CSS 4:Diseño visual y adaptación a diferentes pantallas.    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" width="55" title="Tailwind CSS">
 - Supabase:Autenticación y conexión con la base de datos.    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg" width="55" title="Supabase">
 - PostgreSQL:Almacenamiento de la información.    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" width="55" title="PostgreSQL">
-- Framer Motion:Animaciones y transiciones visuales.   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/framer/framer-original.svg" width="55" title="Framer Motion">
+- Framer Motion:Animaciones y transiciones visuales.  <img src="https://cdn.simpleicons.org/framer/0055FF" alt="Framer Motion" width="45" height="45">
 
 
 ## 🚀 Instalación
