@@ -111,13 +111,20 @@ interface LogoutButtonProps {
 
 const LogoutButton = ({ open } : LogoutButtonProps) => {
     return (
-        <button className="text-neutral-500 flex items-center gap-4 px-4 py-3 rounded-md transition-colors duration-200 ease-in-out hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 cursor-pointer">
+        <button className="text-neutral-500 flex items-center gap-4 px-4 py-3 rounded-md transition-all duration-200 ease-in-out hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 hover:scale-105 cursor-pointer">
             <LogOut className="shrink-0"/>
-            {
-                open && (
-                    <span className="text-sm font-medium">Logout</span>
-                )
-            }
+
+            <AnimatePresence initial={false}>
+                {open && (
+                        <motion.span 
+                            initial={{ opacity: 0, width: 0, x: -50 }}
+                            animate={{ opacity: 0.9, width: "auto", x: 0 }}
+                            className="text-sm font-medium"
+                        >
+                                Logout
+                        </motion.span>
+                )}
+            </AnimatePresence>
         </button>
     )
 }
