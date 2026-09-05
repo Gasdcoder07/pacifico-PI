@@ -13,6 +13,10 @@ Sistema web para la administración de ventas, inventario, usuarios y sucursales
 - [Mejoras🧭](#-mejoras)
 
 
+## 📷 Vista Previa
+<img width="1543" height="749" alt="Captura de pantalla 2026-09-05 162753" src="https://github.com/user-attachments/assets/4d9e5736-3e5b-4232-840d-8853c990df05" />
+
+
 ## 📖 Descripción
 Pacífico POS es un sistema de punto de venta desarrollado para mejorar la organización y el control de un negocio para la ventas de productos.
 
