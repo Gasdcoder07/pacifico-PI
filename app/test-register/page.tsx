@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 
 export default function TestRegister() {
   const [formData, setFormData] = useState({
-    nombre: "",
-    apellido: "",
-    correo: "",
+    name: "",
+    last_name: "",
+    email: "",
     password: "",
     rol_id: "",
-    sucursal_id: "",
+    branch_id: "",
   });
   const [response, setResponse] = useState<string | null>(null);
 
@@ -29,7 +29,7 @@ export default function TestRegister() {
         body: JSON.stringify({
           ...formData,
           rol_id: Number(formData.rol_id),
-          sucursal_id: formData.sucursal_id ? Number(formData.sucursal_id) : undefined,
+          branch_id: formData.branch_id ? Number(formData.branch_id) : undefined,
         }),
       });
 
@@ -46,14 +46,14 @@ export default function TestRegister() {
       
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
-          name="nombre"
+          name="name"
           placeholder="Nombre"
           onChange={handleChange}
           required
           className="p-2 border rounded text-black"
         />
         <input
-          name="apellido"
+          name="last_name"
           type="text"
           placeholder="Apellido"
           onChange={handleChange}
@@ -61,7 +61,7 @@ export default function TestRegister() {
           className="p-2 border rounded text-black"
         />
         <input
-          name="correo"
+          name="email"
           type="email"
           placeholder="Correo"
           onChange={handleChange}
@@ -85,7 +85,7 @@ export default function TestRegister() {
           className="p-2 border rounded text-black"
         />
         <input
-          name="sucursal_id"
+          name="branch_id"
           type="number"
           placeholder="ID de Sucursal (Opcional)"
           onChange={handleChange}
