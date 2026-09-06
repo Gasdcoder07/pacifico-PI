@@ -3,28 +3,22 @@
 import Link from "next/link";
 import { useState } from "react";
 import { LoadingIndicator } from "./LoadingIndicator";
-import { useMutation } from '@tanstack/react-query';
 import { Eye, EyeOff } from "lucide-react";
-import { loginUser } from "@/services/auth.service";
+import { useAuth } from "@/hooks/useAuth";
 
 const LoginForm = () => {
+    const { login, isLoggingIn } = useAuth();
+
     // Datos del formulario
     const [formData, setFormData] = useState({
         email : "",
         password : ""
     })
 
-    const loginMutation = useMutation({
-        mutationFn : loginUser,
-        onSuccess: (data) => {
-            console.log(data)
-        }
-    })
-
     // Manejar formulario de login
     const handleSubmit = (e : React.SubmitEvent) => {
         e.preventDefault();
-        loginMutation.mutate(formData);
+        login(formData);
     }
 
     // Estado para controlar la contraseña
@@ -85,11 +79,11 @@ const LoginForm = () => {
                 <div className="mt-4 flex flex-col gap-4">
                     <button 
                         type="submit"
-                        disabled={loginMutation.isPending}
+                        disabled={isLoggingIn}
                         onClick={() => setIsLoading(!loading)} 
                         className="font-semibold text-white bg-cyan-600 hover:bg-cyan-500 w-full py-3 rounded-xl transition-colors ease-in-out duration-200 cursor-pointer flex items-center justify-center"
                     >
-                        {loginMutation.isPending ? (
+                        {isLoggingIn ? (
                             <LoadingIndicator />
                         ) : (
                             <p>Iniciar sesión</p>  
