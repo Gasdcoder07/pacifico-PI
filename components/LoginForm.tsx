@@ -10,7 +10,7 @@ import { loginUser } from "@/services/auth.service";
 const LoginForm = () => {
     // Datos del formulario
     const [formData, setFormData] = useState({
-        correo : "",
+        email : "",
         password : ""
     })
 
@@ -41,13 +41,13 @@ const LoginForm = () => {
             onSubmit={handleSubmit}
             className="flex flex-col gap-4 w-full">
                 <div className="flex flex-col gap-2">
-                    <label htmlFor="correo" className="text-sm">Email</label>
+                    <label htmlFor="email" className="text-sm">Email</label>
 
                     <input
                         onChange={handleChange}
-                        id="correo"
-                        type="correo"
-                        name="correo"
+                        id="email"
+                        type="email"
+                        name="email"
                         required
                         className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400"/>
                 </div>

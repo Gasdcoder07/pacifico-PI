@@ -2,14 +2,14 @@
 // Viva 2017 xdxdxdxd, SIUUUUUUU
 
 export interface LoginRequest {
-    correo: string;
+    email: string;
     password: string;
 }
 
 export interface RegisterRequest {
-    nombre: string;
-    correo: string;
+    name: string;
+    email: string;
     password: string;
     rol_id: number;
-    sucursal_id: number;
+    branch_id: number;
 }

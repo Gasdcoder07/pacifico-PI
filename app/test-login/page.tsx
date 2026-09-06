@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export default function TestLogin() {
   const [formData, setFormData] = useState({
-    correo: "",
+    email: "",
     password: "",
   });
   const [response, setResponse] = useState<string | null>(null);
@@ -39,7 +39,7 @@ export default function TestLogin() {
       
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
-          name="correo"
+          name="email"
           type="email"
           placeholder="Correo"
           onChange={handleChange}

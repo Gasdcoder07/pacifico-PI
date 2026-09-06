@@ -119,9 +119,9 @@ import { supabase } from "@/lib/supabase";
  */
 export async function POST(request: Request) {
     try {
-        const { correo, password } = await request.json()
+        const { email, password } = await request.json()
 
-        if (!correo || !password) {
+        if (!email || !password) {
             return NextResponse.json(
                 { error: "Error, hace faltan datos para poder entrar ( Usuario, Contraseña )" },
                 { status: 400 }
@@ -129,7 +129,7 @@ export async function POST(request: Request) {
         }
 
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-            email: correo,
+            email,
             password
         })
 
