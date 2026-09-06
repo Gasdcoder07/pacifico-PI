@@ -1,31 +1,53 @@
 "use client"
 
-import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { LoadingIndicator } from "./LoadingIndicator";
+import { useMutation } from '@tanstack/react-query';
+import { Eye, EyeOff } from "lucide-react";
+import { loginUser } from "@/services/auth.service";
 
 const LoginForm = () => {
+    // Datos del formulario
+    const [formData, setFormData] = useState({
+        correo : "",
+        password : ""
+    })
+
+    const loginMutation = useMutation({
+        mutationFn : loginUser,
+        onSuccess: (data) => {
+            console.log(data)
+        }
+    })
+
+    // Manejar formulario de login
+    const handleSubmit = (e : React.SubmitEvent) => {
+        e.preventDefault();
+        loginMutation.mutate(formData);
+    }
+
     // Estado para controlar la contraseña
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setIsLoading] = useState(false)
 
-    // Manejar formulario de login
-    const handleSubmit = (e : React.SubmitEvent) => {
-        e.preventDefault()
-    }
+    // Manejar cambios en los inputs
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.target.name] : e.target.value });
+    };
 
     return (
         <form
             onSubmit={handleSubmit}
             className="flex flex-col gap-4 w-full">
                 <div className="flex flex-col gap-2">
-                    <label htmlFor="email" className="text-sm">Email</label>
+                    <label htmlFor="correo" className="text-sm">Email</label>
 
                     <input
-                        id="email"
-                        type="email"
-                        name="email"
+                        onChange={handleChange}
+                        id="correo"
+                        type="correo"
+                        name="correo"
                         required
                         className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400"/>
                 </div>
@@ -35,6 +57,7 @@ const LoginForm = () => {
 
                     <div className="relative">  
                         <input
+                            onChange={handleChange}
                             id="password"
                             type={showPassword ? 'text' : 'password'}
                             name="password"
@@ -61,11 +84,12 @@ const LoginForm = () => {
 
                 <div className="mt-4 flex flex-col gap-4">
                     <button 
-                        type="submit" 
+                        type="submit"
+                        disabled={loginMutation.isPending}
                         onClick={() => setIsLoading(!loading)} 
                         className="font-semibold text-white bg-cyan-600 hover:bg-cyan-500 w-full py-3 rounded-xl transition-colors ease-in-out duration-200 cursor-pointer flex items-center justify-center"
                     >
-                        {loading ? (
+                        {loginMutation.isPending ? (
                             <LoadingIndicator />
                         ) : (
                             <p>Iniciar sesión</p>  
