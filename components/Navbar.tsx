@@ -1,3 +1,5 @@
+import ProfilePfp from "./ProfilePfp";
+
 const Navbar = () => {
     return (
         <nav className="bg-white border-b border-neutral-300">
@@ -15,15 +17,7 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <img
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYqEaflQNU8d9UlWxY5FjaOnbyTDhR5REpvqBgaM-sBK1WHF8IuVuTEHK9&s=10"
-                        className="w-10 h-auto shrink-0 object-cover rounded-full"
-                        alt="Sucursal"/>
-
-                    <div className="flex flex-col">
-                        <p className="text-sm font-medium whitespace-nowrap">Alejo Serna</p>
-                        <p className="text-neutral-500 text-xs font-semibold whitespace-nowrap">Admin</p>
-                    </div>
+                    <ProfilePfp name="Valentín" role="Papu :V" />
                 </div>
             </div>
         </nav>
