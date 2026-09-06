@@ -7,9 +7,9 @@ export interface LoginRequest {
 }
 
 export interface RegisterRequest {
-    name: string;
+    nombre: string;
+    apellido: string;
+    username: string;
     email: string;
     password: string;
-    rol_id: number;
-    branch_id: number;
 }
