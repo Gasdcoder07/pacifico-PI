@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { pool } from "@/lib/db"
+import { supabase } from "@/lib/supabase";
 
 /**
  * @swagger
@@ -57,8 +58,29 @@ import { pool } from "@/lib/db"
  *                   example: "Error al obtener las sucursales"
  */
 
-export async function GET() {
+export async function GET( request: Request ) {
     try {
+
+        const authHeader = request.headers.get("Authorization")
+
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json(
+                { error: "No autorizado. Falta el token de sesión." },
+                { status: 401 }
+            )
+        }
+
+        const token = authHeader.split(" ")[1]
+
+        const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+
+        if (authError || !user) {
+            return NextResponse.json(
+                { error: "Sesión expirada o token inválido" },
+                { status: 401 }
+            )
+        }
+
         const response = await pool.query(`
             SELECT * FROM sucursales;
         `)

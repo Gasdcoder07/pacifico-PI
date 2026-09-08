@@ -98,7 +98,6 @@ export async function GET(
         const authHeader = request.headers.get("Authorization")
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-
             
             return NextResponse.json(
                 { error: "No autorizado. Falta el token de sesión" },
@@ -111,8 +110,6 @@ export async function GET(
         const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token)
         
         if (authError || !authUser) {
-
-            console.log(authError || "no hay error")
 
             return NextResponse.json(
                 { error: "Sesión expirada o token inválido" },
