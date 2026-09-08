@@ -11,7 +11,6 @@ const RegisterForm = () => {
     const [formData, setFormData] = useState({
        nombre: "",
        apellido: "",
-       username: "",
        email: "",
        password: "",
        confirmPassword: ""
@@ -46,7 +45,6 @@ const RegisterForm = () => {
     const dataToSend = {
         nombre: formData.nombre,
         apellido: formData.apellido,
-        username: formData.username,
         correo: formData.email,      // renombrado aquí
         password: formData.password,
         rol_id: 3,                    // ver nota abajo
@@ -95,20 +93,7 @@ const RegisterForm = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-1.5">
-                    <label htmlFor="username" className="text-xs text-neutral-600">Username</label>
-                    <input
-                        onChange={handleChange}
-                        id="username"
-                        type="text"
-                        name="username"
-                        value={formData.username}
-                        required
-                        suppressHydrationWarning
-                        className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-cyan-600"
-                    />
-                </div>
-
+            
                 <div className="flex flex-col gap-1.5">
                     <label htmlFor="email" className="text-xs text-neutral-600">Email</label>
                     <input
