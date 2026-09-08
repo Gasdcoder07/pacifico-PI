@@ -35,17 +35,26 @@ const RegisterForm = () => {
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setErrorMessage(null);
+    e.preventDefault();
+    setErrorMessage(null);
 
-        if (formData.password !== formData.confirmPassword) {
-            setErrorMessage("Las contraseñas no coinciden.");
-            return;
-        }
+    if (formData.password !== formData.confirmPassword) {
+        setErrorMessage("Las contraseñas no coinciden.");
+        return;
+    }
 
-        const { confirmPassword, ...dataToSend } = formData;
-        registerMutation.mutate(dataToSend);
+    const dataToSend = {
+        nombre: formData.nombre,
+        apellido: formData.apellido,
+        username: formData.username,
+        correo: formData.email,      // renombrado aquí
+        password: formData.password,
+        rol_id: 3,                    // ver nota abajo
+        branch_id: null,              // ver nota abajo
     };
+
+    registerMutation.mutate(dataToSend);
+};
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
@@ -66,6 +75,7 @@ const RegisterForm = () => {
                             name="nombre"
                             value={formData.nombre}
                             required
+                            suppressHydrationWarning
                             className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-cyan-600"
                         />
                     </div>
@@ -79,6 +89,7 @@ const RegisterForm = () => {
                             name="apellido"
                             value={formData.apellido}
                             required
+                            suppressHydrationWarning
                             className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-cyan-600"
                         />
                     </div>
@@ -93,6 +104,7 @@ const RegisterForm = () => {
                         name="username"
                         value={formData.username}
                         required
+                        suppressHydrationWarning
                         className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-cyan-600"
                     />
                 </div>
@@ -106,6 +118,7 @@ const RegisterForm = () => {
                         name="email"
                         value={formData.email}
                         required
+                        suppressHydrationWarning
                         className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-cyan-600"
                     />
                 </div>
@@ -123,11 +136,13 @@ const RegisterForm = () => {
                                 name="password"
                                 value={formData.password}
                                 required
+                                suppressHydrationWarning
                                 className="w-full px-3 py-2 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-cyan-600"
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
+                                suppressHydrationWarning
                                 className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400 hover:text-neutral-600 transition-colors"
                                 aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                             >
@@ -146,11 +161,13 @@ const RegisterForm = () => {
                                 name="confirmPassword"
                                 value={formData.confirmPassword}
                                 required
+                                suppressHydrationWarning
                                 className="w-full px-3 py-2 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-cyan-600"
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
+                                suppressHydrationWarning
                                 className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400 hover:text-neutral-600 transition-colors"
                                 aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                             >
@@ -166,6 +183,7 @@ const RegisterForm = () => {
                     <button
                         type="submit"
                         disabled={registerMutation.isPending}
+                        suppressHydrationWarning
                         className="font-semibold text-white bg-cyan-600 hover:bg-cyan-500 disabled:bg-cyan-400 w-full py-2.5 rounded-xl transition-colors ease-in-out duration-200 cursor-pointer flex items-center justify-center"
                     >
                         {registerMutation.isPending ? (

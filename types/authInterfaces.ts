@@ -10,6 +10,8 @@ export interface RegisterRequest {
     nombre: string;
     apellido: string;
     username: string;
-    email: string;
+    correo: string;
     password: string;
+    rol_id: number;
+    branch_id: number | null;
 }
