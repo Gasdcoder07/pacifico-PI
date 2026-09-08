@@ -23,19 +23,37 @@ const ProfilePfp = ({ name, role }: ProfilePfpProps) => {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative">
-        <button
-        onClick={() => setOpen((prev) => !prev)}
-        className="rounded-full cursor-pointer hover:opacity-80 transition-opacity"
-        aria-haspopup="true"
-        aria-expanded={open}
+    <motion.div 
+      ref={containerRef}
+      className="relative"
+    >
+        <motion.button
+          onClick={() => setOpen((prev) => !prev)}
+          className="rounded-full cursor-pointer focus:outline-none origin-center"
+          aria-haspopup="true"
+          aria-expanded={open}
+          whileHover={{ 
+            scale: 1.1, 
+            rotate: 5,
+            borderRadius: "35%" 
+          }}
+          whileTap={{ 
+            scale: 1.05, 
+            rotate: -5,
+            borderRadius: "50%"
+          }}
+          transition={{ 
+            type: "spring", 
+            stiffness: 400, 
+            damping: 12 
+          }}
         >
         <div 
           style={{
-            width: 40,
-            height: 40
+            width: 50,
+            height: 50
           }}
-          className="rounded-full object-cover bg-red-400"
+          className="rounded-full object-cover bg-cyan-400"
         />
         {/*<Image
           src="@/public/auth_image.webp"
@@ -44,7 +62,7 @@ const ProfilePfp = ({ name, role }: ProfilePfpProps) => {
           height={36}
           className="rounded-full object-cover"
         />*/}
-      </button>
+      </motion.button>
       <AnimatePresence >
 
         {open && (
@@ -56,8 +74,8 @@ const ProfilePfp = ({ name, role }: ProfilePfpProps) => {
             className="absolute right-0 top-12 flex items-center gap-3 rounded-lg border border-gray-200 bg-white shadow-lg p-3 z-50 w-56 whitespace-nowrap"
           >
             <div 
-              style={{ width: 40, height: 40 }}
-              className="rounded-full object-cover bg-red-400 shrink-0"
+              style={{ width: 50, height: 50 }}
+              className="rounded-full object-cover bg-cyan-400 shrink-0"
             />
             <div>
               <p className="text-sm font-medium text-gray-900">{name}</p>
@@ -66,7 +84,7 @@ const ProfilePfp = ({ name, role }: ProfilePfpProps) => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 };
 
