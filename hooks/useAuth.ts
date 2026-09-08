@@ -18,6 +18,8 @@ export const useAuth = () => {
             const { session, usuario } = data;
 
             localStorage.setItem("token", session.access_token);
+            localStorage.setItem("userId", String(usuario.id));
+
             if (session.refresh_token) {
                 localStorage.setItem("refreshToken", session.refresh_token);
             }
@@ -30,6 +32,8 @@ export const useAuth = () => {
     const logout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
+        localStorage.removeItem("userId");
+
         queryClient.setQueryData(["authUser"], null);
         router.push("/login");
     };
