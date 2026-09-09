@@ -1,4 +1,5 @@
 import { getUserSession, loginUser } from "@/services/auth.service";
+import { UserProfile } from "@/types/authInterfaces";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation";
 
@@ -9,7 +10,8 @@ export const useAuth = () => {
     const { data : user, isLoading : loading } = useQuery({
         queryKey : ["authUser"],
         queryFn : getUserSession,
-        staleTime : 1000 * 60 * 60
+        staleTime : 1000 * 60 * 60,
+        retry : false
     });
 
     const loginMutation = useMutation({
@@ -24,7 +26,7 @@ export const useAuth = () => {
                 localStorage.setItem("refreshToken", session.refresh_token);
             }
 
-            queryClient.setQueryData(["authUser"], usuario);
+            queryClient.setQueryData<UserProfile>(["authUser"], usuario);
             router.push("/pos");
         }
     });

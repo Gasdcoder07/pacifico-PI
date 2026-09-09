@@ -1,12 +1,12 @@
 import { apiClient } from "@/lib/axios"
-import { LoginRequest } from "@/types/authInterfaces";
+import { LoginRequest, LoginResponse, UserProfile } from "@/types/authInterfaces";
 
-export const loginUser = async (credentials : LoginRequest) : Promise<any> => {
-    const response = await apiClient.post<any>("/api/auth/login", credentials);
+export const loginUser = async (credentials : LoginRequest) : Promise<LoginResponse> => {
+    const response = await apiClient.post<LoginResponse>("/api/auth/login", credentials);
     return response.data;
 }
 
-export const getUserSession = async () => {
+export const getUserSession = async (): Promise<UserProfile | null> => {
     if (typeof window === "undefined") {
         return null;
     }
@@ -20,12 +20,10 @@ export const getUserSession = async () => {
     }
 
     try {
-        const response = await apiClient.get(`/api/usuarios/${encodeURIComponent(userId)}`);
+        const response = await apiClient.get<{ data: UserProfile }>(`/api/usuarios/${userId}`);
 
-        console.log("Respuesta de getUserSession:", response.data);
-
-        return response.data.usuario;
-    } catch (error) {
+        return response.data.data;
+    } catch {
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("userId");
