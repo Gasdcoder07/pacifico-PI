@@ -15,7 +15,7 @@ export const getUserSession = async (): Promise<UserProfile | null> => {
     const userId = localStorage.getItem("userId");
 
     if (!token || !userId) {
-        console.error("No hay token ni ID de usuario.");
+        console.log("No hay token ni ID de usuario.");
         return null;
     }
 
