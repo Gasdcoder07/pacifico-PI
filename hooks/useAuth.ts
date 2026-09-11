@@ -1,50 +1,23 @@
-import { getUserSession, loginUser } from "@/services/auth.service";
-import { UserProfile } from "@/types/authInterfaces";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "next/navigation";
-
+//tiene al usuario mediante /api/auth/me usando la cookie.
+//Ya no guarda tokens en localStorage
+import { getUserSession, loginUser } from '@/services/auth.service';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
+import { apiClient } from '@/lib/axios';
 export const useAuth = () => {
-    const queryClient = useQueryClient();
+    const cache = useQueryClient();
     const router = useRouter();
-
-    const { data : user, isLoading : loading } = useQuery({
-        queryKey : ["authUser"],
-        queryFn : getUserSession,
-        staleTime : 1000 * 60 * 60,
-        retry : false
-    });
-
-    const loginMutation = useMutation({
-        mutationFn : loginUser,
-        onSuccess : (data) => {
-            const { session, usuario } = data;
-
-            localStorage.setItem("token", session.access_token);
-            localStorage.setItem("userId", String(usuario.id));
-
-            if (session.refresh_token) {
-                localStorage.setItem("refreshToken", session.refresh_token);
-            }
-
-            queryClient.setQueryData<UserProfile>(["authUser"], usuario);
-            router.push("/pos");
-        }
-    });
-
-    const logout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("userId");
-
-        queryClient.setQueryData(["authUser"], null);
-        router.push("/login");
+    const { data: user, isLoading: loading } = useQuery({ 
+        queryKey: ['authUser'], queryFn: getUserSession, staleTime: 30000, retry: false });
+    const mutation = useMutation({ mutationFn: loginUser, onSuccess: ({ usuario }) => {
+        localStorage.removeItem('token'); localStorage.removeItem('refreshToken'); 
+        localStorage.removeItem('userId');
+        cache.clear(); cache.setQueryData(['authUser'], usuario);
+        router.push(usuario.rol_id === 3 ? '/sales' : '/usuarios'); router.refresh();
+    } });
+    const logout = async () => {
+        await apiClient.post('/api/auth/logout');
+        cache.clear(); router.push('/login'); router.refresh();
     };
-
-    return {
-        user,
-        loading,
-        login : loginMutation.mutate,
-        isLoggingIn : loginMutation.isPending,
-        logout,
-    };
-}
+    return { user, loading, login: mutation.mutate, isLoggingIn: mutation.isPending, loginError: mutation.error, logout };
+};

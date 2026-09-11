@@ -1,122 +1,35 @@
-import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-
-
-/**
- * @swagger
- * /api/auth/register:
- *   post:
- *     summary: Registrar un nuevo usuario
- *     description: Crea una cuenta de usuario nueva usando Supabase Auth y adjunta los metadatos iniciales (nombre, rol y sucursal).
- *     tags:
- *       - Autenticación
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - nombre
- *               - apellido
- *               - correo
- *               - password
- *               - rol_id
- *             properties:
- *               nombre:
- *                 type: string
- *                 example: "Juan Pérez"
- *                 description: Nombre completo del usuario
- *               correo:
- *                 type: string
- *                 format: email
- *                 example: "juan.perez@empresa.com"
- *               password:
- *                 type: string
- *                 format: password
- *                 example: "PasswordSeguro123"
- *                 description: Contraseña de la cuenta (mínimo de caracteres definido en Supabase)
- *               rol_id:
- *                 type: string
- *                 example: "2"
- *                 description: ID del rol que tendrá el usuario
- *               sucursal_id:
- *                 type: string
- *                 example: "5"
- *                 description: ID de la sucursal (opcional)
- *     responses:
- *       201:
- *         description: Usuario registrado exitosamente.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Usuario registrado exitosamente"
- *                 user:
- *                   type: object
- *                   description: Datos del usuario devueltos por Supabase Auth
- *       400:
- *         description: Bad Request. Faltan datos requeridos o Supabase rechazó la creación (ej. el correo ya existe o la contraseña es muy débil).
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Faltan campos obligatorios (nombre, correo, password, rol_id)"
- *       500:
- *         description: Internal Server Error. Fallo inesperado en el servidor.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 errror:
- *                   type: string
- *                   example: "Error interno del servidor"
- */
+import { NextResponse } from 'next/server';
+import { apiError, checkOrigin, HttpError, requireRoles } from '@/lib/auth';
+import { canCreateRole } from '@/lib/roles';
+import { authClient } from '@/lib/supabase-server';
+import { pool } from '@/lib/db';
 export async function POST(request: Request) {
+  try {
+    checkOrigin(request);
+    const actor = await requireRoles(1, 2);
+    const { name, last_name, email, password, rol_id, branch_id } = await request.json();
+    if (![name, last_name, email, password].every(v => typeof v === 'string' && v.trim()) || password.length < 8 || password.length > 1024 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new HttpError(400, 'Completa los datos y usa una contraseña de al menos 8 caracteres');
+    if (!Number.isInteger(rol_id) || !canCreateRole(actor.rol_id, rol_id)) throw new HttpError(403, 'Solo puedes registrar roles de menor jerarquía');
+    const branch = actor.rol_id === 2 ? actor.sucursal_id : branch_id;
+    if (actor.rol_id === 2 && branch_id != null && branch_id !== branch) throw new HttpError(403, 'Solo puedes registrar cajeros en tu sucursal');
+    if (!Number.isInteger(branch) || branch <= 0) throw new HttpError(400, 'Selecciona una sucursal válida');
+    const existing = await pool.query('SELECT id FROM sucursales WHERE id = $1 AND estado = true', [branch]);
+    if (!existing.rowCount) throw new HttpError(400, 'La sucursal no existe o está inactiva');
+    const correo = email.trim().toLowerCase();
+    if (correo === process.env.ADMIN_EMAIL?.trim().toLowerCase()) throw new HttpError(400, 'Este correo está reservado');
+    const client = authClient(true);
+    const { data, error } = await client.auth.admin.createUser({ email: correo, password, email_confirm: true,
+      user_metadata: { nombre: name.trim(), apellido: last_name.trim(), rol_id, sucursal_id: String(branch) } });
+    if (error || !data.user) throw new HttpError(400, 'No se pudo crear la cuenta. Revisa el correo y la configuración de Supabase');
+    // Compatible con el trigger existente: actualiza el perfil que creó, o lo inserta si no existe.
     try {
-        const body = await request.json()
-        const { name, last_name, email, password, rol_id, branch_id } = body;
-
-        if (!name || !last_name || !email || !password || !rol_id){
-            return NextResponse.json(
-                { error: 'Faltan campos obligatorios (nombre, apellido, correo, password, rol_id)' },
-                { status: 400 }
-            )
-        }
-
-        const { data, error } = await supabase.auth.signUp({
-            email: email.trim().toLowerCase(),
-            password,
-            options: {
-                data: {
-                    nombre: name,
-                    apellido: last_name,
-                    rol_id,
-                    sucursal_id: branch_id 
-                    ? branch_id.toString() 
-                    : null,
-                }
-            }
-        })
-
-        if (error) {
-            return NextResponse.json({ error: error.message }, { status: 400 })
-        }
-
-        return NextResponse.json(
-            { message: 'Usuario registrado exitosamente', user: data.user },
-            { status: 201 }
-        )
-
-    } catch (err) {
-        console.error("Ha ocurrido un error, el cual es: ", err)
-        return NextResponse.json( { errror: "Error interno del servidor" }, { status: 500 } )
+      const result = await pool.query(`UPDATE usuarios SET nombre=$1, apellido=$2, correo=$3, rol_id=$4, sucursal_id=$5, estado=true WHERE auth_user_id=$6 RETURNING id`, [name.trim(), last_name.trim(), correo, rol_id, branch, data.user.id]);
+      if (!result.rowCount) await pool.query('INSERT INTO usuarios (nombre, apellido, correo, rol_id, sucursal_id, estado, auth_user_id) VALUES ($1,$2,$3,$4,$5,true,$6)', [name.trim(), last_name.trim(), correo, rol_id, branch, data.user.id]);
+    } catch {
+      const rollback = await client.auth.admin.deleteUser(data.user.id);
+      if (rollback.error) console.error('Requiere revisión manual: no se pudo revertir la cuenta Auth', data.user.id);
+      throw new HttpError(500, 'No se pudo guardar el perfil; revisa la estructura y el trigger de usuarios');
     }
+    return NextResponse.json({ message: 'Usuario registrado exitosamente' }, { status: 201 });
+  } catch(error) { return apiError(error); }
 }
