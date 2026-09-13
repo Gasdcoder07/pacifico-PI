@@ -6,8 +6,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
 
 const Sidebar = () => {
+    const { logout } = useAuth();
     const [isOpen, setIsOpen] = useState(true);
     const pathname = usePathname();
 
@@ -40,7 +42,7 @@ const Sidebar = () => {
                     }
                 </ul>
 
-                <LogoutButton open={isOpen}/>
+                <LogoutButton open={isOpen} onLogout={logout}/>
             </div>
                     
             <ToggleClose open={isOpen} setIsOpen={setIsOpen}/>
@@ -106,12 +108,13 @@ const ToggleClose = ({ open, setIsOpen } : ToggleCloseProps) => {
 }
 
 interface LogoutButtonProps {
-    open : boolean
+    open : boolean;
+    onLogout : () => void;
 }
 
-const LogoutButton = ({ open } : LogoutButtonProps) => {
+const LogoutButton = ({ open, onLogout } : LogoutButtonProps) => {
     return (
-        <button className="text-neutral-500 flex items-center gap-4 px-4 py-3 rounded-md transition-all duration-200 ease-in-out hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 hover:scale-105 cursor-pointer">
+        <button onClick={onLogout} className="text-neutral-500 flex items-center gap-4 px-4 py-3 rounded-md transition-all duration-200 ease-in-out hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 hover:scale-105 cursor-pointer">
             <LogOut className="shrink-0"/>
 
             <AnimatePresence initial={false}>
