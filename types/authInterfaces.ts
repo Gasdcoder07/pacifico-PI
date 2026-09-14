@@ -6,6 +6,24 @@ export interface LoginRequest {
     password: string;
 }
 
+export interface UserProfile {
+    id: number;
+    nombre: string;
+    apellido: string;
+    correo: string;
+    rol_id: number;
+    sucursal_id: number;
+    estado: boolean;
+}
+
+export interface LoginResponse {
+    session: {
+        access_token: string;
+        refresh_token?: string;
+    };
+    usuario: UserProfile;
+}
+
 export interface RegisterRequest {
     name: string;
     email: string;

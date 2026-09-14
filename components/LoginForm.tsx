@@ -35,7 +35,7 @@ const LoginForm = () => {
             onSubmit={handleSubmit}
             className="flex flex-col gap-4 w-full">
                 <div className="flex flex-col gap-2">
-                    <label htmlFor="email" className="text-sm">Email</label>
+                    <label htmlFor="email" className="text-neutral-600 text-xs">Email</label>
 
                     <input
                         onChange={handleChange}
@@ -43,11 +43,11 @@ const LoginForm = () => {
                         type="email"
                         name="email"
                         required
-                        className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400"/>
+                        className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <label htmlFor="password" className="text-sm">Contraseña</label>
+                    <label htmlFor="password" className="text-neutral-600 text-xs">Contraseña</label>
 
                     <div className="relative">  
                         <input
@@ -56,7 +56,7 @@ const LoginForm = () => {
                             type={showPassword ? 'text' : 'password'}
                             name="password"
                             required
-                            className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400"/>
+                            className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
 
                         <button
                             type="button"
