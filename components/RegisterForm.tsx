@@ -47,7 +47,7 @@ const RegisterForm = () => {
             apellido: formData.apellido,
             correo: formData.email,
             password: formData.password,
-            rol_id: 3,
+            rol_id: 3, // Asignar el rol_id correspondiente según tu lógica
             branch_id: null,
         };
 
