@@ -34,25 +34,25 @@ const RegisterForm = () => {
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setErrorMessage(null);
+        e.preventDefault();
+        setErrorMessage(null);
 
-    if (formData.password !== formData.confirmPassword) {
-        setErrorMessage("Las contraseñas no coinciden.");
-        return;
-    }
+        if (formData.password !== formData.confirmPassword) {
+            setErrorMessage("Las contraseñas no coinciden.");
+            return;
+        }
 
-    const dataToSend = {
-        nombre: formData.nombre,
-        apellido: formData.apellido,
-        correo: formData.email,      // renombrado aquí
-        password: formData.password,
-        rol_id: 3,                    // ver nota abajo
-        branch_id: null,              // ver nota abajo
+        const dataToSend = {
+            nombre: formData.nombre,
+            apellido: formData.apellido,
+            correo: formData.email,
+            password: formData.password,
+            rol_id: 3,
+            branch_id: null,
+        };
+
+        registerMutation.mutate(dataToSend);
     };
-
-    registerMutation.mutate(dataToSend);
-};
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
@@ -74,8 +74,7 @@ const RegisterForm = () => {
                             value={formData.nombre}
                             required
                             suppressHydrationWarning
-                            className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-cyan-600"
-                        />
+                            className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
                     </div>
 
                     <div className="flex flex-col gap-1.5 w-1/2">
@@ -88,12 +87,10 @@ const RegisterForm = () => {
                             value={formData.apellido}
                             required
                             suppressHydrationWarning
-                            className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-cyan-600"
-                        />
+                            className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
                     </div>
                 </div>
 
-            
                 <div className="flex flex-col gap-1.5">
                     <label htmlFor="email" className="text-xs text-neutral-600">Email</label>
                     <input
@@ -104,61 +101,54 @@ const RegisterForm = () => {
                         value={formData.email}
                         required
                         suppressHydrationWarning
-                        className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-cyan-600"
-                    />
+                        className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
                 </div>
             </section>
 
             <section className="flex flex-col gap-4">
-                <div className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-1.5">
-                        <label htmlFor="password" className="text-xs text-neutral-600">Contraseña</label>
-                        <div className="relative">
-                            <input
-                                onChange={handleChange}
-                                id="password"
-                                type={showPassword ? 'text' : 'password'}
-                                name="password"
-                                value={formData.password}
-                                required
-                                suppressHydrationWarning
-                                className="w-full px-3 py-2 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-cyan-600"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                suppressHydrationWarning
-                                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400 hover:text-neutral-600 transition-colors"
-                                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                            >
-                                {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
-                            </button>
-                        </div>
+                <div className="flex flex-col gap-1.5">
+                    <label htmlFor="password" className="text-xs text-neutral-600">Contraseña</label>
+                    <div className="relative">
+                        <input
+                            onChange={handleChange}
+                            id="password"
+                            type={showPassword ? 'text' : 'password'}
+                            name="password"
+                            value={formData.password}
+                            required
+                            suppressHydrationWarning
+                            className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            suppressHydrationWarning
+                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400 hover:text-neutral-600 transition-colors"
+                            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
+                            {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
+                        </button>
                     </div>
+                </div>
 
-                    <div className="flex flex-col gap-1.5">
-                        <label htmlFor="confirmPassword" className="text-xs text-neutral-600">Confirmar contraseña</label>
-                        <div className="relative">
-                            <input
-                                onChange={handleChange}
-                                id="confirmPassword"
-                                type={showPassword ? 'text' : 'password'}
-                                name="confirmPassword"
-                                value={formData.confirmPassword}
-                                required
-                                suppressHydrationWarning
-                                className="w-full px-3 py-2 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-cyan-600"
-                            />
-                            <button
-                                type="button"
-                                onClick={() => setShowPassword(!showPassword)}
-                                suppressHydrationWarning
-                                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400 hover:text-neutral-600 transition-colors"
-                                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                            >
-                                {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
-                            </button>
-                        </div>
+                <div className="flex flex-col gap-1.5">
+                    <label htmlFor="confirmPassword" className="text-xs text-neutral-600">Confirmar contraseña</label>
+                    <div className="relative">
+                        <input
+                            onChange={handleChange}
+                            id="confirmPassword"
+                            type={showPassword ? 'text' : 'password'}
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            required
+                            suppressHydrationWarning
+                            className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            suppressHydrationWarning
+                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400 hover:text-neutral-600 transition-colors"
+                            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
+                            {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
+                        </button>
                     </div>
                 </div>
             </section>
@@ -169,8 +159,7 @@ const RegisterForm = () => {
                         type="submit"
                         disabled={registerMutation.isPending}
                         suppressHydrationWarning
-                        className="font-semibold text-white bg-cyan-600 hover:bg-cyan-500 disabled:bg-cyan-400 w-full py-2.5 rounded-xl transition-colors ease-in-out duration-200 cursor-pointer flex items-center justify-center"
-                    >
+                        className="font-semibold text-white bg-cyan-600 hover:bg-cyan-500 disabled:bg-cyan-400 w-full py-2.5 rounded-xl transition-colors ease-in-out duration-200 cursor-pointer flex items-center justify-center">
                         {registerMutation.isPending ? (
                             <LoadingIndicator />
                         ) : (
@@ -178,9 +167,7 @@ const RegisterForm = () => {
                         )}
                     </button>
 
-                    <span className="text-neutral-600 text-center text-sm">
-                        ¿Ya tienes una cuenta? <Link href="/login" className="font-semibold text-cyan-600 hover:text-cyan-500 ease-in-out duration-200 transition-colors">Inicia sesión</Link>
-                    </span>
+                    <span className="text-neutral-600 text-center text-sm">¿Ya tienes una cuenta? <Link href="/login" className="font-semibold text-cyan-600 hover:text-cyan-500 ease-in-out duration-200 transition-colors">Inicia sesión.</Link></span>
                 </div>
             </section>
         </form>
