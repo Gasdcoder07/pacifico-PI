@@ -1,13 +1,27 @@
 "use client";
 
 import { useAuth } from "@/hooks/useAuth";
+import CartPanel from "@/components/CartPanel";
+import ProductCatalog from "@/components/ProductCatalog";
+import ProductSearch from "@/components/ProductSearch";
 
 const Page = () => {
     const { user, loading } = useAuth();
 
     return (
-        <section className="p-6">
-            <div className="max-w-3xl rounded-lg border border-neutral-200 bg-white p-6 shadow-sm">
+        <section className="flex flex-col h-full min-h-0 overflow-hidden p-4 gap-4">
+            <ProductSearch/>
+
+            <div className="flex min-h-0 flex-1 gap-4">
+
+                {/* Contenedor de productos */}
+                <ProductCatalog/>
+
+                {/* Carrito de productos */}
+                <CartPanel/>
+            </div>
+
+            {/* <div className="max-w-xl rounded-lg border border-neutral-200 bg-white p-6 shadow-sm">
                 <div className="flex items-center justify-between gap-4 border-b border-neutral-200 pb-4">
                     <div>
                         <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Punto de venta</p>
@@ -50,7 +64,7 @@ const Page = () => {
                         {loading ? "Obteniendo los datos de la sesión..." : "No se encontró una sesión activa."}
                     </p>
                 )}
-            </div>
+            </div> */}
         </section>
     )
 };
