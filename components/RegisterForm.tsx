@@ -6,6 +6,7 @@ import { LoadingIndicator } from "./LoadingIndicator";
 import { useMutation } from '@tanstack/react-query';
 import { Eye, EyeOff } from "lucide-react";
 import { registerUser } from "@/services/auth.service";
+import toast from "react-hot-toast";
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({
@@ -17,15 +18,16 @@ const RegisterForm = () => {
     });
 
     const [showPassword, setShowPassword] = useState(false);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const registerMutation = useMutation({
         mutationFn: registerUser,
         onSuccess: (data) => {
+            toast.success("Cuenta creada exitosamente");
             console.log(data);
         },
         onError: (error: any) => {
-            setErrorMessage(error?.message || "Ocurrió un error durante el registro.");
+            const mensaje = error?.response?.data?.error || "Ocurrió un error durante el registro.";
+            toast.error(mensaje);
         }
     });
 
@@ -35,10 +37,9 @@ const RegisterForm = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setErrorMessage(null);
 
         if (formData.password !== formData.confirmPassword) {
-            setErrorMessage("Las contraseñas no coinciden.");
+            toast.error("Las contraseñas no coinciden.");
             return;
         }
 
@@ -56,12 +57,6 @@ const RegisterForm = () => {
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
-            {errorMessage && (
-                <div className="p-3 text-xs text-red-600 bg-red-50 border border-red-200 rounded-xl text-center">
-                    {errorMessage}
-                </div>
-            )}
-
             <section className="flex flex-col gap-4">
                 <div className="flex flex-row gap-5">
                     <div className="flex flex-col gap-1.5 w-1/2">
