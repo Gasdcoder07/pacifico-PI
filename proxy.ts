@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { useAuth } from "./hooks/useAuth";
 
 export function proxy(request : NextRequest) {
+
     const isAuth = true
 
     if (
