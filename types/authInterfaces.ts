@@ -25,9 +25,10 @@ export interface LoginResponse {
 }
 
 export interface RegisterRequest {
-    name: string;
-    email: string;
+    nombre: string;
+    apellido: string;
+    correo: string;
     password: string;
     rol_id: number;
-    branch_id: number;
+    branch_id: number | null;
 }
