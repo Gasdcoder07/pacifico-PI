@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
-import RegisterForm from "@/components/RegisterForm";
-
+import RegisterForm from "@/features/auth/components/RegisterForm";
 export const metadata : Metadata = {
     title : "Pacífico - Autenticación",
     description : "Registrate y crea una cuenta"

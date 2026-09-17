@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { LoadingIndicator } from "./LoadingIndicator";
+import { LoadingIndicator } from "@/shared/components/LoadingIndicator";
 import { useMutation } from '@tanstack/react-query';
 import { Eye, EyeOff } from "lucide-react";
-import { registerUser } from "@/services/auth.service";
+import { registerUser } from "@/features/auth/services/auth.service";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation" 
 

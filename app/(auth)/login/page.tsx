@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
-import LoginForm from "@/components/LoginForm";
+import LoginForm from "@/features/auth/components/LoginForm";
 
 export const metadata : Metadata = {
     title : "Pacífico - Autenticación",

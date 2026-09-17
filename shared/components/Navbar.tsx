@@ -1,11 +1,11 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
-import ProfilePfp from "./ProfilePfp";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import ProfilePfp from "@/shared/components/ProfilePfp";
 
 const Navbar = () => {
     const { user, loading } = useAuth();
-    const fullName = user ? `${user.nombre} ${user.apellido}` : "Cargando...";
+    const fullName = user ? `${user.name} ${user.last_name}` : "Cargando...";
 
     return (
         <nav className="bg-white border-b border-neutral-300">

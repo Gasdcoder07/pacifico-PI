@@ -1,9 +1,9 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
-import CartPanel from "@/components/CartPanel";
-import ProductCatalog from "@/components/ProductCatalog";
-import ProductSearch from "@/components/ProductSearch";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import CartPanel from "@/features/sell/components/CartPanel";
+import ProductCatalog from "@/features/sell/components/ProductCatalog";
+import ProductSearch from "@/features/sell/components/ProductSearch";
 
 const Page = () => {
     const { user, loading } = useAuth();

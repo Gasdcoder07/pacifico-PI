@@ -8,12 +8,12 @@ export interface LoginRequest {
 
 export interface UserProfile {
     id: number;
-    nombre: string;
-    apellido: string;
-    correo: string;
+    name: string;
+    last_name: string;
+    email: string;
     rol_id: number;
     sucursal_id: number;
-    estado: boolean;
+    status: boolean;
 }
 
 export interface LoginResponse {

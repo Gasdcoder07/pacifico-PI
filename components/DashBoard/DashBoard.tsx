@@ -1,4 +1,4 @@
-import { UserProfile } from "@/types/authInterfaces"
+import { UserProfile } from "@/features/auth/types/authInterfaces"
 
 export const DashBoard = ({ user } : { user : UserProfile | null | undefined }) => {
 

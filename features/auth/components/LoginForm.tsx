@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { LoadingIndicator } from "./LoadingIndicator";
+import { LoadingIndicator } from "@/shared/components/LoadingIndicator";
 import { Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import toast from "react-hot-toast";
 
 const LoginForm = () => {

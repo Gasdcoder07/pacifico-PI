@@ -1,5 +1,5 @@
-import { getUserSession, loginUser } from "@/services/auth.service";
-import { UserProfile } from "@/types/authInterfaces";
+import { getUserSession, loginUser } from "@/features/auth/services/auth.service";
+import { UserProfile } from "@/features/auth/types/authInterfaces";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useRouter } from "next/navigation";
 

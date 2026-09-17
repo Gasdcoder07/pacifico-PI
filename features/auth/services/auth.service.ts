@@ -1,5 +1,5 @@
-import { apiClient } from "@/lib/axios"
-import { LoginRequest, LoginResponse, UserProfile, RegisterRequest } from "@/types/authInterfaces";
+import { apiClient } from "@/shared/lib/axios"
+import { LoginRequest, LoginResponse, UserProfile, RegisterRequest } from "@/features/auth/types/authInterfaces";
 
 export const loginUser = async (credentials : LoginRequest) : Promise<LoginResponse> => {
     const response = await apiClient.post<LoginResponse>("/api/auth/login", credentials);
@@ -20,7 +20,7 @@ export const getUserSession = async (): Promise<UserProfile | null> => {
     const userId = localStorage.getItem("userId");
 
     if (!token || !userId) {
-        console.error("No hay token ni ID de usuario.");
+        console.log("No hay token ni ID de usuario.");
         return null;
     }
 

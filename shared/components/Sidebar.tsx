@@ -1,12 +1,12 @@
 "use client";
 
-import { sidebarNavigation } from "@/config/navigation";
+import { sidebarNavigation } from "@/shared/config/navigation";
 import { ChevronsRight, LogOut, LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const Sidebar = () => {
     const { logout } = useAuth();

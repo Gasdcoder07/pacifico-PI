@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LogOut } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 interface ProfilePfpProps {
   name: string;
@@ -84,7 +84,7 @@ const ProfilePfp = ({ name, role }: ProfilePfpProps) => {
 
             <div>
               <p className="text-sm font-medium text-gray-900">{name}</p>
-              <p className="text-xs text-gray-500">{role}</p>
+              {/* <p className="text-xs text-gray-500">{role}</p> */}
             </div>
           </button>
 
