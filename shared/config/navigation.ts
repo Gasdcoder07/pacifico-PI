@@ -1,4 +1,4 @@
-import { BadgeDollarSign, LayoutDashboard, Monitor, Settings, ShelvingUnit } from "lucide-react"
+import { LayoutDashboard, ShelvingUnit, ShoppingCart } from "lucide-react"
 
 export type SidebarItem = {
     id : string,
@@ -8,19 +8,9 @@ export type SidebarItem = {
 
 export const sidebarNavigation : SidebarItem[] = [
     {
-        id : "Pos",
-        href : "/pos",
-        icon : Monitor
-    },
-    {
-        id : "Sales",
-        href : "/sales",
-        icon : BadgeDollarSign
-    },
-    {
-        id : "Inventory",
-        href : "/inventory",
-        icon : ShelvingUnit
+        id : "Sell",
+        href : "/sell",
+        icon : ShoppingCart
     },
     {
         id : "Dashboard",
@@ -28,8 +18,8 @@ export const sidebarNavigation : SidebarItem[] = [
         icon : LayoutDashboard
     },
     {
-        id : "Settings",
-        href : "/settings",
-        icon : Settings
+        id : "Inventory",
+        href : "/inventory",
+        icon : ShelvingUnit
     }
-]
+];
