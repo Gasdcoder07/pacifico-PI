@@ -41,8 +41,6 @@ const Sidebar = () => {
                         })
                     }
                 </ul>
-
-                <LogoutButton open={isOpen} onLogout={logout}/>
             </div>
                     
             <ToggleClose open={isOpen} setIsOpen={setIsOpen}/>
