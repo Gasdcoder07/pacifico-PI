@@ -28,6 +28,9 @@ export const useAuth = () => {
 
             queryClient.setQueryData<UserProfile>(["authUser"], usuario);
             router.push("/pos");
+        },
+        onError : (error) => {
+            console.log(`Error al iniciar sesión: `, error);
         }
     });
 
@@ -43,7 +46,7 @@ export const useAuth = () => {
     return {
         user,
         loading,
-        login : loginMutation.mutate,
+        login : loginMutation.mutateAsync,
         isLoggingIn : loginMutation.isPending,
         logout,
     };

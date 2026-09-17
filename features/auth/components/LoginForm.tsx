@@ -19,9 +19,16 @@ const LoginForm = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (!formData.email || !formData.password) {
+            toast.error("Por favor, completa todos los campos");
+            return;
+        }
         
         try {
-            await login(formData);
+            const response = await login(formData);
+
+            console.log(response);
 
             toast.success("Inicio de sesión exitoso");
         } catch (error) {   
@@ -54,7 +61,6 @@ const LoginForm = () => {
                     id="email"
                     type="email"
                     name="email"
-                    required
                     className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"
                 />
             </div>
@@ -73,7 +79,6 @@ const LoginForm = () => {
                         id="password"
                         type={showPassword ? "text" : "password"}
                         name="password"
-                        required
                         className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"
                     />
 
