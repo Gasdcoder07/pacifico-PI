@@ -6,8 +6,8 @@ export const loginUser = async (credentials : LoginRequest) : Promise<LoginRespo
     return response.data;
 }
 
-export const registerUser = async (credentials: RegisterRequest): Promise<any> => {
-    const response = await apiClient.post<any>("/api/auth/register", credentials);
+export const registerUser = async (credentials: RegisterRequest) => {
+    const response = await apiClient.post("/api/auth/register/admin", credentials);
     return response.data;
 }
 

@@ -1,6 +1,16 @@
 "use client";
 
-const page = () => {
+import { useAuth } from "@/hooks/useAuth";
+import { useEffect } from "react";
+
+const Page = () => {
+
+    const { user, loading, logout } = useAuth()
+
+    useEffect(() => {
+        console.log(user)
+    }, [user])
+
     return (
         <section>
             Page
@@ -8,4 +18,4 @@ const page = () => {
     );
 };
 
-export default page;
+export default Page;

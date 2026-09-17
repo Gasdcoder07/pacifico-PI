@@ -7,11 +7,14 @@ import { useMutation } from '@tanstack/react-query';
 import { Eye, EyeOff } from "lucide-react";
 import { registerUser } from "@/services/auth.service";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation" 
+
 
 const RegisterForm = () => {
+    const router = useRouter()
     const [formData, setFormData] = useState({
-       nombre: "",
-       apellido: "",
+       name: "",
+       last_name: "",
        email: "",
        password: "",
        confirmPassword: ""
@@ -28,6 +31,11 @@ const RegisterForm = () => {
         onError: (error: any) => {
             const mensaje = error?.response?.data?.error || "Ocurrió un error durante el registro.";
             toast.error(mensaje);
+            console.log(data)
+            router.push("/login")
+        },
+        onError: (error) => {
+            setErrorMessage(error?.message || "Ocurrió un error durante el registro.");
         }
     });
 
@@ -44,12 +52,10 @@ const RegisterForm = () => {
         }
 
         const dataToSend = {
-            nombre: formData.nombre,
-            apellido: formData.apellido,
-            correo: formData.email,
+            name: formData.name,
+            last_name: formData.last_name,
+            email: formData.email,
             password: formData.password,
-            rol_id: 3, // Asignar el rol_id correspondiente según tu lógica
-            branch_id: null,
         };
 
         registerMutation.mutate(dataToSend);
@@ -63,10 +69,10 @@ const RegisterForm = () => {
                         <label htmlFor="nombre" className="text-xs text-neutral-600">Nombre</label>
                         <input
                             onChange={handleChange}
-                            id="nombre"
+                            id="name"
                             type="text"
-                            name="nombre"
-                            value={formData.nombre}
+                            name="name"
+                            value={formData.name}
                             required
                             suppressHydrationWarning
                             className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
@@ -76,10 +82,10 @@ const RegisterForm = () => {
                         <label htmlFor="apellido" className="text-xs text-neutral-600">Apellido</label>
                         <input
                             onChange={handleChange}
-                            id="apellido"
+                            id="last_name"
                             type="text"
-                            name="apellido"
-                            value={formData.apellido}
+                            name="last_name"
+                            value={formData.last_name}
                             required
                             suppressHydrationWarning
                             className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
