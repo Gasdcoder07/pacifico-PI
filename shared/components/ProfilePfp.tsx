@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { LogOut } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
@@ -10,10 +10,48 @@ interface ProfilePfpProps {
   role: string;
 }
 
+const menuVariants: Variants = {
+  hidden: { 
+    opacity: 0, 
+    scale: 0.5, 
+    y: -10,
+    x: 10,
+    transition: { type: "spring", bounce: 0, duration: 0.2 }
+  },
+  visible: { 
+    opacity: 1, 
+    scale: 1, 
+    y: 0,
+    x: 0,
+    transition: { 
+      type: "spring", 
+      bounce: 0.6, 
+      duration: 0.6,
+      delayChildren: 0.1, 
+      staggerChildren: 0.05 
+    }
+  },
+  exit: { 
+    opacity: 0, 
+    scale: 0.8, 
+    transition: { duration: 0.15, ease: "easeOut" } 
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 10, scale: 0.9 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    scale: 1,
+    transition: { type: "spring", bounce: 0.5 }
+  }
+};
+
 const ProfilePfp = ({ name, role }: ProfilePfpProps) => {
-    const [open, setOpen] = useState(false);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const { logout } = useAuth();
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { logout } = useAuth();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -26,77 +64,79 @@ const ProfilePfp = ({ name, role }: ProfilePfpProps) => {
   }, []);
 
   return (
-    <motion.div 
-      ref={containerRef}
-      className="relative"
-    >
-        <motion.button
-          onClick={() => setOpen((prev) => !prev)}
-          className="rounded-full cursor-pointer focus:outline-none origin-center"
-          aria-haspopup="true"
-          aria-expanded={open}
-          whileHover={{ 
-            scale: 1.1, 
-            rotate: 5,
-            borderRadius: "35%" 
-          }}
-          whileTap={{ 
-            scale: 1.05, 
-            rotate: -5,
-            borderRadius: "50%"
-          }}
-          transition={{ 
-            type: "spring", 
-            stiffness: 400, 
-            damping: 12 
-          }}
-        >
+    <motion.div ref={containerRef} className="relative z-50">
+      <motion.button
+        onClick={() => setOpen((prev) => !prev)}
+        className="rounded-full cursor-pointer focus:outline-none origin-center"
+        aria-haspopup="true"
+        aria-expanded={open}
+        whileHover={{ 
+          scaleX: 1.1, 
+          scaleY: 1.1,
+          borderRadius: "35%",
+        }}
+        whileTap={{ 
+          scaleX: 0.9, 
+          scaleY: 1.1, 
+          borderRadius: "50%",
+        }}
+        transition={{ 
+          type: "spring", 
+          bounce: 0.6, 
+          duration: 0.8
+        }}
+      >
         <div 
-          style={{
-            width: 50,
-            height: 50
-          }}
+          style={{ width: 50, height: 50 }}
           className="rounded-full object-cover bg-cyan-400"
         />
-        {/*<Image
-          src="@/public/auth_image.webp"
-          alt={`Foto de perfil de ${name}`}
-          width={36}
-          height={36}
-          className="rounded-full object-cover"
-        />*/}
       </motion.button>
-      <AnimatePresence >
-
+      
+      <AnimatePresence>
         {open && (
           <motion.div 
-            initial={{ clipPath: "circle(0% at 100% 0%)" }}
-            animate={{ clipPath: "circle(150% at 100% 0%)" }}
-            exit={{ clipPath: "circle(0% at 100% 0%)" }}
-            transition={{ ease: [0.4, 0, 0.2, 1], duration: 0.3 }}
-            className="absolute right-0 top-12 flex flex-col items-stretch gap-3 rounded-lg border border-gray-200 bg-white shadow-lg p-3 z-50 w-64"
+            variants={menuVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="absolute right-0 top-14 flex flex-col items-stretch gap-1 rounded-2xl border border-gray-100 bg-white shadow-xl p-2 w-64 origin-top-right"
           >
-          <button onClick={() => {}} className="w-full text-neutral-900 flex items-center gap-4 py-3 pr-4 pl-1.5 rounded-md transition-all duration-200 ease-in-out hover:bg-linear-to-b hover:from-brand-50 hover:to-brand-100 hover:text-brand-700 cursor-pointer">
-            <div
-              style={{ width: 50, height: 50 }}
-              className="rounded-full object-cover bg-cyan-400 shrink-0"
-            />
+            <motion.div variants={itemVariants}>
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", bounce: 0.5 }}
+                onClick={() => {}} 
+                className="w-full text-neutral-900 flex items-center gap-4 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-gray-100"
+              >
+                <div
+                  style={{ width: 40, height: 40 }}
+                  className="rounded-full object-cover bg-cyan-400 shrink-0"
+                />
+                <div className="text-left">
+                  <p className="text-sm font-medium text-gray-900">{name}</p>
+                </div>
+              </motion.button>
+            </motion.div>
 
-            <div>
-              <p className="text-sm font-medium text-gray-900">{name}</p>
-              {/* <p className="text-xs text-gray-500">{role}</p> */}
-            </div>
-          </button>
+            <motion.div variants={itemVariants} className="px-3 py-1">
+              <div className="w-full border-t border-gray-100" />
+            </motion.div>
 
-          <div className="w-full border-t border-gray-200 pt-2">
-            <button
-              onClick={logout}
-              className="w-full text-neutral-500 flex items-center gap-4 py-3 pr-4 pl-5 rounded-md transition-all duration-200 ease-in-out hover:bg-linear-to-b hover:from-brand-50 hover:to-brand-100 hover:text-brand-700 cursor-pointer"
-            >
-              <LogOut className="shrink-0" />
-              <span className="text-sm font-medium">Logout</span>
-            </button>
-          </div></motion.div>
+            <motion.div variants={itemVariants}>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", bounce: 0.5 }}
+                onClick={logout}
+                className="w-full text-neutral-500 flex items-center gap-4 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-red-50 hover:text-red-600"
+              >
+                <LogOut className="shrink-0 w-5 h-5" />
+                <span className="text-sm font-medium">Logout</span>
+              </motion.button>
+            </motion.div>
+            
+          </motion.div>
         )}
       </AnimatePresence>
     </motion.div>
