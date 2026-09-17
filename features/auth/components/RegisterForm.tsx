@@ -43,6 +43,11 @@ const RegisterForm = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        if(!formData.name || !formData.last_name || !formData.email || !formData.password || !formData.confirmPassword) {
+            toast.error("Por favor, completa todos los campos.");
+            return;
+        }
+
         if (formData.password !== formData.confirmPassword) {
             toast.error("Las contraseñas no coinciden.");
             return;
@@ -70,7 +75,6 @@ const RegisterForm = () => {
                             type="text"
                             name="name"
                             value={formData.name}
-                            required
                             suppressHydrationWarning
                             className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
                     </div>
@@ -83,7 +87,6 @@ const RegisterForm = () => {
                             type="text"
                             name="last_name"
                             value={formData.last_name}
-                            required
                             suppressHydrationWarning
                             className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
                     </div>
@@ -97,7 +100,7 @@ const RegisterForm = () => {
                         type="email"
                         name="email"
                         value={formData.email}
-                        required
+        
                         suppressHydrationWarning
                         className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
                 </div>
@@ -113,7 +116,7 @@ const RegisterForm = () => {
                             type={showPassword ? 'text' : 'password'}
                             name="password"
                             value={formData.password}
-                            required
+                           
                             suppressHydrationWarning
                             className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
                         <button
@@ -136,7 +139,7 @@ const RegisterForm = () => {
                             type={showPassword ? 'text' : 'password'}
                             name="confirmPassword"
                             value={formData.confirmPassword}
-                            required
+                            
                             suppressHydrationWarning
                             className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
                         <button
