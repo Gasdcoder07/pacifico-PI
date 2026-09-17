@@ -97,7 +97,7 @@ export async function POST(request: Request) {
         const userId = authData.user.id;
 
         const queryDB = `
-            SELECT id, nombre, apellido, correo, rol_id, estado, foto_url, foto_public_id
+            SELECT id, name, last_name, email, rol_id, status, foto_url, foto_public_id
             FROM public.usuarios
             WHERE auth_user_id = $1;
         `;
@@ -113,7 +113,7 @@ export async function POST(request: Request) {
 
         const usuario = response.rows[0]
 
-        if (!usuario.estado) {
+        if (!usuario.status) {
             return NextResponse.json(
                 { error: "Tu cuenta se encuentra inactiva :)" },
                 { status: 403 }

@@ -136,8 +136,8 @@ export async function POST(request: Request) {
             password: password,
             email_confirm: true,
             user_metadata: {
-                nombre: name,
-                apellido: last_name,
+                name: name,
+                last_name: last_name,
                 rol_id: 1
             }
         })
@@ -157,7 +157,7 @@ export async function POST(request: Request) {
                 foto_url = $2,
                 foto_public_id = $3
             WHERE auth_user_id = $1
-            RETURNING id, nombre, apellido, correo, rol_id, estado, foto_url;
+            RETURNING id, name, last_name, email, rol_id, status, foto_url;
         `
 
         const values = [userId, foto_url || null, foto_public_id]

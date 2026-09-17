@@ -27,16 +27,13 @@ const RegisterForm = () => {
         onSuccess: (data) => {
             toast.success("Cuenta creada exitosamente");
             console.log(data);
+            router.push("/login")
         },
         onError: (error: any) => {
             const mensaje = error?.response?.data?.error || "Ocurrió un error durante el registro.";
             toast.error(mensaje);
-            console.log(data)
-            router.push("/login")
+            console.log(error)
         },
-        onError: (error) => {
-            setErrorMessage(error?.message || "Ocurrió un error durante el registro.");
-        }
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
