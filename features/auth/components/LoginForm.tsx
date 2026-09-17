@@ -21,7 +21,9 @@ const LoginForm = () => {
         e.preventDefault();
         
         try {
-            await login(formData);
+            const response = await login(formData);
+
+            console.log(response);
 
             toast.success("Inicio de sesión exitoso");
         } catch (error) {   
