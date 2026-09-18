@@ -1,20 +1,29 @@
 import pool from "@/shared/lib/db";
-import { supabase } from "@/shared/lib/supabase";
+import next from "next";
 import { NextResponse } from "next/server";
 
 /**
  * @swagger
- * /api/inventory:
+ * /api/inventory/{id}:
  *   get:
- *     summary: Obtener inventario de sucursales
- *     description: Retorna el inventario completo agrupado por sucursal, incluyendo los detalles del producto y sus cantidades.
+ *     summary: Obtener inventario de una sucursal
+ *     description: Retorna el inventario de una sucursal, incluyendo los detalles del producto y sus cantidades.
  *     tags:
  *       - Inventario
  *     security:
- *       - BearerAuth: []
+ *       - BearerAuth: []  
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la sucursal
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           example: 1
  *     responses:
  *       200:
- *         description: Operación exitosa. Devuelve el inventario agrupado.
+ *         description: Operación exitosa. Devuelve [] si no hay resultados.
  *         content:
  *           application/json:
  *             schema:
@@ -24,7 +33,7 @@ import { NextResponse } from "next/server";
  *                 properties:
  *                   branch_id:
  *                     type: integer
- *                     example: 1
+ *                     example: "1"
  *                   productos:
  *                     type: array
  *                     items:
@@ -46,13 +55,15 @@ import { NextResponse } from "next/server";
  *                         quantity:
  *                           type: integer
  *                           example: 25
- *                         stock_minimo:
+ *                         min_stock:
  *                           type: integer
  *                           example: 5
  *                         updated_at:
  *                           type: string
  *                           format: date-time
  *                           example: "2026-09-17T15:00:00.000Z"
+ *       404:
+ *         description: Sucursal inexistente o fuera del acceso del usuario
  *       401:
  *         description: No autorizado. Falta el token de acceso o es inválido.
  *         content:
@@ -75,31 +86,35 @@ import { NextResponse } from "next/server";
  *                   example: "Error interno en el backend"
  */
 
-export async function GET (request: Request) {
+export async function GET (
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+) {
     try {
         const authHeader = request.headers.get("Authorization")
 
-        if (!authHeader || !authHeader.startsWith("Bearer")) {
+        if (!authHeader || !/^Bearer\s+\S+$/i.test(authHeader)) {
             return NextResponse.json(
                 { error: "No autorizado, falta token de acceso" },
                 { status: 401 }
             )
         }
 
-        const token = authHeader.split(" ")[1]
-        
-        const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+        const { id } = await params;
 
-        if (authError || !user) {
+        if(
+            !/^[1-9][0-9]{0,18}$/.test(id) ||
+            BigInt(id) > BigInt("9223372036854775807") 
+        ){
             return NextResponse.json(
-                { error: "Sesión expirada o token inválido" },
-                { status: 401 }
+                { error: "ID de la sucursal no valido" },
+                { status: 400 }
             )
         }
-
+        
         const query = `
             SELECT 
-                i.branch_id,
+                i.branch_id::text AS branch_id,
                 jsonb_agg(
                 jsonb_build_object(
                     'inventario_id', i.id,
@@ -110,14 +125,14 @@ export async function GET (request: Request) {
                     'min_stock', i.min_stock,
                     'updated_at', i.updated_at
                 )
-                ) as productos
+                ORDER BY i.id
+                ) AS productos
             FROM public.inventario i
             INNER JOIN public.productos p ON i.product_id = p.id
-            GROUP BY i.branch_id
-            ORDER BY i.branch_id ASC;
+            WHERE i.branch_id = $1;
         `
 
-        const { rows } = await pool.query(query)
+        const { rows } = await pool.query(query,[id])
 
         return NextResponse.json(
             rows,
