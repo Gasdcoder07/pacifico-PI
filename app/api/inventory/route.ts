@@ -1,4 +1,5 @@
 import pool from "@/shared/lib/db";
+import { supabase } from "@/shared/lib/supabase";
 import { NextResponse } from "next/server";
 
 /**
@@ -81,6 +82,17 @@ export async function GET (request: Request) {
         if (!authHeader || !authHeader.startsWith("Bearer")) {
             return NextResponse.json(
                 { error: "No autorizado, falta token de acceso" },
+                { status: 401 }
+            )
+        }
+
+        const token = authHeader.split(" ")[1]
+        
+        const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+
+        if (authError || !user) {
+            return NextResponse.json(
+                { error: "Sesión expirada o token inválido" },
                 { status: 401 }
             )
         }

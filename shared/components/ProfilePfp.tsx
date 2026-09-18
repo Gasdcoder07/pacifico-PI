@@ -25,9 +25,9 @@ const menuVariants: Variants = {
     x: 0,
     transition: { 
       type: "spring", 
-      bounce: 0.6, 
+      bounce: 0.3, 
       duration: 0.6,
-      delayChildren: 0.1, 
+      delayChildren: 0.05, 
       staggerChildren: 0.05 
     }
   },
@@ -39,12 +39,12 @@ const menuVariants: Variants = {
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 10, scale: 0.9 },
+  hidden: { opacity: 0, y: 10, scale: 0.5 },
   visible: { 
     opacity: 1, 
     y: 0, 
     scale: 1,
-    transition: { type: "spring", bounce: 0.5 }
+    transition: { type: "spring", bounce: 0.3 }
   }
 };
 
