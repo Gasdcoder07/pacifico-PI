@@ -1,4 +1,5 @@
 import pool from "@/shared/lib/db";
+import { supabase } from "@/shared/lib/supabase";
 import next from "next";
 import { NextResponse } from "next/server";
 
@@ -92,10 +93,21 @@ export async function GET (
 ) {
     try {
         const authHeader = request.headers.get("Authorization")
-
-        if (!authHeader || !/^Bearer\s+\S+$/i.test(authHeader)) {
+        
+        if (!authHeader || !authHeader.startsWith("Bearer")) {
             return NextResponse.json(
                 { error: "No autorizado, falta token de acceso" },
+                { status: 401 }
+            )
+        }
+
+        const token = authHeader.split(" ")[1]
+        
+        const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+
+        if (authError || !user) {
+            return NextResponse.json(
+                { error: "Sesión expirada o token inválido" },
                 { status: 401 }
             )
         }
@@ -129,7 +141,8 @@ export async function GET (
                 ) AS productos
             FROM public.inventario i
             INNER JOIN public.productos p ON i.product_id = p.id
-            WHERE i.branch_id = $1;
+            WHERE i.branch_id = $1
+            GROUP BY i.branch_id;
         `
 
         const { rows } = await pool.query(query,[id])
