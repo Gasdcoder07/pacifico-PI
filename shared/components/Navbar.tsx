@@ -19,7 +19,7 @@ const Navbar = () => {
                     <div className="flex flex-col">
                         <p className="text-neutral-500 text-xs font-medium whitespace-nowrap">Sucursal</p>
                         <p className="text-sm font-semibold whitespace-nowrap">
-                            {loading ? "Cargando..." : `Sucursal ${user?.sucursal_id ?? ""}`}
+                            {loading ? "Cargando..." : `Sucursal de ${fullName ? fullName : 'el pana'} `}
                         </p>
                     </div>
                 </div>

@@ -27,7 +27,7 @@ export const useAuth = () => {
             }
 
             queryClient.setQueryData<UserProfile>(["authUser"], usuario);
-            router.push("/pos");
+            router.push("/sell");
         },
         onError : (error) => {
             console.log(`Error al iniciar sesión: `, error);
