@@ -1,0 +1,178 @@
+"use client"
+
+import Link from "next/link";
+import { useState } from "react";
+import { LoadingIndicator } from "@/shared/components/LoadingIndicator";
+import { useMutation } from '@tanstack/react-query';
+import { Eye, EyeOff } from "lucide-react";
+import { registerUser } from "@/features/auth/services/auth.service";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation" 
+
+
+const RegisterForm = () => {
+    const router = useRouter()
+    const [formData, setFormData] = useState({
+       name: "",
+       last_name: "",
+       email: "",
+       password: "",
+       confirmPassword: ""
+    });
+
+    const [showPassword, setShowPassword] = useState(false);
+
+    const registerMutation = useMutation({
+        mutationFn: registerUser,
+        onSuccess: (data) => {
+            toast.success("Cuenta creada exitosamente");
+            console.log(data);
+            router.push("/login")
+        },
+        onError: (error: any) => {
+            const mensaje = error?.response?.data?.error || "Ocurrió un error durante el registro.";
+            toast.error(mensaje);
+            console.log(error)
+        },
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if(!formData.name || !formData.last_name || !formData.email || !formData.password || !formData.confirmPassword) {
+            toast.error("Por favor, completa todos los campos.");
+            return;
+        }
+
+        if (formData.password !== formData.confirmPassword) {
+            toast.error("Las contraseñas no coinciden.");
+            return;
+        }
+
+        const dataToSend = {
+            name: formData.name,
+            last_name: formData.last_name,
+            email: formData.email,
+            password: formData.password,
+        };
+
+        registerMutation.mutate(dataToSend);
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
+            <section className="flex flex-col gap-4">
+                <div className="flex flex-row gap-5">
+                    <div className="flex flex-col gap-1.5 w-1/2">
+                        <label htmlFor="nombre" className="text-xs text-neutral-600">Nombre</label>
+                        <input
+                            onChange={handleChange}
+                            id="name"
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            suppressHydrationWarning
+                            className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5 w-1/2">
+                        <label htmlFor="apellido" className="text-xs text-neutral-600">Apellido</label>
+                        <input
+                            onChange={handleChange}
+                            id="last_name"
+                            type="text"
+                            name="last_name"
+                            value={formData.last_name}
+                            suppressHydrationWarning
+                            className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
+                    </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                    <label htmlFor="email" className="text-xs text-neutral-600">Email</label>
+                    <input
+                        onChange={handleChange}
+                        id="email"
+                        type="email"
+                        name="email"
+                        value={formData.email}
+        
+                        suppressHydrationWarning
+                        className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
+                </div>
+            </section>
+
+            <section className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1.5">
+                    <label htmlFor="password" className="text-xs text-neutral-600">Contraseña</label>
+                    <div className="relative">
+                        <input
+                            onChange={handleChange}
+                            id="password"
+                            type={showPassword ? 'text' : 'password'}
+                            name="password"
+                            value={formData.password}
+                           
+                            suppressHydrationWarning
+                            className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            suppressHydrationWarning
+                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400 hover:text-neutral-600 transition-colors"
+                            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
+                            {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
+                        </button>
+                    </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                    <label htmlFor="confirmPassword" className="text-xs text-neutral-600">Confirmar contraseña</label>
+                    <div className="relative">
+                        <input
+                            onChange={handleChange}
+                            id="confirmPassword"
+                            type={showPassword ? 'text' : 'password'}
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            
+                            suppressHydrationWarning
+                            className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"/>
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            suppressHydrationWarning
+                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400 hover:text-neutral-600 transition-colors"
+                            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
+                            {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div className="mt-4 flex flex-col gap-4">
+                    <button
+                        type="submit"
+                        disabled={registerMutation.isPending}
+                        suppressHydrationWarning
+                        className="font-semibold text-white bg-cyan-600 hover:bg-cyan-500 disabled:bg-cyan-400 w-full py-2.5 rounded-xl transition-colors ease-in-out duration-200 cursor-pointer flex items-center justify-center">
+                        {registerMutation.isPending ? (
+                            <LoadingIndicator />
+                        ) : (
+                            <p>Crear cuenta</p>
+                        )}
+                    </button>
+
+                    <span className="text-neutral-600 text-center text-sm">¿Ya tienes una cuenta? <Link href="/login" className="font-semibold text-cyan-600 hover:text-cyan-500 ease-in-out duration-200 transition-colors">Inicia sesión.</Link></span>
+                </div>
+            </section>
+        </form>
+    );
+};
+
+export default RegisterForm;

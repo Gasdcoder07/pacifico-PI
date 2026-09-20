@@ -1,0 +1,53 @@
+import { getUserSession, loginUser } from "@/features/auth/services/auth.service";
+import { UserProfile } from "@/features/auth/types/authInterfaces";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useRouter } from "next/navigation";
+
+export const useAuth = () => {
+    const queryClient = useQueryClient();
+    const router = useRouter();
+
+    const { data : user, isLoading : loading } = useQuery({
+        queryKey : ["authUser"],
+        queryFn : getUserSession,
+        staleTime : 1000 * 60 * 60,
+        retry : false
+    });
+
+    const loginMutation = useMutation({
+        mutationFn : loginUser,
+        onSuccess : (data) => {
+            const { session, usuario } = data;
+
+            localStorage.setItem("token", session.access_token);
+            localStorage.setItem("userId", String(usuario.id));
+
+            if (session.refresh_token) {
+                localStorage.setItem("refreshToken", session.refresh_token);
+            }
+
+            queryClient.setQueryData<UserProfile>(["authUser"], usuario);
+            router.push("/sell");
+        },
+        onError : (error) => {
+            console.log(`Error al iniciar sesión: `, error);
+        }
+    });
+
+    const logout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("userId");
+
+        queryClient.setQueryData(["authUser"], null);
+        router.push("/login");
+    };
+
+    return {
+        user,
+        loading,
+        login : loginMutation.mutateAsync,
+        isLoggingIn : loginMutation.isPending,
+        logout,
+    };
+}

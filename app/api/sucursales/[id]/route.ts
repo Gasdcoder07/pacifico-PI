@@ -4,15 +4,25 @@ import { supabase } from "@/shared/lib/supabase";
 
 /**
  * @swagger
- * /api/sucursales:
+ * /api/sucursales/{id}:
  *   get:
- *     summary: Obtener todas las sucursales
- *     description: Consulta la base de datos y devuelve una lista con todos los registros de la tabla sucursales.
+ *     summary: Obtener una sucursal
+ *     description: Consulta la base de datos y devuelve una lista con todos los registros de la sucursal seleccionada.
  *     tags:
  *       - Sucursales
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la sucursal
+ *         schema:
+ *           type: integer
+ *           format: int64
+ *           minimum: 1
+ *           example: 1
  *     responses:
  *       200:
- *         description: Lista de sucursales recuperada exitosamente.
+ *         description: Lista de la sucursal recuperada exitosamente.
  *         content:
  *           application/json:
  *             schema:
@@ -46,6 +56,8 @@ import { supabase } from "@/shared/lib/supabase";
  *                     type: string
  *                     format: date-time
  *                     example: "2026-09-04T17:25:00Z"
+ *       404:
+ *         description: Sucursal inexistente o fuera del acceso del usuario
  *       500:
  *         description: Internal Server Error. Fallo al consultar la base de datos.
  *         content:
@@ -58,7 +70,9 @@ import { supabase } from "@/shared/lib/supabase";
  *                   example: "Error al obtener las sucursales"
  */
 
-export async function GET( request: Request ) {
+export async function GET( request: Request, 
+        { params }: { params: Promise<{ id: string }> }
+    ) {
     try {
 
         const authHeader = request.headers.get("Authorization")
@@ -69,22 +83,41 @@ export async function GET( request: Request ) {
                 { status: 401 }
             )
         }
-
         const token = authHeader.split(" ")[1]
-
+        
         const { data: { user }, error: authError } = await supabase.auth.getUser(token)
-
+        
         if (authError || !user) {
             return NextResponse.json(
                 { error: "Sesión expirada o token inválido" },
                 { status: 401 }
             )
         }
+        
+        const {id} = await params;
 
+        if(
+            !/^[1-9][0-9]{0,18}$/.test(id) ||
+            BigInt(id) > BigInt("9223372036854775807") 
+        ){
+            return NextResponse.json(
+                { error: "ID de la sucursal no valido" },
+                { status: 400 }
+            )
+        }
         const response = await pool.query(`
-            SELECT * FROM sucursales;
-        `)
+            SELECT * FROM sucursales
+            WHERE branch_id = $1;
+        `,
+        [id]
+        )
 
+        if(response.rows.length === 0){
+            return NextResponse.json(
+                { error: "Sucursal inexistente o fuera del acceso del usuario" },
+                { status: 404 }
+            )
+        }
         return NextResponse.json(
             { message: "Has obtenido la información de las sucursales con éxito.", data: response.rows },
             { status: 200 }

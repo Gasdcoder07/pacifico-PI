@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/shared/lib/supabase";
+import pool from "@/shared/lib/db";
 
 /**
  * @swagger
  * /api/auth/login:
  *   post:
  *     summary: Iniciar sesión
- *     description: Autentica al usuario mediante Supabase Auth y recupera la información de su perfil desde la tabla usuarios.
+ *     description: Autentica al usuario mediante Supabase Auth y recupera la información de su perfil (incluyendo el rol_id) desde la tabla usuarios.
  *     tags:
  *       - Autenticación
  *     requestBody:
@@ -16,10 +17,10 @@ import { supabase } from "@/lib/supabase";
  *           schema:
  *             type: object
  *             required:
- *               - correo
+ *               - email
  *               - password
  *             properties:
- *               correo:
+ *               email:
  *                 type: string
  *                 format: email
  *                 example: usuario@empresa.com
@@ -42,136 +43,96 @@ import { supabase } from "@/lib/supabase";
  *                   example: Login exitoso
  *                 session:
  *                   type: object
- *                   description: Objeto de sesión de Supabase Auth
+ *                   description: Objeto de sesión de Supabase Auth (contiene el access_token JWT)
  *                 usuario:
  *                   type: object
  *                   properties:
  *                     id:
- *                       type: string
- *                       format: uuid
+ *                       type: integer
  *                     nombre:
+ *                       type: string
+ *                     apellido:
  *                       type: string
  *                     correo:
  *                       type: string
  *                     rol_id:
- *                       type: string
- *                     sucursal_id:
- *                       type: string
+ *                       type: integer
  *                     estado:
  *                       type: boolean
+ *                     foto_url:
+ *                       type: string
  *       400:
- *         description: Bad Request. Faltan el correo o la contraseña en el body.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Error, hace faltan datos para poder entrar ( Usuario, Contraseña )"
+ *         description: Bad Request. Faltan datos en la petición.
  *       401:
- *         description: Unauthorized. Credenciales inválidas o error en Supabase Auth.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Invalid login credentials"
- *                 code:
- *                   type: string
- *                 status:
- *                   type: integer
- *       403:
- *         description: Forbidden. La cuenta del usuario está inactiva.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "La cuenta del usuario está inactiva"
+ *         description: Unauthorized. Credenciales inválidas.
  *       404:
- *         description: Not Found. El usuario se autenticó pero no existe su perfil en la tabla 'usuarios'.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "No se encontró el perfil en la base de datos"
- *                 detalle:
- *                   type: string
+ *         description: Not Found. El perfil del usuario no existe en la tabla.
  *       500:
- *         description: Internal Server Error. Fallo inesperado en el servidor.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                 status:
- *                   type: integer
+ *         description: Internal Server Error.
  */
 export async function POST(request: Request) {
     try {
-        const { email, password } = await request.json()
+        const body = await request.json()
+        const { email, password } = body
 
         if (!email || !password) {
             return NextResponse.json(
-                { error: "Error, hace faltan datos para poder entrar ( Usuario, Contraseña )" },
+                { error: "Hacen falta datos (email, password)" },
                 { status: 400 }
             )
         }
 
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-            email,
-            password
+            email: email,
+            password: password
         })
 
-        if (authError || !authData) {
+        if (authError || !authData.user) {
             return NextResponse.json(
-                {   error: authError?.message,
-                    code: authError?.code,
-                    status: authError?.status },
+                { error: `Ha ocurrido un error al iniciar sesión. ${authError?.message}` },
                 { status: 401 }
             )
         }
-        const { data: perfilUsuario, error: perfilError } = await supabase
-            .from('usuarios')
-            .select('id, nombre,apellido, correo, rol_id, sucursal_id, estado')
-            .eq('auth_user_id', authData.user.id)
-            .single();
 
-        console.log('Perfil del usuario obtenido: ', perfilUsuario, 'Error al obtener el perfil: ', perfilError)
+        const userId = authData.user.id;
 
-        if (perfilError || !perfilUsuario) {
+        const queryDB = `
+            SELECT id, name, last_name, email, rol_id, status, foto_url, foto_public_id
+            FROM public.usuarios
+            WHERE auth_user_id = $1;
+        `;
+
+        const response = await pool.query(queryDB, [userId])
+
+        if (response.rows.length === 0) {
             return NextResponse.json(
-                { error: 'No se encontró el perfil en la base de datos', detalle: perfilError?.message || 'Perfil no encontrado' },
+                { error: "No se ha encontrado el perfil en la Base de datos." },
                 { status: 404 }
             )
         }
 
-        if (!perfilUsuario.estado) {
+        const usuario = response.rows[0]
+
+        if (!usuario.status) {
             return NextResponse.json(
-                { error: "La cuenta del usuario está inactiva" },
+                { error: "Tu cuenta se encuentra inactiva :)" },
                 { status: 403 }
             )
         }
 
         return NextResponse.json(
-            {message: 'Login exitoso', session: authData.session, usuario: perfilUsuario}, 
-                {status: 200}
+            { 
+                message: "Haz iniciado sesión exitosamente",
+                session: authData.session,
+                usuario: usuario
+            },
+            { status: 200 }
         )
-        
-    } catch(err) {
-        console.error('Error en el endpoint de login: ', err)
+    } catch (err) {
+        console.error(err)
         return NextResponse.json(
-            { error: `Error interno del servidor: ${err}`, status: 500 }
+            { error: `Ha ocurrido un error interno ${err}` },
+            { status: 500 }
         )
     }
 }
