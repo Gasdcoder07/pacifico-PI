@@ -1,12 +1,15 @@
 import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { Product } from "../types/product";
+import { useCartStore } from "../store/cart-store";
 
 interface ProductCardProps {
     product: Product
 }
 
 const ProductCard = ({ product } : ProductCardProps) => {
+    const addToCart = useCartStore((state) => state.addToCart);
+
     return (
         <div className="h-full w-full bg-white rounded-lg border border-neutral-200 shadow-sm p-4 flex flex-col gap-4">
             <div className="flex gap-4 items-start">
@@ -27,6 +30,7 @@ const ProductCard = ({ product } : ProductCardProps) => {
                     <span className="text-sm font-bold">${product.price}</span>
 
                     <motion.button
+                        onClick={() => addToCart(product)}
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         transition={{ 
