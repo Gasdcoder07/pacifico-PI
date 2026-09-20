@@ -1,13 +1,18 @@
 import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
+import { Product } from "../types/product";
 
-const ProductCard = ({ product } : any) => {
+interface ProductCardProps {
+    product: Product
+}
+
+const ProductCard = ({ product } : ProductCardProps) => {
     return (
         <div className="h-full w-full bg-white rounded-lg border border-neutral-200 shadow-sm p-4 flex flex-col gap-4">
             <div className="flex gap-4 items-start">
                 <img
                     className="h-16 w-20 shrink-0 object-cover rounded-lg"
-                    src={product.image}
+                    src={product.foto_url}
                     alt={product.name} />
 
                 <div className="flex-1 min-w-0">

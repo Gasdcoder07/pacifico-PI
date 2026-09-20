@@ -106,6 +106,8 @@ export async function GET (request: Request) {
                     'product_id', i.product_id,
                     'name', p.name,
                     'foto_url', p.foto_url,
+                    'description', p.description,
+                    'price', p.price,
                     'quantity', i.quantity,
                     'min_stock', i.min_stock,
                     'updated_at', i.updated_at
