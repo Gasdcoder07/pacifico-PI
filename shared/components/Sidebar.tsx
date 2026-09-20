@@ -92,7 +92,7 @@ const ToggleClose = ({ open, setIsOpen } : ToggleCloseProps) => {
         <div className="border-t border-neutral-300 pt-4">
             <button
                 onClick={() => setIsOpen(!open)}
-                className="w-full flex items-center px-4 py-3 gap-4 rounded-md transition-all duration-200 ease-in-out hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 cursor-pointer">
+                className="w-full flex items-center px-4 py-3 gap-4 rounded-md transition-all duration-300 ease-in-out hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 cursor-pointer">
                 <ChevronsRight className={`transition-transform ${open && 'rotate-180'} shrink-0`}/>
 
                 {
