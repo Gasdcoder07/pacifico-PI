@@ -5,13 +5,14 @@ import ProductCard from "./ProductCard";
 const scrollbarStyles = "[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
 
 const ProductCatalog = () => {
-    const { data } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ["products"],
         queryFn: getProducts
     })
 
     const products = data?.flatMap((branch) => branch.productos) ?? [];
-    console.log(products);
+
+    if (isLoading) return <Skeleton/>
 
     return (
         <section className="flex min-h-0 min-w-0 basis-3/4 flex-col gap-4">
@@ -31,3 +32,9 @@ const ProductCatalog = () => {
 };
 
 export default ProductCatalog;
+
+const Skeleton = () => {
+    return (
+        <div className="animate-pulse duration-200 ease-in-out transition-all bg-neutral-200 flex min-h-0 min-w-0 basis-3/4 rounded-lg"/>
+    )
+}
