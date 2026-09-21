@@ -2,16 +2,32 @@
 
 import { sidebarNavigation } from "@/shared/config/navigation";
 import { ChevronsRight, LogOut, LucideIcon } from "lucide-react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import Link from "next/link";
 
 const Sidebar = () => {
-    const { logout } = useAuth();
     const [isOpen, setIsOpen] = useState(true);
+    const [isLoaded, setIsLoaded] = useState(false);
+
     const pathname = usePathname();
+
+    useEffect(() => {
+        const saved = localStorage.getItem("sidebar-open");
+
+        if (saved !== null) {
+            setIsOpen(JSON.parse(saved));
+        }
+
+        setIsLoaded(true);
+    }, []);
+
+    useEffect(() => {
+        if (!isLoaded) return;
+
+        localStorage.setItem("sidebar-open", JSON.stringify(isOpen));
+    }, [isOpen, isLoaded]);
 
     return (
         <motion.aside

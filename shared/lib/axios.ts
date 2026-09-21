@@ -44,6 +44,8 @@ apiClient.interceptors.response.use(
             const refreshToken = localStorage.getItem("refreshToken");
 
             if (!refreshToken) {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
                 return Promise.reject(error);
             }
 
@@ -64,8 +66,16 @@ apiClient.interceptors.response.use(
             } catch (err) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("refreshToken");
-
+                window.location.href = "/login";
                 return Promise.reject(err);
+            }
+        }
+
+        else if (error.response?.status === 401) {
+            if (typeof window !== "undefined") {
+                localStorage.removeItem("token");
+                localStorage.removeItem("refreshToken");
+                window.location.href = '/login';
             }
         }
 
