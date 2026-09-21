@@ -176,7 +176,7 @@ export async function GET(
  * /api/usuarios/{id}:
  *   put:
  *     summary: Actualizar un usuario por ID
- *     description: Actualiza parcialmente la información de un usuario. Permite cambiar datos generales o modificar su rol siempre que el solicitante sea Administrador y no intente modificarse a sí mismo o asignar un rol_id de Administrador (1).
+ *     description: Actualiza la información de un usuario. Un Admin (rol 1) puede editar a cualquiera. Un Gerente (rol 2) solo puede editar usuarios con rol 3 de su misma sucursal.
  *     tags:
  *       - Users
  *     security:
@@ -257,7 +257,7 @@ export async function GET(
  *                   type: string
  *                   example: "Sesión expirada o token inválido"
  *       403:
- *         description: Forbidden. No tienes permisos para modificar el rol.
+ *         description: Forbidden. No tienes permisos para editar a este usuario (por rol o sucursal) o para modificar el rol.
  *         content:
  *           application/json:
  *             schema:
@@ -265,7 +265,7 @@ export async function GET(
  *               properties:
  *                 error:
  *                   type: string
- *                   example: "No tienes permiso de modificar el rol_id dado que no eres administrador"
+ *                   example: "No tienes permiso para editar a este usuario"
  *       404:
  *         description: Not Found. Usuario no encontrado.
  *         content:
@@ -313,7 +313,7 @@ export async function PUT(
         }
 
         const currentUserQuery = await pool.query(
-            `SELECT id, rol_id FROM usuarios WHERE auth_user_id = $1`,
+            `SELECT id, rol_id, branch_id FROM usuarios WHERE auth_user_id = $1`,
             [authUser.id]
         );
 
@@ -334,6 +334,45 @@ export async function PUT(
                 { error: "Has ingresado un parámetro que no es un número" },
                 { status: 400 }
             );
+        }
+
+        const targetUserQuery = await pool.query(
+            `SELECT id, rol_id, branch_id FROM usuarios WHERE id = $1`,
+            [userId]
+        );
+        
+        const targetUser = targetUserQuery.rows[0];
+        
+        if (!targetUser) {
+            return NextResponse.json(
+                { error: "No existe un usuario con ese ID" },
+                { status: 404 }
+            );
+        }
+
+        if (Number(currentUser.id) !== userId) {
+            if (Number(currentUser.rol_id) === 3) {
+                return NextResponse.json(
+                    { error: "No tienes permisos para editar a otros usuarios" },
+                    { status: 403 }
+                );
+            }
+
+            if (Number(currentUser.rol_id) === 2) {
+                if (Number(targetUser.rol_id) !== 3) {
+                    return NextResponse.json(
+                        { error: "Como gerente (rol 2) solo puedes editar a usuarios con rol 3" },
+                        { status: 403 }
+                    );
+                }
+
+                if (targetUser.branch_id !== currentUser.branch_id) {
+                    return NextResponse.json(
+                        { error: "Solo puedes editar usuarios que pertenezcan a tu misma sucursal" },
+                        { status: 403 }
+                    );
+                }
+            }
         }
 
         const body = await request.json();
@@ -409,13 +448,6 @@ export async function PUT(
         const response = await pool.query(query, values);
         const updatedUser = response.rows[0];
 
-        if (!updatedUser) {
-            return NextResponse.json(
-                { error: "No existe un usuario con ese ID" },
-                { status: 404 }
-            );
-        }
-
         return NextResponse.json(
             {
                 message: "Usuario actualizado con éxito",
@@ -437,7 +469,7 @@ export async function PUT(
  * /api/usuarios/{id}:
  *   delete:
  *     summary: Eliminar un usuario por ID
- *     description: Elimina un usuario de la base de datos de PostgreSQL y de la autenticación de Supabase Auth. Requiere permisos de Administrador (rol_id = 1). No permite auto-eliminación ni eliminar otros usuarios administradores (rol_id = 1).
+ *     description: Elimina un usuario de la base de datos de PostgreSQL y de Supabase Auth. Un Admin (rol 1) puede eliminar a cualquiera excepto a otros Admins. Un Gerente (rol 2) solo puede eliminar usuarios con rol 3 de su misma sucursal.
  *     tags:
  *       - Users
  *     security:
@@ -497,7 +529,7 @@ export async function PUT(
  *                   type: string
  *                   example: "Sesión expirada o token inválido"
  *       403:
- *         description: Forbidden. No tienes permisos de administrador.
+ *         description: Forbidden. No tienes permisos para eliminar (por jerarquía o sucursal).
  *         content:
  *           application/json:
  *             schema:
@@ -505,7 +537,7 @@ export async function PUT(
  *               properties:
  *                 error:
  *                   type: string
- *                   example: "No tienes permisos de administrador para eliminar usuarios"
+ *                   example: "No tienes permisos para eliminar a este usuario"
  *       404:
  *         description: Not Found. No existe un usuario con ese ID.
  *         content:
@@ -563,7 +595,7 @@ export async function DELETE(
         }
 
         const currentUserQuery = await pool.query(
-            `SELECT id, rol_id FROM usuarios WHERE auth_user_id = $1`,
+            `SELECT id, rol_id, branch_id FROM usuarios WHERE auth_user_id = $1`,
             [authUser.id]
         );
 
@@ -576,9 +608,9 @@ export async function DELETE(
             );
         }
 
-        if (Number(currentUser.rol_id) !== 1) {
+        if (Number(currentUser.rol_id) === 3) {
             return NextResponse.json(
-                { error: "No tienes permisos de administrador para eliminar usuarios" },
+                { error: "No tienes permisos para eliminar usuarios" },
                 { status: 403 }
             );
         }
@@ -601,7 +633,7 @@ export async function DELETE(
         }
 
         const targetUserQuery = await pool.query(
-            `SELECT id, rol_id, auth_user_id FROM usuarios WHERE id = $1`,
+            `SELECT id, rol_id, branch_id, auth_user_id FROM usuarios WHERE id = $1`,
             [targetUserId]
         );
 
@@ -621,19 +653,28 @@ export async function DELETE(
             );
         }
 
+        if (Number(currentUser.rol_id) === 2) {
+            if (Number(targetUser.rol_id) !== 3) {
+                return NextResponse.json(
+                    { error: "Como gerente (rol 2) solo puedes eliminar a usuarios con rol 3" },
+                    { status: 403 }
+                );
+            }
+
+            if (targetUser.branch_id !== currentUser.branch_id) {
+                return NextResponse.json(
+                    { error: "Solo puedes eliminar usuarios que pertenezcan a tu misma sucursal" },
+                    { status: 403 }
+                );
+            }
+        }
+
         const response = await pool.query(
             `DELETE FROM usuarios WHERE id = $1 RETURNING id, auth_user_id, name, last_name, email`,
             [targetUserId]
         );
 
         const deletedUser = response.rows[0];
-
-        if (!deletedUser) {
-            return NextResponse.json(
-                { error: "No existe un usuario con ese ID" },
-                { status: 404 }
-            );
-        }
 
         if (deletedUser.auth_user_id) {
             const { error: deleteAuthError } = await supabaseAdmin.auth.admin.deleteUser(
