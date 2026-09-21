@@ -1,3 +1,5 @@
+"use client";
+
 import { Minus, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useCartStore } from "../store/cart-store";
