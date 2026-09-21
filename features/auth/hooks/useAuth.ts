@@ -39,8 +39,9 @@ export const useAuth = () => {
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("userId");
 
-        queryClient.setQueryData(["authUser"], null);
-        router.push("/login");
+        queryClient.removeQueries({ queryKey : ["authUser"] });
+
+        router.replace("/login");
     };
 
     return {

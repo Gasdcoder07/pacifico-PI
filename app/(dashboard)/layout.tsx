@@ -1,5 +1,5 @@
 import Navbar from "@/shared/components/Navbar";
-import Sidebar from "@/shared/components/Sidebar";
+import SidebarWrapper from "@/shared/components/SidebarWrapper";
 import React from "react";
 
 export default function DashLayout({ children } : { children : React.ReactNode; }) {
@@ -9,7 +9,7 @@ export default function DashLayout({ children } : { children : React.ReactNode; 
             <Navbar/>
 
             <section className="min-w-0 flex-1 w-full flex overflow-hidden">
-                <Sidebar/>
+                <SidebarWrapper/>
 
                 <div className="bg-[#F4F7F9] w-full">
                     {children}

@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 const Sidebar = () => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
 
     const pathname = usePathname();
@@ -18,6 +18,8 @@ const Sidebar = () => {
 
         if (saved !== null) {
             setIsOpen(JSON.parse(saved));
+        } else {
+            setIsOpen(true);
         }
 
         setIsLoaded(true);
@@ -34,7 +36,7 @@ const Sidebar = () => {
             initial={false}
             animate={ { width: isOpen ? 256 : 88 } }
             transition={ {
-                duration: 0.2,
+                duration: isLoaded ? 0.2 : 0,
                 ease: "easeInOut"
             } }
             className={`p-4 flex flex-col justify-between gap-4 border-r border-neutral-300`}>
