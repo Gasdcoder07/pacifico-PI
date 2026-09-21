@@ -12,7 +12,7 @@ export interface UserProfile {
     last_name: string;
     email: string;
     rol_id: number;
-    sucursal_id: number;
+    sucursal_id?: number;
     status: boolean;
 }
 

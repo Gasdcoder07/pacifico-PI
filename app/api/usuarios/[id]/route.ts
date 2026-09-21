@@ -1,5 +1,5 @@
-import { pool } from "@/shared/lib/db"
-import { supabase } from "@/shared/lib/supabase";
+import { pool } from "@/shared/lib/db";
+import { supabase, supabaseAdmin } from "@/shared/lib/supabase";
 import { NextResponse } from "next/server";
 
 /**
@@ -37,25 +37,37 @@ import { NextResponse } from "next/server";
  *                     id:
  *                       type: integer
  *                       example: 37
- *                     nombre:
+ *                     name:
  *                       type: string
  *                       example: "Valentín"
- *                     apellido:
+ *                     last_name:
  *                       type: string
  *                       example: "Vaca"
- *                     correo:
+ *                     email:
  *                       type: string
  *                       example: "vvaca2@ucol.mx"
  *                     rol_id:
  *                       type: integer
- *                       example: 1
- *                     sucursal_id:
+ *                       example: 2
+ *                     branch_id:
  *                       type: integer
  *                       nullable: true
  *                       example: null
- *                     estado:
+ *                     status:
  *                       type: boolean
  *                       example: true
+ *                     foto_url:
+ *                       type: string
+ *                       nullable: true
+ *                       example: "https://ejemplo.com/foto.jpg"
+ *                     admin_id:
+ *                       type: integer
+ *                       nullable: true
+ *                       example: 1
+ *                     manager_id:
+ *                       type: integer
+ *                       nullable: true
+ *                       example: null
  *       400:
  *         description: Bad Request. El ID proporcionado en la URL no es un número.
  *         content:
@@ -65,7 +77,7 @@ import { NextResponse } from "next/server";
  *               properties:
  *                 error:
  *                   type: string
- *                   example: "Haz ingresado un parámetro que no es un número"
+ *                   example: "Has ingresado un parámetro que no es un número"
  *       401:
  *         description: Unauthorized. Falta el token de sesión o el token es inválido/expirado.
  *         content:
@@ -77,7 +89,7 @@ import { NextResponse } from "next/server";
  *                   type: string
  *                   example: "Sesión expirada o token inválido"
  *       404:
- *         description: Not Found. No se encontró un usuario con el ID especificado en la base de datos.
+ *         description: Not Found. No existe un usuario con el ID especificado.
  *         content:
  *           application/json:
  *             schema:
@@ -87,67 +99,580 @@ import { NextResponse } from "next/server";
  *                   type: string
  *                   example: "No existe un usuario con ese ID"
  *       500:
- *         description: Internal Server Error. Fallo en el servidor o error al ejecutar la consulta en PostgreSQL.
+ *         description: Internal Server Error. Fallo en el servidor.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Error interno en el servidor"
  */
-
 export async function GET(
     request: Request,
-    { params } : { params: Promise<{ id: string }> }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const authHeader = request.headers.get("Authorization")
+        const authHeader = request.headers.get("Authorization");
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            
             return NextResponse.json(
                 { error: "No autorizado. Falta el token de sesión" },
                 { status: 401 }
-            )
+            );
         }
-        
-        const token = authHeader.split(" ")[1]
-        
-        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token)
-        
-        if (authError || !authUser) {
 
+        const token = authHeader.split(" ")[1];
+
+        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token);
+
+        if (authError || !authUser) {
             return NextResponse.json(
                 { error: "Sesión expirada o token inválido" },
                 { status: 401 }
-            )
+            );
         }
 
         const resolvedParams = await params;
-        const userId = parseInt(resolvedParams.id, 10)
+        const userId = parseInt(resolvedParams.id, 10);
 
         if (isNaN(userId)) {
             return NextResponse.json(
-                { error: "Haz ingresado un parámetro que no es un número" },
+                { error: "Has ingresado un parámetro que no es un número" },
                 { status: 400 }
-            )
+            );
         }
 
         const response = await pool.query(
             `SELECT * FROM usuarios WHERE id = $1`,
             [userId]
-        )
+        );
 
-        const user = response.rows[0]
+        const user = response.rows[0];
 
         if (!user) {
             return NextResponse.json(
                 { error: "No existe un usuario con ese ID" },
                 { status: 404 }
-            )
+            );
         }
 
         return NextResponse.json(
             { message: "Datos de cuenta recibidos con éxito", data: user },
             { status: 200 }
-        )
+        );
+    } catch (err) {
+        console.error("Error en GET /api/usuarios/[id]:", err);
+        return NextResponse.json(
+            { error: "Error interno en el servidor" },
+            { status: 500 }
+        );
+    }
+}
 
+/**
+ * @swagger
+ * /api/usuarios/{id}:
+ *   put:
+ *     summary: Actualizar un usuario por ID
+ *     description: Actualiza parcialmente la información de un usuario. Permite cambiar datos generales o modificar su rol siempre que el solicitante sea Administrador y no intente modificarse a sí mismo o asignar un rol_id de Administrador (1).
+ *     tags:
+ *       - Users
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del usuario a actualizar
+ *         schema:
+ *           type: integer
+ *           example: 37
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Valentín"
+ *               last_name:
+ *                 type: string
+ *                 example: "Vaca"
+ *               email:
+ *                 type: string
+ *                 example: "vvaca2@ucol.mx"
+ *               status:
+ *                 type: boolean
+ *                 example: true
+ *               foto_url:
+ *                 type: string
+ *                 example: "https://ejemplo.com/foto.jpg"
+ *               rol_id:
+ *                 type: integer
+ *                 example: 2
+ *               branch_id:
+ *                 type: integer
+ *                 example: 1
+ *               admin_id:
+ *                 type: integer
+ *                 example: 1
+ *               manager_id:
+ *                 type: integer
+ *                 example: 5
+ *     responses:
+ *       200:
+ *         description: Usuario actualizado con éxito.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Usuario actualizado con éxito"
+ *                 data:
+ *                   type: object
+ *       400:
+ *         description: Bad Request. Datos no válidos, intento de modificar el propio rol o asignar rol_id 1.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "No puedes modificar tu propio rol_id"
+ *       401:
+ *         description: Unauthorized. Falta token de sesión o token inválido.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Sesión expirada o token inválido"
+ *       403:
+ *         description: Forbidden. No tienes permisos para modificar el rol.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "No tienes permiso de modificar el rol_id dado que no eres administrador"
+ *       404:
+ *         description: Not Found. Usuario no encontrado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "No existe un usuario con ese ID"
+ *       500:
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Error interno en el servidor"
+ */
+export async function PUT(
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const authHeader = request.headers.get("Authorization");
 
-    } catch ( err ) {
-        console.error(err)
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json(
+                { error: "No estás autorizado para realizar esta petición" },
+                { status: 401 }
+            );
+        }
+
+        const token = authHeader.split(" ")[1];
+
+        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token);
+
+        if (authError || !authUser) {
+            return NextResponse.json(
+                { error: "Sesión expirada o token inválido" },
+                { status: 401 }
+            );
+        }
+
+        const currentUserQuery = await pool.query(
+            `SELECT id, rol_id FROM usuarios WHERE auth_user_id = $1`,
+            [authUser.id]
+        );
+
+        const currentUser = currentUserQuery.rows[0];
+
+        if (!currentUser) {
+            return NextResponse.json(
+                { error: "No se encontró un perfil de usuario asociado a esta sesión" },
+                { status: 404 }
+            );
+        }
+
+        const resolvedParams = await params;
+        const userId = parseInt(resolvedParams.id, 10);
+
+        if (isNaN(userId)) {
+            return NextResponse.json(
+                { error: "Has ingresado un parámetro que no es un número" },
+                { status: 400 }
+            );
+        }
+
+        const body = await request.json();
+
+        if (body.rol_id !== undefined) {
+            const newRolId = parseInt(body.rol_id, 10);
+
+            if (Number(currentUser.id) === userId) {
+                return NextResponse.json(
+                    { error: "No puedes modificar tu propio rol_id" },
+                    { status: 400 }
+                );
+            }
+
+            if (Number(currentUser.rol_id) !== 1) {
+                return NextResponse.json(
+                    { error: "No tienes permiso de modificar el rol_id dado que no eres administrador" },
+                    { status: 403 }
+                );
+            }
+
+            if (newRolId === 1) {
+                return NextResponse.json(
+                    { error: "No puedes asignar el rol de administrador a un usuario" },
+                    { status: 400 }
+                );
+            }
+        }
+
+        const allowedFields = <string[]>[
+            "name",
+            "last_name",
+            "email",
+            "status",
+            "foto_url",
+            "rol_id",
+            "branch_id",
+            "admin_id",
+            "manager_id"
+        ];
+
+        const updates: string[] = [];
+        const values: unknown[] = [];
+        let paramIndex = 1;
+
+        for (const field of allowedFields) {
+            if (body[field] !== undefined) {
+                updates.push(`${field} = $${paramIndex}`);
+                values.push(body[field]);
+                paramIndex++;
+            }
+        }
+
+        if (updates.length === 0) {
+            return NextResponse.json(
+                { error: "No se enviaron campos válidos para actualizar" },
+                { status: 400 }
+            );
+        }
+
+        updates.push(`updated_at = NOW()`);
+
+        values.push(userId);
+        const whereIndex = paramIndex;
+
+        const query = `
+            UPDATE usuarios
+            SET ${updates.join(", ")}
+            WHERE id = $${whereIndex}
+            RETURNING *;
+        `;
+
+        const response = await pool.query(query, values);
+        const updatedUser = response.rows[0];
+
+        if (!updatedUser) {
+            return NextResponse.json(
+                { error: "No existe un usuario con ese ID" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(
+            {
+                message: "Usuario actualizado con éxito",
+                data: updatedUser,
+            },
+            { status: 200 }
+        );
+    } catch (err) {
+        console.error("Error en PUT /api/usuarios/[id]:", err);
+        return NextResponse.json(
+            { error: "Error interno en el servidor" },
+            { status: 500 }
+        );
+    }
+}
+
+/**
+ * @swagger
+ * /api/usuarios/{id}:
+ *   delete:
+ *     summary: Eliminar un usuario por ID
+ *     description: Elimina un usuario de la base de datos de PostgreSQL y de la autenticación de Supabase Auth. Requiere permisos de Administrador (rol_id = 1). No permite auto-eliminación ni eliminar otros usuarios administradores (rol_id = 1).
+ *     tags:
+ *       - Users
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID único del usuario a eliminar
+ *         schema:
+ *           type: integer
+ *           example: 38
+ *     responses:
+ *       200:
+ *         description: Usuario eliminado con éxito.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Usuario eliminado con éxito"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 38
+ *                     name:
+ *                       type: string
+ *                       example: "Carlos"
+ *                     last_name:
+ *                       type: string
+ *                       example: "Gómez"
+ *                     email:
+ *                       type: string
+ *                       example: "carlos@ejemplo.com"
+ *       400:
+ *         description: Bad Request. El ID no es válido, intentas borrar tu propia cuenta o intentas borrar a un Administrador.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "No es posible eliminar a un usuario con rol de Administrador (rol_id: 1)"
+ *       401:
+ *         description: Unauthorized. Falta token de sesión o token inválido.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Sesión expirada o token inválido"
+ *       403:
+ *         description: Forbidden. No tienes permisos de administrador.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "No tienes permisos de administrador para eliminar usuarios"
+ *       404:
+ *         description: Not Found. No existe un usuario con ese ID.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "No existe un usuario con ese ID"
+ *       409:
+ *         description: Conflict. El usuario tiene registros vinculados por llave foránea.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "No se puede eliminar el usuario porque tiene registros vinculados asignados"
+ *       500:
+ *         description: Internal Server Error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Error interno en el servidor al eliminar el usuario"
+ */
+export async function DELETE(
+    request: Request,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    try {
+        const authHeader = request.headers.get("Authorization");
+
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json(
+                { error: "No autorizado. Falta token de sesión" },
+                { status: 401 }
+            );
+        }
+
+        const token = authHeader.split(" ")[1];
+
+        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token);
+
+        if (authError || !authUser) {
+            return NextResponse.json(
+                { error: "Sesión expirada o token inválido" },
+                { status: 401 }
+            );
+        }
+
+        const currentUserQuery = await pool.query(
+            `SELECT id, rol_id FROM usuarios WHERE auth_user_id = $1`,
+            [authUser.id]
+        );
+
+        const currentUser = currentUserQuery.rows[0];
+
+        if (!currentUser) {
+            return NextResponse.json(
+                { error: "No se encontró perfil de usuarios asociado a esta sesión" },
+                { status: 404 }
+            );
+        }
+
+        if (Number(currentUser.rol_id) !== 1) {
+            return NextResponse.json(
+                { error: "No tienes permisos de administrador para eliminar usuarios" },
+                { status: 403 }
+            );
+        }
+
+        const resolvedParams = await params;
+        const targetUserId = parseInt(resolvedParams.id, 10);
+
+        if (isNaN(targetUserId)) {
+            return NextResponse.json(
+                { error: "Has ingresado un parámetro que no es un número" },
+                { status: 400 }
+            );
+        }
+
+        if (Number(currentUser.id) === targetUserId) {
+            return NextResponse.json(
+                { error: "No puedes eliminar tu propia cuenta" },
+                { status: 400 }
+            );
+        }
+
+        const targetUserQuery = await pool.query(
+            `SELECT id, rol_id, auth_user_id FROM usuarios WHERE id = $1`,
+            [targetUserId]
+        );
+
+        const targetUser = targetUserQuery.rows[0];
+
+        if (!targetUser) {
+            return NextResponse.json(
+                { error: "No existe un usuario con ese ID" },
+                { status: 404 }
+            );
+        }
+
+        if (Number(targetUser.rol_id) === 1) {
+            return NextResponse.json(
+                { error: "No es posible eliminar a un usuario con rol de Administrador (rol_id: 1)" },
+                { status: 400 }
+            );
+        }
+
+        const response = await pool.query(
+            `DELETE FROM usuarios WHERE id = $1 RETURNING id, auth_user_id, name, last_name, email`,
+            [targetUserId]
+        );
+
+        const deletedUser = response.rows[0];
+
+        if (!deletedUser) {
+            return NextResponse.json(
+                { error: "No existe un usuario con ese ID" },
+                { status: 404 }
+            );
+        }
+
+        if (deletedUser.auth_user_id) {
+            const { error: deleteAuthError } = await supabaseAdmin.auth.admin.deleteUser(
+                deletedUser.auth_user_id
+            );
+
+            if (deleteAuthError) {
+                console.error("Error al eliminar el usuario de Supabase Auth:", deleteAuthError);
+            }
+        }
+
+        return NextResponse.json(
+            { 
+                message: "Usuario eliminado con éxito", 
+                data: {
+                    id: deletedUser.id,
+                    name: deletedUser.name,
+                    last_name: deletedUser.last_name,
+                    email: deletedUser.email
+                } 
+            },
+            { status: 200 }
+        );
+
+    } catch (err: unknown) {
+        console.error("Error en DELETE /api/usuarios/[id]:", err);
+
+        const pgError = err as { code?: string };
+
+        if (pgError.code === "23503") {
+            return NextResponse.json(
+                { error: "No se puede eliminar el usuario porque tiene registros vinculados asignados" },
+                { status: 409 }
+            );
+        }
+
+        return NextResponse.json(
+            { error: "Error interno en el servidor al eliminar el usuario" },
+            { status: 500 }
+        );
     }
 }
