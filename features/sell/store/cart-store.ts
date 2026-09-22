@@ -25,7 +25,7 @@ export const useCartStore = create<CartState>((set) => ({
             return { cart: [...state.cart, { product, quantity: 1 }] };
         }),
 
-    // Remover del carrito
+    // Remover una unidad del carrito
     removeFromCart: (productId: number) =>
         set((state) => {
             const existingItem = state.cart.find(
@@ -49,6 +49,14 @@ export const useCartStore = create<CartState>((set) => ({
             };
         }),
 
-    // Limpiar carrito
+    // Eliminar un producto completo del carrito sin importar su cantidad
+    removeProductCompletely: (productId: number) =>
+        set((state) => ({
+            cart: state.cart.filter(
+                (item) => item.product.inventario_id !== productId,
+            ),
+        })),
+
+    // Limpiar carrito completo
     clearCart: () => set({ cart: [] }),
 }));
