@@ -40,7 +40,7 @@ const ProductCard = ({ product } : ProductCardProps) => {
                         }}
                         className="rounded-full p-1 bg-cyan-400 cursor-pointer"
                     >
-                        <Plus className="text-white"/>
+                        <Plus size={20} className="text-white"/>
                     </motion.button>
                 </div>
             </div>

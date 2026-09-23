@@ -2,7 +2,7 @@ import { Search } from "lucide-react";
 
 const ProductSearch = () => {
     return (
-        <div className="relative self-end w-full sm:w-2/5">
+        <div className="relative self-start w-full sm:w-2/5">
             <Search
                 size={18}
                 className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"

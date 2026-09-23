@@ -24,14 +24,19 @@ const CartPanel = () => {
   const iva = subtotal * 0.16;
   const total = subtotal + iva;
 
-  return (
-    <section className="flex min-h-0 min-w-0 basis-1/4 flex-col rounded-lg border border-neutral-200 bg-white shadow-sm">
-      <div className="flex flex-col min-h-0 min-w-0 h-full">
-        {/* Encabezado con opción de vaciar carrito */}
-        <div className="border-b border-neutral-200 p-4 flex items-center justify-between">
-          <h3 className="font-semibold">Detalles de la orden</h3>
-
-          {cart.length > 0 && (
+    return (
+        <motion.section
+            initial={{ opacity: 0, x: 40, scale: 0.95 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 40, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="flex min-h-0 min-w-0 basis-1/4 flex-col rounded-lg border border-neutral-200 bg-white shadow-sm"
+        >
+            <div className="flex flex-col min-h-0 min-w-0 h-full">
+                <div className="border-b border-neutral-200 p-4 flex items-center justify-between">
+                    <h3 className="font-semibold">Detalles de la orden</h3>
+                </div>
+              
             <motion.button
               onClick={clearCart}
               whileHover={{ scale: 1.05 }}
@@ -42,7 +47,6 @@ const CartPanel = () => {
               <Trash2 className="size-3.5" />
               <span>Vaciar</span>
             </motion.button>
-          )}
         </div>
 
         {/* Lista de productos */}
@@ -147,17 +151,22 @@ const CartPanel = () => {
           <p className="text-black font-semibold">{total.toFixed(2)}</p>
         </div>
 
-        <motion.button
-          disabled={cart.length === 0}
-          whileHover={cart.length > 0 ? { scale: 1.02 } : {}}
-          whileTap={cart.length > 0 ? { scale: 0.98 } : {}}
-          className="mt-2 bg-cyan-400 py-2 rounded-full px-4 text-black font-medium cursor-pointer disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed transition-colors"
-        >
-          Confirmar orden
-        </motion.button>
-      </div>
-    </section>
-  );
+                <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.9 }}
+                    transition={{ 
+                        type: "spring", 
+                        stiffness: 300, 
+                        damping: 20,
+                        duration: 0.2,
+                        ease: "easeInOut"
+                    }}
+                    className="mt-4 bg-cyan-400 py-2 rounded-full px-4 text-white font-semibold cursor-pointer">
+                    Confirmar orden
+                </motion.button>
+            </div>
+        </motion.section>
+    );
 };
 
 export default CartPanel;
