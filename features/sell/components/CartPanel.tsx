@@ -16,7 +16,13 @@ const CartPanel = () => {
     const total = subtotal + iva;
 
     return (
-        <section className="flex min-h-0 min-w-0 basis-1/4 flex-col rounded-lg border border-neutral-200 bg-white shadow-sm">
+        <motion.section
+            initial={{ opacity: 0, x: 40, scale: 0.95 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 40, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="flex min-h-0 min-w-0 basis-1/4 flex-col rounded-lg border border-neutral-200 bg-white shadow-sm"
+        >
             <div className="flex flex-col min-h-0 min-w-0 h-full">
                 <div className="border-b border-neutral-200 p-4">
                     <h3 className="font-semibold">Detalles de la orden</h3>
@@ -50,19 +56,6 @@ const CartPanel = () => {
                                     <div className="mt-auto flex justify-between items-center gap-2">
                                         <div className="flex gap-2">
                                             <motion.button
-                                                onClick={() => addToCart(item.product)}
-                                                whileHover={{ scale: 1.1 }}
-                                                whileTap={{ scale: 0.9 }}
-                                                transition={{
-                                                    type: "spring",
-                                                    stiffness: 300,
-                                                    damping: 20
-                                                }}
-                                                className="rounded-full p-1 bg-cyan-400 cursor-pointer"
-                                            >
-                                                <Plus className="size-3 text-white"/>
-                                            </motion.button>
-                                            <motion.button
                                                 onClick={() => removeFromCart(item.product.inventario_id)}
                                                 whileHover={{ scale: 1.1 }}
                                                 whileTap={{ scale: 0.9 }}
@@ -74,6 +67,19 @@ const CartPanel = () => {
                                                 className="rounded-full p-1 bg-cyan-400 cursor-pointer"
                                             >
                                                 <Minus className="size-3 text-white"/>
+                                            </motion.button>
+                                            <motion.button
+                                                onClick={() => addToCart(item.product)}
+                                                whileHover={{ scale: 1.1 }}
+                                                whileTap={{ scale: 0.9 }}
+                                                transition={{
+                                                    type: "spring",
+                                                    stiffness: 300,
+                                                    damping: 20
+                                                }}
+                                                className="rounded-full p-1 bg-cyan-400 cursor-pointer"
+                                            >
+                                                <Plus size={20} className="size-3 text-white"/>
                                             </motion.button>
                                         </div>
                                         <span className="text-xs font-bold">
@@ -90,23 +96,32 @@ const CartPanel = () => {
             <div className="border-t border-neutral-200 p-4 text-xs text-neutral-400 flex flex-col gap-2">
                 <div className="flex justify-between items-center">
                     <p>Subtotal: </p>
-                    <p className="text-black font-semibold">{subtotal.toFixed(2)}</p>
+                    <p className="text-black font-semibold">${subtotal.toFixed(2)}</p>
                 </div>
                 <div className="flex justify-between items-center">
                     <p>IVA (16%): </p>
-                    <p className="text-black font-semibold">{iva.toFixed(2)}</p>
+                    <p className="text-black font-semibold">${iva.toFixed(2)}</p>
                 </div>
                 <div className="flex justify-between items-center">
                     <p>Total: </p>
-                    <p className="text-black font-semibold">{total.toFixed(2)}</p>
+                    <p className="text-black font-semibold">${total.toFixed(2)}</p>
                 </div>
 
                 <motion.button
-                    className="mt-2 bg-cyan-400 py-2 rounded-full px-4 text-black font-medium cursor-pointer">
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.9 }}
+                    transition={{ 
+                        type: "spring", 
+                        stiffness: 300, 
+                        damping: 20,
+                        duration: 0.2,
+                        ease: "easeInOut"
+                    }}
+                    className="mt-4 bg-cyan-400 py-2 rounded-full px-4 text-white font-semibold cursor-pointer">
                     Confirmar orden
                 </motion.button>
             </div>
-        </section>
+        </motion.section>
     );
 };
 
