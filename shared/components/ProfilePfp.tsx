@@ -8,6 +8,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 interface ProfilePfpProps {
   name: string;
   role: string;
+  avatar: string | null | undefined;
 }
 
 const menuVariants: Variants = {
@@ -48,7 +49,7 @@ const itemVariants: Variants = {
   }
 };
 
-const ProfilePfp = ({ name, role }: ProfilePfpProps) => {
+const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const { logout } = useAuth();
@@ -64,10 +65,10 @@ const ProfilePfp = ({ name, role }: ProfilePfpProps) => {
   }, []);
 
   return (
-    <motion.div ref={containerRef} className="relative z-50">
+    <motion.div ref={containerRef} className="relative z-50 flex items-center">
       <motion.button
         onClick={() => setOpen((prev) => !prev)}
-        className="rounded-full cursor-pointer focus:outline-none origin-center"
+        className="flex items-center justify-center rounded-full cursor-pointer focus:outline-none origin-center"
         aria-haspopup="true"
         aria-expanded={open}
         whileHover={{ 
@@ -86,10 +87,22 @@ const ProfilePfp = ({ name, role }: ProfilePfpProps) => {
           duration: 0.8
         }}
       >
-        <div 
-          style={{ width: 50, height: 50 }}
-          className="rounded-full object-cover bg-cyan-400"
-        />
+        {
+            avatar ? (
+                <div className="relative">
+                    <img
+                        src={avatar}
+                        alt={name}
+                        className="size-10 object-cover rounded-full cursor-pointer border border-neutral-200 shadow-sm"/>
+            
+                    <div className="absolute bottom-0 translate-x-1/2 size-2 rounded-full bg-green-600"/>
+                </div>
+            ) : (
+                <div className="rounded-full object-cover bg-cyan-400 size-10"/>
+            )
+        }
+
+
       </motion.button>
       
       <AnimatePresence>
@@ -109,10 +122,17 @@ const ProfilePfp = ({ name, role }: ProfilePfpProps) => {
                 onClick={() => {}} 
                 className="w-full text-neutral-900 flex items-center gap-4 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-gray-100"
               >
-                <div
-                  style={{ width: 40, height: 40 }}
-                  className="rounded-full object-cover bg-cyan-400 shrink-0"
-                />
+                {
+                    avatar ? (
+                        <img src={avatar} alt={name} className="size-10 object-cover rounded-full border border-neutral-200 shadow-sm"/>
+                    ) : (
+                        <div
+                          style={{ width: 40, height: 40 }}
+                          className="rounded-full object-cover bg-cyan-400 shrink-0"
+                        />
+                    )
+                }
+
                 <div className="text-left">
                   <p className="text-sm font-medium text-gray-900">{name}</p>
                 </div>
