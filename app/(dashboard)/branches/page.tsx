@@ -32,7 +32,7 @@ export default function Page() {
     const { user } = useAuth();
 
     return (
-        <div className="p-4 sm:p-6 lg:p-8 flex flex-col gap-8">
+        <div className="p-4 sm:p-6 lg:p-8 flex flex-col gap-8 h-full">
             <div className="flex flex-col lg:flex-row gap-8">
                 <div className="relative w-full lg:w-2/3 min-h-96 bg-linear-to-tr from-cyan-600/40 to-cyan-400 rounded-2xl border-2 border-cyan-50 p-6 sm:p-8 flex flex-col justify-between overflow-hidden">
                     <div className="absolute bg-linear-to-l from-cyan-50 to-cyan-50/20 w-56 h-56 -bottom-10 -right-10 blur-3xl animate-pulse pointer-events-none"/>
