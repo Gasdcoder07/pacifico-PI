@@ -2,34 +2,30 @@ import { ShoppingCart, LayoutDashboard, Settings, ShelvingUnit, Store, LucideIco
 
 export type SidebarItem = {
     id : string,
+    label: string;
     href : string,
     icon : LucideIcon
 }
 
-export const sidebarNavigation : SidebarItem[] = [
+interface SidebarSection {
+    title: string;
+    items: SidebarItem[];
+}
+
+export const sidebarSections: SidebarSection[] = [
     {
-        id : "Sell",
-        href : "/sell",
-        icon : ShoppingCart
+        title: "Sucursal",
+        items: [
+            { id: "Sell", label: "Ventas", href: "/sell", icon: ShoppingCart },
+            { id: "Dashboard", label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+            { id: "Inventory", label: "Inventario", href: "/inventory", icon: ShelvingUnit },
+        ],
     },
     {
-        id : "Dashboard",
-        href : "/dashboard",
-        icon : LayoutDashboard
+        title: "Administración",
+        items: [
+            { id: "Branches", label: "Sucursales", href: "/branches", icon: Store },
+            { id: "Settings", label: "Ajustes", href: "/settings", icon: Settings },
+        ],
     },
-    {
-        id : "Inventory",
-        href : "/inventory",
-        icon : ShelvingUnit
-    },
-    {
-        id : "Settings",
-        href : "/settings",
-        icon : Settings
-    },
-    {
-        id: "Branches",
-        href: "/branches",
-        icon: Store
-    }
 ];

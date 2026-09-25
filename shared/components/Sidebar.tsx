@@ -1,6 +1,6 @@
 "use client";
 
-import { sidebarNavigation } from "@/shared/config/navigation";
+import { sidebarSections } from "@/shared/config/navigation";
 import { ChevronsRight, LogOut, LucideIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -34,31 +34,43 @@ const Sidebar = () => {
     return (
         <motion.aside
             initial={false}
-            animate={ { width: isOpen ? 256 : 88 } }
+            animate={ { width: isOpen ? 224 : 88 } } // 256 88
             transition={ {
                 duration: isLoaded ? 0.2 : 0,
                 ease: "easeInOut"
             } }
             className={`p-4 flex flex-col justify-between gap-4 border-r border-neutral-300`}>
-            <div className="flex-1 flex flex-col justify-between">
-                <ul
-                    className="flex flex-col gap-4">
-                    {
-                        sidebarNavigation.map((item) => {
-                            const isActive = pathname.includes(item.href);
+            <div className="flex-1 flex flex-col gap-8">
+                {
+                    sidebarSections.map((section, index) => (
+                        <div
+                            key={index}
+                            className="flex flex-col gap-4">
+                            {
+                                isOpen ? (
+                                    <h3 className="px-3 font-bold text-neutral-500 uppercase text-xs tracking-wider">{section.title}</h3>
+                                ) : index > 0 ? (
+                                    <div className="mb-4 border-t border-neutral-200 w-full" />
+                                ) : null
+                            }
 
-                            return (
-                                <SidebarOption
-                                    key={item.id}
-                                    open={isOpen}
-                                    name={item.id}
-                                    icon={item.icon}
-                                    href={item.href}
-                                    isSelected={isActive}/>
-                            )
-                        })
-                    }
-                </ul>
+                            <ul className="flex flex-col gap-4">
+                                {
+                                    section.items.map((item) => (
+                                        <SidebarOption
+                                            key={item.id}
+                                            open={isOpen}
+                                            name={item.label}
+                                            icon={item.icon}
+                                            href={item.href}
+                                            isSelected={false}
+                                        />
+                                    ))
+                                }
+                            </ul>
+                        </div>
+                    ))
+                }
             </div>
                     
             <ToggleClose open={isOpen} setIsOpen={setIsOpen}/>
@@ -89,7 +101,7 @@ const SidebarOption = ({ open, name, href, icon : Icon, isSelected } : SidebarOp
                             <motion.span 
                                 initial={{ opacity: 0, width: 0, x: -50 }}
                                 animate={{ opacity: 0.9, width: "auto", x: 0 }}
-                                className="text-sm font-medium"
+                                className={`text-sm ${isSelected ? 'font-bold' : 'font-medium'}`}
                             >
                                     {name}
                             </motion.span>
@@ -120,30 +132,5 @@ const ToggleClose = ({ open, setIsOpen } : ToggleCloseProps) => {
                 }
             </button>
         </div>
-    )
-}
-
-interface LogoutButtonProps {
-    open : boolean;
-    onLogout : () => void;
-}
-
-const LogoutButton = ({ open, onLogout } : LogoutButtonProps) => {
-    return (
-        <button onClick={onLogout} className="text-neutral-500 flex items-center gap-4 px-4 py-3 rounded-md transition-all duration-200 ease-in-out hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 hover:scale-105 cursor-pointer">
-            <LogOut className="shrink-0"/>
-
-            <AnimatePresence initial={false}>
-                {open && (
-                        <motion.span 
-                            initial={{ opacity: 0, width: 0, x: -50 }}
-                            animate={{ opacity: 0.9, width: "auto", x: 0 }}
-                            className="text-sm font-medium"
-                        >
-                                Logout
-                        </motion.span>
-                )}
-            </AnimatePresence>
-        </button>
     )
 }
