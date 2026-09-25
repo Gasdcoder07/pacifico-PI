@@ -56,16 +56,20 @@ const Sidebar = () => {
 
                             <ul className="flex flex-col gap-4">
                                 {
-                                    section.items.map((item) => (
-                                        <SidebarOption
-                                            key={item.id}
-                                            open={isOpen}
-                                            name={item.label}
-                                            icon={item.icon}
-                                            href={item.href}
-                                            isSelected={false}
-                                        />
-                                    ))
+                                    section.items.map((item) => {
+                                        const isAtCurrentPage = pathname === item.href;
+
+                                        return (
+                                            <SidebarOption
+                                                key={item.id}
+                                                open={isOpen}
+                                                name={item.label}
+                                                icon={item.icon}
+                                                href={item.href}
+                                                isSelected={isAtCurrentPage}
+                                            />
+                                        )
+                                    })
                                 }
                             </ul>
                         </div>

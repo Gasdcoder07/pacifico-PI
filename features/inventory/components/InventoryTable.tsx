@@ -24,7 +24,7 @@ const InventoryTable = () => {
             <div className={`flex-1 overflow-y-auto overflow-x-hidden ${scrollbarStyles}`}>
 
                 <table className="w-full table-fixed">
-                    <thead className="bg-white sticky top-0 z-10 text-left text-sm text-neutral-600 border-b border-neutral-200 whitespace-nowrap">
+                    <thead className="bg-white sticky top-0 z-10 text-left text-xs text-neutral-600 tracking-wider uppercase border-b border-neutral-200 whitespace-nowrap">
                         <tr>
                             <th className="w-14 px-4 py-3">ID</th>
                             <th className="w-[clamp(160px,28vw,320px)] px-4 py-3">Producto</th>
