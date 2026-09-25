@@ -14,6 +14,7 @@ export interface UserProfile {
     rol_id: number;
     sucursal_id?: number;
     status: boolean;
+    foto_url?: string;
 }
 
 export interface LoginResponse {
