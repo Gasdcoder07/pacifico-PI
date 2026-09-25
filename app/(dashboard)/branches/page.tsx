@@ -1,33 +1,18 @@
 "use client";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { getBranches } from "@/features/branches/services/branch.service";
+import { useQuery } from "@tanstack/react-query";
 import { Eye, Pencil, Trash } from "lucide-react";
 
 export default function Page() {
-    const sucursales = [
-        {
-            "id": "1",
-            "name": "Sucursal 1",
-            "direction": "Sector 7 centro",
-            "phone": "3141192170",
-            "contact_info": "sucursal1@gmail.com",
-            "status": true,
-            "created_at": "2026-08-25T16:46:27.438Z",
-            "updated_at": "2026-08-25T16:46:27.438Z",
-            "admin_id": null
-        },
-        {
-            "id": "2",
-            "name": "sucursal 2",
-            "direction": "asdasd",
-            "phone": null,
-            "contact_info": null,
-            "status": true,
-            "created_at": "2026-09-17T20:58:35.000Z",
-            "updated_at": "2026-09-17T20:58:39.000Z",
-            "admin_id": null
-        }
-    ];
+    
+    const { data, isLoading } = useQuery({
+        queryKey: ["branches"],
+        queryFn: getBranches
+    })
+
+    const branches = data
 
     const { user } = useAuth();
 
@@ -60,7 +45,7 @@ export default function Page() {
             </div>
 
             <div className="flex flex-row gap-8">
-                <div className="w-full bg-zinc-200 min-h-64 rounded-3xl shadow-2xl p-6 sm:p-8">
+                <div className="w-full bg-zinc-50 min-h-64 rounded-3xl shadow-xl p-6 sm:p-8">
                     <h1 className="text-2xl font-bold text-zinc-600 mb-6">Mis sucursales</h1>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse min-w-150">
@@ -75,32 +60,51 @@ export default function Page() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-300 text-zinc-600 text-sm">
-                                {sucursales.map((sucursal) => (
-                                    <tr key={sucursal.id} className="hover:bg-zinc-300/50 transition-colors">
-                                        <td className="py-4 px-2 font-semibold text-zinc-700">{sucursal.name}</td>
-                                        <td className="py-4 px-2">{sucursal.direction || "—"}</td>
-                                        <td className="py-4 px-2">{sucursal.phone || "—"}</td>
-                                        <td className="py-4 px-2">{sucursal.contact_info || "—"}</td>
-                                        <td className="py-4 px-2">
-                                            <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${sucursal.status ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
-                                                {sucursal.status ? 'Activo' : 'Inactivo'}
-                                            </span>
-                                        </td>
-                                        <td className="py-4 px-2 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button className="p-2 hover:bg-zinc-300 rounded-lg text-zinc-600 transition-colors">
-                                                    <Eye className="w-4 h-4" />
-                                                </button>
-                                                <button className="p-2 hover:bg-zinc-300 rounded-lg text-zinc-600 transition-colors">
-                                                    <Pencil className="w-4 h-4" />
-                                                </button>
-                                                <button className="p-2 hover:bg-red-100 rounded-lg text-red-600 transition-colors">
-                                                    <Trash className="w-4 h-4" />
-                                                </button>
-                                            </div>
+                                {isLoading ? (
+                                    Array.from({ length: 3 }).map((_, idx) => (
+                                        <tr key={idx} className="animate-pulse">
+                                            <td className="py-4 px-2"><div className="h-4 bg-zinc-200 rounded-md w-3/4"></div></td>
+                                            <td className="py-4 px-2"><div className="h-4 bg-zinc-200 rounded-md w-full"></div></td>
+                                            <td className="py-4 px-2"><div className="h-4 bg-zinc-200 rounded-md w-24"></div></td>
+                                            <td className="py-4 px-2"><div className="h-4 bg-zinc-200 rounded-md w-28"></div></td>
+                                            <td className="py-4 px-2"><div className="h-6 bg-zinc-200 rounded-full w-16"></div></td>
+                                            <td className="py-4 px-2 text-right"><div className="h-8 bg-zinc-200 rounded-lg w-20 ml-auto"></div></td>
+                                        </tr>
+                                    ))
+                                ) : branches && branches.length > 0 ? (
+                                    branches.map((sucursal) => (
+                                        <tr key={sucursal.id} className="hover:bg-cyan-50/50 transition-colors">
+                                            <td className="py-4 px-2 font-semibold text-zinc-700">{sucursal.name}</td>
+                                            <td className="py-4 px-2">{sucursal.direction || "—"}</td>
+                                            <td className="py-4 px-2">{sucursal.phone || "—"}</td>
+                                            <td className="py-4 px-2">{sucursal.contact_info || "—"}</td>
+                                            <td className="py-4 px-2">
+                                                <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${sucursal.status ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'} shadow-md`}>
+                                                    {sucursal.status ? 'Activo' : 'Inactivo'}
+                                                </span>
+                                            </td>
+                                            <td className="py-4 px-2 text-right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <button className="p-2 hover:bg-zinc-300 rounded-lg text-zinc-600 transition-colors">
+                                                        <Eye className="w-4 h-4" />
+                                                    </button>
+                                                    <button className="p-2 hover:bg-zinc-300 rounded-lg text-zinc-600 transition-colors">
+                                                        <Pencil className="w-4 h-4" />
+                                                    </button>
+                                                    <button className="p-2 hover:bg-red-100 rounded-lg text-red-600 transition-colors">
+                                                        <Trash className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="py-8 text-center text-zinc-400">
+                                            No se encontraron sucursales.
                                         </td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
                     </div>
