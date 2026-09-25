@@ -60,32 +60,51 @@ export default function Page() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-300 text-zinc-600 text-sm">
-                                {branches?.map((sucursal) => (
-                                    <tr key={sucursal.id} className="hover:bg-cyan-50/50 transition-colors">
-                                        <td className="py-4 px-2 font-semibold text-zinc-700">{sucursal.name}</td>
-                                        <td className="py-4 px-2">{sucursal.direction || "—"}</td>
-                                        <td className="py-4 px-2">{sucursal.phone || "—"}</td>
-                                        <td className="py-4 px-2">{sucursal.contact_info || "—"}</td>
-                                        <td className="py-4 px-2">
-                                            <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${sucursal.status ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'} shadow-md`}>
-                                                {sucursal.status ? 'Activo' : 'Inactivo'}
-                                            </span>
-                                        </td>
-                                        <td className="py-4 px-2 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button className="p-2 hover:bg-zinc-300 rounded-lg text-zinc-600 transition-colors">
-                                                    <Eye className="w-4 h-4" />
-                                                </button>
-                                                <button className="p-2 hover:bg-zinc-300 rounded-lg text-zinc-600 transition-colors">
-                                                    <Pencil className="w-4 h-4" />
-                                                </button>
-                                                <button className="p-2 hover:bg-red-100 rounded-lg text-red-600 transition-colors">
-                                                    <Trash className="w-4 h-4" />
-                                                </button>
-                                            </div>
+                                {isLoading ? (
+                                    Array.from({ length: 3 }).map((_, idx) => (
+                                        <tr key={idx} className="animate-pulse">
+                                            <td className="py-4 px-2"><div className="h-4 bg-zinc-200 rounded-md w-3/4"></div></td>
+                                            <td className="py-4 px-2"><div className="h-4 bg-zinc-200 rounded-md w-full"></div></td>
+                                            <td className="py-4 px-2"><div className="h-4 bg-zinc-200 rounded-md w-24"></div></td>
+                                            <td className="py-4 px-2"><div className="h-4 bg-zinc-200 rounded-md w-28"></div></td>
+                                            <td className="py-4 px-2"><div className="h-6 bg-zinc-200 rounded-full w-16"></div></td>
+                                            <td className="py-4 px-2 text-right"><div className="h-8 bg-zinc-200 rounded-lg w-20 ml-auto"></div></td>
+                                        </tr>
+                                    ))
+                                ) : branches && branches.length > 0 ? (
+                                    branches.map((sucursal) => (
+                                        <tr key={sucursal.id} className="hover:bg-cyan-50/50 transition-colors">
+                                            <td className="py-4 px-2 font-semibold text-zinc-700">{sucursal.name}</td>
+                                            <td className="py-4 px-2">{sucursal.direction || "—"}</td>
+                                            <td className="py-4 px-2">{sucursal.phone || "—"}</td>
+                                            <td className="py-4 px-2">{sucursal.contact_info || "—"}</td>
+                                            <td className="py-4 px-2">
+                                                <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${sucursal.status ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'} shadow-md`}>
+                                                    {sucursal.status ? 'Activo' : 'Inactivo'}
+                                                </span>
+                                            </td>
+                                            <td className="py-4 px-2 text-right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <button className="p-2 hover:bg-zinc-300 rounded-lg text-zinc-600 transition-colors">
+                                                        <Eye className="w-4 h-4" />
+                                                    </button>
+                                                    <button className="p-2 hover:bg-zinc-300 rounded-lg text-zinc-600 transition-colors">
+                                                        <Pencil className="w-4 h-4" />
+                                                    </button>
+                                                    <button className="p-2 hover:bg-red-100 rounded-lg text-red-600 transition-colors">
+                                                        <Trash className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="py-8 text-center text-zinc-400">
+                                            No se encontraron sucursales.
                                         </td>
                                     </tr>
-                                ))}
+                                )}
                             </tbody>
                         </table>
                     </div>
