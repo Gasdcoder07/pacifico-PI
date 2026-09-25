@@ -1,33 +1,18 @@
 "use client";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { getBranches } from "@/features/branches/services/branch.service";
+import { useQuery } from "@tanstack/react-query";
 import { Eye, Pencil, Trash } from "lucide-react";
 
 export default function Page() {
-    const sucursales = [
-        {
-            "id": "1",
-            "name": "Sucursal 1",
-            "direction": "Sector 7 centro",
-            "phone": "3141192170",
-            "contact_info": "sucursal1@gmail.com",
-            "status": true,
-            "created_at": "2026-08-25T16:46:27.438Z",
-            "updated_at": "2026-08-25T16:46:27.438Z",
-            "admin_id": null
-        },
-        {
-            "id": "2",
-            "name": "sucursal 2",
-            "direction": "asdasd",
-            "phone": null,
-            "contact_info": null,
-            "status": true,
-            "created_at": "2026-09-17T20:58:35.000Z",
-            "updated_at": "2026-09-17T20:58:39.000Z",
-            "admin_id": null
-        }
-    ];
+    
+    const { data, isLoading } = useQuery({
+        queryKey: ["branches"],
+        queryFn: getBranches
+    })
+
+    const branches = data?.data
 
     const { user } = useAuth();
 
@@ -60,7 +45,7 @@ export default function Page() {
             </div>
 
             <div className="flex flex-row gap-8">
-                <div className="w-full bg-zinc-200 min-h-64 rounded-3xl shadow-2xl p-6 sm:p-8">
+                <div className="w-full bg-zinc-50 min-h-64 rounded-3xl shadow-xl p-6 sm:p-8">
                     <h1 className="text-2xl font-bold text-zinc-600 mb-6">Mis sucursales</h1>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse min-w-150">
@@ -75,7 +60,7 @@ export default function Page() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-300 text-zinc-600 text-sm">
-                                {sucursales.map((sucursal) => (
+                                {branches.map((sucursal) => (
                                     <tr key={sucursal.id} className="hover:bg-zinc-300/50 transition-colors">
                                         <td className="py-4 px-2 font-semibold text-zinc-700">{sucursal.name}</td>
                                         <td className="py-4 px-2">{sucursal.direction || "—"}</td>
