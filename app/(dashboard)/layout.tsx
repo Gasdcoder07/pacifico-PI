@@ -11,7 +11,7 @@ export default function DashLayout({ children } : { children : React.ReactNode; 
             <section className="min-w-0 flex-1 w-full flex overflow-hidden">
                 <SidebarWrapper/>
 
-                <div className="bg-[#F4F7F9] w-full">
+                <div className="bg-[#F4F7F9] w-full flex-1 overflow-y-auto">
                     {children}
                 </div>
             </section>

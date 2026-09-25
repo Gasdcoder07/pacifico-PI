@@ -12,7 +12,7 @@ export default function Page() {
         queryFn: getBranches
     })
 
-    const branches = data?.data
+    const branches = data
 
     const { user } = useAuth();
 
@@ -60,14 +60,14 @@ export default function Page() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-zinc-300 text-zinc-600 text-sm">
-                                {branches.map((sucursal) => (
-                                    <tr key={sucursal.id} className="hover:bg-zinc-300/50 transition-colors">
+                                {branches?.map((sucursal) => (
+                                    <tr key={sucursal.id} className="hover:bg-cyan-50/50 transition-colors">
                                         <td className="py-4 px-2 font-semibold text-zinc-700">{sucursal.name}</td>
                                         <td className="py-4 px-2">{sucursal.direction || "—"}</td>
                                         <td className="py-4 px-2">{sucursal.phone || "—"}</td>
                                         <td className="py-4 px-2">{sucursal.contact_info || "—"}</td>
                                         <td className="py-4 px-2">
-                                            <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${sucursal.status ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+                                            <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${sucursal.status ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'} shadow-md`}>
                                                 {sucursal.status ? 'Activo' : 'Inactivo'}
                                             </span>
                                         </td>
