@@ -42,8 +42,8 @@ export const useAuth = () => {
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("userId");
 
-        document.cookie = `token=; path=/; max-age=3600; secure; samesite=strict`;
-        document.cookie = `user_role=; path=/; max-age=3600; secure; samesite=strict`;
+        document.cookie = `token=; path=/; max-age=0; secure; samesite=strict`;
+        document.cookie = `user_role=; path=/; max-age=0; secure; samesite=strict`;
 
         queryClient.removeQueries({ queryKey : ["authUser"] });
 

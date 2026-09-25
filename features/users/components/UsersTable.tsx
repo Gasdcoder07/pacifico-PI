@@ -3,27 +3,22 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "@/features/sell/services/product.service";
 import { Product } from "@/features/sell/types/product";
 import { Edit, Ellipsis, Trash } from "lucide-react";
+import { getUsers } from "../services/users.service";
+import { User } from "../types/user";
 
 const UsersTable = () => {
     const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
 
-    const { data, isLoading } = useQuery({
-        queryKey: ["users"],
-        queryFn: getProducts
-    })
+    // const { data, isLoading } = useQuery({
+    //     queryKey: ["users"],
+    //     queryFn: getUsers
+    // })
 
-    // const products = data?.flatMap((branch) => branch.productos) ?? [];
+    // const users = data?.data ?? [];
 
     // if (isLoading) return <InventoryTableSkeleton/>;
-
-    const users = [
-        { id: 1, name: "John Doe", email: "john@example.com", role: "Admin" },
-        { id: 2, name: "Jane Smith", email: "jane@example.com", role: "User" },
-        { id: 3, name: "Bob Johnson", email: "bob@example.com", role: "User" }
-    ];
 
     return (
         <div className="bg-white flex flex-col flex-1 min-h-0 min-w-0 border border-neutral-200 rounded-lg shadow-sm overflow-hidden">
@@ -39,13 +34,13 @@ const UsersTable = () => {
                         </tr>
                     </thead>
 
-                    <tbody className="divide-y divide-neutral-200">
-                        {users.map((user: any) => {
+                    {/* <tbody className="divide-y divide-neutral-200">
+                        {users.map((user: User) => {
                             return (
                                 <tr key={user.id}>
-                                    <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{user.name} {user.last_name}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">{user.role}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{user.rol_id}</td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center gap-2">
                                             <button className="text-blue-500 hover:text-blue-700">
@@ -59,7 +54,7 @@ const UsersTable = () => {
                                 </tr>
                             );
                         })}
-                    </tbody>
+                    </tbody> */}
                 </table>
                 
             </div>
