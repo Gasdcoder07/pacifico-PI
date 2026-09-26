@@ -7,7 +7,7 @@ export function handleRoleRouting(request: NextRequest): string | null {
     const userRole = request.cookies.get("user_role")?.value;
 
     const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/register");
-    const ID_ROL_CAJERO = 2;
+    const ID_ROL_CAJERO = 3;
 
     if (!token && !isAuthRoute) {
         return "/login";
