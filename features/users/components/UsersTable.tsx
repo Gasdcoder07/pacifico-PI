@@ -27,7 +27,7 @@ const UsersTable = () => {
     if (isLoading) return <UsersTableSkeleton/>;
 
     return (
-        <div className="bg-white flex flex-col flex-1 min-h-0 min-w-0 border border-neutral-200 rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white flex flex-col min-h-0 min-w-0 border border-neutral-200 rounded-lg shadow-sm overflow-hidden">
             <div className={`flex-1 overflow-y-auto overflow-x-hidden ${scrollbarStyles}`}>
 
                 <table className="w-full">
@@ -67,7 +67,17 @@ export const UsersTableRow = ({ user, isMe }: UsersTableRowProps) => {
     return (
         <tr className="text-sm text-neutral-500">
             <td className="px-6 py-4 whitespace-nowrap font-semibold">
-                {isMe ? `${user.name} ${user.last_name} (Tú)` : `${user.name} ${user.last_name}`}
+                <div className="flex gap-2 items-center">
+                    <p>{user.name} {user.last_name}</p>
+
+                    {
+                        isMe && (
+                            <div className="bg-[#F4F7F9] p-1 rounded">
+                                <span className="text-xs font-medium"> (Tú)</span>
+                            </div>
+                        )
+                    }
+                </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
             <td className="px-6 py-4 whitespace-nowrap">
