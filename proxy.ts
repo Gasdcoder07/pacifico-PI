@@ -1,18 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { useAuth } from "./hooks/useAuth";
+import { handleRoleRouting } from "./features/auth/utils/role-guard";
 
 export function proxy(request : NextRequest) {
+    const redirectPath = handleRoleRouting(request);
 
-    const isAuth = true
-
-    if (
-        !request.nextUrl.pathname.startsWith('/login') && 
-        !request.nextUrl.pathname.startsWith('/register')
-    ) {
-        if (!isAuth) {
-            return NextResponse.redirect(new URL("/login", request.url))
-        }
+    if (redirectPath) {
+        return NextResponse.redirect(new URL(redirectPath, request.url));
     }
 
     return NextResponse.next()
@@ -20,6 +14,6 @@ export function proxy(request : NextRequest) {
 
 export const config = {
     matcher: [
-        '/((?!api|_next/static|_next/image|favicon.ico).*)',
+        "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
     ],
 };

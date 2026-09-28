@@ -9,7 +9,7 @@ const Navbar = () => {
 
     return (
         <nav className="bg-white border-b border-neutral-300">
-            <div className="mx-auto flex justify-between items-center py-4 px-6">
+            <div className="mx-auto flex justify-between items-center py-3 px-6">
                 <div className="flex items-center gap-4">
                     <img
                         src="https://cdn.aglty.io/scotia-bank-mexico/Attachments/NewItems/lomas-palmas-sucursal_20231018233625_0.png"
@@ -24,10 +24,11 @@ const Navbar = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex justify-center items-center gap-4">
                     <ProfilePfp
                         name={fullName}
                         role={user ? `Rol ${user.rol_id}` : ""}
+                        avatar={user ? user.foto_url : ""}
                     />
                 </div>
             </div>

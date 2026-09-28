@@ -24,13 +24,13 @@ const InventoryTable = () => {
             <div className={`flex-1 overflow-y-auto overflow-x-hidden ${scrollbarStyles}`}>
 
                 <table className="w-full table-fixed">
-                    <thead className="bg-white sticky top-0 z-10 text-left text-sm text-neutral-600 border-b border-neutral-200 whitespace-nowrap">
+                    <thead className="bg-white sticky top-0 z-10 text-left text-xs text-neutral-600 tracking-wider uppercase border-b border-neutral-200 whitespace-nowrap">
                         <tr>
                             <th className="w-14 px-4 py-3">ID</th>
                             <th className="w-[clamp(160px,28vw,320px)] px-4 py-3">Producto</th>
                             <th className="w-30 px-4 py-3">Sucursal</th>
                             <th className="w-20 px-4 py-3">Stock</th>
-                            <th className="hidden xl:table-cell w-28 px-4 py-3">Estatus</th>
+                            <th className="hidden xl:table-cell w-30 px-4 py-3">Estatus</th>
                             <th className="w-28 px-4 py-3 text-right">Precio</th>
                             <th className="w-18 px-4 py-3 text-center">Acción</th>
                         </tr>
@@ -126,7 +126,7 @@ export const StockBadge = ({ quantity } : StockBadgeProps) => {
     }
 
     return (
-        <span className={`flex items-center justify-center gap-2 px-1.5 py-1 border rounded-full ${badgeStyles}`}>
+        <span className={`shrink-0 whitespace-nowrap flex items-center justify-center gap-2 px-1.5 py-1 border rounded-full ${badgeStyles}`}>
             <div className={`size-1.5 rounded-full ${dotStyles}`}/>
             {label}
         </span>
