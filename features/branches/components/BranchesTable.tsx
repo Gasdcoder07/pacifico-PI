@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { getBranches } from "../services/branch.service";
 import { Branch } from "../types/branch";
+import { formatPhoneNumber } from "@/shared/utils/formatters";
 import { Edit, Trash, Ellipsis } from "lucide-react";
 
 const BranchesTable = () => {
@@ -56,7 +57,7 @@ const BranchesTableRow = ({ branch }: { branch: Branch }) => {
         <tr className="text-sm text-neutral-700">
             <td className="py-3 pr-6 font-semibold">{branch.name}</td>
             <td className="py-3 pr-6">{branch.direction || "-"}</td>
-            <td className="py-3 pr-6 tracking-widest">{branch.phone || "-"}</td>
+            <td className="py-3 pr-6 tracking-widest">{formatPhoneNumber(branch.phone)}</td>
             <td className="py-3 pr-6">
                 <p className="text-blue-500 whitespace-nowrap truncate">
                     {branch.contact_info || "-"}

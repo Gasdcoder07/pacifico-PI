@@ -65,7 +65,7 @@ interface UsersTableRowProps {
 
 export const UsersTableRow = ({ user, isMe }: UsersTableRowProps) => {
     return (
-        <tr className="text-sm text-neutral-500">
+        <tr className="text-sm text-neutral-700">
             <td className="px-6 py-4 whitespace-nowrap font-semibold">
                 <div className="flex gap-2 items-center">
                     <p>{user.name} {user.last_name}</p>
