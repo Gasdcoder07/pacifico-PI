@@ -1,7 +1,6 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Edit, Trash } from "lucide-react";
 import { getUsers } from "../services/users.service";
 import { User } from "../types/user";
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -85,7 +84,7 @@ export const UsersTableRow = ({ user, isMe }: UsersTableRowProps) => {
                 <RolSpan rol_id={user.rol_id} />
             </td>
             <td className="px-6 py-4 whitespace-nowrap flex justify-end">
-                <UserDropdownActionButton isMe={isMe}/>
+                <UserDropdownActionButton user={user} isMe={isMe}/>
             </td>
         </tr>
     )
@@ -112,7 +111,6 @@ export const RolSpan = ({ rol_id } : RolSpanProps) => {
         </span>
     )
 }
-
 
 export const UsersTableSkeleton = () => {
     return (

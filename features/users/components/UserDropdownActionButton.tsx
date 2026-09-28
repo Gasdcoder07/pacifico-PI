@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Trash, Edit, Ellipsis } from "lucide-react";
 import EditUserPanel from "./EditUserPanel";
+import { User } from "../types/user";
 
 interface UserDropdownActionButtonProps {
+    user: User
     isMe: boolean;
 }
 
-const UserDropdownActionButton = ({ isMe } : UserDropdownActionButtonProps) => {
+const UserDropdownActionButton = ({ user, isMe } : UserDropdownActionButtonProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [open, setOpen] = useState(false);
     const [showPanel, setShowPanel] = useState(false);
@@ -63,7 +65,7 @@ const UserDropdownActionButton = ({ isMe } : UserDropdownActionButtonProps) => {
 
             {
                 showPanel && (
-                    <EditUserPanel isOpen={showPanel} onClose={() => setShowPanel(false)}/>
+                    <EditUserPanel isOpen={showPanel} onClose={() => setShowPanel(false)} user={user}/>
                 )
             }
         </div>

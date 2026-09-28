@@ -19,16 +19,16 @@ export const SlideOverPanelLayout = ({ isOpen, onClose, title, children }: Slide
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
+                        transition={{ duration: 0.2, ease: "easeInOut" }}
                         onClick={onClose}
                         className="fixed inset-0 bg-black/60"
                     />
 
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        initial={{ x: "100%" }}
+                        animate={{ x: 0 }}
+                        exit={{ x: "100%" }}
+                        transition={{ type: "spring", damping: 30, stiffness: 300 }}
                         className={`relative z-10 w-full bg-white shadow-sm border border-neutral-200 max-w-lg flex flex-col`}
                     >
                         {
