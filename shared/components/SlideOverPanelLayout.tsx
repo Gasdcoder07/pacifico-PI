@@ -29,11 +29,11 @@ export const SlideOverPanelLayout = ({ isOpen, onClose, title, children }: Slide
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 10 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}
-                        className={`relative z-10 w-full bg-white shadow-sm border border-neutral-200 max-w-lg p-6 flex flex-col gap-6`}
+                        className={`relative z-10 w-full bg-white shadow-sm border border-neutral-200 max-w-lg flex flex-col`}
                     >
                         {
                             title && (
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between border-b border-neutral-200 p-6">
                                     <h2 className="text-xl font-semibold text-neutral-700 tracking-wide">
                                         {title}
                                     </h2>
@@ -47,7 +47,7 @@ export const SlideOverPanelLayout = ({ isOpen, onClose, title, children }: Slide
                             )
                         }
 
-                        <div>{children}</div>
+                        <div className="flex-1 min-h-0">{children}</div>
                     </motion.div>
                 </div>
             )}

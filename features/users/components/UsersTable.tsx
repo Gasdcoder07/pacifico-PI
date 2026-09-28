@@ -5,6 +5,7 @@ import { Edit, Trash } from "lucide-react";
 import { getUsers } from "../services/users.service";
 import { User } from "../types/user";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import UserDropdownActionButton from "./UserDropdownActionButton";
 
 const UsersTable = () => {
     const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
@@ -83,15 +84,8 @@ export const UsersTableRow = ({ user, isMe }: UsersTableRowProps) => {
             <td className="px-6 py-4 whitespace-nowrap">
                 <RolSpan rol_id={user.rol_id} />
             </td>
-            <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center gap-2 justify-end">
-                    <button className="text-cyan-500 hover:text-cyan-600 cursor-pointer transition-colors ease-in-out duration-200">
-                        <Edit size={16} className="shrink-0"/>
-                    </button>
-                    <button className="text-red-500 hover:text-red-600 cursor-pointer transition-colors ease-in-out duration-200">
-                        <Trash size={16} className="shrink-0"/>
-                    </button>
-                </div>
+            <td className="px-6 py-4 whitespace-nowrap flex justify-end">
+                <UserDropdownActionButton isMe={isMe}/>
             </td>
         </tr>
     )
