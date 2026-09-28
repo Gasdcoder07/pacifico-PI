@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
