@@ -61,8 +61,9 @@ const LoginForm = () => {
                     id="email"
                     type="email"
                     name="email"
-                    className="w-full p-3 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"
-                />
+                     className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                   
+                    />
             </div>
 
             <div className="flex flex-col gap-2">
@@ -73,14 +74,14 @@ const LoginForm = () => {
                     Contraseña
                 </label>
 
-                <div className="relative">
+               <div className="relative">
                     <input
-                        onChange={handleChange}
-                        id="password"
-                        type={showPassword ? "text" : "password"}
-                        name="password"
-                        className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl outline-none transition-all duration-200 ease-in-out hover:border-neutral-400 focus:border-neutral-400"
-                    />
+                     onChange={handleChange}
+                     id="password"
+                     type={showPassword ? "text" : "password"}
+                     name="password"
+                     className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                 />
 
                     <button
                         type="button"
