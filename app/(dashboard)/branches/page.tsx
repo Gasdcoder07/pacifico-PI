@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import BranchesTable from "@/features/branches/components/BranchesTable";
 import { getBranches } from "@/features/branches/services/branch.service";
 import { useQuery } from "@tanstack/react-query";
 import { Eye, Pencil, Trash } from "lucide-react";
@@ -12,14 +13,24 @@ export default function Page() {
         queryFn: getBranches
     })
 
-    const branches = data
+    // const branches = data
+
+    console.log(data);
 
     const { user } = useAuth();
 
     return (
         <div className="p-4 sm:p-6 lg:p-8 flex flex-col gap-8 h-full">
-            <div className="flex flex-col lg:flex-row gap-8">
-                <div className="relative w-full lg:w-2/3 min-h-96 bg-linear-to-tr from-cyan-600/40 to-cyan-400 rounded-2xl border-2 border-cyan-50 p-6 sm:p-8 flex flex-col justify-between overflow-hidden">
+            <div className="bg-white shadow-sm rounded-lg flex flex-col gap-4">
+                <div className="p-8 pb-0">
+                    <h1 className="text-2xl font-semibold">Mis sucursales</h1>
+                </div>
+                <BranchesTable/>
+            </div>
+
+
+            {/* <div className="flex flex-col lg:flex-row gap-8">
+                <div className="relative w-full lg:w-2/3 bg-linear-to-tr from-cyan-600/40 to-cyan-400 rounded-2xl border-2 border-cyan-50 p-6 sm:p-8 flex flex-col justify-between overflow-hidden">
                     <div className="absolute bg-linear-to-l from-cyan-50 to-cyan-50/20 w-56 h-56 -bottom-10 -right-10 blur-3xl animate-pulse pointer-events-none"/>
                     <div className="absolute bg-linear-to-l from-cyan-50 to-cyan-50/20 w-64 h-64 -top-10 -left-10 blur-3xl animate-pulse pointer-events-none"/>
                     <h1 className="relative z-10 text-white text-2xl sm:text-3xl lg:text-4xl font-bold my-4">
@@ -44,7 +55,11 @@ export default function Page() {
                 </div>
             </div>
 
-            <div className="flex flex-row gap-8">
+            <div>
+                
+            </div>
+
+            <div className="flex flex-row gap-8 shadow-sm border border-neutral-200 rounded-lg bg-white">
                 <div className="w-full bg-zinc-50 min-h-64 rounded-3xl shadow-xl p-6 sm:p-8">
                     <h1 className="text-2xl font-bold text-zinc-600 mb-6">Mis sucursales</h1>
                     <div className="overflow-x-auto">
@@ -109,7 +124,7 @@ export default function Page() {
                         </table>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 }
