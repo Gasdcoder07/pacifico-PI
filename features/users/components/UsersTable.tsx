@@ -5,6 +5,7 @@ import { Edit, Trash } from "lucide-react";
 import { getUsers } from "../services/users.service";
 import { User } from "../types/user";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import UserDropdownActionButton from "./UserDropdownActionButton";
 
 const UsersTable = () => {
     const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
@@ -27,7 +28,7 @@ const UsersTable = () => {
     if (isLoading) return <UsersTableSkeleton/>;
 
     return (
-        <div className="bg-white flex flex-col flex-1 min-h-0 min-w-0 border border-neutral-200 rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white flex flex-col min-h-0 min-w-0 border border-neutral-200 rounded-lg shadow-sm overflow-hidden">
             <div className={`flex-1 overflow-y-auto overflow-x-hidden ${scrollbarStyles}`}>
 
                 <table className="w-full">
@@ -65,23 +66,26 @@ interface UsersTableRowProps {
 
 export const UsersTableRow = ({ user, isMe }: UsersTableRowProps) => {
     return (
-        <tr className="text-sm text-neutral-500">
+        <tr className="text-sm text-neutral-700">
             <td className="px-6 py-4 whitespace-nowrap font-semibold">
-                {isMe ? `${user.name} ${user.last_name} (Tú)` : `${user.name} ${user.last_name}`}
+                <div className="flex gap-2 items-center">
+                    <p>{user.name} {user.last_name}</p>
+
+                    {
+                        isMe && (
+                            <div className="bg-[#F4F7F9] p-1 rounded">
+                                <span className="text-xs font-medium"> (Tú)</span>
+                            </div>
+                        )
+                    }
+                </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
             <td className="px-6 py-4 whitespace-nowrap">
                 <RolSpan rol_id={user.rol_id} />
             </td>
-            <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center gap-2 justify-end">
-                    <button className="text-cyan-500 hover:text-cyan-600 cursor-pointer transition-colors ease-in-out duration-200">
-                        <Edit size={16} className="shrink-0"/>
-                    </button>
-                    <button className="text-red-500 hover:text-red-600 cursor-pointer transition-colors ease-in-out duration-200">
-                        <Trash size={16} className="shrink-0"/>
-                    </button>
-                </div>
+            <td className="px-6 py-4 whitespace-nowrap flex justify-end">
+                <UserDropdownActionButton isMe={isMe}/>
             </td>
         </tr>
     )
