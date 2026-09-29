@@ -245,4 +245,4 @@ pacifico-PI/
 
 ## 📄 Licencia y uso
 
-Este proyecto fue creado con fines **académicos y educativos** en la **Universidad de Colima**, Facultad de Ingeniería Electromecánica, carrera de Ingeniería en Software, campus El Naranjo, Manzanillo, Colima.
+Este proyecto fue creado con fines académicos y educativos en la Universidad de Colima, Facultad de Ingeniería Electromecánica, carrera de Ingeniería en Software, campus El Naranjo, Manzanillo, Colima.
