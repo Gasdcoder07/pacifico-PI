@@ -143,7 +143,6 @@ SUPABASE_SERVICE_ROLE_KEY=tu_clave_service_role_de_supabase
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clave pública (anon) de Supabase. |
 | `SUPABASE_SERVICE_ROLE_KEY` | Clave de servicio, usada solo en el servidor para crear usuarios. |
 
-> ⚠️ **Nunca subas `.env.local` a GitHub** ni compartas la clave `SUPABASE_SERVICE_ROLE_KEY`: da acceso total a tu proyecto de Supabase. El archivo `.gitignore` ya ignora los archivos `.env*`.
 
 ---
 
@@ -170,10 +169,6 @@ npm run dev
 ---
 
 ## 📚 Documentación de la API
-
-Con el servidor en marcha, la documentación interactiva (Swagger UI) está en:
-
-👉 [http://localhost:3000/api/api-docs](http://localhost:3000/api/api-docs)
 
 Las rutas protegidas esperan un token de sesión en el encabezado `Authorization: Bearer <token>`.
 
