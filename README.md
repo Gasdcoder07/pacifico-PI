@@ -88,9 +88,9 @@ La interfaz es moderna y adaptable, por lo que puede usarse desde computadora, t
 | <img src="https://cdn.simpleicons.org/supabase/3ECF8E" width="24" height="24" alt="Supabase"/> | [Supabase] | Autenticación de usuarios. |
 | <img src="https://cdn.simpleicons.org/postgresql/4169E1" width="24" height="24" alt="PostgreSQL"/> | [PostgreSQL] | Almacenamiento de la información (vía `pg`). |
 | <img src="https://cdn.simpleicons.org/framer/0055FF" width="24" height="24" alt="Framer Motion"/> | [Framer Motion] | Animaciones y transiciones. |
-| 🐻 | [Zustand](https://zustand-demo.pmnd.rs/) | Estado del carrito de compra. |
+| 🐻 | [Zustand] | Estado del carrito de compra. |
 | <img src="https://cdn.simpleicons.org/reactquery/FF4154" width="24" height="24" alt="TanStack Query"/> | [TanStack Query] | Manejo de peticiones y caché. |
-| 📊 | [Recharts](https://recharts.org/) | Gráficas del panel principal. |
+| 📊 | [Recharts]| Gráficas del panel principal. |
 | <img src="https://cdn.simpleicons.org/swagger/85EA2D" width="24" height="24" alt="Swagger UI"/> | [Swagger UI] | Documentación interactiva de la API. |
 
 ## 🚀 Instalación
