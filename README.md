@@ -4,7 +4,7 @@
 
 **Sistema web de punto de venta para administrar ventas, inventario, usuarios y sucursales.**
 
-`Equipo 5️⃣` · Universidad de Colima
+`Equipo 5️⃣` 
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
@@ -45,7 +45,7 @@
 
 **Pacífico POS** es un sistema de punto de venta pensado para mejorar la organización y el control de un negocio que vende productos.
 
-Reúne en un solo lugar los procesos más importantes: **ventas, productos, inventario, usuarios y sucursales**, para consultar la información con claridad y facilitar el trabajo diario del personal.
+Reúne en un solo lugar los procesos más importantes: ventas, productos, inventario, usuarios y sucursales, para consultar la información con claridad y facilitar el trabajo diario del personal.
 
 La interfaz es moderna y adaptable, por lo que puede usarse desde computadora, tableta o teléfono.
 
@@ -79,22 +79,19 @@ La interfaz es moderna y adaptable, por lo que puede usarse desde computadora, t
 
 ## 🛠️ Tecnologías
 
-| Tecnología | Uso |
-|:---|:---|
-| [Next.js 16](https://nextjs.org/) | Páginas, rutas y servicios (API Routes) del sistema. |
-| [React 19](https://react.dev/) | Interfaz y componentes. |
-| [TypeScript](https://www.typescriptlang.org/) | Organización y validación del código. |
-| [Tailwind CSS 4](https://tailwindcss.com/) | Diseño visual y adaptación a diferentes pantallas. |
-| [Supabase](https://supabase.com/) | Autenticación de usuarios. |
-| [PostgreSQL](https://www.postgresql.org/) | Almacenamiento de la información (vía `pg`). |
-| [Framer Motion](https://www.framer.com/motion/) | Animaciones y transiciones. |
-| [Zustand](https://zustand-demo.pmnd.rs/) | Estado del carrito de compra. |
-| [TanStack Query](https://tanstack.com/query) | Manejo de peticiones y caché. |
-| [Recharts](https://recharts.org/) | Gráficas del panel principal. |
-| [Swagger UI](https://swagger.io/tools/swagger-ui/) | Documentación interactiva de la API. |
-
----
-
+| | Tecnología | Uso |
+|:---:|:---|:---|
+| <img src="https://cdn.simpleicons.org/nextdotjs/000000" width="24" height="24" alt="Next.js"/> | [Next.js 16](https://nextjs.org/) | Páginas, rutas y servicios (API Routes) del sistema. |
+| <img src="https://cdn.simpleicons.org/react/61DAFB" width="24" height="24" alt="React"/> | [React 19](https://react.dev/) | Interfaz y componentes. |
+| <img src="https://cdn.simpleicons.org/typescript/3178C6" width="24" height="24" alt="TypeScript"/> | [TypeScript](https://www.typescriptlang.org/) | Organización y validación del código. |
+| <img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" width="24" height="24" alt="Tailwind CSS"/> | [Tailwind CSS 4](https://tailwindcss.com/) | Diseño visual y adaptación a diferentes pantallas. |
+| <img src="https://cdn.simpleicons.org/supabase/3ECF8E" width="24" height="24" alt="Supabase"/> | [Supabase](https://supabase.com/) | Autenticación de usuarios. |
+| <img src="https://cdn.simpleicons.org/postgresql/4169E1" width="24" height="24" alt="PostgreSQL"/> | [PostgreSQL](https://www.postgresql.org/) | Almacenamiento de la información (vía `pg`). |
+| <img src="https://cdn.simpleicons.org/framer/0055FF" width="24" height="24" alt="Framer Motion"/> | [Framer Motion](https://www.framer.com/motion/) | Animaciones y transiciones. |
+| 🐻 | [Zustand](https://zustand-demo.pmnd.rs/) | Estado del carrito de compra. |
+| <img src="https://cdn.simpleicons.org/reactquery/FF4154" width="24" height="24" alt="TanStack Query"/> | [TanStack Query](https://tanstack.com/query) | Manejo de peticiones y caché. |
+| 📊 | [Recharts](https://recharts.org/) | Gráficas del panel principal. |
+| <img src="https://cdn.simpleicons.org/swagger/85EA2D" width="24" height="24" alt="Swagger UI"/> | [Swagger UI](https://swagger.io/tools/swagger-ui/) | Documentación interactiva de la API. |
 ## 🚀 Instalación
 
 **Requisitos:** [Node.js](https://nodejs.org/) 20 o superior, `npm` y un proyecto de [Supabase](https://supabase.com/) con su base de datos PostgreSQL.
