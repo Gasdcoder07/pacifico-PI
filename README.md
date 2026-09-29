@@ -81,17 +81,18 @@ La interfaz es moderna y adaptable, por lo que puede usarse desde computadora, t
 
 | | Tecnología | Uso |
 |:---:|:---|:---|
-| <img src="https://cdn.simpleicons.org/nextdotjs/000000" width="24" height="24" alt="Next.js"/> | [Next.js 16](https://nextjs.org/) | Páginas, rutas y servicios (API Routes) del sistema. |
-| <img src="https://cdn.simpleicons.org/react/61DAFB" width="24" height="24" alt="React"/> | [React 19](https://react.dev/) | Interfaz y componentes. |
-| <img src="https://cdn.simpleicons.org/typescript/3178C6" width="24" height="24" alt="TypeScript"/> | [TypeScript](https://www.typescriptlang.org/) | Organización y validación del código. |
-| <img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" width="24" height="24" alt="Tailwind CSS"/> | [Tailwind CSS 4](https://tailwindcss.com/) | Diseño visual y adaptación a diferentes pantallas. |
-| <img src="https://cdn.simpleicons.org/supabase/3ECF8E" width="24" height="24" alt="Supabase"/> | [Supabase](https://supabase.com/) | Autenticación de usuarios. |
-| <img src="https://cdn.simpleicons.org/postgresql/4169E1" width="24" height="24" alt="PostgreSQL"/> | [PostgreSQL](https://www.postgresql.org/) | Almacenamiento de la información (vía `pg`). |
-| <img src="https://cdn.simpleicons.org/framer/0055FF" width="24" height="24" alt="Framer Motion"/> | [Framer Motion](https://www.framer.com/motion/) | Animaciones y transiciones. |
+| <img src="https://cdn.simpleicons.org/nextdotjs/000000" width="24" height="24" alt="Next.js"/> | [Next.js 16] | Páginas, rutas y servicios (API Routes) del sistema. |
+| <img src="https://cdn.simpleicons.org/react/61DAFB" width="24" height="24" alt="React"/> | [React 19] | Interfaz y componentes. |
+| <img src="https://cdn.simpleicons.org/typescript/3178C6" width="24" height="24" alt="TypeScript"/> | [TypeScript] | Organización y validación del código. |
+| <img src="https://cdn.simpleicons.org/tailwindcss/06B6D4" width="24" height="24" alt="Tailwind CSS"/> | [Tailwind CSS 4] | Diseño visual y adaptación a diferentes pantallas. |
+| <img src="https://cdn.simpleicons.org/supabase/3ECF8E" width="24" height="24" alt="Supabase"/> | [Supabase] | Autenticación de usuarios. |
+| <img src="https://cdn.simpleicons.org/postgresql/4169E1" width="24" height="24" alt="PostgreSQL"/> | [PostgreSQL] | Almacenamiento de la información (vía `pg`). |
+| <img src="https://cdn.simpleicons.org/framer/0055FF" width="24" height="24" alt="Framer Motion"/> | [Framer Motion] | Animaciones y transiciones. |
 | 🐻 | [Zustand](https://zustand-demo.pmnd.rs/) | Estado del carrito de compra. |
-| <img src="https://cdn.simpleicons.org/reactquery/FF4154" width="24" height="24" alt="TanStack Query"/> | [TanStack Query](https://tanstack.com/query) | Manejo de peticiones y caché. |
+| <img src="https://cdn.simpleicons.org/reactquery/FF4154" width="24" height="24" alt="TanStack Query"/> | [TanStack Query] | Manejo de peticiones y caché. |
 | 📊 | [Recharts](https://recharts.org/) | Gráficas del panel principal. |
-| <img src="https://cdn.simpleicons.org/swagger/85EA2D" width="24" height="24" alt="Swagger UI"/> | [Swagger UI](https://swagger.io/tools/swagger-ui/) | Documentación interactiva de la API. |
+| <img src="https://cdn.simpleicons.org/swagger/85EA2D" width="24" height="24" alt="Swagger UI"/> | [Swagger UI] | Documentación interactiva de la API. |
+
 ## 🚀 Instalación
 
 **Requisitos:** [Node.js](https://nodejs.org/) 20 o superior, `npm` y un proyecto de [Supabase](https://supabase.com/) con su base de datos PostgreSQL.
