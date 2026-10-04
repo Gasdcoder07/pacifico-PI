@@ -20,16 +20,8 @@ export default function Page() {
     const { user } = useAuth();
 
     return (
-        <div className="p-4 sm:p-6 lg:p-8 flex flex-col gap-8 h-full">
-            <div className="bg-white shadow-sm rounded-lg flex flex-col gap-4">
-                <div className="p-8 pb-4">
-                    <h1 className="text-2xl font-semibold">Mis sucursales</h1>
-                </div>
-                <BranchesTable/>
-            </div>
-
-
-            {/* <div className="flex flex-col lg:flex-row gap-8">
+        <div className="p-4 sm:p-6 lg:p-8 flex flex-col gap-8">
+            <div className="flex gap-8">
                 <div className="relative w-full lg:w-2/3 bg-linear-to-tr from-cyan-600/40 to-cyan-400 rounded-2xl border-2 border-cyan-50 p-6 sm:p-8 flex flex-col justify-between overflow-hidden">
                     <div className="absolute bg-linear-to-l from-cyan-50 to-cyan-50/20 w-56 h-56 -bottom-10 -right-10 blur-3xl animate-pulse pointer-events-none"/>
                     <div className="absolute bg-linear-to-l from-cyan-50 to-cyan-50/20 w-64 h-64 -top-10 -left-10 blur-3xl animate-pulse pointer-events-none"/>
@@ -43,7 +35,7 @@ export default function Page() {
                         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-semibold text-cyan-50">$128,000</h1>
                     </div>
                 </div>
-                
+
                 <div className="relative w-full lg:w-1/3 bg-white/80 rounded-3xl p-6 sm:p-8 shadow-lg overflow-hidden flex flex-col justify-between">
                     <div className="absolute w-36 h-36 bg-zinc-600/50 top-15 right-10 blur-3xl animate-pulse pointer-events-none"/>
                     <h1 className="relative z-10 text-5xl sm:text-6xl font-bold bg-clip-text text-transparent bg-linear-to-r from-zinc-700 to-zinc-500/30">Top 3</h1>
@@ -55,76 +47,12 @@ export default function Page() {
                 </div>
             </div>
 
-            <div>
-                
-            </div>
-
-            <div className="flex flex-row gap-8 shadow-sm border border-neutral-200 rounded-lg bg-white">
-                <div className="w-full bg-zinc-50 min-h-64 rounded-3xl shadow-xl p-6 sm:p-8">
-                    <h1 className="text-2xl font-bold text-zinc-600 mb-6">Mis sucursales</h1>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse min-w-150">
-                            <thead>
-                                <tr className="border-b border-zinc-300 text-zinc-500 text-sm font-semibold">
-                                    <th className="pb-3 px-2">Nombre</th>
-                                    <th className="pb-3 px-2">Dirección</th>
-                                    <th className="pb-3 px-2">Teléfono</th>
-                                    <th className="pb-3 px-2">Contacto</th>
-                                    <th className="pb-3 px-2">Estado</th>
-                                    <th className="pb-3 px-2 text-right">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-zinc-300 text-zinc-600 text-sm">
-                                {isLoading ? (
-                                    Array.from({ length: 3 }).map((_, idx) => (
-                                        <tr key={idx} className="animate-pulse">
-                                            <td className="py-4 px-2"><div className="h-4 bg-zinc-200 rounded-md w-3/4"></div></td>
-                                            <td className="py-4 px-2"><div className="h-4 bg-zinc-200 rounded-md w-full"></div></td>
-                                            <td className="py-4 px-2"><div className="h-4 bg-zinc-200 rounded-md w-24"></div></td>
-                                            <td className="py-4 px-2"><div className="h-4 bg-zinc-200 rounded-md w-28"></div></td>
-                                            <td className="py-4 px-2"><div className="h-6 bg-zinc-200 rounded-full w-16"></div></td>
-                                            <td className="py-4 px-2 text-right"><div className="h-8 bg-zinc-200 rounded-lg w-20 ml-auto"></div></td>
-                                        </tr>
-                                    ))
-                                ) : branches && branches.length > 0 ? (
-                                    branches.map((sucursal) => (
-                                        <tr key={sucursal.id} className="hover:bg-cyan-50/50 transition-colors">
-                                            <td className="py-4 px-2 font-semibold text-zinc-700">{sucursal.name}</td>
-                                            <td className="py-4 px-2">{sucursal.direction || "—"}</td>
-                                            <td className="py-4 px-2">{sucursal.phone || "—"}</td>
-                                            <td className="py-4 px-2">{sucursal.contact_info || "—"}</td>
-                                            <td className="py-4 px-2">
-                                                <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${sucursal.status ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'} shadow-md`}>
-                                                    {sucursal.status ? 'Activo' : 'Inactivo'}
-                                                </span>
-                                            </td>
-                                            <td className="py-4 px-2 text-right">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    <button className="p-2 hover:bg-zinc-300 rounded-lg text-zinc-600 transition-colors">
-                                                        <Eye className="w-4 h-4" />
-                                                    </button>
-                                                    <button className="p-2 hover:bg-zinc-300 rounded-lg text-zinc-600 transition-colors">
-                                                        <Pencil className="w-4 h-4" />
-                                                    </button>
-                                                    <button className="p-2 hover:bg-red-100 rounded-lg text-red-600 transition-colors">
-                                                        <Trash className="w-4 h-4" />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={6} className="py-8 text-center text-zinc-400">
-                                            No se encontraron sucursales.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+            <div className="bg-white shadow-sm rounded-lg flex flex-col gap-4">
+                <div className="p-8 pb-4">
+                    <h1 className="text-2xl font-semibold">Mis sucursales</h1>
                 </div>
-            </div> */}
+                <BranchesTable/>
+            </div>
         </div>
     );
 }
