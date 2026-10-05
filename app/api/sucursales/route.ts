@@ -6,6 +6,12 @@ import { supabase } from "@/shared/lib/supabase";
  * @swagger
  * components:
  *   schemas:
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         error:
+ *           type: string
+ *           example: "Mensaje descriptivo del error"
  *     Sucursal:
  *       type: object
  *       properties:
@@ -48,7 +54,7 @@ import { supabase } from "@/shared/lib/supabase";
  * /api/sucursales:
  *   get:
  *     summary: Obtener todas las sucursales
- *     description: Consulta y devuelve la lista completa de sucursales registradas.
+ *     description: Consulta la base de datos y devuelve el listado completo de sucursales registradas.
  *     tags:
  *       - Sucursales
  *     security:
@@ -69,25 +75,21 @@ import { supabase } from "@/shared/lib/supabase";
  *                   items:
  *                     $ref: '#/components/schemas/Sucursal'
  *       401:
- *         description: No autorizado o token inválido.
+ *         description: No autorizado o token de sesión inválido.
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "No autorizado. Falta el token de sesión."
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               error: "No autorizado. Falta el token de sesión."
  *       500:
- *         description: Error interno del servidor.
+ *         description: Error interno del servidor al consultar la base de datos.
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "No se pudo obtener la información de las sucursales"
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               error: "No se pudo obtener la información de las sucursales"
  */
 export async function GET(request: Request) {
     try {
@@ -135,7 +137,7 @@ export async function GET(request: Request) {
  * /api/sucursales:
  *   post:
  *     summary: Crear una nueva sucursal
- *     description: Permite únicamente a usuarios administradores (rol 1) registrar una nueva sucursal.
+ *     description: Permite registrar una nueva sucursal. Operación restringida a administradores (rol 1).
  *     tags:
  *       - Sucursales
  *     security:
@@ -158,13 +160,15 @@ export async function GET(request: Request) {
  *                 example: "Av. Principal 123"
  *               phone:
  *                 type: string
+ *                 nullable: true
  *                 example: "3141234567"
  *               contact_info:
  *                 type: string
+ *                 nullable: true
  *                 example: "Horario de 9 AM a 6 PM"
  *     responses:
  *       201:
- *         description: Sucursal creada exitosamente.
+ *         description: Sucursal registrada con éxito.
  *         content:
  *           application/json:
  *             schema:
@@ -176,23 +180,45 @@ export async function GET(request: Request) {
  *                 data:
  *                   $ref: '#/components/schemas/Sucursal'
  *       400:
- *         description: Datos obligatorios faltantes.
+ *         description: Faltan campos obligatorios en la petición.
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "El nombre y la dirección son campos obligatorios"
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               error: "El nombre y la dirección son campos obligatorios"
  *       401:
- *         description: No autorizado o token inválido.
+ *         description: Falta token de autenticación o la sesión ha expirado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               error: "No autorizado. Falta token de sesión"
  *       403:
- *         description: Permisos insuficientes (requiere rol de administrador).
+ *         description: El usuario no cuenta con el rol de administrador.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               error: "No tienes permisos de administrador para crear sucursales"
  *       404:
- *         description: Usuario no encontrado en el sistema.
+ *         description: Usuario autenticado no encontrado o inactivo.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               error: "Usuario no encontrado o inactivo en el sistema"
  *       500:
- *         description: Error interno del servidor.
+ *         description: Error interno del servidor al intentar crear la sucursal.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               error: "Error interno en el servidor al crear la sucursal"
  */
 export async function POST(request: Request) {
     try {
