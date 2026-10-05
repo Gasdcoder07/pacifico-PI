@@ -152,22 +152,22 @@ const CartPanel = () => {
       <div className="border-t border-neutral-200 p-4 text-xs text-neutral-400 flex flex-col gap-2">
         <div className="flex justify-between items-center">
           <p>Subtotal: </p>
-          <p className="text-black font-semibold">{subtotal.toFixed(2)}</p>
+          <p className="text-black font-semibold">${subtotal.toFixed(2)}</p>
         </div>
         <div className="flex justify-between items-center">
           <p>IVA (16%): </p>
-          <p className="text-black font-semibold">{iva.toFixed(2)}</p>
+          <p className="text-black font-semibold">${iva.toFixed(2)}</p>
         </div>
-        <div className="flex justify-between items-center">
-          <p>Total: </p>
-          <p className="text-black font-semibold">{total.toFixed(2)}</p>
+        <div className="mt-2 flex justify-between items-center px-4 py-2 bg-cyan-50 border border-cyan-200 rounded-lg">
+          <p className="text-cyan-400 text-base">Total: </p>
+          <p className="text-cyan-400 font-semibold text-lg">${total.toFixed(2)}</p>
         </div>
 
         <motion.button
           disabled={cart.length === 0}
           whileHover={cart.length > 0 ? { scale: 1.02 } : {}}
           whileTap={cart.length > 0 ? { scale: 0.98 } : {}}
-          className="mt-2 bg-cyan-400 py-2 rounded-full px-4 text-black font-medium cursor-pointer disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed transition-colors"
+          className="text-sm mt-2 bg-cyan-400 py-2 rounded-full px-4 text-white font-medium cursor-pointer disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed transition-colors"
         >
           Confirmar orden
         </motion.button>

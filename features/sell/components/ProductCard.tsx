@@ -14,7 +14,7 @@ const ProductCard = ({ product } : ProductCardProps) => {
     const [imgHover, setImgHover] = useState(false);
 
     return (
-        <div className="group h-full w-full bg-white rounded-lg border border-neutral-200 shadow-sm hover:shadow-lg p-4 flex flex-col gap-4 transition-shadow duration-300">
+        <div className="group h-full w-full bg-white rounded-lg border border-neutral-200 shadow-sm hover:shadow-lg p-4 flex flex-col gap-4 transition-shadow duration-200 ease-in-out overflow-hidden">
             <div className="flex gap-4 items-center">
                 <img
                     onMouseEnter={() => setImgHover(true)}
@@ -32,9 +32,11 @@ const ProductCard = ({ product } : ProductCardProps) => {
             </div>
 
             <div className="h-1/2 flex flex-col gap-2">
-                <p className={`text-xs text-neutral-600 flex-1 line-clamp-2 transition-[padding] duration-500 ease-out ${imgHover ? "pl-44" : "pl-0"}`}>
-                    {product.description}
-                </p>
+                <div className="h-8 flex items-center">
+                    <p className={`text-xs text-neutral-600 flex-1 line-clamp-2 transition-[padding] duration-500 ease-out ${imgHover ? "pl-44" : "pl-0"}`}>
+                        {product.description}
+                    </p>
+                </div>
 
                 <div className="flex justify-between items-center mt-2">
                     <span className="text-sm font-bold transition-opacity duration-300 ease-out group-hover:opacity-0">

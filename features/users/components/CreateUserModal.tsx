@@ -9,7 +9,8 @@ interface CreateUserModalProps {
 
 export const CreateUserModal = ({ isOpen, onClose }: CreateUserModalProps) => {
     const [formData, setFormData] = useState({
-        username: "",
+        name: "",
+        last_name: "",
         email: "",
         password: "",
         role: ""
@@ -23,15 +24,27 @@ export const CreateUserModal = ({ isOpen, onClose }: CreateUserModalProps) => {
     return (
         <ModalLayout isOpen={isOpen} onClose={onClose} title="Crear cuenta">
             <form className="flex flex-col gap-4 text-sm">
-                <div className="flex flex-col gap-2">
-                    <label className="font-medium text-neutral-600">Nombre de usuario *</label>
-                    <input 
-                        type="text"
-                        name="username"
-                        value={formData.username}
-                        onChange={handleInputChange}
-                        className="w-full p-3 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
-                    />
+                <div className="flex gap-4 items-center">
+                    <div className="flex flex-col gap-2">
+                        <label className="font-medium text-neutral-600">Nombre *</label>
+                        <input 
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            className="w-full p-3 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                        />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <label className="font-medium text-neutral-600">Apellido *</label>
+                        <input 
+                            type="text"
+                            name="last_name"
+                            value={formData.last_name}
+                            onChange={handleInputChange}
+                            className="w-full p-3 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                        />
+                    </div>
                 </div>
 
                 <div className="flex flex-col gap-2">

@@ -1,5 +1,5 @@
 import CreateUserButton from "@/features/users/components/CreateUserButton";
-import UsersTable from "@/features/users/components/UsersTable";
+import UsersContainer from "@/features/users/components/UsersContainer";
 
 const page = () => {
     return (
@@ -12,7 +12,7 @@ const page = () => {
             <div className="flex flex-col gap-4 min-h-0 min-w-0 flex-1">
                 <CreateUserButton />
 
-                <UsersTable/>
+                <UsersContainer/>
             </div>
         </section>
     );
