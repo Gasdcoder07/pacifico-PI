@@ -241,12 +241,15 @@ export async function PUT(
         );
     }
 }
+
 /**
  * @swagger
  * /api/sucursales/{id}:
  *   delete:
- *     summary: Eliminar una sucursal propia
- *     tags: [Sucursales]
+ *     summary: Eliminar una sucursal
+ *     description: Elimina una sucursal por su ID. Solo accesible por administradores (rol 1) o el encargado asignado a dicha sucursal (rol 2).
+ *     tags:
+ *       - Sucursales
  *     security:
  *       - BearerAuth: []
  *     parameters:
@@ -254,69 +257,114 @@ export async function PUT(
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
- *           minimum: 1
+ *           type: string
+ *         description: ID numérico de la sucursal a eliminar.
+ *         example: "1"
  *     responses:
  *       200:
- *         description: Sucursal eliminada. Devuelve message.
+ *         description: Sucursal y registros asociados eliminados con éxito.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Sucursal y todos sus registros asociados eliminados exitosamente"
  *       400:
- *         description: ID no válido.
+ *         description: ID de sucursal no válido.
  *       401:
- *         description: Sesión inválida.
+ *         description: No autorizado o token inválido.
  *       403:
- *         description: Se requiere una cuenta ADMIN activa.
+ *         description: Permisos insuficientes para eliminar esta sucursal.
  *       404:
- *         description: Sucursal inexistente o que no pertenece al administrador.
- *       409:
- *         description: Existen registros relacionados que impiden eliminarla.
+ *         description: La sucursal o el usuario no existe.
  *       500:
  *         description: Error interno del servidor.
  */
 export async function DELETE(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
-    ) {
+) {
     try {
-        const { id } = await params;
-        const adminId = await validarAdmin(request, id);
+        const { id: branch_id } = await params;
 
-    if (adminId instanceof NextResponse) {
-        return adminId;
-    }
+        if (!/^[1-9][0-9]*$/.test(branch_id)) {
+            return NextResponse.json(
+                { error: "ID de sucursal no válido" },
+                { status: 400 }
+            );
+        }
 
-    const response = await pool.query(
-        `DELETE FROM public.sucursales
-        WHERE id = $1 AND admin_id = $2
-        RETURNING id`,
-        [id, adminId]
-    );
+        const authHeader = request.headers.get("Authorization");
+        const token = authHeader?.match(/^Bearer\s+(\S+)$/i)?.[1];
 
-    if (!response.rows[0]) {
-        return NextResponse.json(
-            { error: "Sucursal no encontrada en tu cuenta" },
-            { status: 404 }
+        if (!token) {
+            return NextResponse.json(
+                { error: "No autorizado. Falta el token de sesión" },
+                { status: 401 }
+            );
+        }
+
+        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token);
+
+        if (authError || !authUser) {
+            return NextResponse.json(
+                { error: "Sesión expirada o token inválido" },
+                { status: 401 }
+            );
+        }
+
+        const currentUserQuery = await pool.query(
+            `SELECT id, rol_id, branch_id FROM public.usuarios WHERE auth_user_id = $1 AND status = true`,
+            [authUser.id]
         );
-    }
 
-    return NextResponse.json(
-        { message: "Sucursal eliminada con éxito" },
-        { status: 200 }
-    );
-    } catch (error) {
-    if ((error as { code?: string } | null)?.code === "23503") {
-        return NextResponse.json(
-            {
-            error: "La sucursal tiene registros relacionados. Puedes desactivarla en lugar de eliminarla.",
-            },
-            { status: 409 }
+        const currentUser = currentUserQuery.rows[0];
+
+        if (!currentUser) {
+            return NextResponse.json(
+                { error: "No se ha encontrado un usuario activo asociado a esta sesión" },
+                { status: 404 }
+            );
+        }
+
+        const userRolId = Number(currentUser.rol_id);
+        const userBranchId = Number(currentUser.branch_id);
+        const targetBranchId = Number(branch_id);
+
+        const isAdmin = userRolId === 1;
+        const isBranchOwner = userRolId === 2 && userBranchId === targetBranchId;
+
+        if (!isAdmin && !isBranchOwner) {
+            return NextResponse.json(
+                { error: "No tienes permisos para eliminar esta sucursal" },
+                { status: 403 }
+            );
+        }
+
+        const deleteResult = await pool.query(
+            `DELETE FROM public.sucursales WHERE id = $1 RETURNING id`,
+            [targetBranchId]
         );
-    }
 
-    console.error("Error al eliminar sucursal:", error);
+        if (deleteResult.rowCount === 0) {
+            return NextResponse.json(
+                { error: "La sucursal no existe o ya fue eliminada" },
+                { status: 404 }
+            );
+        }
 
-    return NextResponse.json(
-        { error: "No se pudo eliminar la sucursal" },
-        { status: 500 }
+        return NextResponse.json(
+            { message: "Sucursal y todos sus registros asociados eliminados exitosamente" },
+            { status: 200 }
+        );
+
+    } catch (err) {
+        console.error("Error al eliminar sucursal:", err);
+        return NextResponse.json(
+            { error: "Error interno al procesar la eliminación" },
+            { status: 500 }
         );
     }
 }
