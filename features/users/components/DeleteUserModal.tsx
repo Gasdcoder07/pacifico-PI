@@ -62,9 +62,13 @@ export const DeleteUserModal = ({ isOpen, onClose, userName, userLastName, userI
                         type="button"
                         onClick={() => mutateDeleteUser(userId)}
                         disabled={isDeleting}
-                        className="px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors ease-in-out duration-200 cursor-pointer disabled:opacity-50"
+                        className={`px-4 py-2 rounded-lg text-white font-medium transition-colors ease-in-out duration-200 ${
+                            isDeleting
+                                ? "bg-neutral-600 cursor-not-allowed"
+                                : "bg-red-500 hover:bg-red-600 cursor-pointer"
+                        }`}
                     >
-                        {isDeleting ? "Eliminando..." : "Eliminar usuario"}
+                        {isDeleting ? "Eliminando usuario..." : "Borrar usuario"}
                     </button>
                 </div>
             </div>
