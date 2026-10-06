@@ -22,7 +22,7 @@ const UsersCard = ({ user, isMe } : { user: User, isMe: boolean }) => {
 
     return (
         <div className="bg-white border border-neutral-200 w-full rounded-lg shadow-sm px-8 py-4 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4 min-w-1/4">
+            <div className="flex items-center gap-4 min-w-3/10">
                 <div className={`${colors[index]} border rounded-full size-12 flex items-center justify-center  `}>
                     <p>{initials}</p>
                 </div>
@@ -65,13 +65,13 @@ export const RolSpan = ({ rol_id } : RolSpanProps) => {
 
     if (rol_id === '1') {
         label = 'Administrador';
-        spanStyles = "bg-blue-100 text-blue-900 border-blue-200";
+        spanStyles = "bg-[#EDE9FE] text-[#5B21B6] border-purple-200";
     } else if (rol_id === '2') {
         label = 'Gerente';
-        spanStyles = "bg-green-100 text-green-900 border-green-200";
+        spanStyles = "bg-[#DBEAFE] text-[#1E40AF] border-blue-200";
     } else {
         label = 'Cajero';
-        spanStyles = "bg-yellow-100 text-yellow-900 border-yellow-200";
+        spanStyles = "bg-[#CCFBF1] text-[#0F766E] border-teal-200";
     }
 
     return (

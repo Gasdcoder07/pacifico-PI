@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Trash, Edit, Ellipsis } from "lucide-react";
 import EditUserPanel from "./EditUserPanel";
+import { DeleteUserModal } from "./DeleteUserModal";
 import { User } from "../types/user";
 
 interface UserDropdownActionButtonProps {
@@ -11,8 +12,10 @@ interface UserDropdownActionButtonProps {
 
 const UserDropdownActionButton = ({ user, isMe } : UserDropdownActionButtonProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
+
     const [open, setOpen] = useState(false);
-    const [showPanel, setShowPanel] = useState(false);
+    const [showEditPanel, setShowEditPanel] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -47,7 +50,7 @@ const UserDropdownActionButton = ({ user, isMe } : UserDropdownActionButtonProps
                         className="absolute right-0 -top-12 -translate-x-1/5 z-10 flex flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white shadow-sm p-2 w-44 origin-top-right">
                         <button
                             onClick={() => {
-                                setShowPanel(true);
+                                setShowEditPanel(true);
                                 setOpen(false);
                             }}
                             className="w-full text-neutral-900 flex items-center gap-4 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-gray-100">
@@ -55,6 +58,10 @@ const UserDropdownActionButton = ({ user, isMe } : UserDropdownActionButtonProps
                             <span>Editar</span>
                         </button>
                         <button
+                            onClick={() => {
+                                setShowDeleteModal(true);
+                                setOpen(false);
+                            }}
                             className="w-full text-neutral-900 flex items-center gap-4 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-red-50 hover:text-red-600">
                             <Trash size={18}/>
                             <span>Eliminar</span>
@@ -64,8 +71,14 @@ const UserDropdownActionButton = ({ user, isMe } : UserDropdownActionButtonProps
             }
 
             {
-                showPanel && (
-                    <EditUserPanel isOpen={showPanel} onClose={() => setShowPanel(false)} user={user}/>
+                showEditPanel && (
+                    <EditUserPanel isOpen={showEditPanel} onClose={() => setShowEditPanel(false)} user={user}/>
+                )
+            }
+
+            {
+                showDeleteModal && (
+                    <DeleteUserModal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} userName={user.name} userLastName={user.last_name} userId={user.id}/>
                 )
             }
         </div>
