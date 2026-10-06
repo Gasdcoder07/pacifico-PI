@@ -2,6 +2,9 @@ import { CustomSelect } from "@/shared/components/CustomSelect";
 import { ModalLayout } from "@/shared/components/ModalLayout";
 import { TriangleAlert } from "lucide-react";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { deleteUser } from "@/features/users/services/users.service";
 
 interface DeleteUserModalProps {
     isOpen: boolean;
@@ -12,6 +15,25 @@ interface DeleteUserModalProps {
 }
 
 export const DeleteUserModal = ({ isOpen, onClose, userName, userLastName, userId }: DeleteUserModalProps) => {
+    const queryClient = useQueryClient();
+
+    const {
+        mutate: mutateDeleteUser,
+        isPending: isDeleting,
+    } = useMutation({
+        mutationFn: (id: string | number) => deleteUser(id),
+
+        onSuccess: () => {
+            toast.success("Usuario eliminado correctamente");
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            onClose();
+        },
+
+        onError: () => {
+            toast.error("Ocurrió un error al eliminar el usuario");
+        },
+    });
+
     return (
         <ModalLayout isOpen={isOpen} onClose={onClose}>
             <div className="flex flex-col gap-4 text-sm">
@@ -31,15 +53,18 @@ export const DeleteUserModal = ({ isOpen, onClose, userName, userLastName, userI
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-4 py-2 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 transition-colors ease-in-out duration-200 cursor-pointer"
+                        disabled={isDeleting}
+                        className="px-4 py-2 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 transition-colors ease-in-out duration-200 cursor-pointer disabled:opacity-50"
                     >
                         Mantener usuario
                     </button>
                     <button
-                        type="submit"
-                        className="px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors ease-in-out duration-200 cursor-pointer"
+                        type="button"
+                        onClick={() => mutateDeleteUser(userId)}
+                        disabled={isDeleting}
+                        className="px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors ease-in-out duration-200 cursor-pointer disabled:opacity-50"
                     >
-                        Eliminar usuario
+                        {isDeleting ? "Eliminando..." : "Eliminar usuario"}
                     </button>
                 </div>
             </div>
