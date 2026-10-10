@@ -108,7 +108,7 @@ import { supabaseAdmin } from "@/shared/lib/supabase";
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { name, last_name, email, password, foto_public_id, foto_url } = body;
+        const { name, last_name, email, password, foto_public_id, foto_url, nombre_empresa, descripcion_empresa, domicilio_empresa  } = body;
 
         if (!name || !last_name || !email || !password) {
             return NextResponse.json(
@@ -145,24 +145,54 @@ export async function POST(request: Request) {
         }
 
         const userId = authData.user.id
+        const client = await pool.connect()
 
-        const queryDB = `
-            UPDATE public.usuarios 
-            SET 
-                foto_url = $2,
-                foto_public_id = $3
-            WHERE auth_user_id = $1
-            RETURNING id, name, last_name, email, rol_id, status, foto_url;
-        `
+        try {
+            await client.query('BEGIN');
 
-        const values = [userId, foto_url || null, foto_public_id]
+            const insertEmpresaQuery = `
+                INSERT INTO public.empresas (nombre, descripcion, domicilio)
+                VALUES ($1, $2, $3)
+                RETURNING id;
+            `
 
-        const response = await pool.query(queryDB, values)
+            const resEmpresa = await client.query(insertEmpresaQuery, [nombre_empresa, descripcion_empresa, domicilio_empresa])
+            const companyId = resEmpresa.rows[0].id;
 
-        return NextResponse.json(
-            { message: "Haz creado tu usuario con éxito", usuario: response.rows[0] },
-            { status: 201 }
-        )
+            const insertUsuarioQuery = `
+                INSERT INTO public.usuarios (auth_user_id, company_id, name, last_name, email, rol_id, status, foto_url, foto_public_id)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                RETURNING id, company_id, name, last_name, email, rol_id, status, foto_url;
+            `
+
+            const userValues = [
+                userId,
+                companyId,
+                name,
+                last_name,
+                email,
+                1,
+                true,
+                foto_url || null,
+                foto_public_id || null
+            ]
+
+            const response = await client.query(insertUsuarioQuery, userValues)
+
+            await client.query('COMMIT')
+
+            return NextResponse.json(
+                { message: "Admin y empresa creados con éxito", usuario: response.rows[0] },
+                { status: 201 }
+            )
+            
+        } catch(dbError) {
+            await client.query('ROLLBACK')
+            await supabaseAdmin.auth.admin.deleteUser(userId)
+            throw dbError
+        } finally {
+            client.release()
+        }
 
     } catch (err) {
         console.error(err)
