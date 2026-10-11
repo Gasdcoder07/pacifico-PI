@@ -36,8 +36,28 @@
 ---
 
 ## 📷 Vista previa
+#Login
+<img width="1600" height="1146" alt="WhatsApp Image 2026-09-28 at 7 45 22 PM" src="https://github.com/user-attachments/assets/5df01788-e316-4e05-99ce-9b9fecd38b9a" />
 
-<img width="1543" height="749" alt="Captura de pantalla 2026-09-05 162753" src="https://github.com/user-attachments/assets/4d9e5736-3e5b-4232-840d-8853c990df05" />
+#Register
+<img width="1600" height="1145" alt="WhatsApp Image 2026-09-28 at 7 45 22 PM (1)" src="https://github.com/user-attachments/assets/a8f3ee2b-ab0f-4e92-89be-113509ddc74f" />
+
+#Punto De Venta
+<img width="1600" height="992" alt="WhatsApp Image 2026-09-28 at 7 45 22 PM (2)" src="https://github.com/user-attachments/assets/27478e0c-3ba8-43ac-a2b9-80fe940bc616" />
+
+#Ventas
+<img width="1600" height="991" alt="WhatsApp Image 2026-09-28 at 7 45 22 PM (3)" src="https://github.com/user-attachments/assets/0ba099ee-a8f1-40e0-9f8d-0481b543f2c7" />
+
+#Inventario
+<img width="1600" height="993" alt="WhatsApp Image 2026-09-28 at 7 45 22 PM (4)" src="https://github.com/user-attachments/assets/0665a27a-3c04-4dbc-8e27-d933610e2e87" />
+
+#Ganancias
+<img width="1600" height="995" alt="WhatsApp Image 2026-09-28 at 7 45 22 PM (5)" src="https://github.com/user-attachments/assets/42278c61-d8ad-49e7-85be-ec85c8ddc9d0" />
+
+
+
+
+
 
 ---
 

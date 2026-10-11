@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import pool from "@/shared/lib/db";
-import { supabaseAdmin } from "@/shared/lib/supabase";
+import { supabase, supabaseAdmin } from "@/shared/lib/supabase";
 
 /**
  * @swagger
@@ -110,6 +110,47 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { name, last_name, email, password, foto_public_id, foto_url } = body;
 
+        const authHeader = request.headers.get('Authorization')
+
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json(
+                { error: "Error al obtener la sesión del usuario" },
+                { status: 401 }
+            )
+        }
+
+        const token = authHeader.replace("Bearer ", '')
+
+        const { data: { user: authUser }, error: authErrorUser } = await supabase.auth.getUser(token)
+
+        if (!authUser || authErrorUser) {
+            return NextResponse.json(
+                { error: "No se ha podido obtener un usuario con el token" },
+                { status: 404 }
+            )
+        }
+
+        const currentUserQuery = await pool.query(
+            `SELECT rol_id, company_id from usuarios where auth_user_id = $1`,
+            [authUser.id]
+        )
+
+        const currentUser = currentUserQuery.rows[0]
+
+        if (!currentUser) {
+            return NextResponse.json(
+                { error: "Error al obtener el usuario de la base de datos" },
+                { status: 404 }
+            )
+        }
+
+        if (Number(currentUser.rol_id) !== 1) {
+            return NextResponse.json(
+                { error: "No tienes permiso para crear un nuevo Cajero" },
+                { status: 403 }
+            )
+        }
+
         if (!name || !last_name || !email || !password) {
             return NextResponse.json(
                 { error: "Hace falta alguno de estos campos: (name, last_name, email, password)" },
@@ -147,15 +188,22 @@ export async function POST(request: Request) {
         const userId = authData.user.id
 
         const queryDB = `
-            UPDATE public.usuarios 
-            SET 
-                foto_url = $2,
-                foto_public_id = $3
-            WHERE auth_user_id = $1
-            RETURNING id, name, last_name, email, rol_id, status, foto_url;
+            INSERT INTO public.usuarios (auth_user_id, company_id, name, last_name, email, rol_id, status, foto_url, foto_public_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            RETURNING id, company_id, name, last_name, email, rol_id, status, foto_url;
         `
 
-        const values = [userId, foto_url || null, foto_public_id]
+        const values = [
+            userId,
+            currentUser.company_id,
+            name,
+            last_name,
+            email,
+            2,
+            true,
+            foto_url || null,
+            foto_public_id || null
+        ]
 
         const response = await pool.query(queryDB, values)
 

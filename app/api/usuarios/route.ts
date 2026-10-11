@@ -99,7 +99,7 @@ export async function GET(request: Request) {
         )
 
         const currentUserQuery = await pool.query(
-            `SELECT rol_id, branch_id FROM usuarios WHERE auth_user_id = $1`,
+            `SELECT rol_id, branch_id, company_id FROM usuarios WHERE auth_user_id = $1`,
             [authUser.id]
         );
 
@@ -116,7 +116,8 @@ export async function GET(request: Request) {
         let queryParams: unknown[] = []
 
         if (Number(currentUser.rol_id) === 1) {
-            query = `SELECT * FROM usuarios`;
+            query = `SELECT * FROM usuarios where company_id = $1`;
+            queryParams = [currentUser.company_id]
             
         } else if (Number(currentUser.rol_id) === 2) { 
             if (!currentUser.branch_id) {
@@ -126,8 +127,8 @@ export async function GET(request: Request) {
                 )
             }
             
-            query = `SELECT * FROM usuarios WHERE branch_id = $1`;
-            queryParams = [currentUser.branch_id];
+            query = `SELECT * FROM usuarios WHERE branch_id = $1 AND company_id = $2`;
+            queryParams = [currentUser.branch_id, currentUser.company_id];
             
         } else {
             return NextResponse.json(

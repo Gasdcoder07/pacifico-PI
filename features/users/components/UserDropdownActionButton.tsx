@@ -27,7 +27,7 @@ const UserDropdownActionButton = ({ user, isMe } : UserDropdownActionButtonProps
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const hoverAnimation = !isMe ? { scaleX: 1.1, scaleY: 1.1, borderRadius: "35%" } : undefined
+    const hoverAnimation = !isMe ? { scaleX: 1.1, scaleY: 1.1 } : undefined
     const tapAnimation = !isMe ? { scaleX: 0.9, scaleY: 1.1, borderRadius: "50%" } : undefined;
 
     return (
@@ -39,7 +39,7 @@ const UserDropdownActionButton = ({ user, isMe } : UserDropdownActionButtonProps
                 whileTap={tapAnimation}
                 transition={!isMe ? { type: "spring", bounce: 0.6, duration: 0.8 } : undefined}
                 disabled={isMe}
-                className={`bg-linear-to-b from-brand-50 to-brand-100 text-brand-700 p-1 rounded-lg ${isMe ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                className={`bg-linear-to-b from-brand-50 to-brand-100 border border-brand-100 text-brand-700 p-1 rounded-lg ${isMe ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 onClick={() => setOpen(!open)}>
                 <Ellipsis size={20}/>
             </motion.button>
