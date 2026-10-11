@@ -1,6 +1,6 @@
 const TopBranchesCard = () => {
     return (
-        <div className="w-xs border border-neutral-200 rounded-lg p-4 flex flex-col gap-4 shadow-sm">
+        <div className="w-2/5 border border-neutral-200 rounded-lg p-4 flex flex-col gap-4 shadow-sm">
             <h3 className="text-xl text-neutral-900 font-bold">
                 Top 3 Sucursales
             </h3>

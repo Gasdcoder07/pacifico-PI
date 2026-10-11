@@ -2,7 +2,7 @@ import { Trophy } from "lucide-react";
 
 const TopBranchCard = () => {
     return (
-        <div className="relative w-full max-w-lg overflow-hidden rounded-lg text-white shadow-sm flex items-center p-6">
+        <div className="relative w-3/5 overflow-hidden rounded-lg text-white shadow-sm flex items-center p-6">
             <div className="absolute z-10 -bottom-12 -left-12 size-48 rounded-full bg-cyan-300/40 blur-2xl pointer-events-none" />
             <div className="absolute z-10 -bottom-10 left-1/3 size-52 rounded-full bg-cyan-300/60 blur-3xl pointer-events-none" />
             <div className="absolute z-10 -top-12 -left-6 size-40 rounded-full bg-cyan-300/60 blur-2xl pointer-events-none" />

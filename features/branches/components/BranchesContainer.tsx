@@ -8,6 +8,7 @@ import { Branch } from "../types/branch";
 import { formatPhoneNumber } from "@/shared/utils/formatters";
 import { Edit, Trash, Ellipsis } from "lucide-react";
 import BranchCard from "./BranchCard";
+import CreateBranchButton from "./CreateBranchButton";
 
 const BranchesContainer = () => {
     const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
@@ -20,10 +21,14 @@ const BranchesContainer = () => {
     const branches = data ? data : [];
 
     return (
-        <div className="flex flex-col gap-8">
-            <h1 className="text-2xl font-semibold">Mis sucursales</h1>
+        <div className="w-full flex flex-col gap-8">
+            <div className="flex items-center justify-between gap-4">
+                <h3 className="text-2xl font-semibold">Mis sucursales</h3>
 
-            <div className="grid grid-cols-2 gap-4">
+                <CreateBranchButton/>
+            </div>
+
+            <div className="w-full grid lg:grid-cols-2 gap-4">
                 {
                     branches.map((branch) => {
                         return (
