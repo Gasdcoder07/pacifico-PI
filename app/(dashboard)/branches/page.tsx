@@ -4,14 +4,13 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import BranchesTable from "@/features/branches/components/BranchesTable";
 import { getBranches } from "@/features/branches/services/branch.service";
 import { useQuery } from "@tanstack/react-query";
-import { Eye, Pencil, Trash } from "lucide-react";
+import { Trophy } from "lucide-react";
 
 export default function Page() {
-    
     const { data, isLoading } = useQuery({
         queryKey: ["branches"],
-        queryFn: getBranches
-    })
+        queryFn: getBranches,
+    });
 
     // const branches = data
 
@@ -22,28 +21,117 @@ export default function Page() {
     return (
         <div className="p-4 sm:p-6 lg:p-8 flex flex-col gap-8">
             <div className="flex gap-8">
-                <div className="relative w-full lg:w-2/3 bg-linear-to-tr from-cyan-600/40 to-cyan-400 rounded-2xl border-2 border-cyan-50 p-6 sm:p-8 flex flex-col justify-between overflow-hidden">
-                    <div className="absolute bg-linear-to-l from-cyan-50 to-cyan-50/20 w-56 h-56 -bottom-10 -right-10 blur-3xl animate-pulse pointer-events-none"/>
-                    <div className="absolute bg-linear-to-l from-cyan-50 to-cyan-50/20 w-64 h-64 -top-10 -left-10 blur-3xl animate-pulse pointer-events-none"/>
-                    <h1 className="relative z-10 text-white text-2xl sm:text-3xl lg:text-4xl font-bold my-4">
-                        Sucursal con mejores ganancias
-                    </h1>
-                    <div className="relative z-10 w-full sm:w-[80%] backdrop-blur-3xl rounded-3xl p-6 sm:px-8 sm:py-12 shadow-2xl border border-white/20">
-                        <h2 className="text-xl sm:text-2xl bg-clip-text text-transparent bg-linear-to-r from-zinc-50 to-cyan-50 mb-2">
-                            Sucursal Manzanillo {user?.name ? `(${user.name})` : ""}
+                <div className="relative w-full max-w-lg overflow-hidden rounded-lg text-white shadow-sm flex items-center p-6">
+                    <div className="absolute z-10 -bottom-12 -left-12 size-48 rounded-full bg-cyan-300/40 blur-2xl pointer-events-none" />
+                    <div className="absolute z-10 -bottom-10 left-1/3 size-52 rounded-full bg-cyan-300/60 blur-3xl pointer-events-none" />
+                    <div className="absolute z-10 -top-12 -left-6 size-40 rounded-full bg-cyan-300/60 blur-2xl pointer-events-none" />
+
+                    <img
+                        src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1000&q=80"
+                        alt="Sucursal"
+                        className="absolute right-0 top-0 h-full w-3/5 object-cover object-center"
+                    />
+
+                    <svg
+                        className="absolute inset-0 h-full w-full pointer-events-none"
+                        viewBox="0 0 100 100"
+                        preserveAspectRatio="none"
+                    >
+                        <path
+                            className="fill-cyan-500/10"
+                            d="M 0,0 L 73,0 C 85,35 58,65 77,100 L 0,100 Z"
+                        />
+                    </svg>
+
+                    <svg
+                        className="absolute inset-0 h-full w-full pointer-events-none"
+                        viewBox="0 0 100 100"
+                        preserveAspectRatio="none"
+                    >
+                        <path
+                            fill="#00b8db"
+                            d="M 0,0 L 65,0 C 79,35 52,65 70,100 L 0,100 Z"
+                        />
+                    </svg>
+
+                    <div className="relative z-10 flex flex-col justify-between max-w-3/4 gap-4">
+                        <h2 className="text-xl font-bold tracking-tight drop-shadow-sm">
+                            Sucursal con mejores ganancias
                         </h2>
-                        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-semibold text-cyan-50">$128,000</h1>
+
+                        <div className="flex items-center gap-4">
+                            <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-white/20 border border-white/20 shadow-inner">
+                                <Trophy size={24} className="text-yellow-300" />
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="font-semibold text-xl leading-relaxed drop-shadow-sm">
+                                    Sucursal Manzanillo
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-1">
+                            <span className="text-4xl font-black drop-shadow-sm">
+                                $128,000
+                            </span>
+                            <span className="text-sm font-medium">
+                                en ganancias totales
+                            </span>
+                        </div>
                     </div>
                 </div>
 
-                <div className="relative w-full lg:w-1/3 bg-white/80 rounded-3xl p-6 sm:p-8 shadow-lg overflow-hidden flex flex-col justify-between">
-                    <div className="absolute w-36 h-36 bg-zinc-600/50 top-15 right-10 blur-3xl animate-pulse pointer-events-none"/>
-                    <h1 className="relative z-10 text-5xl sm:text-6xl font-bold bg-clip-text text-transparent bg-linear-to-r from-zinc-700 to-zinc-500/30">Top 3</h1>
-                    <ul className="relative z-10 ml-0 sm:ml-6 mt-6 sm:mt-10 flex flex-col gap-6 sm:gap-12 font-semibold text-zinc-500 backdrop-blur-3xl p-4 sm:p-2 sm:pt-8 rounded-2xl">
-                        <li className="text-xl sm:text-2xl">Manzanillo</li>
-                        <li className="text-xl sm:text-2xl">Tecomán</li>
-                        <li className="text-xl sm:text-2xl">Guerrero</li>
-                    </ul>
+                <div className="w-xs border border-neutral-200 rounded-lg p-4 flex flex-col gap-4 shadow-sm">
+                    <h3 className="text-xl text-neutral-900 font-bold">
+                        Top 3 Sucursales
+                    </h3>
+
+                    <div className="flex flex-col gap-2">
+                        <div className="bg-amber-500/10 border border-amber-500/20 p-2 rounded flex items-center justify-between gap-4">
+                            <div className="flex items-center gap-4 min-w-0">
+                                <div className="size-6 flex shrink-0 justify-center items-center rounded-full bg-amber-500 text-white font-bold text-xs">
+                                    1
+                                </div>
+                                <h4 className="text-neutral-900 font-semibold text-sm truncate">
+                                    Manzanillo
+                                </h4>
+                            </div>
+
+                            <p className="text-sm font-bold text-neutral-900 shrink-0">
+                                $128,000
+                            </p>
+                        </div>
+
+                        <div className="bg-slate-500/10 border border-slate-500/20 p-2 rounded flex items-center justify-between gap-4">
+                            <div className="flex items-center gap-4 min-w-0">
+                                <div className="size-6 flex shrink-0 justify-center items-center rounded-full bg-slate-500 text-white font-bold text-xs">
+                                    2
+                                </div>
+                                <h4 className="text-neutral-900 font-semibold text-sm truncate">
+                                    Las Brisas
+                                </h4>
+                            </div>
+
+                            <p className="text-sm font-bold text-neutral-900 shrink-0">
+                                $97,720
+                            </p>
+                        </div>
+
+                        <div className="bg-orange-500/10 border border-orange-500/20 p-2 rounded flex items-center justify-between gap-4">
+                            <div className="flex items-center gap-4 min-w-0">
+                                <div className="size-6 flex shrink-0 justify-center items-center rounded-full bg-orange-600 text-white font-bold text-xs">
+                                    3
+                                </div>
+                                <h4 className="text-neutral-900 font-semibold text-sm truncate">
+                                    Valle de las Garzas
+                                </h4>
+                            </div>
+
+                            <p className="text-sm font-bold text-neutral-900 shrink-0">
+                                $72,190
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -51,7 +139,7 @@ export default function Page() {
                 <div className="p-8 pb-4">
                     <h1 className="text-2xl font-semibold">Mis sucursales</h1>
                 </div>
-                <BranchesTable/>
+                <BranchesTable />
             </div>
         </div>
     );
