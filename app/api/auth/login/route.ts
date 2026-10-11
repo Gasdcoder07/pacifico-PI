@@ -97,7 +97,7 @@ export async function POST(request: Request) {
         const userId = authData.user.id;
 
         const queryDB = `
-            SELECT id, name, last_name, email, rol_id, status, foto_url, foto_public_id
+            SELECT id, company_id, branch_id, name, last_name, email, rol_id, status, foto_url, foto_public_id
             FROM public.usuarios
             WHERE auth_user_id = $1;
         `;

@@ -108,7 +108,17 @@ import { supabaseAdmin } from "@/shared/lib/supabase";
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { name, last_name, email, password, foto_public_id, foto_url, nombre_empresa, descripcion_empresa, domicilio_empresa  } = body;
+        const { 
+            name, 
+            last_name, 
+            email, 
+            password, 
+            foto_public_id, 
+            foto_url, 
+            company_name, 
+            company_description, 
+            company_address
+        } = body;
 
         if (!name || !last_name || !email || !password) {
             return NextResponse.json(
@@ -151,12 +161,12 @@ export async function POST(request: Request) {
             await client.query('BEGIN');
 
             const insertEmpresaQuery = `
-                INSERT INTO public.empresas (nombre, descripcion, domicilio)
-                VALUES ($1, $2, $3)
+                INSERT INTO public.empresas (name, description, address, status, created_at, updated_at)
+                VALUES ($1, $2, $3, true, NOW(), NOW())
                 RETURNING id;
             `
 
-            const resEmpresa = await client.query(insertEmpresaQuery, [nombre_empresa, descripcion_empresa, domicilio_empresa])
+            const resEmpresa = await client.query(insertEmpresaQuery, [company_name, company_description, company_address])
             const companyId = resEmpresa.rows[0].id;
 
             const insertUsuarioQuery = `
