@@ -1,7 +1,5 @@
-import { CustomSelect } from "@/shared/components/CustomSelect";
 import { ModalLayout } from "@/shared/components/ModalLayout";
 import { TriangleAlert } from "lucide-react";
-import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { deleteUser } from "@/features/users/services/users.service";
