@@ -1,0 +1,91 @@
+import { Phone, Pin } from "lucide-react";
+import BranchDropdownActionButton from "@/features/branches/components/BranchDropdownActionButton";
+import { formatPhoneNumber } from "@/shared/utils/formatters";
+
+interface BranchCardProps {
+    name: string;
+    status: boolean;
+    direction: string;
+    phone: string
+}
+
+const BranchCard = ({ name, status, direction, phone } : BranchCardProps) => {
+    return (
+        <div className="bg-white w-full flex gap-4 p-2 rounded-lg border border-neutral-200 shadow-sm">
+            <div className="relative w-2/5 shrink-0 rounded-lg overflow-hidden shadow">
+                <img
+                    src="https://cdn.aglty.io/scotia-bank-mexico/Attachments/NewItems/lomas-palmas-sucursal_20231018233625_0.png"
+                    alt="Branch"
+                    className=" absolute inset-0 h-full w-full object-cover"
+                />
+            </div>
+
+            <div className="w-3/5 min-w-0 flex flex-col gap-2">
+                <div className="flex items-center justify-between gap-4 min-w-0">
+                    <h3 className="text-lg font-bold text-neutral-900 tracking-wide">
+                        {name}
+                    </h3>
+
+                    <StatusBadge status={status}/>
+                </div>
+
+                <div className="flex items-center gap-4 min-w-0">
+                    <img
+                        src="https://i.pinimg.com/originals/38/43/28/38432891e9e320c7ac514c8e815f2947.jpg"
+                        alt="Gerente"
+                        className="size-10 object-center rounded-full border border-neutral-200 shadow"
+                    />
+
+                    <div className="flex flex-col gap-0 min-w-0">
+                        <p className="font-medium text-neutral-900 text-sm">
+                            Juan Pérez
+                        </p>
+                        <span className="text-xs text-neutral-400">
+                            Gerente
+                        </span>
+                    </div>
+                </div>
+
+                <div className="flex flex-col gap-1 text-xs border-b border-neutral-200 pb-2 min-w-0">
+                    <div className="flex items-center gap-2 flex-1 min-w-0 text-neutral-600">
+                        <Pin
+                            size={12}
+                            className="shrink-0 translate-y-[0.5px]"
+                        />
+                        <span className="truncate">
+                            {direction}
+                        </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 flex-1 min-w-0 text-neutral-600">
+                        <Phone
+                            size={12}
+                            className="shrink-0 translate-y-[0.5px]"
+                        />
+                        <span className="truncate">{formatPhoneNumber(phone)}</span>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <button className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors ease-in-out duration-200 cursor-pointer">
+                        Ver detalles
+                    </button>
+
+                    <BranchDropdownActionButton />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default BranchCard;
+
+const StatusBadge = ({ status }: { status: boolean }) => {
+    let styles = status ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600';
+
+    return (
+        <span className={`${styles} px-2 py-1 rounded text-xs font-medium shadow`}>
+            {status ? 'Activa' : 'Inactiva'}
+        </span>
+    )
+}
