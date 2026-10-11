@@ -1,18 +1,17 @@
 import { Phone, Pin } from "lucide-react";
 import BranchDropdownActionButton from "@/features/branches/components/BranchDropdownActionButton";
+import { formatPhoneNumber } from "@/shared/utils/formatters";
 
 interface BranchCardProps {
-    branch_profile_picture: string;
-    branch_name: string;
-    branch_status: boolean;
-    branch_manager_name: string;
-    branch_address: string;
-    branch_phone: string;
+    name: string;
+    status: boolean;
+    direction: string;
+    phone: string
 }
 
-const BranchCard = (props: BranchCardProps) => {
+const BranchCard = ({ name, status, direction, phone } : BranchCardProps) => {
     return (
-        <div className="min-w-md flex gap-4 p-2 rounded-lg border border-neutral-200 shadow-sm">
+        <div className="bg-white min-w-md flex gap-4 p-2 rounded-lg border border-neutral-200 shadow-sm">
             <div className="relative w-2/5 shrink-0 rounded-lg overflow-hidden shadow">
                 <img
                     src="https://cdn.aglty.io/scotia-bank-mexico/Attachments/NewItems/lomas-palmas-sucursal_20231018233625_0.png"
@@ -24,12 +23,10 @@ const BranchCard = (props: BranchCardProps) => {
             <div className="w-3/5 flex flex-col gap-2">
                 <div className="flex items-center justify-between gap-4">
                     <h3 className="text-lg font-bold text-neutral-900 tracking-wide">
-                        Las Brisas
+                        {name}
                     </h3>
 
-                    <span className="bg-green-100 text-green-600 px-2 py-1 rounded text-xs font-medium shadow">
-                        Activa
-                    </span>
+                    <StatusBadge status={status}/>
                 </div>
 
                 <div className="flex items-center gap-4">
@@ -56,7 +53,7 @@ const BranchCard = (props: BranchCardProps) => {
                             className="shrink-0 translate-y-[0.5px]"
                         />
                         <span className="truncate">
-                            Av. Reforma 123, Ciudad de México
+                            {direction}
                         </span>
                     </div>
 
@@ -65,7 +62,7 @@ const BranchCard = (props: BranchCardProps) => {
                             size={12}
                             className="shrink-0 translate-y-[0.5px]"
                         />
-                        <span className="truncate">55-1234-5678</span>
+                        <span className="truncate">{formatPhoneNumber(phone)}</span>
                     </div>
                 </div>
 
@@ -82,3 +79,13 @@ const BranchCard = (props: BranchCardProps) => {
 };
 
 export default BranchCard;
+
+const StatusBadge = ({ status }: { status: boolean }) => {
+    let styles = status ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600';
+
+    return (
+        <span className={`${styles} px-2 py-1 rounded text-xs font-medium shadow`}>
+            {status ? 'Activa' : 'Inactiva'}
+        </span>
+    )
+}
