@@ -107,6 +107,40 @@ import { supabaseAdmin } from "@/shared/lib/supabase";
 
 export async function POST(request: Request) {
     try {
+        const authHeader = request.headers.get('Authorization');
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return NextResponse.json(
+                { error: "Error al obtener el token" },
+                { status: 401 }
+            )
+        }
+
+        const token = authHeader.replace('Bearer ', '')
+
+        const { data: { user: authUser }, error: authUserError } = await supabaseAdmin.auth.getUser(token)
+
+        if (!authUser || authUserError) {
+            return NextResponse.json(
+                { error: "Error al adquirir la sesión actual" },
+                { status: 403 }
+            )
+        }
+
+        const queryUser = await pool.query(`SELECT rol_id, company_id FROM usuarios where auth_user_id=$1;`, [authUser.id])
+        const currentUser = queryUser.rows[0]
+
+        if (!currentUser) return NextResponse.json(
+            { error: "Error al obtener el usuario de la base de datos" },
+            { status: 404 }
+        )
+
+        if (Number(currentUser.rol_id) !== 2 && Number(currentUser.rol_id) !== 1) {
+            return NextResponse.json(
+                { error: "No tienes permisos para registrar un nuevo Cajero" },
+                { status: 401 }
+            )
+        }
+
         const body = await request.json();
         const { name, last_name, email, password, foto_public_id, foto_url } = body;
 
@@ -133,7 +167,8 @@ export async function POST(request: Request) {
             user_metadata: {
                 name: name,
                 last_name: last_name,
-                rol_id: 3
+                rol_id: 3,
+                company_id: currentUser.company_id
             }
         })
 
@@ -147,15 +182,22 @@ export async function POST(request: Request) {
         const userId = authData.user.id
 
         const queryDB = `
-            UPDATE public.usuarios 
-            SET 
-                foto_url = $2,
-                foto_public_id = $3
-            WHERE auth_user_id = $1
-            RETURNING id, name, last_name, email, rol_id, status, foto_url;
+            INSERT INTO public.usuarios (auth_user_id, company_id, name, last_name, email, rol_id, status, foto_url, foto_public_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            RETURNING id, company_id, name, last_name, email, rol_id, status, foto_url;
         `
 
-        const values = [userId, foto_url || null, foto_public_id]
+        const values = [
+            userId, 
+            currentUser.company_id,
+            name,
+            last_name,
+            email,
+            3,
+            true,
+            foto_url || null,
+            foto_public_id || null
+        ]
 
         const response = await pool.query(queryDB, values)
 

@@ -242,7 +242,7 @@ export async function POST(request: Request) {
         }
 
         const currentUserQuery = await pool.query(
-            `SELECT id, rol_id FROM public.usuarios WHERE auth_user_id = $1 AND status = true`,
+            `SELECT id, rol_id, company_id FROM public.usuarios WHERE auth_user_id = $1 AND status = true`,
             [authUser.id]
         );
 
@@ -275,16 +275,18 @@ export async function POST(request: Request) {
         const response = await pool.query(
             `INSERT INTO public.sucursales (
                 name,
+                company_id,
                 direction,
                 phone,
                 contact_info,
                 created_at,
                 updated_at,
                 admin_id
-            ) VALUES ($1, $2, $3, $4, NOW(), NOW(), $5)
-            RETURNING id, name, direction, phone, contact_info, status, created_at, updated_at, admin_id;`,
+            ) VALUES ($1, $2, $3, $4, $5, NOW(), NOW(), $6)
+            RETURNING id, company_id, name, direction, phone, contact_info, status, created_at, updated_at, admin_id;`,
             [
                 name,
+                currentUser.company_id,
                 direction,
                 phone || null,
                 contact_info || null,
