@@ -28,21 +28,21 @@ const BranchesContainer = () => {
             );
         }
 
-        if (branches.length === 0) {
+        if (true) {
             return <>{<BranchesEmptyState/>}</>;
         }
 
         return (
             <>
-                {branches.map((branch) => {
+                {branches.map((branch) => (
                     <BranchCard
                         key={branch.id}
                         name={branch.name}
                         status={branch.status}
                         direction={branch.direction}
                         phone={branch.phone}
-                    />;
-                })}
+                    />
+                ))}
             </>
         );
     };
@@ -70,9 +70,9 @@ const BranchCardSkeleton = () => {
 
 const BranchesEmptyState = () => {
     return (
-        <div className="w-full col-span-full flex flex-col bg-white border border-neutral-200 rounded-lg gap-6 p-4">
+        <div className="w-full col-span-full flex flex-col bg-white border border-neutral-200 rounded-lg gap-6 p-4 shadow-sm">
             <div className="flex flex-col items-center justify-center">
-                <div className="p-4 bg-brand-50 text-brand-600 rounded-full mb-2">
+                <div className="p-4 bg-brand-50 text-brand-600 border border-brand-200 rounded-full mb-2">
                     <Warehouse size={28} />
                 </div>
                 <h3 className="text-xl font-semibold tracking-wide mb-1">Todavía no hay sucursales para mostrar</h3>
