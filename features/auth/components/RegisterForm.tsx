@@ -7,17 +7,23 @@ import { useMutation } from '@tanstack/react-query';
 import { Eye, EyeOff } from "lucide-react";
 import { registerUser } from "@/features/auth/services/auth.service";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation" 
+import { useRouter } from "next/navigation"
 
+const inputClass =
+    "w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out";
 
 const RegisterForm = () => {
-    const router = useRouter()
+    const router = useRouter();
+    const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
-       name: "",
-       last_name: "",
-       email: "",
-       password: "",
-       confirmPassword: ""
+        name: "",
+        last_name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        company_name: "",
+        company_description: "",
+        company_address: "",
     });
 
     const [showPassword, setShowPassword] = useState(false);
@@ -27,29 +33,39 @@ const RegisterForm = () => {
         onSuccess: (data) => {
             toast.success("Cuenta creada exitosamente");
             console.log(data);
-            router.push("/login")
+            router.push("/login");
         },
         onError: (error: any) => {
             const mensaje = error?.response?.data?.error || "Ocurrió un error durante el registro.";
             toast.error(mensaje);
-            console.log(error)
+            console.log(error);
         },
     });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if(!formData.name || !formData.last_name || !formData.email || !formData.password || !formData.confirmPassword) {
-            toast.error("Por favor, completa todos los campos.");
+        if (step === 1) {
+            if (!formData.name || !formData.last_name || !formData.email || !formData.password || !formData.confirmPassword) {
+                toast.error("Por favor, completa todos los campos.");
+                return;
+            }
+
+            if (formData.password !== formData.confirmPassword) {
+                toast.error("Las contraseñas no coinciden.");
+                return;
+            }
+
+            setStep(2);
             return;
         }
 
-        if (formData.password !== formData.confirmPassword) {
-            toast.error("Las contraseñas no coinciden.");
+        if (!formData.company_name.trim() || !formData.company_description.trim() || !formData.company_address.trim()) {
+            toast.error("Completa todos los datos de la empresa.");
             return;
         }
 
@@ -58,6 +74,9 @@ const RegisterForm = () => {
             last_name: formData.last_name,
             email: formData.email,
             password: formData.password,
+            company_name: formData.company_name,
+            company_description: formData.company_description,
+            company_address: formData.company_address,
         };
 
         registerMutation.mutate(dataToSend);
@@ -65,100 +84,148 @@ const RegisterForm = () => {
 
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
-            <section className="flex flex-col gap-4">
-                <div className="flex flex-row gap-5">
-                    <div className="flex flex-col gap-1.5 w-1/2">
-                        <label htmlFor="nombre" className="text-xs text-neutral-600">Nombre</label>
+            {step === 1 && (
+                <>
+                    <section className="flex flex-col gap-4">
+                        <div className="flex flex-row gap-5">
+                            <div className="flex flex-col gap-1.5 w-1/2">
+                                <label htmlFor="name" className="text-xs text-neutral-600">Nombre</label>
+                                <input
+                                    onChange={handleChange}
+                                    id="name"
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    suppressHydrationWarning
+                                    className={inputClass}
+                                />
+                            </div>
+
+                            <div className="flex flex-col gap-1.5 w-1/2">
+                                <label htmlFor="last_name" className="text-xs text-neutral-600">Apellido</label>
+                                <input
+                                    onChange={handleChange}
+                                    id="last_name"
+                                    type="text"
+                                    name="last_name"
+                                    value={formData.last_name}
+                                    suppressHydrationWarning
+                                    className={inputClass}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-1.5">
+                            <label htmlFor="email" className="text-xs text-neutral-600">Email</label>
+                            <input
+                                onChange={handleChange}
+                                id="email"
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                suppressHydrationWarning
+                                className={inputClass}
+                            />
+                        </div>
+                    </section>
+
+                    <section className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-1.5">
+                            <label htmlFor="password" className="text-xs text-neutral-600">Contraseña</label>
+                            <div className="relative">
+                                <input
+                                    onChange={handleChange}
+                                    id="password"
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    value={formData.password}
+                                    suppressHydrationWarning
+                                    className={inputClass}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    suppressHydrationWarning
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400 hover:text-neutral-600 transition-colors"
+                                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}>
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col gap-1.5">
+                            <label htmlFor="confirmPassword" className="text-xs text-neutral-600">Confirmar contraseña</label>
+                            <div className="relative">
+                                <input
+                                    onChange={handleChange}
+                                    id="confirmPassword"
+                                    type={showPassword ? "text" : "password"}
+                                    name="confirmPassword"
+                                    value={formData.confirmPassword}
+                                    suppressHydrationWarning
+                                    className={inputClass}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    suppressHydrationWarning
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400 hover:text-neutral-600 transition-colors"
+                                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}>
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </>
+            )}
+
+            {step === 2 && (
+                <section className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-1.5">
+                        <label htmlFor="company_name" className="text-xs text-neutral-600">Nombre de la empresa</label>
                         <input
                             onChange={handleChange}
-                            id="name"
+                            id="company_name"
                             type="text"
-                            name="name"
-                            value={formData.name}
+                            name="company_name"
+                            value={formData.company_name}
                             suppressHydrationWarning
-                            className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                            className={inputClass}
                         />
                     </div>
 
-                    <div className="flex flex-col gap-1.5 w-1/2">
-                        <label htmlFor="apellido" className="text-xs text-neutral-600">Apellido</label>
+                    <div className="flex flex-col gap-1.5">
+                        <label htmlFor="company_description" className="text-xs text-neutral-600">Descripción de la empresa</label>
+                        <textarea
+                            onChange={handleChange}
+                            id="company_description"
+                            name="company_description"
+                            value={formData.company_description}
+                            rows={3}
+                            maxLength={250}
+                            placeholder="Breve descripción de a qué se dedica"
+                            suppressHydrationWarning
+                            className={`${inputClass} resize-none`}
+                        />
+                        <span className="text-xs text-neutral-400 text-right">
+                            {formData.company_description.length}/250
+                        </span>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                        <label htmlFor="company_address" className="text-xs text-neutral-600">Domicilio</label>
                         <input
                             onChange={handleChange}
-                            id="last_name"
+                            id="company_address"
                             type="text"
-                            name="last_name"
-                            value={formData.last_name}
+                            name="company_address"
+                            value={formData.company_address}
                             suppressHydrationWarning
-                            className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                            className={inputClass}
                         />
                     </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                    <label htmlFor="email" className="text-xs text-neutral-600">Email</label>
-                    <input
-                        onChange={handleChange}
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={formData.email}
-        
-                        suppressHydrationWarning
-                        className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out" 
-
-                    />    
-                </div>
-            </section>
-
-            <section className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1.5">
-                    <label htmlFor="password" className="text-xs text-neutral-600">Contraseña</label>
-                    <div className="relative">
-                        <input
-                            onChange={handleChange}
-                            id="password"
-                            type={showPassword ? 'text' : 'password'}
-                            name="password"
-                            value={formData.password}
-                           
-                            suppressHydrationWarning
-                            className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
-                        />
-                        <button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            suppressHydrationWarning
-                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400 hover:text-neutral-600 transition-colors"
-                            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
-                            {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
-                        </button>
-                    </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                    <label htmlFor="confirmPassword" className="text-xs text-neutral-600">Confirmar contraseña</label>
-                    <div className="relative">
-                        <input
-                            onChange={handleChange}
-                            id="confirmPassword"
-                            type={showPassword ? 'text' : 'password'}
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            
-                            suppressHydrationWarning
-                            className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"/>
-                            
-                        <button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            suppressHydrationWarning
-                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400 hover:text-neutral-600 transition-colors"
-                            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
-                            {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
-                        </button>
-                    </div>
-                </div>
-            </section>
+                </section>
+            )}
 
             <section>
                 <div className="mt-4 flex flex-col gap-4">
@@ -170,11 +237,27 @@ const RegisterForm = () => {
                         {registerMutation.isPending ? (
                             <LoadingIndicator />
                         ) : (
-                            <p>Crear cuenta</p>
+                            <p>{step === 1 ? "Continuar" : "Crear cuenta"}</p>
                         )}
                     </button>
 
-                    <span className="text-neutral-600 text-center text-sm">¿Ya tienes una cuenta? <Link href="/login" className="font-semibold text-cyan-600 hover:text-cyan-500 ease-in-out duration-200 transition-colors">Inicia sesión.</Link></span>
+                    {step === 2 && (
+                        <button
+                            type="button"
+                            onClick={() => setStep(1)}
+                            disabled={registerMutation.isPending}
+                            suppressHydrationWarning
+                            className="text-sm text-neutral-600 hover:text-neutral-800 cursor-pointer transition-colors">
+                            Volver
+                        </button>
+                    )}
+
+                    <span className="text-neutral-600 text-center text-sm">
+                        ¿Ya tienes una cuenta?{" "}
+                        <Link href="/login" className="font-semibold text-cyan-600 hover:text-cyan-500 ease-in-out duration-200 transition-colors">
+                            Inicia sesión.
+                        </Link>
+                    </span>
                 </div>
             </section>
         </form>
