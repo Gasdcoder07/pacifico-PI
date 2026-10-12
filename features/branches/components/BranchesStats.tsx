@@ -4,9 +4,13 @@ import TopBranchesCard from "./TopBranchesCard";
 const BranchesStats = () => {
     return (
         <div className="flex items-center gap-8">
-            <TopBranchCard/>
+            <TopBranchCard
+                isLoading={false}
+                branch={null}/>
 
-            <TopBranchesCard/>
+            <TopBranchesCard
+                isLoading={false}
+                branches={null}/>
         </div>
     );
 };

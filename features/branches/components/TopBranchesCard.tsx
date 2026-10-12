@@ -1,4 +1,19 @@
-const TopBranchesCard = () => {
+import { Branch } from "../types/branch";
+
+interface TopBranchesCardProps {
+    isLoading: boolean;
+    branches: Branch[] | null;
+}
+
+const TopBranchesCard = ({ isLoading, branches } : TopBranchesCardProps) => {
+    if (isLoading) {
+        return <div className="bg-neutral-200 rounded-lg w-2/5 h-54 animate-pulse transition-all duration-200"/>
+    }
+
+    if (!branches) {
+        return <TopBranchesCardEmptyState/>
+    }
+
     return (
         <div className="w-2/5 border border-neutral-200 rounded-lg p-4 flex flex-col gap-4 shadow-sm">
             <h3 className="text-xl text-neutral-900 font-bold">
@@ -56,3 +71,27 @@ const TopBranchesCard = () => {
 };
 
 export default TopBranchesCard;
+
+const TopBranchesCardEmptyState = () => {
+    return (
+        <div className="w-2/5 border border-neutral-200 rounded-lg p-4 flex flex-col gap-4 shadow-sm">
+            <h3 className="text-xl text-neutral-900 font-bold">
+                Top 3 Sucursales
+            </h3>
+
+            <div className="flex flex-col gap-2">
+                {
+                    Array.from({ length: 3 }).map((_, index) => {
+                        return (
+                            <div key={index} className="bg-neutral-200 rounded-lg h-6"/>
+                        )
+                    })
+                }
+            </div>
+
+            <div className="bg-neutral-100 rounded p-2 border border-neutral-200">
+                <p className="text-xs text-neutral-600">Este ranking se mostrará cuando tengas al menos 3 sucursales.</p>
+            </div>
+        </div>
+    )
+}
