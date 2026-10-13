@@ -24,6 +24,7 @@ const RegisterForm = () => {
         company_name: "",
         company_description: "",
         company_address: "",
+        company_phone: "",
     });
 
     const [showPassword, setShowPassword] = useState(false);
@@ -77,6 +78,7 @@ const RegisterForm = () => {
             company_name: formData.company_name,
             company_description: formData.company_description,
             company_address: formData.company_address,
+            company_phone: formData.company_phone,
         };
 
         registerMutation.mutate(dataToSend);
@@ -115,6 +117,18 @@ const RegisterForm = () => {
                             </div>
                         </div>
 
+                        <div className="flex flex-col gap-1.5">
+                            <label htmlFor="email" className="text-xs text-neutral-600">Email</label>
+                            <input
+                                onChange={handleChange}
+                                id="email"
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                suppressHydrationWarning
+                                className={inputClass}
+                            />
+                        </div>
                         <div className="flex flex-col gap-1.5">
                             <label htmlFor="email" className="text-xs text-neutral-600">Email</label>
                             <input
@@ -228,7 +242,7 @@ const RegisterForm = () => {
             )}
 
             <section>
-                <div className="mt-4 flex flex-col gap-4">
+                <div className="mt-4 flex gap-4">
                     <button
                         type="submit"
                         disabled={registerMutation.isPending}
