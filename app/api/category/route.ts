@@ -98,8 +98,19 @@ export async function GET(request: Request) {
             );
         }
 
+        const currentUserQuery = await pool.query(`SELECT company_id FROM usuarios WHERE auth_user_id = $1`, [user.id])
+        const currentUser = currentUserQuery.rows[0]
+
+        if (!currentUser) {
+            return NextResponse.json(
+                { error: "No se encontró el usuario en la base de datos" },
+                { status: 404 }
+            )
+        }
+
         const response = await pool.query(
-            `SELECT * FROM categorias;`
+            `SELECT * FROM categorias where company_id = $1;`,
+            [currentUser.company_id]
         );
 
         return NextResponse.json(
@@ -218,7 +229,7 @@ export async function POST(request: Request) {
         }
 
         const currentUserQuery = await pool.query(
-            `SELECT id, rol_id FROM public.usuarios WHERE auth_user_id = $1 AND status = true;`,
+            `SELECT id, rol_id, company_id FROM public.usuarios WHERE auth_user_id = $1 AND status = true;`,
             [user.id]
         );
 
@@ -251,12 +262,13 @@ export async function POST(request: Request) {
         const response = await pool.query(
             `INSERT INTO categorias(
                 name,
+                company_id,
                 description,
                 created_at,
                 admin_id
-            ) VALUES ($1, $2, NOW(), $3)
-            RETURNING id, name, description, created_at, admin_id;`,
-            [name.trim(), description || null, currentUser.id]
+            ) VALUES ($1, $2, $3, NOW(), $4)
+            RETURNING id, name, company_id, description, created_at, admin_id;`,
+            [name.trim(), currentUser.company_id, description || null, currentUser.id]
         );
 
         const finalresponse = response.rows[0];

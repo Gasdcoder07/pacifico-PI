@@ -160,7 +160,6 @@ import { supabaseAdmin } from "@/shared/lib/supabase";
  *                   type: string
  *                   example: "Hubo un error al registrar el usuario. ..."
  */
-
 export async function POST(request: Request) {
     try {
         const authHeader = request.headers.get('Authorization');

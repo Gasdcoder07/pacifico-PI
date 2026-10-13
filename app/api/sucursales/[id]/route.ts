@@ -5,15 +5,22 @@ import { validarAdmin } from "@/shared/utils/backend-funcs";
 
 /**
  * @swagger
- * /api/sucursales:
+ * /api/sucursales/{id}:
  *   get:
- *     summary: Obtener todas las sucursales
- *     description: Consulta la base de datos y devuelve una lista con todos los registros de la tabla sucursales.
+ *     summary: Obtener la sucursal por id
+ *     description: Consulta la base de datos y devuelve una lista con los registros de la tabla sucursales de acuerdo al id.
  *     tags:
  *       - Sucursales
+ *     parameters:
+ *      - in: path
+ *       name: id
+ *       required: true
+ *       schema:
+ *       type: integer
+ *       minimum: 1
  *     responses:
  *       200:
- *         description: Lista de sucursales recuperada exitosamente.
+ *         description: Lista la sucursal recuperada exitosamente.
  *         content:
  *           application/json:
  *             schema:
@@ -47,8 +54,69 @@ import { validarAdmin } from "@/shared/utils/backend-funcs";
  *                     type: string
  *                     format: date-time
  *                     example: "2026-09-04T17:25:00Z"
- *       500:
- *         description: Internal Server Error. Fallo al consultar la base de datos.
+/**
+ * @swagger
+ * /api/sucursales/{id}:
+ *   get:
+ *     summary: Obtener una sucursal por ID
+ *     description: Devuelve los datos de la sucursal correspondiente al ID proporcionado.
+ *     tags:
+ *       - Sucursales
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la sucursal que se desea consultar.
+ *         schema:
+ *           type: integer
+ *           format: int64
+ *           minimum: 1
+ *         example: 2
+ *     responses:
+ *       200:
+ *         description: Sucursal recuperada exitosamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                   format: int64
+ *                   example: 2
+ *                 company_id:
+ *                   type: integer
+ *                   format: int64
+ *                   example: 1
+ *                 admin_id:
+ *                   type: integer
+ *                   format: int64
+ *                   example: 3
+ *                 name:
+ *                   type: string
+ *                   example: "Sucursal Centro"
+ *                 direction:
+ *                   type: string
+ *                   example: "Av. Principal 123"
+ *                 phone:
+ *                   type: string
+ *                   example: "314 125 7959"
+ *                 contact_info:
+ *                   type: string
+ *                   example: "Atención de lunes a sábado"
+ *                 status:
+ *                   type: boolean
+ *                   example: true
+ *                 created_at:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2026-09-04T17:24:00Z"
+ *                 updated_at:
+ *                   type: string
+ *                   format: date-time
+ *                   example: "2026-09-04T17:25:00Z"
+ *       400:
+ *         description: El ID proporcionado no es válido.
  *         content:
  *           application/json:
  *             schema:
@@ -56,7 +124,27 @@ import { validarAdmin } from "@/shared/utils/backend-funcs";
  *               properties:
  *                 error:
  *                   type: string
- *                   example: "Error al obtener las sucursales"
+ *                   example: "El ID debe ser un entero positivo"
+ *       404:
+ *         description: No se encontró la sucursal solicitada.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Sucursal no encontrada"
+ *       500:
+ *         description: Error interno al consultar la base de datos.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Error al obtener la sucursal"
  */
 
 export async function GET( request: Request ) {
