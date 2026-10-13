@@ -34,6 +34,7 @@ const BranchesContainer = () => {
                 {branches.map((branch) => (
                     <BranchCard
                         key={branch.id}
+                        id={branch.id}
                         name={branch.name}
                         status={branch.status}
                         direction={branch.direction}

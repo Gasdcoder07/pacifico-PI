@@ -1,16 +1,20 @@
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { MoveRight, Phone, Pin } from "lucide-react";
 import BranchDropdownActionButton from "@/features/branches/components/BranchDropdownActionButton";
 import { formatPhoneNumber } from "@/shared/utils/formatters";
 
 interface BranchCardProps {
+    id: string | number;
     name: string;
     status: boolean;
     direction: string;
     phone: string
 }
 
-const BranchCard = ({ name, status, direction, phone } : BranchCardProps) => {
+const BranchCard = ({ id, name, status, direction, phone } : BranchCardProps) => {
+    const MotionLink = motion(Link);
+
     return (
         <div className="bg-white w-full flex gap-4 p-2 rounded-lg border border-neutral-200 shadow-sm">
             <div className="relative w-2/5 shrink-0 rounded-lg overflow-hidden shadow">
@@ -68,21 +72,20 @@ const BranchCard = ({ name, status, direction, phone } : BranchCardProps) => {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <motion.button
-                        // onClick={() => setShowModal(true)}
+                    <MotionLink
+                        href={`/branch/${id}/${encodeURIComponent(name)}`}
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.9 }}
                         transition={{
                             type: "spring",
                             stiffness: 300,
                             damping: 20,
-                            duration: 0.2,
-                            ease: "easeInOut",
                         }}
-                        className="w-full bg-cyan-400 text-white px-4 py-2 inline-flex gap-2 items-center justify-center rounded-lg text-sm font-medium cursor-pointer">
+                        className="w-full bg-cyan-400 text-white px-4 py-2 inline-flex gap-2 items-center justify-center rounded-lg text-sm font-medium"
+                    >
                         <span>Ver detalles</span>
                         <MoveRight size={20} className="shrink-0" />
-                    </motion.button>
+                    </MotionLink>
 
                     <BranchDropdownActionButton />
                 </div>
