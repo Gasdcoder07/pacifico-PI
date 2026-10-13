@@ -63,10 +63,10 @@ export const RolSpan = ({ rol_id } : RolSpanProps) => {
     let label = "";
     let spanStyles = "";
 
-    if (rol_id === '1') {
+    if (rol_id === 1) {
         label = 'Administrador';
         spanStyles = "bg-[#EDE9FE] text-[#5B21B6] border-purple-200";
-    } else if (rol_id === '2') {
+    } else if (rol_id === 2) {
         label = 'Gerente';
         spanStyles = "bg-[#DBEAFE] text-[#1E40AF] border-blue-200";
     } else {

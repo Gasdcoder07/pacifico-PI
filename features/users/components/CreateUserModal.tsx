@@ -1,5 +1,7 @@
+import { getBranches } from "@/features/branches/services/branch.service";
 import { CustomSelect } from "@/shared/components/CustomSelect";
 import { ModalLayout } from "@/shared/components/ModalLayout";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 interface CreateUserModalProps {
@@ -8,18 +10,28 @@ interface CreateUserModalProps {
 }
 
 export const CreateUserModal = ({ isOpen, onClose }: CreateUserModalProps) => {
+    const { data, isLoading } = useQuery({
+        queryKey: ["branches"],
+        queryFn: getBranches,
+    });
+
+    const branches = data ? data : [];
+
     const [formData, setFormData] = useState({
         name: "",
         last_name: "",
         email: "",
         password: "",
-        role: ""
+        role: "",
+        sucursal_id: ""
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
+
+    console.log(branches)
 
     return (
         <ModalLayout isOpen={isOpen} onClose={onClose} title="Crear cuenta">
@@ -72,17 +84,31 @@ export const CreateUserModal = ({ isOpen, onClose }: CreateUserModalProps) => {
                     </span>
                 </div>
 
-                <CustomSelect
-                    label="Rol *"
-                    placeholder="Selecciona un rol"
-                    options={[
-                        { value: "1", label: "Admin" },
-                        { value: "2", label: "Gerente" },
-                        { value: "3", label: "Cajero" }
-                    ]}
-                    value={formData.role}
-                    onChange={(value) => setFormData({ ...formData, role: value })}
-                />
+                <div className="w-full flex gap-4">
+                    <CustomSelect
+                        isDisabled={false}
+                        label="Rol *"
+                        placeholder="Selecciona un rol"
+                        options={[
+                            { value: "2", label: "Gerente" },
+                            { value: "3", label: "Cajero" }
+                        ]}
+                        value={formData.role}
+                        onChange={(value) => setFormData({ ...formData, role: value })}
+                    />
+
+                    <CustomSelect
+                        isDisabled={isLoading}
+                        label="Sucursal *"
+                        placeholder="Selecciona una sucursal"
+                        options={branches.map((branch) => ({
+                            value: String(branch.id),
+                            label: branch.name,
+                        }))}
+                        value={formData.sucursal_id}
+                        onChange={(value) => setFormData({ ...formData, sucursal_id: value })}
+                    />
+                </div>
 
                 <div className="flex justify-end gap-4 mt-4">
                     <button

@@ -1,16 +1,27 @@
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
 import TopBranchCard from "./TopBranchCard";
 import TopBranchesCard from "./TopBranchesCard";
+import { getBranches } from "../services/branch.service";
 
 const BranchesStats = () => {
+    const { data, isLoading } = useQuery({
+        queryKey: ["branches"],
+        queryFn: getBranches,
+    });
+
+    const branches = data ? data : [];
+
     return (
         <div className="flex items-center gap-8">
             <TopBranchCard
-                isLoading={false}
-                branch={null}/>
+                isLoading={isLoading}
+                branch={branches[0]}/>
 
             <TopBranchesCard
-                isLoading={false}
-                branches={null}/>
+                isLoading={isLoading}
+                branches={branches}/>
         </div>
     );
 };
