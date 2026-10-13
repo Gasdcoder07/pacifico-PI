@@ -7,7 +7,7 @@ import { validarAdmin } from "@/shared/utils/backend-funcs";
  * @swagger
  * /api/sucursales/{id}:
  *   get:
- *     summary: Obtener todas las sucursales
+ *     summary: Obtener la sucursal por id
  *     description: Consulta la base de datos y devuelve una lista con todos los registros de la tabla sucursales.
  *     tags:
  *       - Sucursales
