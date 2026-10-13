@@ -1,8 +1,9 @@
 import { getBranches } from "@/features/branches/services/branch.service";
 import { CustomSelect } from "@/shared/components/CustomSelect";
 import { ModalLayout } from "@/shared/components/ModalLayout";
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { createManager } from "../services/users.service";
 
 interface CreateUserModalProps {
     isOpen: boolean;
@@ -23,7 +24,7 @@ export const CreateUserModal = ({ isOpen, onClose }: CreateUserModalProps) => {
         email: "",
         password: "",
         role: "",
-        sucursal_id: ""
+        company_id: ""
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -31,11 +32,40 @@ export const CreateUserModal = ({ isOpen, onClose }: CreateUserModalProps) => {
         setFormData({ ...formData, [name]: value });
     };
 
-    console.log(branches)
+    const queryClient = useQueryClient();
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: createManager,
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["users"],
+            });
+
+            setFormData({
+                name: "",
+                last_name: "",
+                email: "",
+                password: "",
+                role: "",
+                company_id: "",
+            });
+
+            onClose();
+        }
+    })
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+
+        mutate({
+            ...formData,
+        });
+    }
 
     return (
         <ModalLayout isOpen={isOpen} onClose={onClose} title="Crear cuenta">
-            <form className="flex flex-col gap-4 text-sm">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-sm">
                 <div className="flex gap-4 items-center">
                     <div className="flex flex-col gap-2">
                         <label className="font-medium text-neutral-600">Nombre *</label>
@@ -105,8 +135,8 @@ export const CreateUserModal = ({ isOpen, onClose }: CreateUserModalProps) => {
                             value: String(branch.id),
                             label: branch.name,
                         }))}
-                        value={formData.sucursal_id}
-                        onChange={(value) => setFormData({ ...formData, sucursal_id: value })}
+                        value={formData.company_id}
+                        onChange={(value) => setFormData({ ...formData, company_id: value })}
                     />
                 </div>
 
@@ -122,7 +152,7 @@ export const CreateUserModal = ({ isOpen, onClose }: CreateUserModalProps) => {
                         type="submit"
                         className="px-4 py-2 rounded-lg bg-cyan-400 text-white font-medium hover:bg-cyan-500 transition-colors ease-in-out duration-200 cursor-pointer"
                     >
-                        Guardar cuenta
+                        {isPending ? 'Guardando cuenta' : 'Guardar cuenta'}
                     </button>
                 </div>
             </form>
