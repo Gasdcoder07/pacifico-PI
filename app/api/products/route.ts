@@ -169,7 +169,7 @@ export async function POST(request: Request) {
         }
 
         const currentUserQuery = await pool.query(
-            `SELECT id, rol_id FROM usuarios WHERE auth_user_id = $1 AND status = true;`,
+            `SELECT id, rol_id, company_id FROM usuarios WHERE auth_user_id = $1 AND status = true;`,
             [user.id]
         );
 
@@ -202,6 +202,7 @@ export async function POST(request: Request) {
         const response = await pool.query(
             `INSERT INTO productos (
                 name,
+                company_id,
                 description,
                 price,
                 category_id,
@@ -210,9 +211,9 @@ export async function POST(request: Request) {
                 foto_public_id,
                 foto_url,
                 admin_id
-            ) VALUES ($1, $2, $3, $4, NOW(), NOW(), $5, $6, $7)
-            RETURNING id, name, description, price, category_id, created_at, updated_at, foto_public_id, foto_url, admin_id;`,
-            [name, description, price, category_id, foto_public_url || null, foto_url || null, currentUser.id]
+            ) VALUES ($1, $2, $3, $4, $5, NOW(), NOW(), $6, $7, $8)
+            RETURNING id, company_id, name, description, price, category_id, created_at, updated_at, foto_public_id, foto_url, admin_id;`,
+            [name, currentUser.company_id, description, price, category_id, foto_public_url || null, foto_url || null, currentUser.id]
         );
 
         const resolvedResponse = response.rows[0];
