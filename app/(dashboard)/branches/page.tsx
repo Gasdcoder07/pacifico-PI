@@ -1,5 +1,11 @@
 import BranchesStats from "@/features/branches/components/BranchesStats";
 import BranchesContainer from "@/features/branches/components/BranchesContainer";
+import { Metadata } from "next";
+
+export const metadata : Metadata = {
+    title : "Pacífico - Sucursales",
+    description : "Gestiona tus sucursales"
+}
 
 export default function Page() {
     return (
