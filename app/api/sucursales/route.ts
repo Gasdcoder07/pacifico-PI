@@ -113,9 +113,19 @@ export async function GET(request: Request) {
             );
         }
 
+        const currentUserQuery = await pool.query(`SELECT rol_id, company_id FROM usuarios WHERE auth_user_id = $1`, [user.id])
+        const currentUser = currentUserQuery.rows[0]
+
+        if (!currentUser) {
+            return NextResponse.json(
+                { error: "No se pudo obtener el usuario de la base de datos" },
+                { status: 404 }
+            )
+        }
+
         const response = await pool.query(`
-            SELECT * FROM sucursales;
-        `);
+            SELECT * FROM sucursales WHERE company_id = $1;
+        `, [currentUser.company_id]);
 
         return NextResponse.json(
             { message: "Has obtenido la información de las sucursales con éxito.", data: response.rows },
