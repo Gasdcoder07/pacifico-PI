@@ -237,3 +237,255 @@ export async function POST(request: Request) {
         );
     }
 }
+
+/**
+ * @swagger
+ * /api/products:
+ *   delete:
+ *     summary: Eliminar un producto
+ *     description: Permite únicamente a administradores (rol 1) eliminar un producto por ID dentro de su empresa, junto con sus registros de inventario.
+ *     tags:
+ *       - Productos
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: 
+ *          -product_id
+ *       properties:
+ *         product_id:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 25
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id
+ *             properties:
+ *               id:
+ *                 type: int
+ *                 example: 25
+ *     responses:
+ *       200:
+ *         description: Producto eliminado exitosamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: string
+ *                   example: "Producto eliminado con éxito"
+ *                 data:
+ *                   $ref: '#/components/schemas/Producto'
+ *       400:
+ *         description: El product_id está ausente o no es un entero positivo.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               error: "Debes enviar un product_id entero positivo"
+ *       401:
+ *         description: Token de sesión ausente, inválido o expirado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               sinToken:
+ *                 value:
+ *                   error: "Hace falta token de sesión"
+ *               tokenInvalido:
+ *                 value:
+ *                   error: "Sesión expirada o token inválido"
+ *       403:
+ *         description: Permisos insuficientes. Se requiere rol de administrador.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               error: "No tienes permiso para realizar esta acción"
+ *       404:
+ *         description: Usuario vinculado a la sesión o producto no encontrado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             examples:
+ *               usuarioNoEncontrado:
+ *                 value:
+ *                   error: "No existe usuario linkeado con esta sesión"
+ *               productoNoEncontrado:
+ *                 value:
+ *                   error: "No se encontró el producto que deseas eliminar"
+ *       409:
+ *         description: El producto tiene otros registros relacionados que impiden eliminarlo.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               error: "No se puede eliminar el producto porque tiene otros registros relacionados"
+ *       500:
+ *         description: Error interno del servidor al eliminar el producto.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *             example:
+ *               error: "Error interno en el servidor al eliminar el producto"
+ */
+
+export async function DELETE(request: Request) {
+    try {
+        const authHeader = request.headers.get("Authorization");
+        const token = authHeader?.match(/^Bearer\s+(\S+)$/i)?.[1];
+
+        if (!token) {
+            return NextResponse.json(
+                { error: "Hace falta token de sesión" },
+                { status: 401 }
+            );
+        }
+
+        const {
+            data: { user },
+            error: authError
+        } = await supabase.auth.getUser(token);
+
+        if (!user || authError) {
+            return NextResponse.json(
+                { error: "Sesión expirada o token inválido" },
+                { status: 401 }
+            );
+        }
+
+        const currentUserQuery = await pool.query(
+            `SELECT id, rol_id, company_id
+            FROM usuarios
+            WHERE auth_user_id = $1 AND status = true;`,
+            [user.id]
+        );
+
+        const currentUser = currentUserQuery.rows[0];
+
+        if (!currentUser) {
+            return NextResponse.json(
+                { error: "No existe usuario linkeado con esta sesión" },
+                { status: 404 }
+            );
+        }
+
+        if (Number(currentUser.rol_id) !== 1) {
+            return NextResponse.json(
+                { error: "No tienes permiso para realizar esta acción" },
+                { status: 403 }
+            );
+        }
+
+        if (currentUser.company_id == null) {
+            return NextResponse.json(
+                { error: "El usuario no tiene una empresa asignada" },
+                { status: 403 }
+            );
+        }
+
+        const body = await request.json().catch(() => null);
+        const product_id = body?.product_id;
+
+        if (!Number.isSafeInteger(product_id) || product_id <= 0) {
+            return NextResponse.json(
+                { error: "Debes enviar un product_id entero positivo" },
+                { status: 400 }
+            );
+        }
+
+        const client = await pool.connect();
+
+        try {
+            await client.query("BEGIN");
+
+            // Verificar la empresa y bloquear el producto mientras se realiza la eliminación.
+            const productQuery = await client.query(
+                `SELECT id
+                FROM productos
+                WHERE company_id = $1 AND id = $2
+                FOR UPDATE;`,
+                [currentUser.company_id, product_id]
+            );
+
+            if (productQuery.rows.length === 0) {
+                await client.query("ROLLBACK");
+
+                return NextResponse.json(
+                    {
+                        error: "No se encontró el producto que deseas eliminar"
+                    },
+                    { status: 404 }
+                );
+            }
+
+            await client.query(
+                `DELETE FROM inventario AS i
+                USING productos AS p
+                WHERE i.product_id = p.id
+                    AND p.company_id = $1
+                    AND p.id = $2;`,
+                [currentUser.company_id, product_id]
+            );
+
+            const response = await client.query(
+                `DELETE FROM productos
+                WHERE company_id = $1 AND id = $2
+                 RETURNING *;`,
+                [currentUser.company_id, product_id]
+            );
+
+            if (response.rows.length === 0) {
+                throw new Error("No se pudo eliminar el producto");
+            }
+
+            await client.query("COMMIT");
+
+            return NextResponse.json(
+                {
+                    success: "Producto eliminado con éxito",
+                    data: response.rows[0]
+                },
+                { status: 200 }
+            );
+        } catch (err) {
+            // Si falla algún paso, recuperar los registros eliminados.
+            await client.query("ROLLBACK");
+            throw err;
+        } finally {
+            client.release();
+        }
+    } catch (err) {
+        console.error("Error al eliminar el producto:", err);
+
+        // Otra tabla todavía hace referencia al producto.
+        if (
+            typeof err === "object" &&
+            err !== null &&
+            "code" in err &&
+            err.code === "23503"
+        ) {
+            return NextResponse.json(
+                {
+                    error:
+                        "No se puede eliminar el producto porque tiene otros registros relacionados"
+                },
+                { status: 409 }
+            );
+        }
+
+        return NextResponse.json(
+            { error: "Error interno en el servidor al eliminar el producto" },
+            { status: 500 }
+        );
+    }
+}
