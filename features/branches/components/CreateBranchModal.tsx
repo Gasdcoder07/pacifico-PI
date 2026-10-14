@@ -1,25 +1,53 @@
 import { ModalLayout } from "@/shared/components/ModalLayout";
 import { useState, useRef } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { createBranch, type CreateBranchPayload } from "@/features/branches/services/branch.service";
 
 interface CreateBranchModalProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
+const initialForm = {
+    company_name: "",
+    company_description: "",
+    company_address: "",
+    company_phone: "",
+};
+
 export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) => {
-    const [formData, setFormData] = useState({
-        company_name: "",
-        company_description: "",
-        company_address: "",
-        company_phone: "",      
-    });
+    const queryClient = useQueryClient();
+    const [formData, setFormData] = useState(initialForm);
 
     // Estado para la foto (almacena el archivo y la vista previa)
+    // OJO: por ahora el backend no recibe imagen, así que solo se muestra la vista previa
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    
+
     // Referencia para activar el input de tipo file de manera oculta
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const resetForm = () => {
+        setFormData(initialForm);
+        setImageFile(null);
+        setImagePreview(null);
+    };
+
+    const { mutate: mutateCreateBranch, isPending: isCreating } = useMutation({
+        mutationFn: (data: CreateBranchPayload) => createBranch(data),
+
+        onSuccess: () => {
+            toast.success("Sucursal creada correctamente");
+            queryClient.invalidateQueries({ queryKey: ["branches"] });
+            resetForm();
+            onClose();
+        },
+
+        onError: (error: any) => {
+            toast.error(error?.response?.data?.error || "Ocurrió un error al crear la sucursal");
+        },
+    });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -29,44 +57,69 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
     // Manejar el cambio de imagen
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file) {
-            setImageFile(file);
-            
-            // Generar una vista previa en tiempo real
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+        if (!file) return;
+
+        if (!["image/jpeg", "image/png"].includes(file.type)) {
+            toast.error("Solo se permiten imágenes JPG o PNG.");
+            return;
         }
+
+        if (file.size > 2 * 1024 * 1024) {
+            toast.error("La imagen no puede pesar más de 2 MB.");
+            return;
+        }
+
+        setImageFile(file);
+
+        // Generar una vista previa en tiempo real
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImagePreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
     };
 
     const triggerFileSelect = () => {
         fileInputRef.current?.click();
     };
 
+    const handleClose = () => {
+        if (isCreating) return;
+        resetForm();
+        onClose();
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Aquí puedes enviar formData junto con imageFile a tu API
-        console.log("Datos:", formData);
-        console.log("Imagen subida:", imageFile);
+
+        if (!formData.company_name.trim() || !formData.company_address.trim() || !formData.company_phone.trim()) {
+            toast.error("Por favor, completa todos los campos obligatorios.");
+            return;
+        }
+
+        mutateCreateBranch({
+            name: formData.company_name.trim(),
+            direction: formData.company_address.trim(),
+            phone: formData.company_phone.trim(),
+            contact_info: formData.company_description.trim(),
+        });
     };
 
     return (
-        <ModalLayout isOpen={isOpen} onClose={onClose} title="Crear nueva sucursal">
+        <ModalLayout isOpen={isOpen} onClose={handleClose} title="Crear nueva sucursal">
             <form onSubmit={handleSubmit} className="flex flex-col gap-3 text-sm">
-                
+
                 {/* Sección para subir/cambiar foto */}
                 <div className="flex flex-col items-center gap-2 bg-neutral-50 p-2 rounded-xl border border-dashed border-neutral-200">
                     <span className="font-medium text-neutral-600 self-start">Foto de la sucursal</span>
-                    <div 
-                        onClick={triggerFileSelect} 
+                    <div
+                        onClick={triggerFileSelect}
                         className="relative group w-12 h-12 rounded-full border-2 border-neutral-200 overflow-hidden cursor-pointer hover:border-cyan-400 transition-all duration-200"
                     >
                         {imagePreview ? (
-                            <img 
-                                src={imagePreview} 
-                                alt="Previsualización" 
+                            <img
+                                src={imagePreview}
+                                alt="Previsualización"
                                 className="w-full h-full object-cover"
                             />
                         ) : (
@@ -77,23 +130,23 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                                 </svg>
                             </div>
                         )}
-                        
+
                         {/* Overlay de hover "Cambiar foto" */}
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                             Cambiar foto
                         </div>
                     </div>
 
-                    <input 
-                        type="file" 
+                    <input
+                        type="file"
                         ref={fileInputRef}
                         onChange={handleImageChange}
-                        accept="image/*"
-                        className="hidden" 
+                        accept="image/jpeg,image/png"
+                        className="hidden"
                     />
-                    
-                    <button 
-                        type="button" 
+
+                    <button
+                        type="button"
                         onClick={triggerFileSelect}
                         className="text-xs font-medium text-cyan-600 hover:text-cyan-700"
                     >
@@ -105,7 +158,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                 {/* Campos de texto */}
                 <div className="flex flex-col gap-2">
                     <label className="font-medium text-neutral-600">Nombre de la sucursal *</label>
-                    <input 
+                    <input
                         type="text"
                         name="company_name"
                         value={formData.company_name}
@@ -117,7 +170,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
 
                 <div className="flex flex-col gap-2">
                     <label className="font-medium text-neutral-600">Descripción</label>
-                    <input 
+                    <input
                         type="text"
                         name="company_description"
                         value={formData.company_description}
@@ -129,8 +182,8 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
 
                 <div className="flex flex-col gap-2">
                     <label className="font-medium text-neutral-600">Dirección *</label>
-                    <input 
-                        type="text" 
+                    <input
+                        type="text"
                         name="company_address"
                         value={formData.company_address}
                         onChange={handleInputChange}
@@ -141,7 +194,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
 
                 <div className="flex flex-col gap-2">
                     <label className="font-medium text-neutral-600">Teléfono *</label>
-                    <input 
+                    <input
                         type="tel"
                         name="company_phone"
                         value={formData.company_phone}
@@ -154,16 +207,22 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                 <div className="flex justify-end gap-3 mt-4">
                     <button
                         type="button"
-                        onClick={onClose}
-                        className="px-4 py-2 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 transition-colors ease-in-out duration-200 cursor-pointer"
+                        onClick={handleClose}
+                        disabled={isCreating}
+                        className="px-4 py-2 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 transition-colors ease-in-out duration-200 cursor-pointer disabled:opacity-50"
                     >
                         Cancelar
                     </button>
                     <button
                         type="submit"
-                        className="px-4 py-2 rounded-lg bg-cyan-400 text-white font-medium hover:bg-cyan-500 transition-colors ease-in-out duration-200 cursor-pointer"
+                        disabled={isCreating}
+                        className={`px-4 py-2 rounded-lg text-white font-medium transition-colors ease-in-out duration-200 ${
+                            isCreating
+                                ? "bg-neutral-400 cursor-not-allowed"
+                                : "bg-cyan-400 hover:bg-cyan-500 cursor-pointer"
+                        }`}
                     >
-                     Crear sucursal
+                        {isCreating ? "Creando sucursal..." : "Crear sucursal"}
                     </button>
                 </div>
             </form>
