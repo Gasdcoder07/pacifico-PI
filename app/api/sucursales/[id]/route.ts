@@ -55,7 +55,6 @@ import { validarAdmin } from "@/shared/utils/backend-funcs";
  *                     format: date-time
  *                     example: "2026-09-04T17:25:00Z"
 /**
-/**
  * @swagger
  * /api/sucursales/{id}:
  *   get:
