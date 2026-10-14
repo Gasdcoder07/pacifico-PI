@@ -5,15 +5,22 @@ import { validarAdmin } from "@/shared/utils/backend-funcs";
 
 /**
  * @swagger
- * /api/sucursales:
+ * /api/sucursales/{id}:
  *   get:
- *     summary: Obtener todas las sucursales
- *     description: Consulta la base de datos y devuelve una lista con todos los registros de la tabla sucursales.
+ *     summary: Obtener la sucursal por id
+ *     description: Consulta la base de datos y devuelve una lista con los registros de la tabla sucursales de acuerdo al id.
  *     tags:
  *       - Sucursales
+ *     parameters:
+ *      - in: path
+ *       name: id
+ *       required: true
+ *       schema:
+ *       type: integer
+ *       minimum: 1
  *     responses:
  *       200:
- *         description: Lista de sucursales recuperada exitosamente.
+ *         description: Lista la sucursal recuperada exitosamente.
  *         content:
  *           application/json:
  *             schema:
@@ -47,16 +54,37 @@ import { validarAdmin } from "@/shared/utils/backend-funcs";
  *                     type: string
  *                     format: date-time
  *                     example: "2026-09-04T17:25:00Z"
+/**
+ * @swagger
+ * /api/sucursales/{id}:
+ *   get:
+ *     summary: Obtener la sucursal por ID
+ *     description: Devuelve la información de una sucursal.
+ *     tags:
+ *       - Sucursales
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la sucursal
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *     responses:
+ *       200:
+ *         description: Información de la sucursal obtenida.
+ *       400:
+ *         description: ID no válido.
+ *       401:
+ *         description: Sesión inválida o token faltante.
+ *       403:
+ *         description: Sin permiso para consultar la sucursal.
+ *       404:
+ *         description: Sucursal no encontrada.
  *       500:
- *         description: Internal Server Error. Fallo al consultar la base de datos.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Error al obtener las sucursales"
+ *         description: Error interno del servidor.
  */
 
 export async function GET( request: Request ) {

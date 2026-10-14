@@ -4,12 +4,14 @@ import { supabaseAdmin } from "@/shared/lib/supabase";
 
 /**
  * @swagger
- * /api/auth/register/admin:
+ * /api/auth/register/cashier:
  *   post:
- *     summary: Registrar un nuevo administrador
- *     description: Crea un usuario con rol de administrador (rol_id 3) en Supabase Auth mediante el trigger y actualiza su foto de perfil en la tabla de usuarios.
+ *     summary: Registrar un nuevo cajero
+ *     description: Permite a administradores (rol 1) y gerentes (rol 2) crear un cajero (rol 3) en su misma empresa. Crea la cuenta en Supabase Auth con el correo confirmado e inserta su perfil en la tabla usuarios.
  *     tags:
- *       - Administradores
+ *       - Cajeros
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -24,33 +26,36 @@ import { supabaseAdmin } from "@/shared/lib/supabase";
  *             properties:
  *               name:
  *                 type: string
- *                 description: Nombre(s) del administrador.
+ *                 description: Nombre(s) del cajero.
  *                 example: "Carlos"
  *               last_name:
  *                 type: string
- *                 description: Apellido(s) del administrador.
+ *                 description: Apellido(s) del cajero.
  *                 example: "Gómez"
  *               email:
  *                 type: string
  *                 format: email
- *                 description: Correo electrónico.
- *                 example: "carlos.admin@empresa.com"
+ *                 description: Correo electrónico del cajero.
+ *                 example: "carlos.cajero@empresa.com"
  *               password:
  *                 type: string
  *                 format: password
- *                 description: Contraseña segura (mínimo 6 caracteres, 1 mayúscula, 1 símbolo).
- *                 example: "Admin_123"
+ *                 minLength: 6
+ *                 writeOnly: true
+ *                 description: Debe contener al menos 6 caracteres, una mayúscula y un símbolo.
+ *                 example: "Cajero_123"
  *               foto_url:
  *                 type: string
- *                 description: URL de la foto de perfil (Opcional).
+ *                 format: uri
+ *                 description: URL de la foto de perfil. Opcional.
  *                 example: "https://midominio.com/foto.jpg"
  *               foto_public_id:
  *                 type: string
- *                 description: ID público de la imagen en el storage (Opcional).
- *                 example: "foto_12345"
+ *                 description: Identificador público de la foto de perfil. Opcional.
+ *                 example: "usuarios/cajero_12345"
  *     responses:
  *       201:
- *         description: Administrador creado con éxito. Devuelve el perfil actualizado de la base de datos.
+ *         description: Cajero registrado exitosamente.
  *         content:
  *           application/json:
  *             schema:
@@ -65,26 +70,32 @@ import { supabaseAdmin } from "@/shared/lib/supabase";
  *                     id:
  *                       type: integer
  *                       example: 15
- *                     nombre:
+ *                     company_id:
+ *                       type: integer
+ *                       example: 2
+ *                     name:
  *                       type: string
  *                       example: "Carlos"
- *                     apellido:
+ *                     last_name:
  *                       type: string
  *                       example: "Gómez"
- *                     correo:
+ *                     email:
  *                       type: string
- *                       example: "carlos.admin@empresa.com"
+ *                       format: email
+ *                       example: "carlos.cajero@empresa.com"
  *                     rol_id:
  *                       type: integer
  *                       example: 3
- *                     estado:
+ *                     status:
  *                       type: boolean
  *                       example: true
  *                     foto_url:
  *                       type: string
+ *                       format: uri
+ *                       nullable: true
  *                       example: "https://midominio.com/foto.jpg"
  *       400:
- *         description: Bad Request. Faltan datos, la contraseña no cumple con los requisitos o hubo un error al crear en Supabase.
+ *         description: Faltan campos obligatorios, la contraseña no cumple los requisitos o Supabase rechazó la creación del usuario.
  *         content:
  *           application/json:
  *             schema:
@@ -92,9 +103,54 @@ import { supabaseAdmin } from "@/shared/lib/supabase";
  *               properties:
  *                 error:
  *                   type: string
- *                   example: "Hace falta alguno de estos campos: (name, last_name, email, password)"
+ *             examples:
+ *               camposFaltantes:
+ *                 value:
+ *                   error: "Hace falta alguno de estos campos: (name, last_name, email, password)"
+ *               passwordInsegura:
+ *                 value:
+ *                   error: "La contraseña no es suficientemente segura: \n1.- 6 caracteres como mínimo\n2.- Un símbolo\n3.- Una mayúscula"
+ *               errorSupabase:
+ *                 value:
+ *                   error: "Ha habido un error al crear usuario en SupaBase ..."
+ *       401:
+ *         description: Token ausente o usuario sin permisos para registrar cajeros.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *             examples:
+ *               sinToken:
+ *                 value:
+ *                   error: "Error al obtener el token"
+ *               sinPermisos:
+ *                 value:
+ *                   error: "No tienes permisos para registrar un nuevo Cajero"
+ *       403:
+ *         description: No se pudo validar la sesión con el token proporcionado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Error al adquirir la sesión actual"
+ *       404:
+ *         description: No existe un perfil asociado al usuario autenticado en la tabla usuarios.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Error al obtener el usuario de la base de datos"
  *       500:
- *         description: Internal Server Error. Fallo inesperado en el servidor o base de datos.
+ *         description: Error inesperado en el servidor o al insertar el perfil en la base de datos.
  *         content:
  *           application/json:
  *             schema:
@@ -102,9 +158,8 @@ import { supabaseAdmin } from "@/shared/lib/supabase";
  *               properties:
  *                 error:
  *                   type: string
- *                   example: "Hubo un error al registrar el usuario. Error: ..."
+ *                   example: "Hubo un error al registrar el usuario. ..."
  */
-
 export async function POST(request: Request) {
     try {
         const authHeader = request.headers.get('Authorization');

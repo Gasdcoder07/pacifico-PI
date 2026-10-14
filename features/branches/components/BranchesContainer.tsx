@@ -25,7 +25,7 @@ const BranchesContainer = () => {
             );
         }
 
-        if (!branches) {
+        if (branches.length === 0) {
             return <>{<BranchesEmptyState/>}</>;
         }
 

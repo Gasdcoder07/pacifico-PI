@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
+import { CreateBranchModal } from './CreateBranchModal';
 
 const CreateBranchButton = () => {
     const [showModal, setShowModal] = useState(false);
@@ -25,6 +26,10 @@ const CreateBranchButton = () => {
                 <Plus size={20} className="shrink-0" />
                 <span>Crear sucursal</span>
             </motion.button>
+
+            {
+            showModal && <CreateBranchModal isOpen={showModal} onClose={() => setShowModal(false)} />
+            }
         </>
     );
 };
