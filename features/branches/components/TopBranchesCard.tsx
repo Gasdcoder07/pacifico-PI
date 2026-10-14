@@ -21,7 +21,7 @@ const TopBranchesCard = ({ isLoading, branches } : TopBranchesCardProps) => {
             </h3>
 
             <div className="flex flex-col gap-2">
-                <div className="bg-amber-500/10 border border-amber-500/20 p-2 rounded flex items-center justify-between gap-4">
+                <div className="bg-amber-500/10 p-2 rounded-lg shadow-sm flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4 min-w-0">
                         <div className="size-6 flex shrink-0 justify-center items-center rounded-full bg-amber-500 text-white font-bold text-xs">
                             1
@@ -36,7 +36,7 @@ const TopBranchesCard = ({ isLoading, branches } : TopBranchesCardProps) => {
                     </p>
                 </div>
 
-                <div className="bg-slate-500/10 border border-slate-500/20 p-2 rounded flex items-center justify-between gap-4">
+                <div className="bg-slate-500/10 shadow-sm p-2 rounded-lg flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4 min-w-0">
                         <div className="size-6 flex shrink-0 justify-center items-center rounded-full bg-slate-500 text-white font-bold text-xs">
                             2
@@ -51,7 +51,7 @@ const TopBranchesCard = ({ isLoading, branches } : TopBranchesCardProps) => {
                     </p>
                 </div>
 
-                <div className="bg-orange-500/10 border border-orange-500/20 p-2 rounded flex items-center justify-between gap-4">
+                <div className="bg-orange-500/10 shadow-sm p-2 rounded-lg flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4 min-w-0">
                         <div className="size-6 flex shrink-0 justify-center items-center rounded-full bg-orange-600 text-white font-bold text-xs">
                             3
