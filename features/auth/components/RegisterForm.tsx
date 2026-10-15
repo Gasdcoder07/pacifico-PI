@@ -129,18 +129,7 @@ const RegisterForm = () => {
                                 className={inputClass}
                             />
                         </div>
-                        <div className="flex flex-col gap-1.5">
-                            <label htmlFor="email" className="text-xs text-neutral-600">Email</label>
-                            <input
-                                onChange={handleChange}
-                                id="email"
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                suppressHydrationWarning
-                                className={inputClass}
-                            />
-                        </div>
+                       
                     </section>
 
                     <section className="flex flex-col gap-4">
