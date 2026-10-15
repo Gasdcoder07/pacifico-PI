@@ -1,65 +1,37 @@
-import pool from "@/shared/lib/db";
-import { supabase } from "@/shared/lib/supabase";
 import { NextResponse } from "next/server";
+import {apiError,checkBranches,getActor,HttpError,readAllocations,readBody,transaction, validId,
+} from "@/shared/utils/inventory-access";
 
 /**
  * @swagger
  * components:
  *   schemas:
- *     Producto:
+ *     ProductBranchAllocation:
  *       type: object
+ *       required: [branch_id, quantity]
  *       properties:
- *         id:
+ *         branch_id:
+ *           type: string
+ *           example: "1"
+ *         quantity:
  *           type: integer
- *           example: 1
- *         name:
- *           type: string
- *           example: "Sabritas Sal 170g"
- *         description:
- *           type: string
- *           example: "Papas fritas con sal"
- *         price:
- *           type: number
- *           format: float
- *           example: 25.50
- *         category_id:
+ *           minimum: 0
+ *           maximum: 2147483647
+ *           example: 20
+ *         min_stock:
  *           type: integer
- *           example: 2
- *         created_at:
- *           type: string
- *           format: date-time
- *           example: "2026-09-04T17:24:00Z"
- *         updated_at:
- *           type: string
- *           format: date-time
- *           example: "2026-09-04T17:25:00Z"
- *         foto_public_id:
- *           type: string
- *           nullable: true
- *           example: "productos/sabritas_123"
- *         foto_url:
- *           type: string
- *           nullable: true
- *           example: "https://res.cloudinary.com/demo/image/upload/v12345/sabritas.jpg"
- *         admin_id:
- *           type: integer
- *           example: 1
- *     ErrorResponse:
- *       type: object
- *       properties:
- *         error:
- *           type: string
- *           example: "Mensaje descriptivo del error"
+ *           minimum: 0
+ *           maximum: 2147483647
+ *           example: 5
  */
 
 /**
  * @swagger
  * /api/products:
  *   post:
- *     summary: Crear un nuevo producto
- *     description: Permite únicamente a usuarios administradores (rol 1) registrar un nuevo producto en el sistema.
- *     tags:
- *       - Productos
+ *     summary: Crear producto y asignarlo a sucursales
+ *     description: ADMIN selecciona sucursales de su empresa. GERENTE solo puede seleccionar su sucursal. La operación completa es transaccional.
+ *     tags: [Productos]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -68,174 +40,149 @@ import { NextResponse } from "next/server";
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - name
- *               - description
- *               - price
- *               - category_id
+ *             required: [name, price, category_id, branches]
  *             properties:
  *               name:
  *                 type: string
- *                 example: "Sabritas Sal 170g"
+ *                 example: Sabritas Sal 170g
  *               description:
  *                 type: string
- *                 example: "Papas fritas con sal"
+ *                 nullable: true
+ *                 example: Papas fritas con sal
  *               price:
  *                 type: number
- *                 format: float
+ *                 minimum: 0
  *                 example: 25.50
  *               category_id:
- *                 type: integer
- *                 example: 2
- *               foto_public_url:
  *                 type: string
- *                 example: "productos/sabritas_123"
+ *                 example: "2"
+ *               foto_public_id:
+ *                 type: string
+ *                 nullable: true
  *               foto_url:
  *                 type: string
- *                 example: "https://res.cloudinary.com/demo/image/upload/v12345/sabritas.jpg"
+ *                 nullable: true
+ *               branches:
+ *                 type: array
+ *                 minItems: 1
+ *                 items:
+ *                   $ref: '#/components/schemas/ProductBranchAllocation'
  *     responses:
  *       201:
- *         description: Producto creado exitosamente.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: string
- *                   example: 'Has creado el producto Sabritas Sal 170g con éxito'
- *                 data:
- *                   $ref: '#/components/schemas/Producto'
+ *         description: Devuelve success, data con el producto e inventory con las existencias creadas.
  *       400:
- *         description: Campos obligatorios faltantes.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "Hacen falta campos obligatorios"
+ *         description: Datos no válidos.
  *       401:
- *         description: No autorizado o token de sesión inválido.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "Hace falta token de sesión"
+ *         description: Sesión inválida.
  *       403:
- *         description: Permisos insuficientes (requiere rol de administrador).
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "No tienes permiso para realizar esta acción"
+ *         description: Rol no permitido o sucursal fuera del alcance.
  *       404:
- *         description: Usuario no encontrado en la base de datos.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "No existe usuario linkeado con esta sesión"
+ *         description: Categoría o sucursal no disponible en la empresa.
+ *       409:
+ *         description: Conflicto con los datos.
  *       500:
- *         description: Error interno del servidor.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "Error interno en el servidor al crear el producto"
+ *         description: Error interno.
  */
 export async function POST(request: Request) {
     try {
-        const authHeader = request.headers.get("Authorization");
-        const token = authHeader?.match(/^Bearer\s+(\S+)$/i)?.[1];
+        const actor = await getActor(request, [1, 2]);
+        const body = await readBody(request);
 
-        if (!token) {
-            return NextResponse.json(
-                { error: "Hace falta token de sesión" },
-                { status: 401 }
+        if (typeof body.name !== "string" || !body.name.trim()) {
+            throw new HttpError(400, "El nombre del producto es obligatorio");
+        }
+
+        const name = body.name.trim();
+        const categoryId = validId(body.category_id);
+        const branches = readAllocations(body.branches);
+
+        // Precio no negativo, hasta 10 enteros y 2 decimales.
+        if (
+            !["number", "string"].includes(typeof body.price) ||
+            !/^\d{1,10}(\.\d{1,2})?$/.test(String(body.price))
+        ) {
+            throw new HttpError(
+                400,
+                "El precio debe ser no negativo y tener máximo dos decimales"
             );
         }
 
-        const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-        if (!user || authError) {
-            return NextResponse.json(
-                { error: "Sesión expirada o token inválido" },
-                { status: 401 }
-            );
+        for (const field of ["description", "foto_url", "foto_public_id"]) {
+            if (body[field] != null && typeof body[field] !== "string") {
+                throw new HttpError(400, `El campo ${field} debe ser texto`);
+            }
         }
 
-        const currentUserQuery = await pool.query(
-            `SELECT id, rol_id, company_id FROM usuarios WHERE auth_user_id = $1 AND status = true;`,
-            [user.id]
-        );
-
-        const currentUser = currentUserQuery.rows[0];
-
-        if (!currentUser) {
-            return NextResponse.json(
-                { error: "No existe usuario linkeado con esta sesión" },
-                { status: 404 }
+        const result = await transaction(async (client) => {
+            const category = await client.query(
+                `SELECT id
+                FROM public.categorias
+                WHERE id = $1 AND company_id = $2
+                FOR SHARE`,
+                [categoryId, actor.company_id]
             );
-        }
 
-        if (Number(currentUser.rol_id) !== 1) {
-            return NextResponse.json(
-                { error: "No tienes permiso para realizar esta acción" },
-                { status: 403 }
+            if (!category.rows[0]) {
+                throw new HttpError(404, "Categoría no encontrada en tu empresa");
+            }
+
+            await checkBranches(
+                client,
+                actor,
+                branches.map((item) => item.branch_id)
             );
-        }
 
-        const body = await request.json();
-        const { name, description, price, category_id, foto_public_url, foto_url } = body;
+            const adminId = actor.rol_id === 1 ? actor.id : actor.admin_id;
 
-        if (!name || !description || price === undefined || price === null || !category_id) {
-            return NextResponse.json(
-                { error: "Hacen falta campos obligatorios" },
-                { status: 400 }
+            const product = await client.query(
+                `INSERT INTO public.productos (
+                    company_id, name, description, price,
+                    category_id, foto_public_id, foto_url, admin_id
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                 RETURNING *`,
+                [
+                    actor.company_id,
+                    name,
+                    body.description ?? null,
+                    body.price,
+                    categoryId,
+                    body.foto_public_id ?? null,
+                    body.foto_url ?? null,
+                    adminId,
+                ]
             );
-        }
 
-        const response = await pool.query(
-            `INSERT INTO productos (
-                name,
-                company_id,
-                description,
-                price,
-                category_id,
-                created_at,
-                updated_at,
-                foto_public_id,
-                foto_url,
-                admin_id
-            ) VALUES ($1, $2, $3, $4, $5, NOW(), NOW(), $6, $7, $8)
-            RETURNING id, company_id, name, description, price, category_id, created_at, updated_at, foto_public_id, foto_url, admin_id;`,
-            [name, currentUser.company_id, description, price, category_id, foto_public_url || null, foto_url || null, currentUser.id]
-        );
+            const inventory = [];
 
-        const resolvedResponse = response.rows[0];
+            for (const branch of branches) {
+                const stock = await client.query(
+                    `INSERT INTO public.inventario (
+                        company_id, branch_id, product_id, quantity, min_stock
+                    )
+                    VALUES ($1, $2, $3, $4, $5)
+                     RETURNING *`,
+                    [
+                        actor.company_id,
+                        branch.branch_id,
+                        product.rows[0].id,
+                        branch.quantity,
+                        branch.min_stock ?? 5,
+                    ]
+                );
 
-        if (!resolvedResponse) {
-            return NextResponse.json(
-                { error: "Error al generar tu producto nuevo" },
-                { status: 500 }
-            );
-        }
+                inventory.push(stock.rows[0]);
+            }
+
+            return { data: product.rows[0], inventory };
+        });
 
         return NextResponse.json(
-            { success: `Has creado el producto ${name} con éxito`, data: resolvedResponse },
+            { success: "Producto e inventario creados con éxito", ...result },
             { status: 201 }
         );
-
-    } catch (err) {
-        console.error("Error al crear producto:", err);
-        return NextResponse.json(
-            { error: "Error interno en el servidor al crear el producto" },
-            { status: 500 }
-        );
+    } catch (error) {
+        return apiError(error);
     }
 }
 
@@ -243,250 +190,110 @@ export async function POST(request: Request) {
  * @swagger
  * /api/products:
  *   delete:
- *     summary: Eliminar un producto
- *     description: Permite únicamente a administradores (rol 1) eliminar un producto por ID dentro de su empresa, junto con sus registros de inventario.
- *     tags:
- *       - Productos
+ *     summary: Retirar un producto de sucursales seleccionadas
+ *     description: Elimina las filas de inventario y sus existencias en las sucursales seleccionadas. Conserva el catálogo y las ventas anteriores. GERENTE solo puede retirar de su sucursal.
+ *     tags: [Productos]
  *     security:
  *       - BearerAuth: []
  *     requestBody:
- *       required: 
- *          -product_id
- *       properties:
- *         product_id:
- *           type: integer
- *           minimum: 1
- *           maximum: 25
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - id
+ *             required: [product_id]
  *             properties:
- *               id:
- *                 type: int
- *                 example: 25
+ *               product_id:
+ *                 type: string
+ *                 example: "25"
+ *               branch_ids:
+ *                 type: array
+ *                 minItems: 1
+ *                 description: Obligatorio para ADMIN. Para GERENTE puede omitirse y se utiliza su sucursal.
+ *                 items:
+ *                   type: string
+ *                 example: ["1", "2"]
  *     responses:
  *       200:
- *         description: Producto eliminado exitosamente.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: string
- *                   example: "Producto eliminado con éxito"
- *                 data:
- *                   $ref: '#/components/schemas/Producto'
+ *         description: Devuelve success, product_id y data con los registros de inventario retirados.
  *       400:
- *         description: El product_id está ausente o no es un entero positivo.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "Debes enviar un product_id entero positivo"
+ *         description: Datos no válidos.
  *       401:
- *         description: Token de sesión ausente, inválido o expirado.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               sinToken:
- *                 value:
- *                   error: "Hace falta token de sesión"
- *               tokenInvalido:
- *                 value:
- *                   error: "Sesión expirada o token inválido"
+ *         description: Sesión inválida.
  *       403:
- *         description: Permisos insuficientes. Se requiere rol de administrador.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "No tienes permiso para realizar esta acción"
+ *         description: Rol o sucursal no permitidos.
  *       404:
- *         description: Usuario vinculado a la sesión o producto no encontrado.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               usuarioNoEncontrado:
- *                 value:
- *                   error: "No existe usuario linkeado con esta sesión"
- *               productoNoEncontrado:
- *                 value:
- *                   error: "No se encontró el producto que deseas eliminar"
+ *         description: Producto, sucursal o asignación no encontrados.
  *       409:
- *         description: El producto tiene otros registros relacionados que impiden eliminarlo.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "No se puede eliminar el producto porque tiene otros registros relacionados"
+ *         description: Conflicto con registros relacionados.
  *       500:
- *         description: Error interno del servidor al eliminar el producto.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "Error interno en el servidor al eliminar el producto"
+ *         description: Error interno.
  */
-
 export async function DELETE(request: Request) {
     try {
-        const authHeader = request.headers.get("Authorization");
-        const token = authHeader?.match(/^Bearer\s+(\S+)$/i)?.[1];
+        const actor = await getActor(request, [1, 2]);
+        const body = await readBody(request);
+        const productId = validId(body.product_id);
 
-        if (!token) {
-            return NextResponse.json(
-                { error: "Hace falta token de sesión" },
-                { status: 401 }
-            );
+        const requestedBranches = body.branch_ids === undefined &&
+            actor.rol_id === 2
+            ? [actor.branch_id]
+            : body.branch_ids;
+
+        if (
+            !Array.isArray(requestedBranches) ||
+            requestedBranches.length === 0
+        ) {
+            throw new HttpError(400, "Debes enviar branch_ids");
         }
 
-        const {
-            data: { user },
-            error: authError
-        } = await supabase.auth.getUser(token);
+        const branchIds = requestedBranches.map(validId);
 
-        if (!user || authError) {
-            return NextResponse.json(
-                { error: "Sesión expirada o token inválido" },
-                { status: 401 }
-            );
+        if (new Set(branchIds).size !== branchIds.length) {
+            throw new HttpError(400, "No repitas sucursales");
         }
 
-        const currentUserQuery = await pool.query(
-            `SELECT id, rol_id, company_id
-            FROM usuarios
-            WHERE auth_user_id = $1 AND status = true;`,
-            [user.id]
-        );
-
-        const currentUser = currentUserQuery.rows[0];
-
-        if (!currentUser) {
-            return NextResponse.json(
-                { error: "No existe usuario linkeado con esta sesión" },
-                { status: 404 }
-            );
-        }
-
-        if (Number(currentUser.rol_id) !== 1) {
-            return NextResponse.json(
-                { error: "No tienes permiso para realizar esta acción" },
-                { status: 403 }
-            );
-        }
-
-        if (currentUser.company_id == null) {
-            return NextResponse.json(
-                { error: "El usuario no tiene una empresa asignada" },
-                { status: 403 }
-            );
-        }
-
-        const body = await request.json().catch(() => null);
-        const product_id = body?.product_id;
-
-        if (!Number.isSafeInteger(product_id) || product_id <= 0) {
-            return NextResponse.json(
-                { error: "Debes enviar un product_id entero positivo" },
-                { status: 400 }
-            );
-        }
-
-        const client = await pool.connect();
-
-        try {
-            await client.query("BEGIN");
-
-            // Verificar la empresa y bloquear el producto mientras se realiza la eliminación.
-            const productQuery = await client.query(
+        const removed = await transaction(async (client) => {
+            const product = await client.query(
                 `SELECT id
-                FROM productos
-                WHERE company_id = $1 AND id = $2
-                FOR UPDATE;`,
-                [currentUser.company_id, product_id]
+                FROM public.productos
+                WHERE id = $1 AND company_id = $2
+                FOR UPDATE`,
+                [productId, actor.company_id]
             );
 
-            if (productQuery.rows.length === 0) {
-                await client.query("ROLLBACK");
+            if (!product.rows[0]) {
+                throw new HttpError(404, "Producto no encontrado en tu empresa");
+            }
 
-                return NextResponse.json(
-                    {
-                        error: "No se encontró el producto que deseas eliminar"
-                    },
-                    { status: 404 }
+            await checkBranches(client, actor, branchIds);
+
+            const result = await client.query(
+                `DELETE FROM public.inventario
+                WHERE company_id = $1
+                    AND product_id = $2
+                    AND branch_id = ANY($3::bigint[])
+                 RETURNING *`,
+                [actor.company_id, productId, branchIds]
+            );
+
+            // Si falta alguna asignación, se revierte toda la operación.
+            if (result.rows.length !== branchIds.length) {
+                throw new HttpError(
+                    404,
+                    "El producto no está asignado a todas las sucursales seleccionadas"
                 );
             }
 
-            await client.query(
-                `DELETE FROM inventario AS i
-                USING productos AS p
-                WHERE i.product_id = p.id
-                    AND p.company_id = $1
-                    AND p.id = $2;`,
-                [currentUser.company_id, product_id]
-            );
+            return result.rows;
+        });
 
-            const response = await client.query(
-                `DELETE FROM productos
-                WHERE company_id = $1 AND id = $2
-                 RETURNING *;`,
-                [currentUser.company_id, product_id]
-            );
-
-            if (response.rows.length === 0) {
-                throw new Error("No se pudo eliminar el producto");
-            }
-
-            await client.query("COMMIT");
-
-            return NextResponse.json(
-                {
-                    success: "Producto eliminado con éxito",
-                    data: response.rows[0]
-                },
-                { status: 200 }
-            );
-        } catch (err) {
-            // Si falla algún paso, recuperar los registros eliminados.
-            await client.query("ROLLBACK");
-            throw err;
-        } finally {
-            client.release();
-        }
-    } catch (err) {
-        console.error("Error al eliminar el producto:", err);
-
-        // Otra tabla todavía hace referencia al producto.
-        if (
-            typeof err === "object" &&
-            err !== null &&
-            "code" in err &&
-            err.code === "23503"
-        ) {
-            return NextResponse.json(
-                {
-                    error:
-                        "No se puede eliminar el producto porque tiene otros registros relacionados"
-                },
-                { status: 409 }
-            );
-        }
-
-        return NextResponse.json(
-            { error: "Error interno en el servidor al eliminar el producto" },
-            { status: 500 }
-        );
+        return NextResponse.json({
+            success: "Producto retirado de las sucursales seleccionadas",
+            product_id: productId,
+            data: removed,
+        });
+    } catch (error) {
+        return apiError(error);
     }
 }
