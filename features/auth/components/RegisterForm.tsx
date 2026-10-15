@@ -183,7 +183,7 @@ const RegisterForm = () => {
             )}
 
             {step === 2 && (
-                <section className="flex flex-col gap-4">
+                <section className="flex flex-col gap-2">
                     <div className="flex flex-col gap-1.5">
                         <label htmlFor="company_name" className="text-xs text-neutral-600">Nombre de la empresa</label>
                         <input
@@ -198,6 +198,30 @@ const RegisterForm = () => {
                     </div>
 
                     <div className="flex flex-col gap-1.5">
+                        <label htmlFor="company_address" className="text-xs text-neutral-600">Domicilio</label>
+                        <input
+                            onChange={handleChange}
+                            id="company_address"
+                            type="text"
+                            name="company_address"
+                            value={formData.company_address}
+                            suppressHydrationWarning
+                            className={inputClass}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                        <label htmlFor="company_phone" className="text-xs text-neutral-600">Teléfono</label>
+                        <input
+                            onChange={handleChange}
+                            id="company_phone"
+                            type="text"
+                            name="company_phone"
+                            value={formData.company_phone}
+                            suppressHydrationWarning
+                            className={inputClass}
+                        />
+                    </div>
+                       <div className="flex flex-col gap-">
                         <label htmlFor="company_description" className="text-xs text-neutral-600">Descripción de la empresa</label>
                         <textarea
                             onChange={handleChange}
@@ -214,20 +238,8 @@ const RegisterForm = () => {
                             {formData.company_description.length}/250
                         </span>
                     </div>
-
-                    <div className="flex flex-col gap-1.5">
-                        <label htmlFor="company_address" className="text-xs text-neutral-600">Domicilio</label>
-                        <input
-                            onChange={handleChange}
-                            id="company_address"
-                            type="text"
-                            name="company_address"
-                            value={formData.company_address}
-                            suppressHydrationWarning
-                            className={inputClass}
-                        />
-                    </div>
                 </section>
+                
             )}
 
             <section>
