@@ -76,7 +76,7 @@ export const CustomSelect = ({ isDisabled, options, value, onChange, placeholder
 
                             return (
                                 <button
-                                    disabled={true}
+                                    disabled={isDisabled}
                                     key={option.value}
                                     type="button"
                                     onClick={() => {

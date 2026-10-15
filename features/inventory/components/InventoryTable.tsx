@@ -20,7 +20,7 @@ const InventoryTable = () => {
     if (isLoading) return <InventoryTableSkeleton/>;
 
     return (
-        <div className="bg-white flex flex-col flex-1 min-h-0 min-w-0 border border-neutral-200 rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white flex flex-col min-w-0 border border-neutral-200 rounded-lg shadow-sm overflow-hidden">
             <div className={`flex-1 overflow-y-auto overflow-x-hidden ${scrollbarStyles}`}>
 
                 <table className="w-full table-fixed">

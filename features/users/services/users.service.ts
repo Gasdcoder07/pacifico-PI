@@ -1,6 +1,6 @@
 import { apiClient } from "@/shared/lib/axios";
 import { AxiosResponse } from "axios";
-import { UsersResponse } from "../types/user";
+import { ManagerRequest, UsersResponse } from "../types/user";
 
 type DeleteUserResponse = {
     message: string;
@@ -15,4 +15,9 @@ export const deleteUser = async (id: string | number): Promise<AxiosResponse<Del
 export const getUsers = async () : Promise<UsersResponse> => {
     const response = await apiClient.get("/api/usuarios");
     return response.data;
+}
+
+export const createManager = async (data : ManagerRequest) : Promise<any> => {
+    const response = await apiClient.post("/api/auth/register/manager", data);
+    return response.data
 }

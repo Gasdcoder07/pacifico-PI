@@ -14,7 +14,7 @@ const BranchesStats = () => {
     const branches = data ? data : [];
 
     return (
-        <div className="flex items-center gap-8">
+        <div className="flex items-stretch gap-8">
             <TopBranchCard
                 isLoading={isLoading}
                 branch={branches[0]}/>
