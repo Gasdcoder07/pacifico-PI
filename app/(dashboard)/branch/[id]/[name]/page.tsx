@@ -1,23 +1,18 @@
-"use client"
+import BranchDetailsCard from "@/features/branch-details/components/BranchDetailsCard";
+import BranchUsersCard from "@/features/branch-details/components/BranchUsersCard";
 
-import { getBranchById } from "@/features/branches/services/branch.service";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+interface PageProps {
+    params: Promise<{ id : string }>
+}
 
-const Page = () => {
-    const { id } = useParams<{ id: string }>();
-
-    const { data, isLoading } = useQuery({
-        queryKey: ["getBranch", id],
-        queryFn: () => getBranchById(id),
-        enabled: !!id,
-    });
-
-    console.log(data);
+const Page = async ({ params } : PageProps) => {
+    const { id } = await params; 
 
     return (
-        <section className="flex flex-col h-full min-h-0 overflow-hidden p-4 gap-4">
-            
+        <section className="flex flex-col min-h-full p-8 gap-8">
+            <BranchDetailsCard id={id}/>
+
+            <BranchUsersCard/>
         </section>
     )
 };

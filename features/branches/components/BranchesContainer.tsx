@@ -18,7 +18,7 @@ const BranchesContainer = () => {
         if (isLoading) {
             return (
                 <>
-                    {Array.from({ length: 3 }).map((_, index) => (
+                    {Array.from({ length: 4 }).map((_, index) => (
                         <BranchCardSkeleton key={index} />
                     ))}
                 </>
@@ -39,6 +39,7 @@ const BranchesContainer = () => {
                         status={branch.status}
                         direction={branch.direction}
                         phone={branch.phone}
+                        email={branch.contact_info}
                     />
                 ))}
             </>

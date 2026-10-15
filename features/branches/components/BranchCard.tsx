@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { MoveRight, Phone, Pin } from "lucide-react";
+import { Mail, MoveRight, Phone, Pin } from "lucide-react";
 import BranchDropdownActionButton from "@/features/branches/components/BranchDropdownActionButton";
 import { formatPhoneNumber } from "@/shared/utils/formatters";
+import { createSlug } from "@/shared/utils/create.slug";
 
 interface BranchCardProps {
     id: string | number;
@@ -10,9 +11,10 @@ interface BranchCardProps {
     status: boolean;
     direction: string;
     phone: string
+    email: string;
 }
 
-const BranchCard = ({ id, name, status, direction, phone } : BranchCardProps) => {
+const BranchCard = ({ id, name, status, direction, phone, email } : BranchCardProps) => {
     const MotionLink = motion(Link);
 
     return (
@@ -51,29 +53,39 @@ const BranchCard = ({ id, name, status, direction, phone } : BranchCardProps) =>
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-1 text-xs border-b border-neutral-200 pb-2 min-w-0">
+                <div className="flex flex-col gap-2 text-xs border-b border-neutral-200 pb-2 min-w-0">
                     <div className="flex items-center gap-2 flex-1 min-w-0 text-neutral-600">
                         <Pin
                             size={12}
-                            className="shrink-0 translate-y-[0.5px]"
+                            className="shrink-0"
                         />
                         <span className="truncate">
                             {direction}
                         </span>
                     </div>
 
-                    <div className="flex items-center gap-2 flex-1 min-w-0 text-neutral-600">
-                        <Phone
-                            size={12}
-                            className="shrink-0 translate-y-[0.5px]"
-                        />
-                        <span className="truncate">{formatPhoneNumber(phone)}</span>
+                    <div className="flex items-center gap-4 flex-1 min-w-0 text-neutral-600">
+                        <div className="flex items-center gap-2">
+                            <Phone
+                                size={12}
+                                className="shrink-0"
+                            />
+                            <span className="truncate">{formatPhoneNumber(phone)}</span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <Mail
+                                size={12}
+                                className="shrink-0"
+                            />
+                            <span className="truncate">{email}</span>
+                        </div>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-2">
                     <MotionLink
-                        href={`/branch/${id}/${encodeURIComponent(name)}`}
+                        href={`/branch/${id}/${encodeURIComponent(createSlug(name))}`}
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.9 }}
                         transition={{
