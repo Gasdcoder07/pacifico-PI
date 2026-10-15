@@ -231,40 +231,58 @@ const RegisterForm = () => {
             )}
 
             <section>
-                <div className="mt-4 flex gap-4">
-                    <button
-                        type="submit"
-                        disabled={registerMutation.isPending}
-                        suppressHydrationWarning
-                        className="font-semibold text-white bg-cyan-600 hover:bg-cyan-500 disabled:bg-cyan-400 w-full py-2.5 rounded-xl transition-colors ease-in-out duration-200 cursor-pointer flex items-center justify-center">
-                        {registerMutation.isPending ? (
-                            <LoadingIndicator />
-                        ) : (
-                            <p>{step === 1 ? "Continuar" : "Crear cuenta"}</p>
-                        )}
-                    </button>
+            <div className="mt-4 flex gap-3 items-center">
+            {/* Botón Volver (Aparece a la izquierda cuando step === 2) */}
+            {step === 2 && (
+                <button
+                type="button"
+                onClick={() => setStep(1)}
+                disabled={registerMutation.isPending}
+                suppressHydrationWarning
+                className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl border border-neutral-300 bg-white text-sm font-medium text-neutral-700 hover:bg-neutral-50 hover:border-neutral-400 active:bg-neutral-100 disabled:opacity-50 transition-all duration-200 cursor-pointer shrink-0"
+                >
+                {/* Icono de flecha hacia la izquierda */}
+                <svg
+                    className="w-4 h-4 text-neutral-600"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
+                    />
+                </svg>
+                <span>Volver</span>
+                </button>
+            )}
 
-                    {step === 2 && (
-                        <button
-                            type="button"
-                            onClick={() => setStep(1)}
-                            disabled={registerMutation.isPending}
-                            suppressHydrationWarning
-                            className="text-sm text-neutral-600 hover:text-neutral-800 cursor-pointer transition-colors">
-                            Volver
-                        </button>
-                    )}
+            {/* Botón Principal (Siguiente / Crear cuenta) */}
+            <button
+                type="submit"
+                disabled={registerMutation.isPending}
+                suppressHydrationWarning
+                className="w-full py-2.5 px-4 rounded-xl font-semibold text-white bg-cyan-600 hover:bg-cyan-500 disabled:bg-cyan-400 transition-colors ease-in-out duration-200 cursor-pointer flex items-center justify-center"
+            >
+                {registerMutation.isPending ? (
+                <LoadingIndicator />
+                ) : (
+                <span>{step === 1 ? "Continuar" : "Crear cuenta"}</span>
+                )}
+            </button>
+            </div>
 
-                    <span className="text-neutral-600 text-center text-sm">
+                    <span className="text-neutral-600 text-center text-sm mt-4 block">
                         ¿Ya tienes una cuenta?{" "}
                         <Link href="/login" className="font-semibold text-cyan-600 hover:text-cyan-500 ease-in-out duration-200 transition-colors">
                             Inicia sesión.
                         </Link>
                     </span>
-                </div>
             </section>
         </form>
     );
-};
-
+}
 export default RegisterForm;
