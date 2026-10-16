@@ -10,3 +10,8 @@ export interface Branch {
     updated_at: string;
     admin_id: string;
 }
+
+export interface BranchResponse {
+    message: string;
+    data: Branch
+}

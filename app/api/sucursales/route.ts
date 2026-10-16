@@ -131,6 +131,7 @@ export async function GET(request: Request) {
             { message: "Has obtenido la información de las sucursales con éxito.", data: response.rows },
             { status: 200 }
         );
+        
 
     } catch (error) {
         console.error(error);
@@ -264,6 +265,33 @@ export async function POST(request: Request) {
                 { status: 404 }
             );
         }
+
+        const response = await pool.query(
+            `SELECT s.*,
+                COALESCE(
+                    (   
+                        SELECT json_agg(
+                            json_build_object(
+                                'id', u.id,
+                                'name', u.name,
+                                'last_name', u.last_name,
+                                'email', u.email,
+                                'foto_url', u.foto_url
+                            ) ORDER BY u.id
+                        )
+                        FROM public.usuarios u
+                        WHERE u.branch_id = s.id
+                        AND u.company_id = $1
+                        AND u.rol_id = 2
+                        AND u.status = true
+                    ),
+                    '[]'::json
+                ) AS gerentes
+            FROM public.sucursales s
+            WHERE s.company_id = $1
+            ORDER BY s.id`,
+            [currentUser.company_id]
+        );
 
         if (Number(currentUser.rol_id) !== 1) {
             return NextResponse.json(

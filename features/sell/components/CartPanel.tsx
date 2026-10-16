@@ -1,8 +1,51 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "../store/cart-store";
+
+// Subcomponente de Input con estado local para edición fluida
+interface QuantityInputProps {
+  quantity: number;
+  onQuantityChange: (newQuantity: number) => void;
+}
+
+const QuantityInput = ({ quantity, onQuantityChange }: QuantityInputProps) => {
+  const [localValue, setLocalValue] = useState<string>(quantity.toString());
+
+  useEffect(() => {
+    setLocalValue(quantity.toString());
+  }, [quantity]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setLocalValue(val);
+
+    const parsed = parseInt(val, 10);
+    if (!isNaN(parsed) && parsed > 0) {
+      onQuantityChange(parsed);
+    }
+  };
+
+  const handleBlur = () => {
+    const parsed = parseInt(localValue, 10);
+    if (isNaN(parsed) || parsed < 1) {
+      setLocalValue(quantity.toString());
+    }
+  };
+
+  return (
+    <input
+      type="number"
+      min="1"
+      value={localValue}
+      onChange={handleChange}
+      onBlur={handleBlur}
+      className="w-8 text-center text-xs font-bold bg-transparent border-none focus:outline-none focus:ring-1 focus:ring-cyan-500 rounded [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+    />
+  );
+};
 
 const CartPanel = () => {
   const scrollbarStyles =
@@ -15,6 +58,7 @@ const CartPanel = () => {
     (state) => state.removeProductCompletely
   );
   const clearCart = useCartStore((state) => state.clearCart);
+  const setQuantity = useCartStore((state) => state.setQuantity);
 
   const subtotal = cart.reduce(
     (total, item) => total + item.product.price * item.quantity,
@@ -26,7 +70,7 @@ const CartPanel = () => {
   return (
     <section className="flex min-h-0 min-w-0 basis-1/4 flex-col rounded-lg border border-neutral-200 bg-white shadow-sm">
       <div className="flex flex-col min-h-0 min-w-0 h-full">
-        {/* Encabezado con opción de vaciar carrito */}
+        {/* Encabezado */}
         <div className="border-b border-neutral-200 p-4 flex items-center justify-between">
           <h3 className="font-semibold">Detalles de la orden</h3>
 
@@ -44,7 +88,7 @@ const CartPanel = () => {
           )}
         </div>
 
-        {/* Lista de productos */}
+        {/* Lista de Productos */}
         <div
           className={`flex flex-col min-h-0 min-w-0 h-full p-4 overflow-y-auto gap-2 ${scrollbarStyles}`}
         >
@@ -53,7 +97,6 @@ const CartPanel = () => {
               El carrito está vacío
             </p>
           ) : (
-            /* AnimatePresence gestiona el montaje y desmontaje con animación */
             <AnimatePresence mode="popLayout">
               {cart.map((item) => {
                 const product = item.product;
@@ -61,7 +104,6 @@ const CartPanel = () => {
                 return (
                   <motion.div
                     key={product.inventario_id}
-                    /* Animación Pop Rápida */
                     initial={{ scale: 0.7, opacity: 0, y: -10 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.7, opacity: 0, x: 20 }}
@@ -87,11 +129,7 @@ const CartPanel = () => {
                         </div>
                       </div>
 
-                      <span className="text-xs shrink-0 bg-neutral-200 size-6 rounded-full flex items-center justify-center font-medium">
-                        x{item.quantity}
-                      </span>
-
-                      {/* Botón para eliminar el producto completo */}
+                      {/* Eliminar Producto Completo */}
                       <motion.button
                         onClick={() =>
                           removeProductCompletely(product.inventario_id)
@@ -106,36 +144,34 @@ const CartPanel = () => {
                     </div>
 
                     <div className="mt-auto flex justify-between items-center gap-2">
-                      <div className="flex gap-2">
+                      {/* Control Numerador con Input Editable */}
+                      <div className="flex items-center border border-neutral-200 bg-neutral-50 rounded-lg p-0.5 gap-0.5">
                         <motion.button
-                          onClick={() => addToCart(item.product)}
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 300,
-                            damping: 20,
-                          }}
-                          className="rounded-full p-1 bg-cyan-400 cursor-pointer"
+                          type="button"
+                          onClick={() => removeFromCart(product.inventario_id)}
+                          whileTap={{ scale: 0.85 }}
+                          className="p-1 rounded-md hover:bg-white text-neutral-600 hover:text-black transition-colors cursor-pointer"
                         >
-                          <Plus className="size-3 text-white" />
+                          <Minus className="size-3" />
                         </motion.button>
-                        <motion.button
-                          onClick={() =>
-                            removeFromCart(item.product.inventario_id)
+
+                        <QuantityInput
+                          quantity={item.quantity}
+                          onQuantityChange={(newQty) =>
+                            setQuantity(product.inventario_id, newQty)
                           }
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 300,
-                            damping: 20,
-                          }}
-                          className="rounded-full p-1 bg-cyan-400 cursor-pointer"
+                        />
+
+                        <motion.button
+                          type="button"
+                          onClick={() => addToCart(product)}
+                          whileTap={{ scale: 0.85 }}
+                          className="p-1 rounded-md hover:bg-white text-neutral-600 hover:text-black transition-colors cursor-pointer"
                         >
-                          <Minus className="size-3 text-white" />
+                          <Plus className="size-3" />
                         </motion.button>
                       </div>
+
                       <span className="text-xs font-bold">
                         ${(product.price * item.quantity).toFixed(2)}
                       </span>
@@ -160,7 +196,9 @@ const CartPanel = () => {
         </div>
         <div className="mt-2 flex justify-between items-center px-4 py-2 bg-cyan-50 border border-cyan-200 rounded-lg">
           <p className="text-cyan-400 text-base">Total: </p>
-          <p className="text-cyan-400 font-semibold text-lg">${total.toFixed(2)}</p>
+          <p className="text-cyan-400 font-semibold text-lg">
+            ${total.toFixed(2)}
+          </p>
         </div>
 
         <motion.button
