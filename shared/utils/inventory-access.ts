@@ -73,9 +73,8 @@ export async function getActor(
     request: Request,
     roles: number[]
 ): Promise<Actor> {
-    const token = request.headers
-        .get("Authorization")
-        ?.match(/^Bearer\s+(\S+)$/i)?.[1];
+    const authHeader = request.headers.get("Authorization")
+    const token = authHeader?.split(" ")[1]
 
     if (!token) {
         throw new HttpError(401, "Falta el token de sesión");
