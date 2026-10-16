@@ -7,6 +7,7 @@ export interface Option {
 }
 
 interface CustomSelectProps {
+    isDisabled: boolean;
     options: Option[];
     value: string;
     onChange: (value: string) => void;
@@ -14,7 +15,7 @@ interface CustomSelectProps {
     label?: string;
 }
 
-export const CustomSelect = ({ options, value, onChange, placeholder = "Selecciona una opción", label, }: CustomSelectProps) => {
+export const CustomSelect = ({ isDisabled, options, value, onChange, placeholder = "Selecciona una opción", label, }: CustomSelectProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -41,9 +42,16 @@ export const CustomSelect = ({ options, value, onChange, placeholder = "Seleccio
 
             <div className="relative">
                 <button
+                    disabled={isDisabled}
                     type="button"
                     onClick={() => setIsOpen(!isOpen)}
-                    className={`w-full p-3 rounded-lg border bg-white flex items-center justify-between text-left outline-none transition-all duration-200 cursor-pointer ${
+                    className={`w-full p-3 rounded-lg border flex items-center justify-between text-left outline-none transition-all duration-200
+                        ${
+                            isDisabled
+                                ? "bg-neutral-50 cursor-not-allowed opacity-80"
+                                : "bg-white cursor-pointer"
+                        }
+                        ${
                         isOpen
                             ? "border-cyan-500 ring-4 ring-cyan-500/5"
                             : "border-neutral-200 hover:border-neutral-300"
@@ -68,6 +76,7 @@ export const CustomSelect = ({ options, value, onChange, placeholder = "Seleccio
 
                             return (
                                 <button
+                                    disabled={true}
                                     key={option.value}
                                     type="button"
                                     onClick={() => {

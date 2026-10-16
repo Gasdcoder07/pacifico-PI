@@ -28,7 +28,7 @@ const UsersContainer = () => {
 
     return (
         <section className="flex-1 min-h-0 min-w-0 flex">
-            <div className={`min-h-0 flex-1 overflow-y-auto pr-10 ${scrollbarStyles}`}>
+            <div className={`min-h-0 flex-1 overflow-y-auto ${scrollbarStyles}`}>
                 <div className="flex flex-col gap-4">
                     {
                         users.map((user : User) => {

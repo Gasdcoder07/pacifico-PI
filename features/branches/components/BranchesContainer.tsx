@@ -7,9 +7,6 @@ import BranchCard from "./BranchCard";
 import CreateBranchButton from "./CreateBranchButton";
 
 const BranchesContainer = () => {
-    const scrollbarStyles =
-        "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
-
     const { data, isLoading } = useQuery({
         queryKey: ["branches"],
         queryFn: getBranches,
@@ -28,7 +25,11 @@ const BranchesContainer = () => {
             );
         }
 
+<<<<<<< HEAD
         if (branches.length === 0) {
+=======
+        if (!branches) {
+>>>>>>> eae7581818ceb9f17f197066792aed1adf6f354d
             return <>{<BranchesEmptyState/>}</>;
         }
 
