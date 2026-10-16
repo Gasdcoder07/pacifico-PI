@@ -25,11 +25,7 @@ const BranchesContainer = () => {
             );
         }
 
-<<<<<<< HEAD
-        if (branches.length === 0) {
-=======
         if (!branches) {
->>>>>>> eae7581818ceb9f17f197066792aed1adf6f354d
             return <>{<BranchesEmptyState/>}</>;
         }
 

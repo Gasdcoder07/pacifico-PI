@@ -12,6 +12,20 @@ import { supabase } from "@/shared/lib/supabase";
  *         error:
  *           type: string
  *           example: "Mensaje descriptivo del error"
+ *     Gerente:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         name:
+ *           type: string
+ *         last_name:
+ *           type: string
+ *         email:
+ *           type: string
+ *         foto_url:
+ *           type: string
+ *           nullable: true
  *     Sucursal:
  *       type: object
  *       properties:
@@ -38,23 +52,23 @@ import { supabase } from "@/shared/lib/supabase";
  *         created_at:
  *           type: string
  *           format: date-time
- *           example: "2026-09-04T17:24:00Z"
  *         updated_at:
  *           type: string
  *           format: date-time
- *           example: "2026-09-04T17:25:00Z"
  *         admin_id:
  *           type: integer
  *           nullable: true
- *           example: 5
+ *         gerentes:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Gerente'
  */
 
 /**
  * @swagger
  * /api/sucursales:
  *   get:
- *     summary: Obtener todas las sucursales
- *     description: Consulta la base de datos y devuelve el listado completo de sucursales registradas.
+ *     summary: Obtener todas las sucursales con sus gerentes
  *     tags:
  *       - Sucursales
  *     security:
@@ -62,183 +76,19 @@ import { supabase } from "@/shared/lib/supabase";
  *     responses:
  *       200:
  *         description: Lista de sucursales recuperada exitosamente.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Has obtenido la información de las sucursales con éxito."
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Sucursal'
  *       401:
- *         description: No autorizado o token de sesión inválido.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "No autorizado. Falta el token de sesión."
+ *         description: No autorizado.
  *       500:
- *         description: Error interno del servidor al consultar la base de datos.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "No se pudo obtener la información de las sucursales"
+ *         description: Error interno del servidor.
  */
 export async function GET(request: Request) {
-    try {
-        const authHeader = request.headers.get("Authorization");
-
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return NextResponse.json(
-                { error: "No autorizado. Falta el token de sesión." },
-                { status: 401 }
-            );
-        }
-
-        const token = authHeader.split(" ")[1];
-
-        const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-        if (authError || !user) {
-            return NextResponse.json(
-                { error: "Sesión expirada o token inválido" },
-                { status: 401 }
-            );
-        }
-
-        const currentUserQuery = await pool.query(`SELECT rol_id, company_id FROM usuarios WHERE auth_user_id = $1`, [user.id])
-        const currentUser = currentUserQuery.rows[0]
-
-        if (!currentUser) {
-            return NextResponse.json(
-                { error: "No se pudo obtener el usuario de la base de datos" },
-                { status: 404 }
-            )
-        }
-
-        const response = await pool.query(`
-            SELECT * FROM sucursales WHERE company_id = $1;
-        `, [currentUser.company_id]);
-
-        return NextResponse.json(
-            { message: "Has obtenido la información de las sucursales con éxito.", data: response.rows },
-            { status: 200 }
-        );
-        
-
-    } catch (error) {
-        console.error(error);
-
-        return NextResponse.json(
-            { error: "No se pudo obtener la información de las sucursales" },
-            { status: 500 }
-        );
-    }
-}
-
-/**
- * @swagger
- * /api/sucursales:
- *   post:
- *     summary: Crear una nueva sucursal
- *     description: Permite registrar una nueva sucursal. Operación restringida a administradores (rol 1).
- *     tags:
- *       - Sucursales
- *     security:
- *       - BearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - name
- *               - direction
- *             properties:
- *               name:
- *                 type: string
- *                 example: "Sucursal Centro"
- *               direction:
- *                 type: string
- *                 example: "Av. Principal 123"
- *               phone:
- *                 type: string
- *                 nullable: true
- *                 example: "3141234567"
- *               contact_info:
- *                 type: string
- *                 nullable: true
- *                 example: "Horario de 9 AM a 6 PM"
- *     responses:
- *       201:
- *         description: Sucursal registrada con éxito.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: string
- *                   example: 'Sucursal "Sucursal Centro" creada con éxito'
- *                 data:
- *                   $ref: '#/components/schemas/Sucursal'
- *       400:
- *         description: Faltan campos obligatorios en la petición.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "El nombre y la dirección son campos obligatorios"
- *       401:
- *         description: Falta token de autenticación o la sesión ha expirado.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "No autorizado. Falta token de sesión"
- *       403:
- *         description: El usuario no cuenta con el rol de administrador.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "No tienes permisos de administrador para crear sucursales"
- *       404:
- *         description: Usuario autenticado no encontrado o inactivo.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "Usuario no encontrado o inactivo en el sistema"
- *       500:
- *         description: Error interno del servidor al intentar crear la sucursal.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             example:
- *               error: "Error interno en el servidor al crear la sucursal"
- */
-export async function POST(request: Request) {
     try {
         const authHeader = request.headers.get("Authorization");
         const token = authHeader?.match(/^Bearer\s+(\S+)$/i)?.[1];
 
         if (!token) {
             return NextResponse.json(
-                { error: "No autorizado. Falta token de sesión" },
+                { error: "No autorizado. Falta el token de sesión." },
                 { status: 401 }
             );
         }
@@ -253,10 +103,9 @@ export async function POST(request: Request) {
         }
 
         const currentUserQuery = await pool.query(
-            `SELECT id, rol_id, company_id FROM public.usuarios WHERE auth_user_id = $1 AND status = true`,
+            `SELECT rol_id, company_id FROM public.usuarios WHERE auth_user_id = $1 AND status = true`,
             [authUser.id]
         );
-
         const currentUser = currentUserQuery.rows[0];
 
         if (!currentUser) {
@@ -266,7 +115,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const response = await pool.query(
+        const sucursalesResult = await pool.query(
             `SELECT s.*,
                 COALESCE(
                     (   
@@ -293,6 +142,96 @@ export async function POST(request: Request) {
             [currentUser.company_id]
         );
 
+        return NextResponse.json(
+            {
+                message: "Has obtenido la información de las sucursales con éxito.",
+                data: sucursalesResult.rows
+            },
+            { status: 200 }
+        );
+
+    } catch (error) {
+        console.error("Error al obtener sucursales:", error);
+        return NextResponse.json(
+            { error: "No se pudo obtener la información de las sucursales" },
+            { status: 500 }
+        );
+    }
+}
+
+/**
+ * @swagger
+ * /api/sucursales:
+ *   post:
+ *     summary: Crear una nueva sucursal
+ *     tags:
+ *       - Sucursales
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - direction
+ *             properties:
+ *               name:
+ *                 type: string
+ *               direction:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               contact_info:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Sucursal creada con éxito.
+ *       400:
+ *         description: Datos requeridos faltantes.
+ *       401:
+ *         description: No autorizado.
+ *       403:
+ *         description: Permisos insuficientes.
+ *       500:
+ *         description: Error interno del servidor.
+ */
+export async function POST(request: Request) {
+    try {
+        const authHeader = request.headers.get("Authorization");
+        const token = authHeader?.match(/^Bearer\s+(\S+)$/i)?.[1];
+
+        if (!token) {
+            return NextResponse.json(
+                { error: "No autorizado. Falta token de sesión" },
+                { status: 401 }
+            );
+        }
+
+        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token);
+
+        if (authError || !authUser) {
+            return NextResponse.json(
+                { error: "Sesión expirada o token inválido" },
+                { status: 401 }
+            );
+        }
+
+        const currentUserQuery = await pool.query(
+            `SELECT id, rol_id, company_id FROM public.usuarios WHERE auth_user_id = $1 AND status = true`,
+            [authUser.id]
+        );
+        const currentUser = currentUserQuery.rows[0];
+
+        if (!currentUser) {
+            return NextResponse.json(
+                { error: "Usuario no encontrado o inactivo en el sistema" },
+                { status: 404 }
+            );
+        }
+
         if (Number(currentUser.rol_id) !== 1) {
             return NextResponse.json(
                 { error: "No tienes permisos de administrador para crear sucursales" },
@@ -300,7 +239,16 @@ export async function POST(request: Request) {
             );
         }
 
-        const body = await request.json();
+        let body;
+        try {
+            body = await request.json();
+        } catch {
+            return NextResponse.json(
+                { error: "Formato JSON inválido en la petición" },
+                { status: 400 }
+            );
+        }
+
         const { name, direction, phone, contact_info } = body;
 
         if (!name || !direction) {
@@ -310,7 +258,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const response = await pool.query(
+        const insertResult = await pool.query(
             `INSERT INTO public.sucursales (
                 name,
                 company_id,
@@ -333,7 +281,7 @@ export async function POST(request: Request) {
         );
 
         return NextResponse.json(
-            { success: `Sucursal "${name}" creada con éxito`, data: response.rows[0] },
+            { success: `Sucursal "${name}" creada con éxito`, data: insertResult.rows[0] },
             { status: 201 }
         );
 
