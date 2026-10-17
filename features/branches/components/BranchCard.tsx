@@ -59,7 +59,7 @@ const BranchCard = ({ id, name, status, direction, phone, email } : BranchCardPr
                             size={12}
                             className="shrink-0"
                         />
-                        <span className="truncate">
+                        <span className="line-clamp-2 wrap-break-word">
                             {direction}
                         </span>
                     </div>
@@ -83,7 +83,7 @@ const BranchCard = ({ id, name, status, direction, phone, email } : BranchCardPr
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex justify-end">
                     <MotionLink
                         href={`/branch/${id}/${encodeURIComponent(createSlug(name))}`}
                         whileHover={{ scale: 1.01 }}
@@ -93,13 +93,11 @@ const BranchCard = ({ id, name, status, direction, phone, email } : BranchCardPr
                             stiffness: 300,
                             damping: 20,
                         }}
-                        className="w-full bg-cyan-400 text-white px-4 py-2 inline-flex gap-2 items-center justify-center rounded-lg text-sm font-medium"
+                        className="w-full sm:w-3/5 bg-cyan-400 text-white px-4 py-2 inline-flex gap-2 items-center justify-center rounded-lg text-sm font-medium"
                     >
                         <span>Ver detalles</span>
                         <MoveRight size={20} className="shrink-0" />
                     </MotionLink>
-
-                    <BranchDropdownActionButton />
                 </div>
             </div>
         </div>
