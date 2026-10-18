@@ -13,7 +13,9 @@ const BranchDetailsCard = ({ id } : { id : string | number}) => {
         enabled: !!id,
     });
 
-    const branch = data?.data ? data : []
+    const branch = data?.data
+
+    if (isLoading) return <BrachDetailsCardSkeleton/>
 
     return (
         <div className="flex flex-col gap-4">
@@ -21,7 +23,7 @@ const BranchDetailsCard = ({ id } : { id : string | number}) => {
                 <div className="text-neutral-600 flex gap-2 items-center">
                     <House size={16}/>
 
-                    <span className="text-sm font-semibold">Sucursal / Las Brisas</span>
+                    <span className="text-sm font-semibold">Sucursal / {branch?.name}</span>
                 </div>
             </div>
 
@@ -35,7 +37,7 @@ const BranchDetailsCard = ({ id } : { id : string | number}) => {
                         alt="Las brisas" />
 
                     <div className="absolute top-1/3 left-6 z-10 flex gap-4">
-                        <h3 className="text-white font-bold text-3xl tracking-wider">Las Brisas</h3>
+                        <h3 className="text-white font-bold text-3xl tracking-wider">{branch?.name}</h3>
                     </div>
 
                     <div className="absolute inset-0 bg-black/5"/>
@@ -67,7 +69,7 @@ const BranchDetailsCard = ({ id } : { id : string | number}) => {
                                     className="shrink-0"
                                 />
                                 <span className="truncate">
-                                    Avenida Lazaro
+                                    {branch?.direction}
                                 </span>
                             </div>
                             <div className="flex items-center gap-4">
@@ -75,14 +77,14 @@ const BranchDetailsCard = ({ id } : { id : string | number}) => {
                                     size={18}
                                     className="shrink-0"
                                 />
-                                <span className="truncate">{formatPhoneNumber("3141257959")}</span>
+                                <span className="truncate">{formatPhoneNumber(branch?.phone)}</span>
                             </div>
                             <div className="flex items-center gap-4">
                                 <Mail
                                     size={18}
                                     className="shrink-0"
                                 />
-                                <span className="truncate">vaca@gmail.com</span>
+                                <span className="truncate">{branch?.contact_info}</span>
                             </div>
                         </div>
 
@@ -95,3 +97,9 @@ const BranchDetailsCard = ({ id } : { id : string | number}) => {
 };
 
 export default BranchDetailsCard;
+
+const BrachDetailsCardSkeleton = () => {
+    return (
+        <div className="h-full w-full bg-neutral-200 flex flex-col flex-1 min-h-0 min-w-0 rounded-lg shadow-sm"/>
+    )
+};

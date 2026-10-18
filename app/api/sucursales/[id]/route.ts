@@ -87,7 +87,10 @@ import { validarAdmin } from "@/shared/utils/backend-funcs";
  *         description: Error interno del servidor.
  */
 
-export async function GET( request: Request ) {
+export async function GET(
+    request: Request,
+    { params } : { params: Promise<{ id : string }> }
+) {
     try {
 
         const authHeader = request.headers.get("Authorization")
@@ -110,12 +113,17 @@ export async function GET( request: Request ) {
             )
         }
 
-        const response = await pool.query(`
-            SELECT * FROM sucursales;
-        `)
+        const resolvedParams = await params;
+        const branchId = parseInt(resolvedParams.id, 10);
+
+        const response = await pool.query(
+            `SELECT * FROM sucursales WHERE id = $1;`, [branchId]
+        );
+
+        const branch = response.rows[0];
 
         return NextResponse.json(
-            { message: "Has obtenido la información de las sucursales con éxito.", data: response.rows },
+            { message: "Has obtenido la información de las sucursales con éxito.", data: branch },
             { status: 200 }
         )
 

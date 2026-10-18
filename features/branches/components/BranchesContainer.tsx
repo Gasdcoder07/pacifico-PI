@@ -18,7 +18,7 @@ const BranchesContainer = () => {
         if (isLoading) {
             return (
                 <>
-                    {Array.from({ length: 4 }).map((_, index) => (
+                    {Array.from({ length: 2 }).map((_, index) => (
                         <BranchCardSkeleton key={index} />
                     ))}
                 </>
@@ -64,7 +64,7 @@ const BranchesContainer = () => {
 export default BranchesContainer;
 
 const BranchCardSkeleton = () => {
-    return <div className="w-full rounded-lg bg-neutral-200 shadow-sm h-46" />;
+    return <div className="w-full rounded-lg bg-neutral-200 shadow-sm h-56" />;
 };
 
 const BranchesEmptyState = () => {

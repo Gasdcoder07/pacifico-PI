@@ -65,20 +65,24 @@ const BranchCard = ({ id, name, status, direction, phone, email } : BranchCardPr
                     </div>
 
                     <div className="flex items-center gap-4 flex-1 min-w-0 text-neutral-600">
-                        <div className="flex items-center gap-2">
+                        <div className="w-1/2 flex items-center gap-2">
                             <Phone
                                 size={12}
                                 className="shrink-0"
                             />
-                            <span className="truncate">{formatPhoneNumber(phone)}</span>
+                            <div className="w-full flex flex-1 min-w-0">
+                                <span className="truncate">{formatPhoneNumber(phone)}</span>
+                            </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
+                        <div className="w-1/2 flex items-center gap-2">
                             <Mail
                                 size={12}
                                 className="shrink-0"
                             />
-                            <span className="truncate">{email}</span>
+                            <div className="w-full flex flex-1 min-w-0">
+                                <span className="truncate">{email}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
