@@ -47,7 +47,7 @@ const UserDropdownActionButton = ({ user, isMe } : UserDropdownActionButtonProps
             {
                 open && (
                     <div
-                        className="absolute right-0 -top-12 -translate-x-1/5 z-10 flex flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white shadow-sm p-2 w-44 origin-top-right">
+                        className="absolute right-2 -top-12 -translate-x-1/5 z-10 flex flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white shadow-lg p-2 w-44 origin-top-right">
                         <button
                             onClick={() => {
                                 setShowEditPanel(true);

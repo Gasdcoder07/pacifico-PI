@@ -164,7 +164,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                         value={formData.company_name}
                         onChange={handleInputChange}
                         placeholder="Ej. Sucursal Centro"
-                        className="w-full py-2 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                        className="w-full p-3 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
                     />
                 </div>
 
@@ -176,7 +176,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                         value={formData.company_description}
                         onChange={handleInputChange}
                         placeholder="Ej. Sucursal principal de ventas"
-                        className="w-full py-2 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                        className="w-full p-3 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
                     />
                 </div>
 
@@ -188,7 +188,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                         value={formData.company_address}
                         onChange={handleInputChange}
                         placeholder="Ej. Av. Principal 123"
-                        className="w-full py-2 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                        className="w-full p-3 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
                     />
                 </div>
 
@@ -200,7 +200,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                         value={formData.company_phone}
                         onChange={handleInputChange}
                         placeholder="Ej. 555 123 4567"
-                        className="w-full py-2 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                        className="w-full p-3 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
                     />
                 </div>
 
