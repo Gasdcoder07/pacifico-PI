@@ -8,7 +8,7 @@ import { User } from "@/features/users/types/user";
 import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 
-const BranchUsersCard = () => {
+const BranchUsersContainer = () => {
     const { user: currentUser } = useAuth();
 
     const { data, isLoading } = useQuery({
@@ -58,7 +58,7 @@ const BranchUsersCard = () => {
     );
 };
 
-export default BranchUsersCard;
+export default BranchUsersContainer;
 
 const EmptyState = () => {
     return (
