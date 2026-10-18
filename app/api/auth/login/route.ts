@@ -97,9 +97,18 @@ export async function POST(request: Request) {
         const userId = authData.user.id;
 
         const queryDB = `
-            SELECT id, company_id, branch_id, name, last_name, email, rol_id, status, foto_url, foto_public_id
-            FROM public.usuarios
-            WHERE auth_user_id = $1;
+            SELECT
+                u.*,
+                CASE
+                    WHEN u.rol_id IN (1, 3) THEN e.name
+                    ELSE s.name
+                END AS context_name
+            FROM public.usuarios u
+            LEFT JOIN public.empresas e
+                ON e.id = u.company_id
+            LEFT JOIN public.sucursales s
+                ON s.id = u.branch_id
+            WHERE u.auth_user_id = $1;
         `;
 
         const response = await pool.query(queryDB, [userId])

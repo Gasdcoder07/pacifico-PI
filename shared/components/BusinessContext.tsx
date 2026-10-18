@@ -1,0 +1,41 @@
+"use client";
+
+interface BusinessContextProps {
+    role?: number | null;
+    companyImage: string;
+    contextName?: string | null;
+    loading?: boolean;
+}
+
+const BusinessContext = ({ role, companyImage, contextName, loading = false }: BusinessContextProps) => {
+    const isAdmin = role === 1;
+    const title = isAdmin ? "Empresa" : "Sucursal";
+
+    return (
+        <div className="flex items-center gap-4 min-w-0">
+            <div className="overflow-hidden rounded-md border border-neutral-200 shadow-sm h-10 w-14 shrink-0">
+                <img
+                    src={companyImage}
+                    alt={isAdmin ? "Empresa" : "Empresa del usuario"}
+                    className="h-full w-full object-contain object-center"
+                />
+            </div>
+
+            <div className="flex flex-col min-w-0">
+                {
+                    !loading && (
+                        <p className="text-neutral-500 text-xs font-medium whitespace-nowrap">
+                            {title}
+                        </p>
+                    )
+                }
+
+                <p className="text-sm font-semibold truncate">
+                    {loading ? "Cargando..." : contextName}
+                </p>
+            </div>
+        </div>
+    );
+};
+
+export default BusinessContext;

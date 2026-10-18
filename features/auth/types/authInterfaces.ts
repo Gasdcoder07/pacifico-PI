@@ -15,6 +15,7 @@ export interface UserProfile {
     sucursal_id?: number;
     status: boolean;
     foto_url?: string;
+    context_name?: string | null;
 }
 
 export interface LoginResponse {

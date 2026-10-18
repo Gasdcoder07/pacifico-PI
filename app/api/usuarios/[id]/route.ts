@@ -145,7 +145,18 @@ export async function GET(
         }
 
         const response = await pool.query(
-            `SELECT * FROM usuarios WHERE id = $1`,
+            `
+            SELECT 
+                u.*,
+                CASE 
+                    WHEN u.rol_id IN (1, 3) THEN e.name
+                    ELSE s.name
+                END AS context_name
+            FROM usuarios u
+            LEFT JOIN empresas e ON e.id = u.company_id
+            LEFT JOIN sucursales s ON s.id = u.branch_id
+            WHERE u.id = $1;
+            `,
             [userId]
         );
 

@@ -6,9 +6,9 @@ import { LogOut } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
 interface ProfilePfpProps {
-  name: string;
-  role: string;
-  avatar: string | null | undefined;
+  name?: string | null;
+  role?: number | null;
+  avatar?: string | null | undefined;
 }
 
 const menuVariants: Variants = {
@@ -54,6 +54,10 @@ const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { logout } = useAuth();
 
+  const roleName =
+    role === 1 ? "Administrador" :
+    role === 2 ? "Gerente" : "Cajero"
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -92,7 +96,7 @@ const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
                 <div className="relative">
                     <img
                         src={avatar}
-                        alt={name}
+                        alt={name || "Foto de perfil"}
                         className="size-10 object-cover rounded-full cursor-pointer border border-neutral-200 shadow-sm"/>
             
                     <div className="absolute bottom-0 translate-x-1/2 size-2 rounded-full bg-green-600"/>
@@ -124,7 +128,7 @@ const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
               >
                 {
                     avatar ? (
-                        <img src={avatar} alt={name} className="size-10 object-cover rounded-full border border-neutral-200 shadow-sm"/>
+                        <img src={avatar} alt={name || "Foto de perfil"} className="size-10 object-cover rounded-full border border-neutral-200 shadow-sm"/>
                     ) : (
                         <div
                           style={{ width: 40, height: 40 }}
@@ -133,7 +137,8 @@ const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
                     )
                 }
 
-                <div className="text-left">
+                <div className="text-left flex flex-col gap-0">
+                    <span className="text-xs text-neutral-600 font-medium">{roleName}</span>
                   <p className="text-sm font-medium text-gray-900">{name}</p>
                 </div>
               </motion.button>
