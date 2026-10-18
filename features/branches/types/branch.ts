@@ -15,3 +15,7 @@ export interface BranchResponse {
     message: string;
     data: Branch
 }
+
+export interface DeleteBranchResponse {
+    message: string;
+}

@@ -88,7 +88,8 @@ const BranchDetailsCard = ({ id } : { id : string | number}) => {
                             </div>
                         </div>
 
-                        <BranchDropdownActionButton/>
+                        <BranchDropdownActionButton
+                            branch={branch}/>
                     </div>
                 </div>
             </div>
