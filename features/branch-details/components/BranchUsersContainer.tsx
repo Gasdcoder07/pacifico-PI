@@ -1,30 +1,36 @@
 "use client";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { getBranchById } from "@/features/branches/services/branch.service";
 import CreateUserButton from "@/features/users/components/CreateUserButton";
 import UsersCard from "@/features/users/components/UsersCard";
 import { getUsers } from "@/features/users/services/users.service";
 import { User } from "@/features/users/types/user";
+
 import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 
-const BranchUsersContainer = () => {
+const BranchUsersContainer = ({ id } : { id : string | number}) => {
     const { user: currentUser } = useAuth();
 
-    const { data, isLoading } = useQuery({
+    const { data: usersData, isLoading: isLoadingUsers } = useQuery({
         queryKey: ["users"],
         queryFn: getUsers
     })
 
-    const rawUsers = data?.data ?? [];
+    const { data: branchData, isLoading: isLoadingBranch } = useQuery({
+        queryKey: ["getBranch", id],
+        queryFn: () => getBranchById(id),
+        enabled: !!id,
+    });
 
-    const users = [...rawUsers].sort((a, b) => {
-            if (String(a.id) === String(currentUser?.id)) return -1;
-            if (String(b.id) === String(currentUser?.id)) return 1;
-            return 0;
-        });
+    const rawUsers = usersData?.data ?? [];
 
-    if (isLoading) return <UsersContainerSkeleton/>;
+    const users = rawUsers.filter(
+        (user) => String(user.id) !== String(currentUser?.id)
+    );
+
+    if (isLoadingUsers) return <UsersContainerSkeleton/>;
 
     return (
         <div className="flex flex-col gap-4">
@@ -34,7 +40,10 @@ const BranchUsersContainer = () => {
                     <p className="text-neutral-500 text-sm">Las personas que mantienen tu sucursal.</p>
                 </div>
 
-                <CreateUserButton/>
+                <CreateUserButton
+                    isDisabled={isLoadingBranch}
+                    branch_id={branchData?.data.id}
+                    company_id={branchData?.data.company_id}/>
             </div>
 
             <div className="flex flex-col gap-4">

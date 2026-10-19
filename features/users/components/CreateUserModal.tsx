@@ -1,30 +1,26 @@
-import { getBranches } from "@/features/branches/services/branch.service";
 import { CustomSelect } from "@/shared/components/CustomSelect";
 import { ModalLayout } from "@/shared/components/ModalLayout";
-import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { createManager } from "../services/users.service";
+import { createManager, createCashier } from "../services/users.service";
+import { CreateUserRequest } from "../types/user";
 
 interface CreateUserModalProps {
     isOpen: boolean;
     onClose: () => void;
+    branch_id: string | number | null | undefined;
+    company_id: string | number | null | undefined;
 }
 
-export const CreateUserModal = ({ isOpen, onClose }: CreateUserModalProps) => {
-    const { data, isLoading } = useQuery({
-        queryKey: ["branches"],
-        queryFn: getBranches,
-    });
-
-    const branches = data ? data : [];
-
+export const CreateUserModal = ({ isOpen, onClose, branch_id, company_id }: CreateUserModalProps) => {
     const [formData, setFormData] = useState({
         name: "",
         last_name: "",
         email: "",
         password: "",
-        role: "",
-        company_id: ""
+        rol_id: "",
+        branch_id: branch_id,
+        company_id: company_id
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -35,31 +31,57 @@ export const CreateUserModal = ({ isOpen, onClose }: CreateUserModalProps) => {
     const queryClient = useQueryClient();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: createManager,
+        mutationFn: (data: CreateUserRequest) => {
+            if (String(data.rol_id) === "2") {
+                return createManager(data);
+            }
 
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: ["users"],
+            if (String(data.rol_id) === "3") {
+                return createCashier(data);
+            }
+
+            throw new Error("Selecciona un rol válido");
+        },
+
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
+            queryKey: ["users"],
             });
 
             setFormData({
-                name: "",
-                last_name: "",
-                email: "",
-                password: "",
-                role: "",
-                company_id: "",
+            name: "",
+            last_name: "",
+            email: "",
+            password: "",
+            rol_id: "",
+            branch_id: branch_id ?? "",
+            company_id: company_id ?? "",
             });
 
             onClose();
-        }
-    })
+        },
+        
+        onError: (error: any) => {
+            console.error("Error al crear usuario:", error.response?.data ?? error.message);
+        },
+    });
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
+        if (!formData.branch_id || !formData.company_id) {
+            console.error("branch_id y company_id son obligatorios");
+            return;
+        }
+
         mutate({
-            ...formData,
+            name: formData.name,
+            last_name: formData.last_name,
+            email: formData.email,
+            password: formData.password,
+            rol_id: formData.rol_id,
+            branch_id: formData.branch_id,
+            company_id: formData.company_id,
         });
     }
 
@@ -114,7 +136,7 @@ export const CreateUserModal = ({ isOpen, onClose }: CreateUserModalProps) => {
                     </span>
                 </div>
 
-                <div className="w-full flex gap-4">
+                <div className="w-1/2 flex gap-4">
                     <CustomSelect
                         isDisabled={false}
                         label="Rol *"
@@ -123,20 +145,8 @@ export const CreateUserModal = ({ isOpen, onClose }: CreateUserModalProps) => {
                             { value: "2", label: "Gerente" },
                             { value: "3", label: "Cajero" }
                         ]}
-                        value={formData.role}
-                        onChange={(value) => setFormData({ ...formData, role: value })}
-                    />
-
-                    <CustomSelect
-                        isDisabled={isLoading}
-                        label="Sucursal *"
-                        placeholder="Selecciona una sucursal"
-                        options={branches.map((branch) => ({
-                            value: String(branch.id),
-                            label: branch.name,
-                        }))}
-                        value={formData.company_id}
-                        onChange={(value) => setFormData({ ...formData, company_id: value })}
+                        value={formData.rol_id}
+                        onChange={(value) => setFormData({ ...formData, rol_id: value })}
                     />
                 </div>
 
