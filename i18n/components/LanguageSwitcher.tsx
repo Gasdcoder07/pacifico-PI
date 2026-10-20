@@ -15,13 +15,13 @@ export const LanguageSwitcher = () => {
     };
 
     return (
-        <div className="flex gap-1 text-sm">
+        <div className="flex items-center gap-1 p-1 text-xs font-semibold rounded-full bg-white/90 backdrop-blur border border-neutral-200 shadow-sm">
             {(["es", "en"] as const).map((l) => (
                 <button
                     key={l}
                     type="button"
                     onClick={() => change(l)}
-                    className={`px-2 py-1 rounded-md cursor-pointer transition-colors ${
+                    className={`px-3 py-1 rounded-full cursor-pointer transition-colors ${
                         locale === l
                             ? "bg-cyan-600 text-white"
                             : "text-neutral-600 hover:bg-neutral-100"
