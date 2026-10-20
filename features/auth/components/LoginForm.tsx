@@ -6,9 +6,11 @@ import { LoadingIndicator } from "@/shared/components/LoadingIndicator";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 const LoginForm = () => {
     const { login, isLoggingIn } = useAuth();
+    const t = useTranslations("Login");
 
     const [formData, setFormData] = useState({
         email: "",
@@ -21,18 +23,18 @@ const LoginForm = () => {
         e.preventDefault();
 
         if (!formData.email || !formData.password) {
-            toast.error("Por favor, completa todos los campos");
+            toast.error(t("fillAll"));
             return;
         }
-        
+
         try {
             const response = await login(formData);
 
             console.log(response);
 
-            toast.success("Inicio de sesión exitoso");
-        } catch (error) {   
-            toast.error("Correo o contraseña incorrectos");
+            toast.success(t("success"));
+        } catch (error) {
+            toast.error(t("invalidCredentials"));
         }
     };
 
@@ -53,7 +55,7 @@ const LoginForm = () => {
                     htmlFor="email"
                     className="text-neutral-600 text-xs"
                 >
-                    Email
+                    {t("email")}
                 </label>
 
                 <input
@@ -61,9 +63,8 @@ const LoginForm = () => {
                     id="email"
                     type="email"
                     name="email"
-                     className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
-                   
-                    />
+                    className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                />
             </div>
 
             <div className="flex flex-col gap-2">
@@ -71,27 +72,23 @@ const LoginForm = () => {
                     htmlFor="password"
                     className="text-neutral-600 text-xs"
                 >
-                    Contraseña
+                    {t("password")}
                 </label>
 
-               <div className="relative">
+                <div className="relative">
                     <input
-                     onChange={handleChange}
-                     id="password"
-                     type={showPassword ? "text" : "password"}
-                     name="password"
-                     className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
-                 />
+                        onChange={handleChange}
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                    />
 
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400"
-                        aria-label={
-                            showPassword
-                                ? "Ocultar contraseña"
-                                : "Mostrar contraseña"
-                        }
+                        aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                     >
                         {showPassword ? (
                             <EyeOff size={20} />
@@ -106,7 +103,7 @@ const LoginForm = () => {
                         href="/forgot-password"
                         className="font-semibold text-sm text-cyan-600 hover:text-cyan-500 transition-colors"
                     >
-                        ¿Olvidaste tu contraseña?
+                        {t("forgotPassword")}
                     </Link>
                 </div>
             </div>
@@ -120,17 +117,17 @@ const LoginForm = () => {
                     {isLoggingIn ? (
                         <LoadingIndicator />
                     ) : (
-                        <p>Iniciar sesión</p>
+                        <p>{t("submit")}</p>
                     )}
                 </button>
 
                 <span className="text-neutral-600 text-center text-sm">
-                    ¿No tienes una cuenta?{" "}
+                    {t("noAccount")}{" "}
                     <Link
                         href="/register"
                         className="font-semibold text-cyan-600 hover:text-cyan-500 transition-colors"
                     >
-                        Regístrate ahora.
+                        {t("registerNow")}
                     </Link>
                 </span>
             </div>

@@ -23,4 +23,22 @@
         "success": "Account created successfully",
         "defaultError": "An error occurred during registration."
     }
+,
+  "Login": {
+        "title": "Access your account",
+        "subtitle": "Enter your credentials to access your account.",
+        "heroTitle": "Your whole business, under control.",
+        "heroSubtitle": "Manage your branches, sales and inventory simply and efficiently.",
+        "email": "Email",
+        "password": "Password",
+        "showPassword": "Show password",
+        "hidePassword": "Hide password",
+        "forgotPassword": "Forgot your password?",
+        "submit": "Log in",
+        "noAccount": "Don't have an account?",
+        "registerNow": "Sign up now.",
+        "fillAll": "Please fill in all fields.",
+        "success": "Logged in successfully",
+        "invalidCredentials": "Incorrect email or password"
+    }
 }
