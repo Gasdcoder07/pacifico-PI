@@ -243,7 +243,7 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const actor = await getActor(request, [1, 2]);
-    const body = await rleadBody(request);
+    const body = await readBody(request);
     const productId = validId(body.product_id);
 
     const requestedBranches =

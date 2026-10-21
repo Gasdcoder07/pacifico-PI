@@ -1,12 +1,13 @@
 import { ModalLayout } from "@/shared/components/ModalLayout";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import Select from "react-select"
+import Select, { MultiValue, SingleValue } from "react-select"
 import { createProduct, CreateProductPayload, getCategories } from "../services/inventory.service";
 import toast from "react-hot-toast";
 import { customStyles } from "../utils/styles.select";
 import { Category } from "../services/inventory.service";
 import { getBranches } from "@/features/branches/services/branch.service";
+import { Branch } from "@/features/branches/types/branch";
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -27,22 +28,32 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [selectedCategories, setSelectedCategories] = useState<Category[] | []>([])
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
+  const [selectedBranches, setSelectedBranches] = useState<Branch[]>([])
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data : branchesData, isLoading: branchesIsLoading } = useQuery({
-      queryKey: ["branches"],
-      queryFn: getBranches,
-  });
+  const [branchesQuery, categoriesQuery] = useQueries({
+    queries: [
+      { queryKey: ["branches"], queryFn: getBranches }, 
+      { queryKey: ["categories"], queryFn: getCategories }, 
+    ]
+  })
 
-  const { data : categoriesData, isLoading: categoriesIsLoading } = useQuery({
-      queryKey: ["categories"],
-      queryFn: getCategories,
-  });
+  const handleCategoryChange = (option: SingleValue<Category>) => {
+    setSelectedCategory(option);
+    setFormData((prev) => ({
+      ...prev,
+      category_id: option ? String(option.id) : ""
+    }))
+  }
 
-  const categories = categoriesData ? categoriesData : []
-  const branches = branchesData ? branchesData : []
+  const handleBranchesChange = (options: MultiValue<Branch>) => {
+    setSelectedBranches([...options])
+  }
+
+  const branches = branchesQuery.data || []
+  const categories = categoriesQuery.data || []
 
   const resetForm = () => {
     setFormData(initialForm);
@@ -119,6 +130,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
         price: Number(formData.price),
         category_id: Number(formData.category_id),
         foto_url: formData.foto_url,
+        branches: selectedBranches
       });
     };
 
@@ -216,7 +228,9 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
               options={categories}
               getOptionLabel={(category) => category.name}
               getOptionValue={(category) => String(category.id) }
-              value={selectedCategories}
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              placeholder="Categoría"
             />
           </div>
           <div className="flex flex-col gap-2 mt-4 w-1/2">
@@ -225,10 +239,12 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
               isMulti
               isSearchable
               styles={customStyles}
-              options={categories}
-              getOptionLabel={(category) => category.name}
-              getOptionValue={(category) => String(category.id) }
-              value={selectedCategories}
+              options={branches}
+              getOptionLabel={(branch) => branch.name}
+              getOptionValue={(branch) => String(branch.id) }
+              value={selectedBranches}
+              onChange={handleBranchesChange}
+              placeholder="1 o más sucursales"
             />
           </div>
 

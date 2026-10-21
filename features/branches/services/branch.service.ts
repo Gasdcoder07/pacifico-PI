@@ -1,11 +1,25 @@
 import { apiClient } from "@/shared/lib/axios";
-import { Branch, BranchResponse } from "../types/branch";
+import { BranchResponse } from "../types/branch";
 
 export interface CreateBranchPayload {
     name: string;
     direction: string;
     phone?: string;
     contact_info?: string;
+}
+
+export interface Branch {
+    id: number
+    company_id: number
+    admin_id: number
+    name: string
+    direction: string
+    phone: string
+    contact_info: string
+    status: boolean
+    created_at: string
+    updated_at: string
+    gerentes: []
 }
 
 export const getBranches = async (): Promise<Branch[]> => {

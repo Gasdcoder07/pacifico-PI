@@ -1,3 +1,4 @@
+import { Branch } from "@/features/branches/types/branch"
 import { apiClient } from "@/shared/lib/axios"
 
 export interface CreateProductPayload {
@@ -6,6 +7,7 @@ export interface CreateProductPayload {
     price: number
     category_id: number
     foto_url: string
+    branches: Branch[]
 }
 
 export interface Category {
