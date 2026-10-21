@@ -40,5 +40,28 @@
         "fillAll": "Please fill in all fields.",
         "success": "Logged in successfully",
         "invalidCredentials": "Incorrect email or password"
-    }
+    },
+    "Navbar": {
+    "loading": "Loading...",
+    "user": "User"
+    },
+    "BusinessContext": {
+    "company": "Company",
+    "branch": "Branch",
+    "companyAlt": "Company",
+    "userCompanyAlt": "User's company",
+    "loading": "Loading..."
+    },
+  "Sidebar": {
+    "hide": "Hide",
+    "sectionBranch": "Branch",
+    "sectionAdmin": "Administration",
+    "sell": "Sales",
+    "dashboard": "Dashboard",
+    "inventory": "Inventory",
+    "branches": "Branches",
+    "users": "Users",
+    "settings": "Settings"
+}
+
 }

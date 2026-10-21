@@ -1,13 +1,15 @@
 "use client";
 
 import { sidebarSections } from "@/shared/config/navigation";
-import { ChevronsRight, LogOut, LucideIcon } from "lucide-react";
+import { ChevronsRight, LucideIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 const Sidebar = () => {
+    const t = useTranslations("Sidebar");
     const [isOpen, setIsOpen] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -48,7 +50,7 @@ const Sidebar = () => {
                             className="flex flex-col gap-4">
                             {
                                 isOpen ? (
-                                    <h3 className="px-3 font-bold text-neutral-500 uppercase text-xs tracking-wider">{section.title}</h3>
+                                    <h3 className="px-3 font-bold text-neutral-500 uppercase text-xs tracking-wider">{t(section.titleKey)}</h3>
                                 ) : index > 0 ? (
                                     <div className="mb-4 border-t border-neutral-200 w-full" />
                                 ) : null
@@ -63,7 +65,7 @@ const Sidebar = () => {
                                             <SidebarOption
                                                 key={item.id}
                                                 open={isOpen}
-                                                name={item.label}
+                                                name={t(item.labelKey)}
                                                 icon={item.icon}
                                                 href={item.href}
                                                 isSelected={isAtCurrentPage}
@@ -76,7 +78,7 @@ const Sidebar = () => {
                     ))
                 }
             </div>
-                    
+
             <ToggleClose open={isOpen} setIsOpen={setIsOpen}/>
         </motion.aside>
     )
@@ -102,7 +104,7 @@ const SidebarOption = ({ open, name, href, icon : Icon, isSelected } : SidebarOp
                 <Icon className="shrink-0" size={20}/>
                 <AnimatePresence initial={false}>
                     {open && (
-                            <motion.span 
+                            <motion.span
                                 initial={{ opacity: 0, width: 0, x: -50 }}
                                 animate={{ opacity: 0.9, width: "auto", x: 0 }}
                                 className={`text-sm ${isSelected ? 'font-bold' : 'font-medium'}`}
@@ -122,6 +124,8 @@ interface ToggleCloseProps {
 }
 
 const ToggleClose = ({ open, setIsOpen } : ToggleCloseProps) => {
+    const t = useTranslations("Sidebar");
+
     return (
         <div className="border-t border-neutral-300 pt-4">
             <button
@@ -131,7 +135,7 @@ const ToggleClose = ({ open, setIsOpen } : ToggleCloseProps) => {
 
                 {
                     open && (
-                        <span className="text-sm font-medium">Hide</span>
+                        <span className="text-sm font-medium">{t("hide")}</span>
                     )
                 }
             </button>
