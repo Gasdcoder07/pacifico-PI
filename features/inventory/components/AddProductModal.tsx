@@ -1,13 +1,12 @@
 import { ModalLayout } from "@/shared/components/ModalLayout";
-import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
+import { useRef, useState } from "react";
 import Select, { MultiValue, SingleValue } from "react-select"
 import { createProduct, CreateProductPayload, getCategories } from "../services/inventory.service";
 import toast from "react-hot-toast";
 import { customStyles } from "../utils/styles.select";
 import { Category } from "../services/inventory.service";
-import { getBranches } from "@/features/branches/services/branch.service";
-import { Branch } from "@/features/branches/types/branch";
+import { Branch, getBranches } from "@/features/branches/services/branch.service";
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -19,8 +18,17 @@ const initialForm = {
   description: "",
   price: "",
   category_id: "",
-  foto_url: ""
+  foto_url: "",
+  quantity: "",
+  min_stock: ""
 };
+
+const PRICE_REGEX = /^\d{1,10}(\.\d{1,2})?$/;
+const INT_REGEX = /^\d+$/
+const MAX_INT = 2147483647
+
+const inputClass = "w-full py-2 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out px-3";
+
 
 export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) => {
   const queryClient = useQueryClient();
@@ -59,6 +67,8 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
     setFormData(initialForm);
     setImageFile(null);
     setImagePreview(null);
+    setSelectedCategory(null)
+    setSelectedBranches([])
   };
 
   const { mutate: mutateCreateProduct, isPending: isCreating } = useMutation({
@@ -75,9 +85,8 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type } = e.target;
-    const parsedValue = type === "number" ? Number(value) : value;
-    setFormData({ ...formData, [name]: parsedValue });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,23 +125,58 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
     onClose();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const buildPayload = (): CreateProductPayload | null => {
+    const name = formData.name.trim()
+    const price = formData.price.trim()
+    const quantity = formData.quantity.trim() || "0"
+    const minStock = formData.min_stock.trim()
 
-    if (!formData.name.trim() || !formData.description.trim() || !formData.foto_url.trim() || !formData.category_id || !formData.price) {
-      toast.error("Completa los campos obligatorios");
-      return;
+    if (!name || !price || !formData.category_id) {
+      toast.error("Completa los campos obligatorios")
+      return null
     }
 
-    mutateCreateProduct({
-        name: formData.name,
-        description: formData.description,
-        price: Number(formData.price),
-        category_id: Number(formData.category_id),
-        foto_url: formData.foto_url,
-        branches: selectedBranches
-      });
-    };
+    if (!PRICE_REGEX.test(price)) {
+      toast.error("El precio debe ser positivo y con máximo 2 decimales")
+      return null
+    }
+
+    if (!INT_REGEX.test(quantity) || Number(quantity) > MAX_INT) {
+      toast.error("La cantidad debe ser un número entero de 0 o más")
+      return null
+    }
+
+    if (minStock && (!INT_REGEX.test(minStock) || Number(minStock) > MAX_INT)) {
+      toast.error("El stock mínimo debe ser un número entero de 0 o más")
+      return null
+    }
+
+    if (selectedBranches.length === 0) {
+      toast.error("Selecciona al menos una sucursal")
+      return null
+    }
+
+    const branchesPayload: CreateProductPayload["branches"] = selectedBranches.map((branch) => ({
+      branch_id: String(branch.id),
+      quantity: Number(quantity),
+      ...(minStock && { min_stock: Number(minStock) })
+    }))
+
+    return {
+      name,
+      description: formData.description.trim(),
+      price: Number(price),
+      category_id: Number(formData.category_id),
+      branches: branchesPayload,
+      foto_url: formData.foto_url
+    }
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const payload = buildPayload()
+    if (payload) mutateCreateProduct(payload)
+  }
 
   return (
     <ModalLayout
@@ -193,7 +237,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
             value={formData.name}
             onChange={handleInputChange}
             placeholder="Ej. Producto A"
-            className="w-full py-2 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out px-3"
+            className={inputClass}
           />
         </div>
 
@@ -205,7 +249,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
             value={formData.description}
             onChange={handleInputChange}
             placeholder="Ej. Producto de alta calidad"
-            className="w-full py-2 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out px-3"
+            className={inputClass}
           />
         </div>
 
@@ -214,12 +258,44 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
           <input
             type="number"
             name="price" 
-            value={formData.price || ""}
+            min={0}
+            step="0.01"
+            value={formData.price}
             onChange={handleInputChange}
             placeholder="Ej. 100"
-            className="w-full py-2 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out px-3"
+            className={inputClass}
           />
         </div>
+
+        <div className="flex flex-row justify-between gap-2">
+          <div className="flex flex-col gap-2 mt-4 w-1/2">
+            <label className="font-medium text-neutral-600">Cantidad inicial</label>
+            <input
+              type="number"
+              name="quantity"
+              min={0}
+              step={1}
+              value={formData.quantity}
+              onChange={handleInputChange}
+              placeholder="Ej. 20"
+              className={inputClass}
+            />
+          </div>
+          <div className="flex flex-col gap-2 mt-4 w-1/2">
+            <label className="font-medium text-neutral-600">Stock mínimo</label>
+            <input
+              type="number"
+              name="min_stock"
+              min={0}
+              step={1}
+              value={formData.min_stock}
+              onChange={handleInputChange}
+              placeholder="Ej. 5"
+              className={inputClass}
+            />
+          </div>
+        </div>
+
         <div className="flex flex-row justify-between gap-2">
           <div className="flex flex-col gap-2 mt-4 w-1/2">
             <label className="font-medium text-neutral-600">Categoría *</label>
@@ -247,7 +323,6 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
               placeholder="1 o más sucursales"
             />
           </div>
-
         </div>
 
         <div className="flex justify-end gap-3 mt-6">
