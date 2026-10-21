@@ -13,24 +13,21 @@ import { Users } from "lucide-react";
 const BranchUsersContainer = ({ id } : { id : string | number}) => {
     const { user: currentUser } = useAuth();
 
-    const { data: usersData, isLoading: isLoadingUsers } = useQuery({
-        queryKey: ["users"],
-        queryFn: getUsers
-    })
+    const normalizedBranchId = Number(id);
 
-    const { data: branchData, isLoading: isLoadingBranch } = useQuery({
-        queryKey: ["getBranch", id],
-        queryFn: () => getBranchById(id),
-        enabled: !!id,
+    const { data: branchData, isLoading } = useQuery({
+        queryKey: ["getBranch", normalizedBranchId],
+        queryFn: () => getBranchById(normalizedBranchId),
+        enabled: !!normalizedBranchId,
     });
 
-    const rawUsers = usersData?.data ?? [];
+    const rawUsers = branchData?.data.usuarios ?? [];
 
     const users = rawUsers.filter(
         (user) => String(user.id) !== String(currentUser?.id)
     );
 
-    if (isLoadingUsers) return <UsersContainerSkeleton/>;
+    if (isLoading) return <UsersContainerSkeleton/>;
 
     return (
         <div className="flex flex-col gap-4">
@@ -41,7 +38,7 @@ const BranchUsersContainer = ({ id } : { id : string | number}) => {
                 </div>
 
                 <CreateUserButton
-                    isDisabled={isLoadingBranch}
+                    isDisabled={isLoading}
                     branch_id={branchData?.data.id}
                     company_id={branchData?.data.company_id}/>
             </div>
@@ -56,7 +53,7 @@ const BranchUsersContainer = ({ id } : { id : string | number}) => {
 
                             return (
                                 <div key={user.id} className="flex items-center gap-4">
-                                    <UsersCard user={user} isMe={isMe}/>
+                                    <UsersCard user={user} isMe={isMe} branchId={branchData?.data?.id}/>
                                 </div>
                             )
                         })

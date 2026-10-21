@@ -197,7 +197,7 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { name, last_name, email, password, foto_public_id, foto_url } = body;
+        const { name, last_name, email, password, foto_public_id, foto_url, branch_id } = body;
 
         if (!name || !last_name || !email || !password) {
             return NextResponse.json(
@@ -223,7 +223,8 @@ export async function POST(request: Request) {
                 name: name,
                 last_name: last_name,
                 rol_id: 3,
-                company_id: currentUser.company_id
+                company_id: currentUser.company_id,
+                branch_id: branch_id
             }
         })
 
@@ -237,9 +238,9 @@ export async function POST(request: Request) {
         const userId = authData.user.id
 
         const queryDB = `
-            INSERT INTO public.usuarios (auth_user_id, company_id, name, last_name, email, rol_id, status, foto_url, foto_public_id)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-            RETURNING id, company_id, name, last_name, email, rol_id, status, foto_url;
+            INSERT INTO public.usuarios (auth_user_id, company_id, name, last_name, email, rol_id, status, branch_id, foto_url, foto_public_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            RETURNING id, company_id, name, last_name, email, rol_id, status, branch_id, foto_url;
         `
 
         const values = [
@@ -250,6 +251,7 @@ export async function POST(request: Request) {
             email,
             3,
             true,
+            branch_id,
             foto_url || null,
             foto_public_id || null
         ]

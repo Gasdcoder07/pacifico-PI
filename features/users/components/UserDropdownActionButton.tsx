@@ -4,13 +4,15 @@ import { Trash, Edit, Ellipsis } from "lucide-react";
 import EditUserPanel from "./EditUserPanel";
 import { DeleteUserModal } from "./DeleteUserModal";
 import { User } from "../types/user";
+import { BranchId } from "@/features/branches/types/branch";
 
 interface UserDropdownActionButtonProps {
     user: User
     isMe: boolean;
+    branchId: BranchId
 }
 
-const UserDropdownActionButton = ({ user, isMe } : UserDropdownActionButtonProps) => {
+const UserDropdownActionButton = ({ user, isMe, branchId } : UserDropdownActionButtonProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const [open, setOpen] = useState(false);
@@ -78,7 +80,7 @@ const UserDropdownActionButton = ({ user, isMe } : UserDropdownActionButtonProps
 
             {
                 showDeleteModal && (
-                    <DeleteUserModal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} userName={user.name} userLastName={user.last_name} userId={user.id}/>
+                    <DeleteUserModal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} userName={user.name} userLastName={user.last_name} userId={user.id} branchId={branchId}/>
                 )
             }
         </div>

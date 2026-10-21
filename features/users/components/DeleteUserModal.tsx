@@ -1,8 +1,11 @@
-import { ModalLayout } from "@/shared/components/ModalLayout";
-import { TriangleAlert } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { TriangleAlert } from "lucide-react";
 import toast from "react-hot-toast";
+
 import { deleteUser } from "@/features/users/services/users.service";
+import { BranchId } from "@/features/branches/types/branch";
+
+import { ModalLayout } from "@/shared/components/ModalLayout";
 
 interface DeleteUserModalProps {
     isOpen: boolean;
@@ -10,9 +13,10 @@ interface DeleteUserModalProps {
     userName: string;
     userLastName: string;
     userId: string | number;
+    branchId: BranchId;
 }
 
-export const DeleteUserModal = ({ isOpen, onClose, userName, userLastName, userId }: DeleteUserModalProps) => {
+export const DeleteUserModal = ({ isOpen, onClose, userName, userLastName, userId, branchId }: DeleteUserModalProps) => {
     const queryClient = useQueryClient();
 
     const {
@@ -23,7 +27,7 @@ export const DeleteUserModal = ({ isOpen, onClose, userName, userLastName, userI
 
         onSuccess: () => {
             toast.success("Usuario eliminado correctamente");
-            queryClient.invalidateQueries({ queryKey: ["users"] });
+            queryClient.invalidateQueries({ queryKey: ["getBranch", Number(branchId)] });
             onClose();
         },
 
