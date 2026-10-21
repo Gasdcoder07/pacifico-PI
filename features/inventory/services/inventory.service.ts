@@ -22,7 +22,7 @@ export const createProduct = (data : CreateProductPayload) => {
     return apiClient.post("/api/inventory", data)
 }
 
-export const getCategories = async () : Promise<Category[]>=> {
+export const getCategories = async () : Promise<Category[]> => {
     const response = await apiClient.get("/api/category")
     return response.data.data
 }

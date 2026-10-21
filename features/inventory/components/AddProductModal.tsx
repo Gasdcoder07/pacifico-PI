@@ -6,6 +6,7 @@ import { createProduct, CreateProductPayload, getCategories } from "../services/
 import toast from "react-hot-toast";
 import { customStyles } from "../utils/styles.select";
 import { Category } from "../services/inventory.service";
+import { getBranches } from "@/features/branches/services/branch.service";
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -30,12 +31,18 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { data, isLoading } = useQuery({
+  const { data : branchesData, isLoading: branchesIsLoading } = useQuery({
       queryKey: ["branches"],
+      queryFn: getBranches,
+  });
+
+  const { data : categoriesData, isLoading: categoriesIsLoading } = useQuery({
+      queryKey: ["categories"],
       queryFn: getCategories,
   });
 
-  const categories = data ? data : []
+  const categories = categoriesData ? categoriesData : []
+  const branches = branchesData ? branchesData : []
 
   const resetForm = () => {
     setFormData(initialForm);
@@ -203,7 +210,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
         </div>
         <div className="flex flex-row justify-between gap-2">
           <div className="flex flex-col gap-2 mt-4 w-1/2">
-            <label className="font-medium text-neutral-600">ID de Categoría *</label>
+            <label className="font-medium text-neutral-600">Categoría *</label>
             <Select 
               styles={customStyles}
               options={categories}
@@ -213,8 +220,10 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
             />
           </div>
           <div className="flex flex-col gap-2 mt-4 w-1/2">
-            <label className="font-medium text-neutral-600">ID de Categoría *</label>
+            <label className="font-medium text-neutral-600">Sucursales *</label>
             <Select 
+              isMulti
+              isSearchable
               styles={customStyles}
               options={categories}
               getOptionLabel={(category) => category.name}
