@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Select from "react-select"
 import { createProduct, CreateProductPayload, getCategories } from "../services/inventory.service";
 import toast from "react-hot-toast";
+import { customStyles } from "../utils/styles.select";
+import { Category } from "../services/inventory.service";
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -24,6 +26,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<Category[] | []>([])
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -112,8 +115,6 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
       });
     };
 
-  console.log(categories)
-
   return (
     <ModalLayout
       isOpen={isOpen}
@@ -200,16 +201,28 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
             className="w-full py-2 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out px-3"
           />
         </div>
+        <div className="flex flex-row justify-between gap-2">
+          <div className="flex flex-col gap-2 mt-4 w-1/2">
+            <label className="font-medium text-neutral-600">ID de Categoría *</label>
+            <Select 
+              styles={customStyles}
+              options={categories}
+              getOptionLabel={(category) => category.name}
+              getOptionValue={(category) => String(category.id) }
+              value={selectedCategories}
+            />
+          </div>
+          <div className="flex flex-col gap-2 mt-4 w-1/2">
+            <label className="font-medium text-neutral-600">ID de Categoría *</label>
+            <Select 
+              styles={customStyles}
+              options={categories}
+              getOptionLabel={(category) => category.name}
+              getOptionValue={(category) => String(category.id) }
+              value={selectedCategories}
+            />
+          </div>
 
-        <div className="flex flex-col gap-2 mt-4">
-          <label className="font-medium text-neutral-600">ID de Categoría *</label>
-          <Select 
-            options={categories}
-            isMulti={true}
-            isSearchable={true}
-            getOptionLabel={(category) => category.name}
-            getOptionValue={(category) => String(category.id) }
-          />
         </div>
 
         <div className="flex justify-end gap-3 mt-6">
