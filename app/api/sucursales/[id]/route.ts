@@ -122,8 +122,21 @@ export async function GET(
 
         const branch = response.rows[0];
 
+        const usersResponse = await pool.query(
+            `SELECT id, name, last_name, email, rol_id
+            FROM usuarios
+            WHERE branch_id = $1;`,
+            [branchId]
+        );
+
         return NextResponse.json(
-            { message: "Has obtenido la información de las sucursales con éxito.", data: branch },
+            { 
+                message: "Has obtenido la información de las sucursales con éxito.",
+                data: {
+                    ...branch,
+                    usuarios: usersResponse.rows
+                }
+            },
             { status: 200 }
         )
 

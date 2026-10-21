@@ -100,7 +100,7 @@ export async function POST(request: Request) {
             SELECT
                 u.*,
                 CASE
-                    WHEN u.rol_id IN (1, 3) THEN e.name
+                    WHEN u.rol_id IN (1, 2, 3) THEN e.name
                     ELSE s.name
                 END AS context_name
             FROM public.usuarios u
