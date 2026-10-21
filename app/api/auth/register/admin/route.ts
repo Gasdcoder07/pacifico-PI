@@ -106,109 +106,114 @@ import { supabaseAdmin } from "@/shared/lib/supabase";
  */
 
 export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const {
+      name,
+      last_name,
+      email,
+      password,
+      foto_public_id,
+      foto_url,
+      company_name,
+      company_description,
+      company_address,
+    } = body;
+
+    if (!name || !last_name || !email || !password) {
+      return NextResponse.json(
+        { error: "Hace falta alguno de estos campos: (name, last_name, email, password)" },
+        { status: 400 },
+      );
+    }
+
+    const regexPass = /^(?=.*[A-Z])(?=.*[\W_]).{6,}$/;
+
+    if (!regexPass.test(password)) {
+      return NextResponse.json(
+        {
+          error:
+            "La contraseña no es suficientemente segura: \n1.- 6 caracteres como mínimo\n2.- Un símbolo\n3.- Una mayúscula",
+        },
+        { status: 400 },
+      );
+    }
+
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+      email: email,
+      password: password,
+      email_confirm: true,
+      user_metadata: {
+        name: name,
+        last_name: last_name,
+        rol_id: 1,
+      },
+    });
+
+    if (authError) {
+      return NextResponse.json(
+        { error: `Ha habido un error al crear usuario en SupaBase ${authError.message}` },
+        { status: 400 },
+      );
+    }
+
+    const userId = authData.user.id;
+    const client = await pool.connect();
+
     try {
-        const body = await request.json();
-        const { 
-            name, 
-            last_name, 
-            email, 
-            password, 
-            foto_public_id, 
-            foto_url, 
-            company_name, 
-            company_description, 
-            company_address
-        } = body;
+      await client.query("BEGIN");
 
-        if (!name || !last_name || !email || !password) {
-            return NextResponse.json(
-                { error: "Hace falta alguno de estos campos: (name, last_name, email, password)" },
-                { status: 400 }
-            )
-        }
-
-        const regexPass = /^(?=.*[A-Z])(?=.*[\W_]).{6,}$/;
-
-        if (!regexPass.test(password)) {
-            return NextResponse.json(
-                { error: "La contraseña no es suficientemente segura: \n1.- 6 caracteres como mínimo\n2.- Un símbolo\n3.- Una mayúscula" },
-                { status: 400 }
-            )
-        }
-
-        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-            email: email,
-            password: password,
-            email_confirm: true,
-            user_metadata: {
-                name: name,
-                last_name: last_name,
-                rol_id: 1
-            }
-        })
-
-        if (authError) {
-            return NextResponse.json(
-                { error: `Ha habido un error al crear usuario en SupaBase ${authError.message}` },
-                { status: 400 }
-            )
-        }
-
-        const userId = authData.user.id
-        const client = await pool.connect()
-
-        try {
-            await client.query('BEGIN');
-
-            const insertEmpresaQuery = `
+      const insertEmpresaQuery = `
                 INSERT INTO public.empresas (name, description, address, status, created_at, updated_at)
                 VALUES ($1, $2, $3, true, NOW(), NOW())
                 RETURNING id;
-            `
+            `;
 
-            const resEmpresa = await client.query(insertEmpresaQuery, [company_name, company_description, company_address])
-            const companyId = resEmpresa.rows[0].id;
+      const resEmpresa = await client.query(insertEmpresaQuery, [
+        company_name,
+        company_description,
+        company_address,
+      ]);
+      const companyId = resEmpresa.rows[0].id;
 
-            const insertUsuarioQuery = `
+      const insertUsuarioQuery = `
                 INSERT INTO public.usuarios (auth_user_id, company_id, name, last_name, email, rol_id, status, foto_url, foto_public_id)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                 RETURNING id, company_id, name, last_name, email, rol_id, status, foto_url;
-            `
+            `;
 
-            const userValues = [
-                userId,
-                companyId,
-                name,
-                last_name,
-                email,
-                1,
-                true,
-                foto_url || null,
-                foto_public_id || null
-            ]
+      const userValues = [
+        userId,
+        companyId,
+        name,
+        last_name,
+        email,
+        1,
+        true,
+        foto_url || null,
+        foto_public_id || null,
+      ];
 
-            const response = await client.query(insertUsuarioQuery, userValues)
+      const response = await client.query(insertUsuarioQuery, userValues);
 
-            await client.query('COMMIT')
+      await client.query("COMMIT");
 
-            return NextResponse.json(
-                { message: "Admin y empresa creados con éxito", usuario: response.rows[0] },
-                { status: 201 }
-            )
-            
-        } catch(dbError) {
-            await client.query('ROLLBACK')
-            await supabaseAdmin.auth.admin.deleteUser(userId)
-            throw dbError
-        } finally {
-            client.release()
-        }
-
-    } catch (err) {
-        console.error(err)
-        return NextResponse.json(
-            { error: `Hubo un error al registrar el usuario. ${err}` },
-            { status: 500 }
-        )
+      return NextResponse.json(
+        { message: "Admin y empresa creados con éxito", usuario: response.rows[0] },
+        { status: 201 },
+      );
+    } catch (dbError) {
+      await client.query("ROLLBACK");
+      await supabaseAdmin.auth.admin.deleteUser(userId);
+      throw dbError;
+    } finally {
+      client.release();
     }
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json(
+      { error: `Hubo un error al registrar el usuario. ${err}` },
+      { status: 500 },
+    );
+  }
 }

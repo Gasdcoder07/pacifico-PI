@@ -2,6 +2,7 @@ import pool from "@/shared/lib/db";
 import { NextResponse } from "next/server";
 import {apiError,checkBranches,getActor,HttpError,readAllocations,readBody,transaction,validId,
 } from "@/shared/utils/inventory-access";
+import { supabase } from "@/shared/lib/supabase";
 
 /**
  * @swagger
@@ -113,36 +114,110 @@ export async function GET(request: Request) {
  */
 export async function POST(request: Request) {
     try {
-        const actor = await getActor(request, [1, 2]);
-        const body = await readBody(request);
-        const productId = validId(body.product_id);
-        const branches = readAllocations(body.branches);
+        const authHeader = request.headers.get("Authorization");
 
-        const inventory = await transaction(async (client) => {
-            const product = await client.query(
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json(
+                { error: "Sesión vencida o token inválido" },
+                { status: 401 }
+            );
+        }
+
+        const token = authHeader.split(" ")[1];
+        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token);
+
+        if (authError || !authUser) {
+            return NextResponse.json(
+                { error: `Ocurrió un error al obtener la información del usuario ${authError?.message || authError}` },
+                { status: 401 }
+            );
+        }
+
+        const currentUserQuery = await pool.query(
+            `SELECT rol_id, branch_id, company_id FROM usuarios WHERE auth_user_id = $1`,
+            [authUser.id]
+        );
+
+        const currentUser = currentUserQuery.rows[0];
+
+        if (!currentUser) {
+            return NextResponse.json(
+                { error: "No se encontró un perfil de usuario asociado a esta sesión" },
+                { status: 404 }
+            );
+        }
+
+        if (Number(currentUser.rol_id) !== 1 && Number(currentUser.rol_id) !== 2) {
+            return NextResponse.json(
+                { error: "No tienes permiso para actualizar el inventario" },
+                { status: 403 }
+            );
+        }
+
+        const body = await request.json();
+        const category_id = Number(body.category_id);
+        const branches = body.branches;
+
+        if (!category_id || isNaN(category_id)) {
+            return NextResponse.json(
+                { error: "El ID del producto es inválido o no fue enviado" },
+                { status: 400 }
+            );
+        }
+
+        if (!Array.isArray(branches) || branches.length === 0) {
+            return NextResponse.json(
+                { error: "Se requiere un arreglo de sucursales válido" },
+                { status: 400 }
+            );
+        }
+
+        for (const item of branches) {
+            if (!item.branch_id || typeof item.quantity !== 'number') {
+                return NextResponse.json(
+                    { error: "Los datos de asignación de sucursales están incompletos (requiere branch_id y quantity)" },
+                    { status: 400 }
+                );
+            }
+        }
+
+        const client = await pool.connect();
+        const updatedInventory = [];
+
+        try {
+            await client.query('BEGIN');
+
+            const productQuery = await client.query(
                 `SELECT id
                 FROM public.productos
                 WHERE id = $1
                     AND company_id = $2
                     AND status = true
                 FOR UPDATE`,
-                [productId, actor.company_id]
+                [category_id, currentUser.company_id]
             );
 
-            if (!product.rows[0]) {
-                throw new HttpError(
-                    404,
-                    "Producto activo no encontrado en tu empresa"
+            if (!productQuery.rows[0]) {
+                await client.query('ROLLBACK');
+                return NextResponse.json(
+                    { error: "Producto activo no encontrado en tu empresa" },
+                    { status: 404 }
                 );
             }
 
-            await checkBranches(
-                client,
-                actor,
-                branches.map((item) => item.branch_id)
+            const branchIds = branches.map(item => item.branch_id);
+            const checkBranchesQuery = await client.query(
+                `SELECT id FROM public.sucursales WHERE id = ANY($1) AND company_id = $2`,
+                [branchIds, currentUser.company_id]
             );
 
-            const updated = [];
+            if (checkBranchesQuery.rowCount !== branchIds.length) {
+                await client.query('ROLLBACK');
+                return NextResponse.json(
+                    { error: "Una o más sucursales asignadas no pertenecen a tu empresa" },
+                    { status: 403 }
+                );
+            }
 
             for (const branch of branches) {
                 const result = await client.query(
@@ -157,34 +232,46 @@ export async function POST(request: Request) {
                         min_stock = COALESCE($5::integer, stock.min_stock),
                         updated_at = now()
                     WHERE stock.company_id = EXCLUDED.company_id
-                     RETURNING *`,
+                    RETURNING *`,
                     [
-                        actor.company_id,
+                        currentUser.company_id,
                         branch.branch_id,
-                        productId,
+                        category_id,
                         branch.quantity,
                         branch.min_stock ?? null,
                     ]
                 );
 
                 if (!result.rows[0]) {
-                    throw new HttpError(
-                        409,
-                        "La asignación de inventario no corresponde a la empresa"
+                    await client.query('ROLLBACK');
+                    return NextResponse.json(
+                        { error: "La asignación de inventario no corresponde a la empresa" },
+                        { status: 409 }
                     );
                 }
 
-                updated.push(result.rows[0]);
+                updatedInventory.push(result.rows[0]);
             }
 
-            return updated;
-        });
+            await client.query('COMMIT');
 
-        return NextResponse.json({
-            success: "Existencias agregadas con éxito",
-            data: inventory,
-        });
-    } catch (error) {
-        return apiError(error);
+        } catch (dbError) {
+            await client.query('ROLLBACK');
+            throw dbError;
+        } finally {
+            client.release();
+        }
+
+        return NextResponse.json(
+            { message: "Existencias agregadas con éxito", data: updatedInventory },
+            { status: 200 }
+        );
+
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json(
+            { error: `Error interno en el backend: ${err instanceof Error ? err.message : String(err)}` },
+            { status: 500 }
+        );
     }
 }
