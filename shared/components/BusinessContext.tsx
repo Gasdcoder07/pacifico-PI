@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 interface BusinessContextProps {
     role?: number | null;
     companyImage: string;
@@ -8,15 +10,16 @@ interface BusinessContextProps {
 }
 
 const BusinessContext = ({ role, companyImage, contextName, loading = false }: BusinessContextProps) => {
+    const t = useTranslations("BusinessContext");
     const isAdmin = role === 1;
-    const title = isAdmin ? "Empresa" : "Sucursal";
+    const title = isAdmin ? t("company") : t("branch");
 
     return (
         <div className="flex items-center gap-4 min-w-0">
             <div className="overflow-hidden rounded-md border border-neutral-200 shadow-sm h-10 w-14 shrink-0">
                 <img
                     src={companyImage}
-                    alt={isAdmin ? "Empresa" : "Empresa del usuario"}
+                    alt={isAdmin ? t("companyAlt") : t("userCompanyAlt")}
                     className="h-full w-full object-contain object-center"
                 />
             </div>
@@ -31,7 +34,7 @@ const BusinessContext = ({ role, companyImage, contextName, loading = false }: B
                 }
 
                 <p className="text-sm font-semibold truncate">
-                    {loading ? "Cargando..." : contextName}
+                    {loading ? t("loading") : contextName}
                 </p>
             </div>
         </div>
