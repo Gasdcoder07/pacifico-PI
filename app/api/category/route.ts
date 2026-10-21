@@ -77,54 +77,52 @@ import { supabase } from "@/shared/lib/supabase";
  *               error: "Error al recibir las categorías"
  */
 export async function GET(request: Request) {
-    try {
-        const authHeader = request.headers.get("Authorization");
+  try {
+    const authHeader = request.headers.get("Authorization");
 
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return NextResponse.json(
-                { error: "No autorizado. Falta el token de sesión" },
-                { status: 401 }
-            );
-        }
-
-        const token = authHeader.split(" ")[1];
-
-        const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-
-        if (authError || !user) {
-            return NextResponse.json(
-                { error: "Sesión expirada o token inválido" },
-                { status: 401 }
-            );
-        }
-
-        const currentUserQuery = await pool.query(`SELECT company_id FROM usuarios WHERE auth_user_id = $1`, [user.id])
-        const currentUser = currentUserQuery.rows[0]
-
-        if (!currentUser) {
-            return NextResponse.json(
-                { error: "No se encontró el usuario en la base de datos" },
-                { status: 404 }
-            )
-        }
-
-        const response = await pool.query(
-            `SELECT * FROM categorias where company_id = $1;`,
-            [currentUser.company_id]
-        );
-
-        return NextResponse.json(
-            { message: "Categorías extraídas con éxito", data: response.rows },
-            { status: 200 }
-        );
-
-    } catch (err) {
-        console.error("Error al obtener categorías:", err);
-        return NextResponse.json(
-            { error: "Error al recibir las categorías" },
-            { status: 500 }
-        );
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { error: "No autorizado. Falta el token de sesión" },
+        { status: 401 },
+      );
     }
+
+    const token = authHeader.split(" ")[1];
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser(token);
+
+    if (authError || !user) {
+      return NextResponse.json({ error: "Sesión expirada o token inválido" }, { status: 401 });
+    }
+
+    const currentUserQuery = await pool.query(
+      `SELECT company_id FROM usuarios WHERE auth_user_id = $1`,
+      [user.id],
+    );
+    const currentUser = currentUserQuery.rows[0];
+
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: "No se encontró el usuario en la base de datos" },
+        { status: 404 },
+      );
+    }
+
+    const response = await pool.query(`SELECT * FROM categorias where company_id = $1;`, [
+      currentUser.company_id,
+    ]);
+
+    return NextResponse.json(
+      { message: "Categorías extraídas con éxito", data: response.rows },
+      { status: 200 },
+    );
+  } catch (err) {
+    console.error("Error al obtener categorías:", err);
+    return NextResponse.json({ error: "Error al recibir las categorías" }, { status: 500 });
+  }
 }
 
 /**
@@ -207,60 +205,60 @@ export async function GET(request: Request) {
  *               error: "Error interno en el servidor al crear la categoría"
  */
 export async function POST(request: Request) {
-    try {
-        const authHeader = request.headers.get("Authorization");
+  try {
+    const authHeader = request.headers.get("Authorization");
 
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return NextResponse.json(
-                { error: "No autorizado. Falta el token de sesión" },
-                { status: 401 }
-            );
-        }
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { error: "No autorizado. Falta el token de sesión" },
+        { status: 401 },
+      );
+    }
 
-        const token = authHeader.split(" ")[1];
+    const token = authHeader.split(" ")[1];
 
-        const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser(token);
 
-        if (authError || !user) {
-            return NextResponse.json(
-                { error: "Sesión expirada o token inválido" },
-                { status: 401 }
-            );
-        }
+    if (authError || !user) {
+      return NextResponse.json({ error: "Sesión expirada o token inválido" }, { status: 401 });
+    }
 
-        const currentUserQuery = await pool.query(
-            `SELECT id, rol_id, company_id FROM public.usuarios WHERE auth_user_id = $1 AND status = true;`,
-            [user.id]
-        );
+    const currentUserQuery = await pool.query(
+      `SELECT id, rol_id, company_id FROM public.usuarios WHERE auth_user_id = $1 AND status = true;`,
+      [user.id],
+    );
 
-        const currentUser = currentUserQuery.rows[0];
+    const currentUser = currentUserQuery.rows[0];
 
-        if (!currentUser) {
-            return NextResponse.json(
-                { error: "No existe un usuario activo linkeado a esta sesión" },
-                { status: 404 }
-            );
-        }
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: "No existe un usuario activo linkeado a esta sesión" },
+        { status: 404 },
+      );
+    }
 
-        if (Number(currentUser.rol_id) !== 1) {
-            return NextResponse.json(
-                { error: "No eres administrador, no puedes crear categorías" },
-                { status: 403 }
-            );
-        }
+    if (Number(currentUser.rol_id) !== 1) {
+      return NextResponse.json(
+        { error: "No eres administrador, no puedes crear categorías" },
+        { status: 403 },
+      );
+    }
 
-        const body = await request.json();
-        const { name, description } = body;
+    const body = await request.json();
+    const { name, description } = body;
 
-        if (!name || typeof name !== "string" || name.trim() === "") {
-            return NextResponse.json(
-                { error: "El nombre de la categoría es obligatorio" },
-                { status: 400 }
-            );
-        }
+    if (!name || typeof name !== "string" || name.trim() === "") {
+      return NextResponse.json(
+        { error: "El nombre de la categoría es obligatorio" },
+        { status: 400 },
+      );
+    }
 
-        const response = await pool.query(
-            `INSERT INTO categorias(
+    const response = await pool.query(
+      `INSERT INTO categorias(
                 name,
                 company_id,
                 description,
@@ -268,28 +266,28 @@ export async function POST(request: Request) {
                 admin_id
             ) VALUES ($1, $2, $3, NOW(), $4)
             RETURNING id, name, company_id, description, created_at, admin_id;`,
-            [name.trim(), currentUser.company_id, description || null, currentUser.id]
-        );
+      [name.trim(), currentUser.company_id, description || null, currentUser.id],
+    );
 
-        const finalresponse = response.rows[0];
+    const finalresponse = response.rows[0];
 
-        if (!finalresponse) {
-            return NextResponse.json(
-                { error: "No se ha podido crear la nueva categoría" },
-                { status: 500 }
-            );
-        }
-
-        return NextResponse.json(
-            { success: `Categoría ${name} creada con éxito`, data: finalresponse },
-            { status: 201 }
-        );
-
-    } catch (err) {
-        console.error("Error al crear categoría:", err);
-        return NextResponse.json(
-            { error: "Error interno en el servidor al crear la categoría" },
-            { status: 500 }
-        );
+    if (!finalresponse) {
+      return NextResponse.json(
+        { error: "No se ha podido crear la nueva categoría" },
+        { status: 500 },
+      );
     }
+
+    return NextResponse.json(
+      { success: `Categoría ${name} creada con éxito`, data: finalresponse },
+      { status: 201 },
+    );
+  } catch (err) {
+    console.error("Error al crear categoría:", err);
+    return NextResponse.json(
+      { error: "Error interno en el servidor al crear la categoría" },
+      { status: 500 },
+    );
+  }
 }
+

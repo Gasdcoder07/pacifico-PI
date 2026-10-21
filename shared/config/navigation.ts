@@ -2,31 +2,31 @@ import { ShoppingCart, LayoutDashboard, Settings, ShelvingUnit, Store, LucideIco
 
 export type SidebarItem = {
     id : string,
-    label: string;
+    labelKey: string;
     href : string,
     icon : LucideIcon
 }
 
 interface SidebarSection {
-    title: string;
+    titleKey: string;
     items: SidebarItem[];
 }
 
 export const sidebarSections: SidebarSection[] = [
     {
-        title: "Sucursal",
+        titleKey: "sectionBranch",
         items: [
-            { id: "Sell", label: "Ventas", href: "/sell", icon: ShoppingCart },
-            { id: "Dashboard", label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-            { id: "Inventory", label: "Inventario", href: "/inventory", icon: ShelvingUnit },
+            { id: "Sell", labelKey: "sell", href: "/sell", icon: ShoppingCart },
+            { id: "Dashboard", labelKey: "dashboard", href: "/dashboard", icon: LayoutDashboard },
+            { id: "Inventory", labelKey: "inventory", href: "/inventory", icon: ShelvingUnit },
         ],
     },
     {
-        title: "Administración",
+        titleKey: "sectionAdmin",
         items: [
-            { id: "Branches", label: "Sucursales", href: "/branches", icon: Store },
-            { id: "Users", label: "Usuarios", href: "/users", icon: UsersRound },
-            { id: "Settings", label: "Ajustes", href: "/settings", icon: Settings },
+            { id: "Branches", labelKey: "branches", href: "/branches", icon: Store },
+            { id: "Users", labelKey: "users", href: "/users", icon: UsersRound },
+            { id: "Settings", labelKey: "settings", href: "/settings", icon: Settings },
         ],
     },
 ];

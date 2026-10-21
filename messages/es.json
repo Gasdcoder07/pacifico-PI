@@ -40,5 +40,28 @@
         "fillAll": "Por favor, completa todos los campos",
         "success": "Inicio de sesión exitoso",
         "invalidCredentials": "Correo o contraseña incorrectos"
-    }
+    },
+    "Navbar": {
+    "loading": "Cargando...",
+    "user": "Usuario"
+    },
+    "BusinessContext": {
+    "company": "Compañía",
+    "branch": "Sucursal",
+    "companyAlt": "Companña",
+    "userCompanyAlt": "Compañía del usuario",
+    "loading": "Cargando..."
+    },
+    "Sidebar": {
+    "hide": "Ocultar",
+    "sectionBranch": "Sucursal",
+    "sectionAdmin": "Administración",
+    "sell": "Ventas",
+    "dashboard": "Dashboard",
+    "inventory": "Inventario",
+    "branches": "Sucursales",
+    "users": "Usuarios",
+    "settings": "Ajustes"
+}
+    
 }
