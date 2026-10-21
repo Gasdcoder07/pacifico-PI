@@ -154,98 +154,109 @@ import { supabase, supabaseAdmin } from "@/shared/lib/supabase";
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { name, last_name, email, password, foto_public_id, foto_url, branch_id } = body;
+        const {
+            name,
+            last_name,
+            email,
+            password,
+            foto_public_id,
+            foto_url,
+            branch_id,
+        } = body;
 
-    const authHeader = request.headers.get("Authorization");
+        const authHeader = request.headers.get("Authorization");
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { error: "Error al obtener la sesión del usuario" },
-        { status: 401 },
-      );
-    }
-
-    const token = authHeader.replace("Bearer ", "");
-
-    const {
-      data: { user: authUser },
-      error: authErrorUser,
-    } = await supabase.auth.getUser(token);
-
-    if (!authUser || authErrorUser) {
-      return NextResponse.json(
-        { error: "No se ha podido obtener un usuario con el token" },
-        { status: 404 },
-      );
-    }
-
-    const currentUserQuery = await pool.query(
-      `SELECT rol_id, company_id from usuarios where auth_user_id = $1`,
-      [authUser.id],
-    );
-
-    const currentUser = currentUserQuery.rows[0];
-
-    if (!currentUser) {
-      return NextResponse.json(
-        { error: "Error al obtener el usuario de la base de datos" },
-        { status: 404 },
-      );
-    }
-
-    if (Number(currentUser.rol_id) !== 1) {
-      return NextResponse.json(
-        { error: "No tienes permiso para crear un nuevo Cajero" },
-        { status: 403 },
-      );
-    }
-
-    if (!name || !last_name || !email || !password) {
-      return NextResponse.json(
-        { error: "Hace falta alguno de estos campos: (name, last_name, email, password)" },
-        { status: 400 },
-      );
-    }
-
-    const regexPass = /^(?=.*[A-Z])(?=.*[\W_]).{6,}$/;
-
-    if (!regexPass.test(password)) {
-      return NextResponse.json(
-        {
-          error:
-            "La contraseña no es suficientemente segura: \n1.- 6 caracteres como mínimo\n2.- Un símbolo\n3.- Una mayúscula",
-        },
-        { status: 400 },
-      );
-    }
-
-    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-        email: email,
-        password: password,
-        email_confirm: true,
-        user_metadata: {
-            name: name,
-            last_name: last_name,
-            rol_id: 2,
-            branch_id: branch_id
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return NextResponse.json(
+                { error: "Error al obtener la sesión del usuario" },
+                { status: 401 },
+            );
         }
-    })
 
-    if (authError) {
-      return NextResponse.json(
-        { error: `Ha habido un error al crear usuario en SupaBase ${authError.message}` },
-        { status: 400 },
-      );
-    }
+        const token = authHeader.replace("Bearer ", "");
 
-    const userId = authData.user.id;
+        const {
+            data: { user: authUser },
+            error: authErrorUser,
+        } = await supabase.auth.getUser(token);
 
-<<<<<<< HEAD
+        if (!authUser || authErrorUser) {
+            return NextResponse.json(
+                { error: "No se ha podido obtener un usuario con el token" },
+                { status: 404 },
+            );
+        }
+
+        const currentUserQuery = await pool.query(
+            `SELECT rol_id, company_id from usuarios where auth_user_id = $1`,
+            [authUser.id],
+        );
+
+        const currentUser = currentUserQuery.rows[0];
+
+        if (!currentUser) {
+            return NextResponse.json(
+                { error: "Error al obtener el usuario de la base de datos" },
+                { status: 404 },
+            );
+        }
+
+        if (Number(currentUser.rol_id) !== 1) {
+            return NextResponse.json(
+                { error: "No tienes permiso para crear un nuevo Cajero" },
+                { status: 403 },
+            );
+        }
+
+        if (!name || !last_name || !email || !password) {
+            return NextResponse.json(
+                {
+                    error: "Hace falta alguno de estos campos: (name, last_name, email, password)",
+                },
+                { status: 400 },
+            );
+        }
+
+        const regexPass = /^(?=.*[A-Z])(?=.*[\W_]).{6,}$/;
+
+        if (!regexPass.test(password)) {
+            return NextResponse.json(
+                {
+                    error: "La contraseña no es suficientemente segura: \n1.- 6 caracteres como mínimo\n2.- Un símbolo\n3.- Una mayúscula",
+                },
+                { status: 400 },
+            );
+        }
+
+        const { data: authData, error: authError } =
+            await supabaseAdmin.auth.admin.createUser({
+                email: email,
+                password: password,
+                email_confirm: true,
+                user_metadata: {
+                    name: name,
+                    last_name: last_name,
+                    rol_id: 2,
+                    branch_id: branch_id,
+                },
+            });
+
+        if (authError) {
+            return NextResponse.json(
+                {
+                    error: `Ha habido un error al crear usuario en SupaBase ${authError.message}`,
+                },
+                { status: 400 },
+            );
+        }
+
+        const userId = authData.user.id;
+
         const queryDB = `
             INSERT INTO public.usuarios (auth_user_id, company_id, name, last_name, email, rol_id, status, branch_id, foto_url, foto_public_id)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             RETURNING id, company_id, name, last_name, email, rol_id, status, branch_id, foto_url;
-        `
+        `;
 
         const values = [
             userId,
@@ -257,40 +268,23 @@ export async function POST(request: Request) {
             true,
             branch_id,
             foto_url || null,
-            foto_public_id || null
-        ]
-=======
-    const queryDB = `
-            INSERT INTO public.usuarios (auth_user_id, company_id, name, last_name, email, rol_id, status, foto_url, foto_public_id)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-            RETURNING id, company_id, name, last_name, email, rol_id, status, foto_url;
-        `;
+            foto_public_id || null,
+        ];
 
-    const values = [
-      userId,
-      currentUser.company_id,
-      name,
-      last_name,
-      email,
-      2,
-      true,
-      foto_url || null,
-      foto_public_id || null,
-    ];
->>>>>>> 31e7c4f8bd0cc6db6f758fcff12e6486b9a7f621
+        const response = await pool.query(queryDB, values);
 
-    const response = await pool.query(queryDB, values);
-
-    return NextResponse.json(
-      { message: "Haz creado tu usuario con éxito", usuario: response.rows[0] },
-      { status: 201 },
-    );
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json(
-      { error: `Hubo un error al registrar el usuario. ${err}` },
-      { status: 500 },
-    );
-  }
+        return NextResponse.json(
+            {
+                message: "Haz creado tu usuario con éxito",
+                usuario: response.rows[0],
+            },
+            { status: 201 },
+        );
+    } catch (err) {
+        console.error(err);
+        return NextResponse.json(
+            { error: `Hubo un error al registrar el usuario. ${err}` },
+            { status: 500 },
+        );
+    }
 }
-
