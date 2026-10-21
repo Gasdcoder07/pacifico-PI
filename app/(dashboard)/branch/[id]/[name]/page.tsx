@@ -12,7 +12,7 @@ const Page = async ({ params } : PageProps) => {
         <section className="flex flex-col min-h-full p-8 gap-8">
             <BranchDetailsCard id={id}/>
 
-            <BranchUsersContainer/>
+            <BranchUsersContainer id={id}/>
         </section>
     )
 };

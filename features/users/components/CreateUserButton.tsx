@@ -5,12 +5,19 @@ import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import { CreateUserModal } from './CreateUserModal';
 
-const CreateUserButton = () => {
+interface CreateUserButtonProps {
+    isDisabled: boolean;
+    branch_id: number | string | null | undefined;
+    company_id: number | string | null | undefined;
+}
+
+const CreateUserButton = ({ isDisabled, branch_id, company_id } : CreateUserButtonProps ) => {
     const [showModal, setShowModal] = useState(false);
 
     return (
         <>
             <motion.button
+                disabled={isDisabled}
                 onClick={() => setShowModal(true)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.9 }}
@@ -28,7 +35,13 @@ const CreateUserButton = () => {
             </motion.button>
 
             {
-                showModal && <CreateUserModal isOpen={showModal} onClose={() => setShowModal(false)} />
+                showModal && (
+                    <CreateUserModal
+                        isOpen={showModal}
+                        onClose={() => setShowModal(false)}
+                        branch_id={branch_id}
+                        company_id={company_id}/>
+                )
             }
         </>
     );
