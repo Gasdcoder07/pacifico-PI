@@ -8,6 +8,20 @@ export interface CreateBranchPayload {
     contact_info?: string;
 }
 
+export interface Branch {
+    id: number
+    company_id: number
+    admin_id: number
+    name: string
+    direction: string
+    phone: string
+    contact_info: string
+    status: boolean
+    created_at: string
+    updated_at: string
+    gerentes: []
+}
+
 export const getBranches = async (): Promise<Branch[]> => {
     const response = await apiClient.get("/api/sucursales")
     return response.data.data 
