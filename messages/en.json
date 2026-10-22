@@ -154,5 +154,56 @@
       "title": "Top 3 Branches",
       "emptyMessage": "This ranking will be displayed once you have at least 3 branches."
     }
+  },
+  "BranchDetails": {
+    "createUserButton": {
+      "label": "Create user"
+    },
+    "usersContainer": {
+      "title": "Branch team",
+      "subtitle": "The people running your branch.",
+      "emptyState": {
+        "title": "No collaborators yet",
+        "description": "There are no users registered in this branch yet. Create a user to start building your team."
+      }
+    },
+    "createUserModal": {
+      "title": "Create account",
+      "fields": {
+        "name": {
+          "label": "First name",
+          "placeholder": "e.g. John"
+        },
+        "lastName": {
+          "label": "Last name",
+          "placeholder": "e.g. Doe"
+        },
+        "email": {
+          "label": "Email address",
+          "placeholder": "example@email.com"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "••••••••",
+          "hint": "Minimum 8 characters, one number, and one special character."
+        },
+        "role": {
+          "label": "Role *",
+          "placeholder": "Select a role"
+        }
+      },
+      "roles": {
+        "manager": "Manager",
+        "cashier": "Cashier"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save account",
+        "saving": "Saving account..."
+      },
+      "errors": {
+        "invalidRole": "Select a valid role"
+      }
+    }
   }
 }
