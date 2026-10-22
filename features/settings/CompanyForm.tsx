@@ -1,8 +1,10 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useRef, useState } from "react";
-import { ImagePlus, Save, Trash2, Upload } from "lucide-react";
 import toast from "react-hot-toast";
+
+import { ImagePlus, Save, Trash2, Upload } from "lucide-react";
 
 const MAX_SIZE = 2 * 1024 * 1024; // 2 MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -219,14 +221,22 @@ const CompanyForm = () => {
 
             {/* Pie con el botón */}
             <div className="flex justify-end pt-6 border-t border-neutral-200">
-                <button
-                    type="submit"
-                    suppressHydrationWarning
-                    className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-cyan-500 hover:bg-cyan-600 rounded-lg transition-colors duration-200 cursor-pointer"
+                <motion.button
+                    // disabled={isDisabled}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.9 }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 20,
+                        duration: 0.2,
+                        ease: "easeInOut",
+                    }}
+                    className="flex items-center gap-2 rounded-lg bg-cyan-400 px-4 py-2 text-sm font-medium text-white shadow-sm cursor-pointer"
                 >
                     <Save size={16} />
                     Guardar cambios
-                </button>
+                </motion.button>
             </div>
         </form>
     );

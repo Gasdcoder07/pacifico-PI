@@ -36,7 +36,7 @@ const Sidebar = () => {
     return (
         <motion.aside
             initial={false}
-            animate={ { width: isOpen ? 224 : 88 } } // 256 88
+            animate={ { width: isOpen ? 216 : 88 } } // 256 88
             transition={ {
                 duration: isLoaded ? 0.2 : 0,
                 ease: "easeInOut"
