@@ -22,21 +22,23 @@ export const CreateUserModal = ({
   const t = useTranslations("BranchDetails.createUserModal");
   const queryClient = useQueryClient();
 
+  // Inicializamos branch_id y company_id con ?? "" para que nunca sean undefined
   const [formData, setFormData] = useState({
     name: "",
     last_name: "",
     email: "",
     password: "",
     rol_id: "",
-    branch_id: branch_id,
-    company_id: company_id,
+    branch_id: branch_id ?? "",
+    company_id: company_id ?? "",
   });
 
+  // Usamos actualización funcional prev => ({ ...prev, ... })
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const { mutate, isPending } = useMutation({
@@ -170,7 +172,9 @@ export const CreateUserModal = ({
               { value: "3", label: t("roles.cashier") },
             ]}
             value={formData.rol_id}
-            onChange={(value) => setFormData({ ...formData, rol_id: value })}
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, rol_id: value }))
+            }
           />
         </div>
 
