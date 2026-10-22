@@ -1,5 +1,8 @@
+"use client";
+
+
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { getBranchById } from "@/features/branches/services/branches.service";
+import { getBranchById } from "@/features/branches/services/branch.service";
 import { getUsers } from "@/features/users/services/users.service";
 import { User } from "@/features/users/types/user";
 import CreateUserButton from "@/features/users/components/CreateUserButton";

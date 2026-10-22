@@ -165,6 +165,10 @@
       "emptyState": {
         "title": "Aún no tienes colaboradores",
         "description": "Todavía no hay personas registradas en esta sucursal. Crea un usuario para comenzar a formar tu equipo."
+      },
+      "actions": {
+        "edit": "Editar",
+        "delete": "Eliminar"
       }
     },
     "createUserModal": {
