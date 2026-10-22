@@ -154,5 +154,56 @@
       "title": "Top 3 Sucursales",
       "emptyMessage": "Este ranking se mostrará cuando tengas al menos 3 sucursales."
     }
+  },
+  "BranchDetails": {
+    "createUserButton": {
+      "label": "Crear usuario"
+    },
+    "usersContainer": {
+      "title": "Equipo de la sucursal",
+      "subtitle": "Las personas que mantienen tu sucursal.",
+      "emptyState": {
+        "title": "Aún no tienes colaboradores",
+        "description": "Todavía no hay personas registradas en esta sucursal. Crea un usuario para comenzar a formar tu equipo."
+      }
+    },
+    "createUserModal": {
+      "title": "Crear cuenta",
+      "fields": {
+        "name": {
+          "label": "Nombre",
+          "placeholder": "Ej. Juan"
+        },
+        "lastName": {
+          "label": "Apellido",
+          "placeholder": "Ej. Pérez"
+        },
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "ejemplo@correo.com"
+        },
+        "password": {
+          "label": "Contraseña",
+          "placeholder": "••••••••",
+          "hint": "Mínimo 8 caracteres, un número y un carácter especial."
+        },
+        "role": {
+          "label": "Rol *",
+          "placeholder": "Selecciona un rol"
+        }
+      },
+      "roles": {
+        "manager": "Gerente",
+        "cashier": "Cajero"
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "save": "Guardar cuenta",
+        "saving": "Guardando cuenta..."
+      },
+      "errors": {
+        "invalidRole": "Selecciona un rol válido"
+      }
+    }
   }
 }
