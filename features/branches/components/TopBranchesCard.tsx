@@ -1,97 +1,87 @@
-import { Branch } from "../types/branch";
+import { useTranslations } from "next-intl";
 
 interface TopBranchesCardProps {
-    isLoading: boolean;
-    branches: Branch[] | null;
+  isLoading: boolean;
+  branches: any[] | null;
 }
 
-const TopBranchesCard = ({ isLoading, branches } : TopBranchesCardProps) => {
-    if (isLoading) {
-        return <div className="bg-neutral-200 rounded-lg w-2/5 h-54 animate-pulse transition-all duration-200"/>
-    }
+const DEFAULT_TOP_BRANCHES = [
+  { id: "mock-1", name: "Manzanillo", totalSales: 128000 },
+  { id: "mock-2", name: "Las Brisas", totalSales: 97720 },
+  { id: "mock-3", name: "Valle de las Garzas", totalSales: 72190 },
+];
 
-    if (!branches) {
-        return <TopBranchesCardEmptyState/>
-    }
+const rankStyles = [
+  { bg: "bg-amber-500/10", badge: "bg-amber-500 text-white" },
+  { bg: "bg-slate-500/10", badge: "bg-slate-500 text-white" },
+  { bg: "bg-orange-500/10", badge: "bg-orange-600 text-white" },
+];
 
+const TopBranchesCard = ({ isLoading, branches }: TopBranchesCardProps) => {
+  const t = useTranslations("Branches.TopBranchesCard");
+
+  if (isLoading) {
     return (
-        <div className="w-2/5 border border-neutral-200 rounded-lg p-4 flex flex-col gap-4 shadow-sm">
-            <h3 className="text-xl text-neutral-900 font-bold">
-                Top 3 Sucursales
-            </h3>
-
-            <div className="flex flex-col gap-2">
-                <div className="bg-amber-500/10 p-2 rounded-lg shadow-sm flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4 min-w-0">
-                        <div className="size-6 flex shrink-0 justify-center items-center rounded-full bg-amber-500 text-white font-bold text-xs">
-                            1
-                        </div>
-                        <h4 className="text-neutral-900 font-semibold text-sm truncate">
-                            Manzanillo
-                        </h4>
-                    </div>
-
-                    <p className="text-sm font-bold text-neutral-900 shrink-0">
-                        $128,000
-                    </p>
-                </div>
-
-                <div className="bg-slate-500/10 shadow-sm p-2 rounded-lg flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4 min-w-0">
-                        <div className="size-6 flex shrink-0 justify-center items-center rounded-full bg-slate-500 text-white font-bold text-xs">
-                            2
-                        </div>
-                        <h4 className="text-neutral-900 font-semibold text-sm truncate">
-                            Las Brisas
-                        </h4>
-                    </div>
-
-                    <p className="text-sm font-bold text-neutral-900 shrink-0">
-                        $97,720
-                    </p>
-                </div>
-
-                <div className="bg-orange-500/10 shadow-sm p-2 rounded-lg flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4 min-w-0">
-                        <div className="size-6 flex shrink-0 justify-center items-center rounded-full bg-orange-600 text-white font-bold text-xs">
-                            3
-                        </div>
-                        <h4 className="text-neutral-900 font-semibold text-sm truncate">
-                            Valle de las Garzas
-                        </h4>
-                    </div>
-
-                    <p className="text-sm font-bold text-neutral-900 shrink-0">
-                        $72,190
-                    </p>
-                </div>
-            </div>
-        </div>
+      <div className="h-54 w-2/5 animate-pulse rounded-lg bg-neutral-200 transition-all duration-200" />
     );
+  }
+
+  const displayBranches = DEFAULT_TOP_BRANCHES.map((defaultBranch, index) => {
+    const realBranch = branches?.[index];
+
+    return {
+      id: realBranch?.id ?? defaultBranch.id,
+      name: realBranch?.name ?? defaultBranch.name,
+      totalSales:
+        realBranch?.totalSales && realBranch.totalSales > 0
+          ? realBranch.totalSales
+          : defaultBranch.totalSales,
+    };
+  });
+
+  // Formateador estándar de JS para mostrar solo '$' con comas
+  const formatMoney = (amount: number) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      currencyDisplay: "narrowSymbol",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  return (
+    <div className="flex w-2/5 flex-col gap-4 rounded-lg border border-neutral-200 p-4 shadow-sm">
+      <h3 className="text-xl font-bold text-neutral-900">{t("title")}</h3>
+
+      <div className="flex flex-col gap-2">
+        {displayBranches.map((branch, index) => {
+          const style = rankStyles[index] || rankStyles[2];
+
+          return (
+            <div
+              key={branch.id || index}
+              className={`flex items-center justify-between gap-4 rounded-lg p-2 shadow-sm ${style.bg}`}
+            >
+              <div className="flex min-w-0 items-center gap-4">
+                <div
+                  className={`flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${style.badge}`}
+                >
+                  {index + 1}
+                </div>
+                <h4 className="truncate text-sm font-semibold text-neutral-900">
+                  {branch.name}
+                </h4>
+              </div>
+
+              <p className="shrink-0 text-sm font-bold text-neutral-900">
+                {formatMoney(branch.totalSales)}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 };
 
 export default TopBranchesCard;
-
-const TopBranchesCardEmptyState = () => {
-    return (
-        <div className="w-2/5 border border-neutral-200 rounded-lg p-4 flex flex-col gap-4 shadow-sm">
-            <h3 className="text-xl text-neutral-900 font-bold">
-                Top 3 Sucursales
-            </h3>
-
-            <div className="flex flex-col gap-2">
-                {
-                    Array.from({ length: 3 }).map((_, index) => {
-                        return (
-                            <div key={index} className="bg-neutral-200 rounded-lg h-6"/>
-                        )
-                    })
-                }
-            </div>
-
-            <div className="bg-neutral-100 rounded p-2 border border-neutral-200">
-                <p className="text-xs text-neutral-600">Este ranking se mostrará cuando tengas al menos 3 sucursales.</p>
-            </div>
-        </div>
-    )
-}

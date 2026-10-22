@@ -1,58 +1,57 @@
 {
-    "Register": {
-        "name": "Nombre",
-        "lastName": "Apellido",
-        "email": "Email",
-        "password": "Contraseña",
-        "confirmPassword": "Confirmar contraseña",
-        "showPassword": "Mostrar contraseña",
-        "hidePassword": "Ocultar contraseña",
-        "continue": "Continuar",
-        "back": "Volver",
-        "createAccount": "Crear cuenta",
-        "companyName": "Nombre de la empresa",
-        "companyAddress": "Domicilio",
-        "companyPhone": "Teléfono",
-        "companyDescription": "Descripción de la empresa",
-        "descriptionPlaceholder": "Breve descripción de a qué se dedica",
-        "haveAccount": "¿Ya tienes una cuenta?",
-        "login": "Inicia sesión.",
-        "fillAll": "Por favor, completa todos los campos.",
-        "passwordsMismatch": "Las contraseñas no coinciden.",
-        "fillCompany": "Completa todos los datos de la empresa.",
-        "success": "Cuenta creada exitosamente",
-        "defaultError": "Ocurrió un error durante el registro."
-    }
-,
- "Login": {
-        "title": "Accede a tu cuenta",
-        "subtitle": "Ingresa tus credenciales para acceder a tu cuenta.",
-        "heroTitle": "Todo tu negocio, bajo control.",
-        "heroSubtitle": "Gestiona tus sucursales, ventas e inventario de forma simple y eficiente.",
-        "email": "Email",
-        "password": "Contraseña",
-        "showPassword": "Mostrar contraseña",
-        "hidePassword": "Ocultar contraseña",
-        "forgotPassword": "¿Olvidaste tu contraseña?",
-        "submit": "Iniciar sesión",
-        "noAccount": "¿No tienes una cuenta?",
-        "registerNow": "Regístrate ahora.",
-        "fillAll": "Por favor, completa todos los campos",
-        "success": "Inicio de sesión exitoso",
-        "invalidCredentials": "Correo o contraseña incorrectos"
-    },
-    "Navbar": {
+  "Register": {
+    "name": "Nombre",
+    "lastName": "Apellido",
+    "email": "Email",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "continue": "Continuar",
+    "back": "Volver",
+    "createAccount": "Crear cuenta",
+    "companyName": "Nombre de la empresa",
+    "companyAddress": "Domicilio",
+    "companyPhone": "Teléfono",
+    "companyDescription": "Descripción de la empresa",
+    "descriptionPlaceholder": "Breve descripción de a qué se dedica",
+    "haveAccount": "¿Ya tienes una cuenta?",
+    "login": "Inicia sesión.",
+    "fillAll": "Por favor, completa todos los campos.",
+    "passwordsMismatch": "Las contraseñas no coinciden.",
+    "fillCompany": "Completa todos los datos de la empresa.",
+    "success": "Cuenta creada exitosamente",
+    "defaultError": "Ocurrió un error durante el registro."
+  },
+  "Login": {
+    "title": "Accede a tu cuenta",
+    "subtitle": "Ingresa tus credenciales para acceder a tu cuenta.",
+    "heroTitle": "Todo tu negocio, bajo control.",
+    "heroSubtitle": "Gestiona tus sucursales, ventas e inventario de forma simple y eficiente.",
+    "email": "Email",
+    "password": "Contraseña",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "submit": "Iniciar sesión",
+    "noAccount": "¿No tienes una cuenta?",
+    "registerNow": "Regístrate ahora.",
+    "fillAll": "Por favor, completa todos los campos",
+    "success": "Inicio de sesión exitoso",
+    "invalidCredentials": "Correo o contraseña incorrectos"
+  },
+  "Navbar": {
     "loading": "Cargando...",
     "user": "Usuario"
-    },
-    "BusinessContext": {
+  },
+  "BusinessContext": {
     "company": "Compañía",
     "branch": "Sucursal",
-    "companyAlt": "Companña",
+    "companyAlt": "Compañía",
     "userCompanyAlt": "Compañía del usuario",
     "loading": "Cargando..."
-    },
-    "Sidebar": {
+  },
+  "Sidebar": {
     "hide": "Ocultar",
     "sectionBranch": "Sucursal",
     "sectionAdmin": "Administración",
@@ -62,6 +61,153 @@
     "branches": "Sucursales",
     "users": "Usuarios",
     "settings": "Ajustes"
-}
-    
+  },
+  "ProductSearch": {
+    "placeholder": "Buscar productos...",
+    "ariaLabel": "Buscar productos por nombre"
+  },
+  "BranchesPage": {
+    "metaTitle": "Pacífico - Sucursales",
+    "metaDescription": "Gestiona tus sucursales"
+  },
+  "Branches": {
+    "title": "Mis sucursales",
+    "createButton": {
+      "label": "Crear sucursal"
+    },
+    "card": {
+      "managerRole": "Gerente",
+      "viewDetails": "Ver detalles",
+      "status": {
+        "active": "Activa",
+        "inactive": "Inactiva"
+      }
+    },
+    "emptyState": {
+      "title": "Todavía no hay sucursales para mostrar",
+      "description": "Registra tu primer sucursal para poder ver su información y métricas clave.",
+      "steps": {
+        "step1": {
+          "title": "Datos generales",
+          "description": "Nombre y configuración básica"
+        },
+        "step2": {
+          "title": "Dirección y contacto",
+          "description": "Dirección, teléfono y contacto de la sucursal"
+        },
+        "step3": {
+          "title": "Asignar gerente",
+          "description": "Selecciona a un gerente y a su equipo"
+        }
+      }
+    },
+    "createModal": {
+      "title": "Crear nueva sucursal",
+      "image": {
+        "label": "Foto de la sucursal",
+        "previewAlt": "Previsualización",
+        "changeOverlay": "Cambiar foto",
+        "uploadButton": "Subir imagen",
+        "changeButton": "Elegir otra imagen",
+        "requirements": "Formatos permitidos: JPG, PNG. Máx 2MB."
+      },
+      "fields": {
+        "name": {
+          "label": "Nombre de la sucursal",
+          "placeholder": "Ej. Sucursal Centro"
+        },
+        "description": {
+          "label": "Descripción",
+          "placeholder": "Ej. Sucursal principal de ventas"
+        },
+        "address": {
+          "label": "Dirección",
+          "placeholder": "Ej. Av. Principal 123"
+        },
+        "phone": {
+          "label": "Teléfono",
+          "placeholder": "Ej. 555 123 4567"
+        }
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "submit": "Crear sucursal",
+        "submitting": "Creando sucursal..."
+      },
+      "notifications": {
+        "success": "Sucursal creada correctamente",
+        "error": "Ocurrió un error al crear la sucursal",
+        "requiredFields": "Por favor, completa todos los campos obligatorios.",
+        "invalidImageFormat": "Solo se permiten imágenes JPG o PNG.",
+        "imageSizeError": "La imagen no puede pesar más de 2 MB."
+      }
+    },
+    "TopBranchCard": {
+      "title": "Sucursal con mejores ganancias",
+      "totalEarnings": "en ganancias totales",
+      "emptyState": {
+        "title": "Aún no tienes sucursales registradas",
+        "description": "Crea tu primera sucursal para comenzar a gestionar ventas, inventario, usuarios y reportes desde un solo lugar."
+      }
+    },
+    "TopBranchesCard": {
+      "title": "Top 3 Sucursales",
+      "emptyMessage": "Este ranking se mostrará cuando tengas al menos 3 sucursales."
+    }
+  },
+  "BranchDetails": {
+    "createUserButton": {
+      "label": "Crear usuario"
+    },
+    "usersContainer": {
+      "title": "Equipo de la sucursal",
+      "subtitle": "Las personas que mantienen tu sucursal.",
+      "emptyState": {
+        "title": "Aún no tienes colaboradores",
+        "description": "Todavía no hay personas registradas en esta sucursal. Crea un usuario para comenzar a formar tu equipo."
+      },
+      "actions": {
+        "edit": "Editar",
+        "delete": "Eliminar"
+      }
+    },
+    "createUserModal": {
+      "title": "Crear cuenta",
+      "fields": {
+        "name": {
+          "label": "Nombre",
+          "placeholder": "Ej. Juan"
+        },
+        "lastName": {
+          "label": "Apellido",
+          "placeholder": "Ej. Pérez"
+        },
+        "email": {
+          "label": "Correo electrónico",
+          "placeholder": "ejemplo@correo.com"
+        },
+        "password": {
+          "label": "Contraseña",
+          "placeholder": "••••••••",
+          "hint": "Mínimo 8 caracteres, un número y un carácter especial."
+        },
+        "role": {
+          "label": "Rol *",
+          "placeholder": "Selecciona un rol"
+        }
+      },
+      "roles": {
+        "manager": "Gerente",
+        "cashier": "Cajero"
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "save": "Guardar cuenta",
+        "saving": "Guardando cuenta..."
+      },
+      "errors": {
+        "invalidRole": "Selecciona un rol válido"
+      }
+    }
+  }
 }

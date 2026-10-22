@@ -1,57 +1,56 @@
 {
-    "Register": {
-        "name": "First name",
-        "lastName": "Last name",
-        "email": "Email",
-        "password": "Password",
-        "confirmPassword": "Confirm password",
-        "showPassword": "Show password",
-        "hidePassword": "Hide password",
-        "continue": "Continue",
-        "back": "Back",
-        "createAccount": "Create account",
-        "companyName": "Company name",
-        "companyAddress": "Address",
-        "companyPhone": "Phone",
-        "companyDescription": "Company description",
-        "descriptionPlaceholder": "Brief description of what it does",
-        "haveAccount": "Already have an account?",
-        "login": "Log in.",
-        "fillAll": "Please fill in all fields.",
-        "passwordsMismatch": "Passwords do not match.",
-        "fillCompany": "Please fill in all company details.",
-        "success": "Account created successfully",
-        "defaultError": "An error occurred during registration."
-    }
-,
+  "Register": {
+    "name": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "continue": "Continue",
+    "back": "Back",
+    "createAccount": "Create account",
+    "companyName": "Company name",
+    "companyAddress": "Address",
+    "companyPhone": "Phone",
+    "companyDescription": "Company description",
+    "descriptionPlaceholder": "Brief description of what it does",
+    "haveAccount": "Already have an account?",
+    "login": "Log in.",
+    "fillAll": "Please fill in all fields.",
+    "passwordsMismatch": "Passwords do not match.",
+    "fillCompany": "Please fill in all company details.",
+    "success": "Account created successfully",
+    "defaultError": "An error occurred during registration."
+  },
   "Login": {
-        "title": "Access your account",
-        "subtitle": "Enter your credentials to access your account.",
-        "heroTitle": "Your whole business, under control.",
-        "heroSubtitle": "Manage your branches, sales and inventory simply and efficiently.",
-        "email": "Email",
-        "password": "Password",
-        "showPassword": "Show password",
-        "hidePassword": "Hide password",
-        "forgotPassword": "Forgot your password?",
-        "submit": "Log in",
-        "noAccount": "Don't have an account?",
-        "registerNow": "Sign up now.",
-        "fillAll": "Please fill in all fields.",
-        "success": "Logged in successfully",
-        "invalidCredentials": "Incorrect email or password"
-    },
-    "Navbar": {
+    "title": "Access your account",
+    "subtitle": "Enter your credentials to access your account.",
+    "heroTitle": "Your whole business, under control.",
+    "heroSubtitle": "Manage your branches, sales and inventory simply and efficiently.",
+    "email": "Email",
+    "password": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "forgotPassword": "Forgot your password?",
+    "submit": "Log in",
+    "noAccount": "Don't have an account?",
+    "registerNow": "Sign up now.",
+    "fillAll": "Please fill in all fields.",
+    "success": "Logged in successfully",
+    "invalidCredentials": "Incorrect email or password"
+  },
+  "Navbar": {
     "loading": "Loading...",
     "user": "User"
-    },
-    "BusinessContext": {
+  },
+  "BusinessContext": {
     "company": "Company",
     "branch": "Branch",
     "companyAlt": "Company",
     "userCompanyAlt": "User's company",
     "loading": "Loading..."
-    },
+  },
   "Sidebar": {
     "hide": "Hide",
     "sectionBranch": "Branch",
@@ -62,6 +61,153 @@
     "branches": "Branches",
     "users": "Users",
     "settings": "Settings"
-}
-
+  },
+  "ProductSearch": {
+    "placeholder": "Search products...",
+    "ariaLabel": "Search products by name"
+  },
+  "BranchesPage": {
+    "title": "Branches",
+    "description": "Manage your branches"
+  },
+  "Branches": {
+    "title": "My branches",
+    "createButton": {
+      "label": "Create branch"
+    },
+    "card": {
+      "managerRole": "Manager",
+      "viewDetails": "View details",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      }
+    },
+    "emptyState": {
+      "title": "No branches to display yet",
+      "description": "Register your first branch to view its information and key metrics.",
+      "steps": {
+        "step1": {
+          "title": "General data",
+          "description": "Name and basic configuration"
+        },
+        "step2": {
+          "title": "Address and contact",
+          "description": "Address, phone number, and branch contact"
+        },
+        "step3": {
+          "title": "Assign manager",
+          "description": "Select a manager and their team"
+        }
+      }
+    },
+    "createModal": {
+      "title": "Create new branch",
+      "image": {
+        "label": "Branch photo",
+        "previewAlt": "Preview",
+        "changeOverlay": "Change photo",
+        "uploadButton": "Upload image",
+        "changeButton": "Choose another image",
+        "requirements": "Allowed formats: JPG, PNG. Max 2MB."
+      },
+      "fields": {
+        "name": {
+          "label": "Branch name",
+          "placeholder": "e.g. Downtown Branch"
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "e.g. Main sales branch"
+        },
+        "address": {
+          "label": "Address",
+          "placeholder": "e.g. 123 Main St"
+        },
+        "phone": {
+          "label": "Phone",
+          "placeholder": "e.g. 555 123 4567"
+        }
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "submit": "Create branch",
+        "submitting": "Creating branch..."
+      },
+      "notifications": {
+        "success": "Branch created successfully",
+        "error": "An error occurred while creating the branch",
+        "requiredFields": "Please fill in all required fields.",
+        "invalidImageFormat": "Only JPG or PNG images are allowed.",
+        "imageSizeError": "The image size cannot exceed 2 MB."
+      }
+    },
+    "TopBranchCard": {
+      "title": "Top earning branch",
+      "totalEarnings": "in total earnings",
+      "emptyState": {
+        "title": "No registered branches yet",
+        "description": "Create your first branch to start managing sales, inventory, users, and reports all in one place."
+      }
+    },
+    "TopBranchesCard": {
+      "title": "Top 3 Branches",
+      "emptyMessage": "This ranking will be displayed once you have at least 3 branches."
+    }
+  },
+  "BranchDetails": {
+    "createUserButton": {
+      "label": "Create user"
+    },
+    "usersContainer": {
+      "title": "Branch team",
+      "subtitle": "The people running your branch.",
+      "emptyState": {
+        "title": "No collaborators yet",
+        "description": "There are no users registered in this branch yet. Create a user to start building your team."
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    },
+    "createUserModal": {
+      "title": "Create account",
+      "fields": {
+        "name": {
+          "label": "First name",
+          "placeholder": "e.g. John"
+        },
+        "lastName": {
+          "label": "Last name",
+          "placeholder": "e.g. Doe"
+        },
+        "email": {
+          "label": "Email address",
+          "placeholder": "example@email.com"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "••••••••",
+          "hint": "Minimum 8 characters, one number, and one special character."
+        },
+        "role": {
+          "label": "Role *",
+          "placeholder": "Select a role"
+        }
+      },
+      "roles": {
+        "manager": "Manager",
+        "cashier": "Cashier"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save account",
+        "saving": "Saving account..."
+      },
+      "errors": {
+        "invalidRole": "Select a valid role"
+      }
+    }
+  }
 }
