@@ -1,12 +1,9 @@
-"use client";
-
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { getBranchById } from "@/features/branches/services/branch.service";
-import CreateUserButton from "@/features/users/components/CreateUserButton";
-import UsersCard from "@/features/users/components/UsersCard";
 import { getUsers } from "@/features/users/services/users.service";
 import { User } from "@/features/users/types/user";
-
+import CreateUserButton from "@/features/users/components/CreateUserButton";
+import UsersCard from "@/features/users/components/UsersCard";
 import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -27,7 +24,6 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
   });
 
   const rawUsers = usersData?.data ?? [];
-
   const users = rawUsers.filter(
     (user) => String(user.id) !== String(currentUser?.id)
   );
@@ -41,9 +37,7 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
           <h4 className="text-xl font-semibold tracking-wide text-neutral-900">
             {t("title")}
           </h4>
-          <p className="text-sm text-neutral-500">
-            {t("subtitle")}
-          </p>
+          <p className="text-sm text-neutral-500">{t("subtitle")}</p>
         </div>
 
         <CreateUserButton
@@ -98,6 +92,6 @@ const EmptyState = () => {
 
 const UsersContainerSkeleton = () => {
   return (
-    <div className="flex min-h-0 min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 shadow-sm h-full w-full" />
+    <div className="flex h-full min-h-0 w-full min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 shadow-sm" />
   );
 };
