@@ -7,8 +7,7 @@ type DeleteUserResponse = {
 };
 
 export const deleteUser = async (id: string | number): Promise<AxiosResponse<DeleteUserResponse>> => {
-    const response = await apiClient.delete<DeleteUserResponse>(`api/usuarios/${id}`);
-
+    const response = await apiClient.delete<DeleteUserResponse>(`/api/usuarios/${id}`);
     return response;
 }
 

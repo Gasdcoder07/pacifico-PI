@@ -1,3 +1,6 @@
+import { User } from "@/features/users/types/user";
+
+export type BranchId = number | undefined;
 
 export interface Branch {
     id: number;
@@ -10,6 +13,7 @@ export interface Branch {
     updated_at: string;
     admin_id: string;
     company_id: string;
+    usuarios: User[]
 }
 
 export interface BranchResponse {

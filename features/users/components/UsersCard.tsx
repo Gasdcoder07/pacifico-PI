@@ -1,5 +1,8 @@
 import { Mail, ShieldCheck } from "lucide-react";
+
 import { User } from "../types/user";
+import { BranchId } from "@/features/branches/types/branch";
+
 import UserDropdownActionButton from "./UserDropdownActionButton";
 
 const colors = [
@@ -13,7 +16,7 @@ const colors = [
     "bg-violet-100 border-violet-200 text-violet-700",
 ];
 
-const UsersCard = ({ user, isMe } : { user: User, isMe: boolean }) => {
+const UsersCard = ({ user, isMe, branchId } : { user: User, isMe: boolean, branchId: BranchId }) => {
     const initials = `${user.name.charAt(0)}${user.last_name.charAt(0)}`;
 
     const index = user.name
@@ -47,7 +50,7 @@ const UsersCard = ({ user, isMe } : { user: User, isMe: boolean }) => {
                     </div>
                 </div>
 
-                <UserDropdownActionButton user={user} isMe={isMe}/>
+                <UserDropdownActionButton user={user} isMe={isMe} branchId={branchId}/>
             </div>
         </div>
     );
