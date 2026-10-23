@@ -176,9 +176,8 @@
       "managerRole": "Gerente",
       "noManager": "Sin gerente asignado",
       "defaultBranchImageAlt": "Imagen de la sucursal"
-
     },
-    "dropdownActions":{
+    "dropdownActions": {
       "edit": "Editar",
       "delete": "Eliminar"
     },
@@ -230,6 +229,24 @@
       },
       "errors": {
         "invalidRole": "Selecciona un rol válido"
+      }
+    }
+  },
+  "UsersPage": {
+    "title": "Gestión de usuarios",
+    "subtitle": "Las personas que mantienen tu sucursal.",
+    "card": {
+      "you": "Tú"
+    },
+    "roles": {
+      "admin": "Administrador",
+      "manager": "Gerente",
+      "cashier": "Cajero"
+    },
+    "container": {
+      "emptyState": {
+        "title": "Aún no tienes colaboradores",
+        "description": "Todavía no hay personas registradas en esta sucursal. Crea un usuario para comenzar a formar tu equipo."
       }
     }
   }
