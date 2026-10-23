@@ -4,124 +4,142 @@ import { useQuery } from "@tanstack/react-query";
 import { getBranches } from "../services/branch.service";
 import { Building2, LucideIcon, MapPin, UserCheck, Warehouse } from "lucide-react";
 import BranchCard from "./BranchCard";
+import { useTranslations } from "next-intl";
 import CreateBranchButton from "./CreateBranchButton";
 
 const BranchesContainer = () => {
-    const { data, isLoading } = useQuery({
-        queryKey: ["branches"],
-        queryFn: getBranches,
-    });
+  const t = useTranslations("Branches");
 
-    const branches = data ? data : [];
+  const { data, isLoading } = useQuery({
+    queryKey: ["branches"],
+    queryFn: getBranches,
+  });
 
-    const renderContent = (): React.ReactNode => {
-        if (isLoading) {
-            return (
-                <>
-                    {Array.from({ length: 2 }).map((_, index) => (
-                        <BranchCardSkeleton key={index} />
-                    ))}
-                </>
-            );
-        }
+  const branches = data ?? [];
 
-        if (!branches) {
-            return <>{<BranchesEmptyState/>}</>;
-        }
+  const renderContent = (): React.ReactNode => {
+    if (isLoading) {
+      return (
+        <>
+          {Array.from({ length: 2 }).map((_, index) => (
+            <BranchCardSkeleton key={index} />
+          ))}
+        </>
+      );
+    }
 
-        return (
-            <>
-                {branches.map((branch) => (
-                    <BranchCard
-                        key={branch.id}
-                        id={branch.id}
-                        name={branch.name}
-                        status={branch.status}
-                        direction={branch.direction}
-                        phone={branch.phone}
-                        email={branch.contact_info}
-                    />
-                ))}
-            </>
-        );
-    };
+    if (branches.length === 0) {
+      return <BranchesEmptyState />;
+    }
 
     return (
-        <div className="w-full flex flex-col gap-8">
-            <div className="flex items-center justify-between gap-4">
-                <h3 className="text-2xl font-semibold">Mis sucursales</h3>
-
-                <CreateBranchButton />
-            </div>
-
-            <div className="w-full grid lg:grid-cols-2 gap-4">
-                {renderContent()}
-            </div>
-        </div>
+      <>
+        {branches.map((branch) => (
+          <BranchCard
+            key={branch.id}
+            id={branch.id}
+            name={branch.name}
+            status={branch.status}
+            direction={branch.direction}
+            phone={branch.phone}
+            email={branch.contact_info}
+          />
+        ))}
+      </>
     );
+  };
+
+  return (
+    <div className="flex w-full flex-col gap-8">
+      <div className="flex items-center justify-between gap-4">
+        <h3 className="text-2xl font-semibold">{t("title")}</h3>
+
+        <CreateBranchButton />
+      </div>
+
+      <div className="grid w-full gap-4 lg:grid-cols-2">
+        {renderContent()}
+      </div>
+    </div>
+  );
 };
 
 export default BranchesContainer;
 
 const BranchCardSkeleton = () => {
-    return <div className="w-full rounded-lg bg-neutral-200 shadow-sm h-56" />;
+  return <div className="h-56 w-full rounded-lg bg-neutral-200 shadow-sm" />;
 };
 
 const BranchesEmptyState = () => {
-    return (
-        <div className="w-full col-span-full flex flex-col bg-white border border-neutral-200 rounded-lg gap-6 p-4 shadow-sm">
-            <div className="flex flex-col items-center justify-center">
-                <div className="p-4 bg-brand-50 text-brand-600 border border-brand-200 rounded-full mb-2">
-                    <Warehouse size={28} />
-                </div>
-                <h3 className="text-xl font-semibold tracking-wide mb-1">Todavía no hay sucursales para mostrar</h3>
-                <p className="text-neutral-600 text-sm">Registra tu primer sucursal para poder ver su información y métricas clave.</p>
-            </div>
-            <div className="flex items-start justify-center gap-2">
-                <BranchesEmptyStateStep
-                    step={1}
-                    icon={Building2}
-                    title="Datos generales"
-                    description="Nombre y configuración básica"/>
+  const t = useTranslations("Branches.emptyState");
 
-                <BranchesEmptyStateStep
-                    step={2}
-                    icon={MapPin}
-                    title="Dirección y contacto"
-                    description="Dirección, telefono y contacto de la sucursal"/>
-
-                <BranchesEmptyStateStep
-                    step={3}
-                    icon={UserCheck}
-                    title="Asignar gerente"
-                    description="Selecciona a un gerente y a su equipo"/>
-            </div>
+  return (
+    <div className="col-span-full flex w-full flex-col gap-6 rounded-lg border border-neutral-200 bg-white p-4 shadow-sm">
+      <div className="flex flex-col items-center justify-center text-center">
+        <div className="mb-2 rounded-full border border-brand-200 bg-brand-50 p-4 text-brand-600">
+          <Warehouse size={28} />
         </div>
-    )
-}
+        <h3 className="mb-1 text-xl font-semibold tracking-wide">
+          {t("title")}
+        </h3>
+        <p className="text-sm text-neutral-600">
+          {t("description")}
+        </p>
+      </div>
+
+      <div className="flex flex-wrap items-start justify-center gap-2">
+        <BranchesEmptyStateStep
+          step={1}
+          icon={Building2}
+          title={t("steps.step1.title")}
+          description={t("steps.step1.description")}
+        />
+
+        <BranchesEmptyStateStep
+          step={2}
+          icon={MapPin}
+          title={t("steps.step2.title")}
+          description={t("steps.step2.description")}
+        />
+
+        <BranchesEmptyStateStep
+          step={3}
+          icon={UserCheck}
+          title={t("steps.step3.title")}
+          description={t("steps.step3.description")}
+        />
+      </div>
+    </div>
+  );
+};
 
 interface BranchesEmptyStateStepProps {
-    step: number;
-    icon: LucideIcon;
-    title: string;
-    description: string;
+  step: number;
+  icon: LucideIcon;
+  title: string;
+  description: string;
 }
 
-const BranchesEmptyStateStep = ({ step, icon : Icon, title, description } : BranchesEmptyStateStepProps) => {
-    return (
-        <div className="flex items-start gap-4 border border-neutral-200 rounded-lg border-dashed p-4">
-            <div className="flex items-start gap-3">
-                <div className="p-2 bg-brand-50 text-brand-600 border border-brand-200 rounded-full">
-                    <Icon size={22}/>
-                </div>
-                <div className="flex items-center justify-center size-7 bg-brand-100 text-brand-600 rounded-full">
-                    <span className="font-bold text-sm">{step}</span>
-                </div>
-            </div>
-            <div className="flex flex-col items-start gap-1">
-                <h5 className="text-sm font-semibold">{title}</h5>
-                <p className="text-sm text-neutral-600 max-w-50">{description}.</p>
-            </div>
+const BranchesEmptyStateStep = ({
+  step,
+  icon: Icon,
+  title,
+  description,
+}: BranchesEmptyStateStepProps) => {
+  return (
+    <div className="flex items-start gap-4 rounded-lg border border-dashed border-neutral-200 p-4">
+      <div className="flex items-start gap-3">
+        <div className="rounded-full border border-brand-200 bg-brand-50 p-2 text-brand-600">
+          <Icon size={22} />
         </div>
-    )
-}
+        <div className="flex size-7 items-center justify-center rounded-full bg-brand-100 text-brand-600">
+          <span className="text-sm font-bold">{step}</span>
+        </div>
+      </div>
+      <div className="flex flex-col items-start gap-1">
+        <h5 className="text-sm font-semibold">{title}</h5>
+        <p className="max-w-50 text-sm text-neutral-600">{description}.</p>
+      </div>
+    </div>
+  );
+};

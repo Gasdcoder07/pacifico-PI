@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Box, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { Product } from "../types/product";
 import { useCartStore } from "../store/cart-store";
@@ -15,6 +15,13 @@ const ProductCard = ({ product } : ProductCardProps) => {
 
     return (
         <div className="group h-full w-full bg-white rounded-lg border border-neutral-200 shadow-sm hover:shadow-lg p-4 flex flex-col gap-4 transition-shadow duration-200 ease-in-out overflow-hidden">
+            <div className="flex gap-2 justify-between items-center">
+                <StockBadge quantity={product.quantity} min_stock={product.min_stock}/>
+
+                <div className="bg-[#F4F7F9] px-1.5 py-0.5 w-fit rounded-lg">
+                    <span className="text-xs text-neutral-600 font-medium">Comidas</span>
+                </div>
+            </div>
             <div className="flex gap-4 items-center">
                 <img
                     onMouseEnter={() => setImgHover(true)}
@@ -63,3 +70,31 @@ const ProductCard = ({ product } : ProductCardProps) => {
 };
 
 export default ProductCard;
+
+interface StockBadgeProps {
+    quantity: number;
+    min_stock: number;
+}
+
+export const StockBadge = ({ quantity, min_stock } : StockBadgeProps) => {
+    let badgeStyles = "";
+    let label = "";
+
+    if (quantity === 0) {
+        badgeStyles = 'bg-red-50 text-red-600 border-red-200';
+        label = 'Sin stock';
+    } else if (quantity > 0 && quantity <= min_stock) {
+        badgeStyles = 'bg-amber-50 text-amber-600 border-amber-200';
+        label = 'Stock bajo';
+    } else {
+        badgeStyles = 'bg-brand-50 text-brand-600 border-brand-200';
+        label = `${quantity} en stock`;
+    }
+
+    return (
+        <div className={`font-medium text-xs w-fit shrink-0 flex items-center justify-center gap-1.5 px-1.5 py-1 border rounded-lg ${badgeStyles}`}>
+            <Box size={14}/>
+            <span>{label}</span>
+        </div>
+    )
+}

@@ -5,6 +5,7 @@ export interface Product {
     description: string;
     foto_url: string;
     quantity: number;
+    min_stock: number;
     price: number;
 }
 
