@@ -16,9 +16,10 @@ interface BranchCardProps {
   email: string;
 }
 
+const MotionLink = motion.create(Link);
+
 const BranchCard = ({ id, name, status, direction, phone, email }: BranchCardProps) => {
   const t = useTranslations("Branches.card");
-  const MotionLink = motion(Link);
 
   return (
     <div className="flex w-full gap-4 rounded-lg border border-neutral-200 bg-white p-2 shadow-sm">

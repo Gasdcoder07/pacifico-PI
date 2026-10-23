@@ -59,7 +59,7 @@ const UserDropdownActionButton = ({
           !isMe ? { type: "spring", bounce: 0.6, duration: 0.8 } : undefined
         }
         disabled={isMe}
-        className={`rounded-lg border border-brand-100 bg-gradient-to-b from-brand-50 to-brand-100 p-1 text-brand-700 ${
+        className={`rounded-lg border border-brand-100 bg-linear-to-b from-brand-50 to-brand-100 p-1 text-brand-700 ${
           isMe ? "cursor-not-allowed" : "cursor-pointer"
         }`}
         onClick={() => setOpen(!open)}
@@ -68,7 +68,7 @@ const UserDropdownActionButton = ({
       </motion.button>
 
       {open && (
-        <div className="absolute right-2 -top-12 z-10 flex w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg">
+        <div className="text-sm absolute right-2 -top-12 z-10 flex w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg">
           <button
             onClick={() => {
               setShowEditPanel(true);
@@ -84,7 +84,7 @@ const UserDropdownActionButton = ({
               setShowDeleteModal(true);
               setOpen(false);
             }}
-            className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-red-50 hover:text-red-600"
+            className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 transition-colors duration-200 ease-in-out text-red-600 hover:bg-red-50"
           >
             <Trash size={18} />
             <span>{t("delete")}</span>

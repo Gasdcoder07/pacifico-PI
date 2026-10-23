@@ -1,9 +1,12 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+
 import BranchDropdownActionButton from "@/features/branches/components/BranchDropdownActionButton";
 import { getBranchById } from "@/features/branches/services/branch.service";
+import { useTranslations } from "next-intl";
 import { formatPhoneNumber } from "@/shared/utils/formatters";
-import { useQuery } from "@tanstack/react-query";
+
 import { House, Mail, Phone, Pin } from "lucide-react";
 import { useTranslations } from "next-intl";
 

@@ -59,7 +59,7 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
 
             return (
               <div key={user.id} className="flex items-center gap-4">
-                <UsersCard user={user} isMe={isMe} />
+                <UsersCard user={user} isMe={isMe} branchId={branchData?.data.id}/>
               </div>
             );
           })

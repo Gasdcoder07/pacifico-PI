@@ -1,3 +1,4 @@
+
 import { useTranslations } from "next-intl";
 
 interface TopBranchesCardProps {
@@ -5,19 +6,16 @@ interface TopBranchesCardProps {
   branches: any[] | null;
 }
 
-const DEFAULT_TOP_BRANCHES = [
-  { id: "mock-1", name: "Manzanillo", totalSales: 128000 },
-  { id: "mock-2", name: "Las Brisas", totalSales: 97720 },
-  { id: "mock-3", name: "Valle de las Garzas", totalSales: 72190 },
-];
-
 const rankStyles = [
   { bg: "bg-amber-500/10", badge: "bg-amber-500 text-white" },
   { bg: "bg-slate-500/10", badge: "bg-slate-500 text-white" },
   { bg: "bg-orange-500/10", badge: "bg-orange-600 text-white" },
 ];
 
-const TopBranchesCard = ({ isLoading, branches }: TopBranchesCardProps) => {
+const TopBranchesCard = ({
+  isLoading,
+  branches,
+}: TopBranchesCardProps) => {
   const t = useTranslations("Branches.TopBranchesCard");
 
   if (isLoading) {
@@ -26,20 +24,13 @@ const TopBranchesCard = ({ isLoading, branches }: TopBranchesCardProps) => {
     );
   }
 
-  const displayBranches = DEFAULT_TOP_BRANCHES.map((defaultBranch, index) => {
-    const realBranch = branches?.[index];
+  // No mostrar datos ficticios si no hay sucursales reales.
+  if (!branches || branches.length < 3 ) {
+    return <TopBranchesCardEmptyState title={t("title")} text={t("emptyMessage")}/>;
+  }
 
-    return {
-      id: realBranch?.id ?? defaultBranch.id,
-      name: realBranch?.name ?? defaultBranch.name,
-      totalSales:
-        realBranch?.totalSales && realBranch.totalSales > 0
-          ? realBranch.totalSales
-          : defaultBranch.totalSales,
-    };
-  });
+  const displayBranches = branches.slice(0, 3);
 
-  // Formateador estándar de JS para mostrar solo '$' con comas
   const formatMoney = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -51,7 +42,9 @@ const TopBranchesCard = ({ isLoading, branches }: TopBranchesCardProps) => {
 
   return (
     <div className="flex w-2/5 flex-col gap-4 rounded-lg border border-neutral-200 p-4 shadow-sm">
-      <h3 className="text-xl font-bold text-neutral-900">{t("title")}</h3>
+      <h3 className="text-xl font-bold text-neutral-900">
+        {t("title")}
+      </h3>
 
       <div className="flex flex-col gap-2">
         {displayBranches.map((branch, index) => {
@@ -59,7 +52,7 @@ const TopBranchesCard = ({ isLoading, branches }: TopBranchesCardProps) => {
 
           return (
             <div
-              key={branch.id || index}
+              key={branch.id}
               className={`flex items-center justify-between gap-4 rounded-lg p-2 shadow-sm ${style.bg}`}
             >
               <div className="flex min-w-0 items-center gap-4">
@@ -68,13 +61,14 @@ const TopBranchesCard = ({ isLoading, branches }: TopBranchesCardProps) => {
                 >
                   {index + 1}
                 </div>
+
                 <h4 className="truncate text-sm font-semibold text-neutral-900">
                   {branch.name}
                 </h4>
               </div>
 
               <p className="shrink-0 text-sm font-bold text-neutral-900">
-                {formatMoney(branch.totalSales)}
+                {formatMoney(branch.totalSales ?? 0)}
               </p>
             </div>
           );
@@ -85,3 +79,28 @@ const TopBranchesCard = ({ isLoading, branches }: TopBranchesCardProps) => {
 };
 
 export default TopBranchesCard;
+
+
+const TopBranchesCardEmptyState = ({ title, text } : { title : string, text: string }) => {
+    return (
+        <div className="w-2/5 bg-white border border-neutral-200 rounded-lg p-4 flex flex-col gap-4 shadow-sm">
+            <h3 className="text-xl text-neutral-900 font-bold">
+                {title}
+            </h3>
+
+            <div className="flex flex-col gap-2">
+                {
+                    Array.from({ length: 3 }).map((_, index) => {
+                        return (
+                            <div key={index} className="bg-neutral-100 rounded-lg h-6"/>
+                        )
+                    })
+                }
+            </div>
+
+            <div className="bg-neutral-50 rounded p-2 border border-neutral-200">
+                <p className="text-xs text-neutral-600">{text}</p>
+            </div>
+        </div>
+    )
+}
