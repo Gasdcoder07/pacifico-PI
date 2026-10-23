@@ -8,7 +8,6 @@ import { useTranslations } from "next-intl";
 import { formatPhoneNumber } from "@/shared/utils/formatters";
 
 import { House, Mail, Phone, Pin } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 const BranchDetailsCard = ({ id }: { id: string | number }) => {
   // Hook llamado correctamente dentro del componente
