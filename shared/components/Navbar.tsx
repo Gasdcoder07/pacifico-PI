@@ -27,7 +27,7 @@ const Navbar = () => {
                     <ProfilePfp
                         name={fullName || t("user")}
                         role={user?.rol_id || null}
-                        avatar={user ? user.foto_url : ""}
+                        avatar={user?.foto_url ? user.foto_url : "/default_profile.webp"}
                     />
                 </div>
             </div>

@@ -4,6 +4,7 @@ export interface User {
     last_name: string;
     email: string;
     rol_id: string;
+    foto_url: string;
 }
 
 export interface UsersResponse {

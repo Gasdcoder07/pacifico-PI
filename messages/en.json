@@ -77,6 +77,7 @@
     },
     "card": {
       "managerRole": "Manager",
+      "noManager": "No manager assigned",
       "viewDetails": "View details",
       "status": {
         "active": "Active",
@@ -172,6 +173,7 @@
     "card": {
       "breadcrumb": "Branch",
       "managerRole": "Manager",
+      "noManager": "No manager assigned",
       "defaultBranchImageAlt": "Branch image"
     },
     "dropdownActions":{

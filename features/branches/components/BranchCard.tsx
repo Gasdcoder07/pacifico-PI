@@ -10,6 +10,9 @@ import { createSlug } from "@/shared/utils/create.slug";
 interface BranchCardProps {
   id: string | number;
   name: string;
+  managerName: string;
+  managerPhoto: string;
+  photo: string;
   status: boolean;
   direction: string;
   phone: string;
@@ -18,14 +21,14 @@ interface BranchCardProps {
 
 const MotionLink = motion.create(Link);
 
-const BranchCard = ({ id, name, status, direction, phone, email }: BranchCardProps) => {
+const BranchCard = ({ id, name, managerName, managerPhoto, photo, status, direction, phone, email }: BranchCardProps) => {
   const t = useTranslations("Branches.card");
 
   return (
     <div className="flex w-full gap-4 rounded-lg border border-neutral-200 bg-white p-2 shadow-sm">
       <div className="relative w-2/5 shrink-0 overflow-hidden rounded-lg shadow">
         <img
-          src="https://cdn.aglty.io/scotia-bank-mexico/Attachments/NewItems/lomas-palmas-sucursal_20231018233625_0.png"
+          src={photo || 'default_branch.webp'}
           alt={name}
           className="absolute inset-0 h-full w-full object-cover"
         />
@@ -42,14 +45,24 @@ const BranchCard = ({ id, name, status, direction, phone, email }: BranchCardPro
 
         <div className="flex min-w-0 items-center gap-4">
           <img
-            src="https://i.pinimg.com/originals/38/43/28/38432891e9e320c7ac514c8e815f2947.jpg"
-            alt="Gerente"
-            className="size-10 rounded-full border border-neutral-200 object-center shadow"
+            src={managerPhoto || "/default_profile.webp"}
+            alt={managerName}
+            className="size-10 rounded-full border border-neutral-200 object-cover object-center shadow"
           />
 
           <div className="flex min-w-0 flex-col gap-0">
-            <p className="text-sm font-medium text-neutral-900">Juan Pérez</p>
-            <span className="text-xs text-neutral-400">{t("managerRole")}</span>
+            {
+                managerName ? (
+                    <>
+                        <p className="text-sm font-medium text-neutral-900">{managerName}</p>
+                        <span className="text-xs text-neutral-400">{t("managerRole")}</span>
+                    </>
+                ) : (
+                    <p className="text-sm font-medium text-neutral-900">
+                        {t("noManager")}
+                    </p>
+                )
+            }
           </div>
         </div>
 

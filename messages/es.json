@@ -77,6 +77,7 @@
     },
     "card": {
       "managerRole": "Gerente",
+      "noManager" :"Sin gerente asignado",
       "viewDetails": "Ver detalles",
       "status": {
         "active": "Activa",
@@ -161,6 +162,7 @@
     },
     "cardDetails": {
         "manager": "Gerente",
+        "noManager": "Sin gerente asignado",
         "actions": {
             "edit" : "Editar",
             "delete": "Eliminar"
@@ -172,6 +174,7 @@
     "card": {
       "breadcrumb": "Sucursal",
       "managerRole": "Gerente",
+      "noManager": "Sin gerente asignado",
       "defaultBranchImageAlt": "Imagen de la sucursal"
 
     },

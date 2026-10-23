@@ -13,7 +13,10 @@ export interface Branch {
     updated_at: string;
     admin_id: string;
     company_id: string;
-    usuarios: User[]
+    foto_url: string;
+    usuarios: User[];
+    gerente: User | null;
+    gerentes: User[]
 }
 
 export interface BranchResponse {

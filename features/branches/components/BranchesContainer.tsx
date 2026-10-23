@@ -16,6 +16,7 @@ const BranchesContainer = () => {
   });
 
   const branches = data ?? [];
+  console.log(branches);
 
   const renderContent = (): React.ReactNode => {
     if (isLoading) {
@@ -39,6 +40,13 @@ const BranchesContainer = () => {
             key={branch.id}
             id={branch.id}
             name={branch.name}
+            managerName={
+                branch.gerentes?.length
+                ? `${branch.gerentes[0].name} ${branch.gerentes[0].last_name}`
+                : ""
+            }
+            managerPhoto={branch.gerentes?.[0]?.foto_url || "/default_profile.webp"}
+            photo={branch.foto_url}
             status={branch.status}
             direction={branch.direction}
             phone={branch.phone}

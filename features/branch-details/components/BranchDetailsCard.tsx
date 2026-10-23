@@ -20,6 +20,7 @@ const BranchDetailsCard = ({ id }: { id: string | number }) => {
   });
 
   const branch = data?.data;
+  const manager = data?.data.gerente;
 
   if (isLoading) return <BrachDetailsCardSkeleton />;
 
@@ -40,7 +41,7 @@ const BranchDetailsCard = ({ id }: { id: string | number }) => {
         <div className="relative h-40 overflow-hidden rounded-t-lg">
           <img
             className="block h-full w-full object-cover object-center"
-            src="https://cdn.aglty.io/scotia-bank-mexico/Attachments/NewItems/lomas-palmas-sucursal_20231018233625_0.png"
+            src={branch?.foto_url ? branch?.foto_url : '/default_branch.webp'}
             alt={branch?.name ?? t("defaultBranchAlt")}
           />
 
@@ -57,23 +58,31 @@ const BranchDetailsCard = ({ id }: { id: string | number }) => {
         <div className="relative -mt-4 flex items-stretch gap-4 rounded-lg bg-white py-4 shadow-sm">
           <div className="flex w-1/4 items-center gap-4 border-r border-neutral-200 px-6 py-2">
             <img
-              src="https://i.pinimg.com/originals/38/43/28/38432891e9e320c7ac514c8e815f2947.jpg"
+              src={manager?.foto_url ? manager.foto_url : '/default_profile.webp'}
               alt={t("managerRole")}
-              className="size-16 rounded-full border border-neutral-200 object-center shadow"
+              className="size-16 rounded-full border border-neutral-200 object-cover object-center shadow"
             />
 
             <div className="flex min-w-0 flex-col gap-0">
-              <p className="text-lg font-medium text-neutral-900">
-                Juan Pérez
-              </p>
-              <span className="text-sm text-neutral-400">
-                {t("managerRole")}
-              </span>
+                {
+                    manager ? (
+                        <>                        
+                            <p className="text-lg font-medium text-neutral-900">
+                                {manager?.name} {manager?.last_name}
+                            </p>
+                            <span className="text-sm text-neutral-400">
+                                {t("managerRole")}
+                            </span>
+                        </>
+                    ) : (
+                        <p className="font-medium">{t("noManager")}</p>
+                    )
+                }
             </div>
           </div>
 
-          <div className="flex w-3/4 items-start justify-between gap-2 px-6 py-2 text-sm text-neutral-600">
-            <div className="flex flex-col gap-2">
+          <div className="flex w-3/4 items-start justify-between gap-4 px-6 py-2 text-sm text-neutral-600">
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
               <div className="flex flex-1 min-w-0 items-center gap-4">
                 <Pin size={18} className="shrink-0" />
                 <span className="truncate">{branch?.direction}</span>
