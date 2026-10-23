@@ -174,7 +174,7 @@
       "managerRole": "Manager",
       "defaultBranchImageAlt": "Branch image"
     },
-    "dropdownActions":{
+    "dropdownActions": {
       "edit": "Edit",
       "delete": "Delete"
     },
@@ -226,6 +226,24 @@
       },
       "errors": {
         "invalidRole": "Select a valid role"
+      }
+    }
+  },
+  "UsersPage": {
+    "title": "User management",
+    "subtitle": "The people running your branch.",
+    "card": {
+      "you": "You"
+    },
+    "roles": {
+      "admin": "Admin",
+      "manager": "Manager",
+      "cashier": "Cashier"
+    },
+    "container": {
+      "emptyState": {
+        "title": "No collaborators yet",
+        "description": "There are no users registered in this branch yet. Create a user to start building your team."
       }
     }
   }
