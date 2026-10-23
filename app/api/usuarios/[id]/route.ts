@@ -1,6 +1,7 @@
 import { pool } from "@/shared/lib/db";
 import { supabase, supabaseAdmin } from "@/shared/lib/supabase";
 import { NextResponse } from "next/server";
+import cloudinary from "@/shared/lib/cloudinary";
 
 /**
  * @swagger
@@ -419,6 +420,7 @@ export async function PUT(
             "email",
             "status",
             "foto_url",
+            "foto_public_id",
             "rol_id",
             "branch_id",
             "admin_id",
@@ -644,7 +646,8 @@ export async function DELETE(
         }
 
         const targetUserQuery = await pool.query(
-            `SELECT id, rol_id, branch_id, auth_user_id FROM usuarios WHERE id = $1`,
+            `SELECT id, rol_id, branch_id, auth_user_id, foto_public_id
+            FROM usuarios WHERE id = $1`,
             [targetUserId]
         );
 
@@ -681,11 +684,22 @@ export async function DELETE(
         }
 
         const response = await pool.query(
-            `DELETE FROM usuarios WHERE id = $1 RETURNING id, auth_user_id, name, last_name, email`,
+            `DELETE FROM usuarios WHERE id = $1 RETURNING id, auth_user_id, name, last_name, email,foto_public_id`,
             [targetUserId]
         );
 
         const deletedUser = response.rows[0];
+
+        if (deletedUser.foto_public_id) {
+            try {
+                await cloudinary.uploader.destroy(deletedUser.foto_public_id);
+            } catch (cloudinaryError) {
+                console.error(
+                    "Error al eliminar la imagen de Cloudinary:",
+                    cloudinaryError
+                );
+            }
+        }
 
         if (deletedUser.auth_user_id) {
             const { error: deleteAuthError } = await supabaseAdmin.auth.admin.deleteUser(

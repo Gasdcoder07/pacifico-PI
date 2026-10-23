@@ -9,6 +9,7 @@ import {
   transaction,
   validId,
 } from "@/shared/utils/inventory-access";
+import cloudinary from "@/shared/lib/cloudinary";
 
 /**
  * @swagger
@@ -191,6 +192,206 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { success: "Producto e inventario creados con éxito", ...result },
       { status: 201 },
+    );
+  } catch (error) {
+    return apiError(error);
+  }
+}
+
+/**
+ * @swagger
+ * /api/products:
+ *   put:
+ *     summary: Modificar un producto
+ *     description: ADMIN puede modificar productos de su empresa. GERENTE también puede modificar productos de su empresa según su alcance. La modificación incluye nombre, descripción, precio, categoría e imagen.
+ *     tags: [Productos]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [product_id, name, price, category_id]
+ *             properties:
+ *               product_id:
+ *                 type: string
+ *                 example: "25"
+ *               name:
+ *                 type: string
+ *                 example: Sabritas Sal 170g
+ *               description:
+ *                 type: string
+ *                 nullable: true
+ *                 example: Papas fritas con sal
+ *               price:
+ *                 type: number
+ *                 minimum: 0
+ *                 example: 25.50
+ *               category_id:
+ *                 type: string
+ *                 example: "2"
+ *               foto_public_id:
+ *                 type: string
+ *                 nullable: true
+ *               foto_url:
+ *                 type: string
+ *                 nullable: true
+ *     responses:
+ *       200:
+ *         description: Producto actualizado correctamente.
+ *       400:
+ *         description: Datos no válidos.
+ *       401:
+ *         description: Sesión inválida.
+ *       403:
+ *         description: Rol no permitido.
+ *       404:
+ *         description: Producto o categoría no encontrados.
+ *       500:
+ *         description: Error interno.
+ */
+
+export async function PUT(request: Request) {
+  try {
+    const actor = await getActor(request, [1, 2]);
+    const body = await readBody(request);
+
+    const productId = validId(body.product_id);
+
+    if (typeof body.name !== "string" || !body.name.trim()) {
+      throw new HttpError(400, "El nombre del producto es obligatorio");
+    }
+
+    const name = body.name.trim();
+    const categoryId = validId(body.category_id);
+
+    if (
+      !["number", "string"].includes(typeof body.price) ||
+      !/^\d{1,10}(\.\d{1,2})?$/.test(String(body.price))
+    ) {
+      throw new HttpError(
+        400,
+        "El precio debe ser no negativo y tener máximo dos decimales",
+      );
+    }
+
+    for (const field of ["description", "foto_url", "foto_public_id"]) {
+      if (body[field] != null && typeof body[field] !== "string") {
+        throw new HttpError(400, `El campo ${field} debe ser texto`);
+      }
+    }
+
+    // Si se modifica la imagen, ambos campos deben enviarse juntos.
+    if (
+      (body.foto_public_id === undefined) !==
+      (body.foto_url === undefined)
+    ) {
+      throw new HttpError(
+        400,
+        "Debes enviar foto_public_id y foto_url juntos",
+      );
+    }
+
+    const result = await transaction(async (client) => {
+      const product = await client.query(
+        `SELECT id, foto_public_id, foto_url
+          FROM public.productos
+          WHERE id = $1
+            AND company_id = $2
+          FOR UPDATE`,
+        [productId, actor.company_id],
+      );
+
+      if (!product.rows[0]) {
+        throw new HttpError(
+          404,
+          "Producto no encontrado en tu empresa",
+        );
+      }
+
+      const oldFotoPublicId = product.rows[0].foto_public_id;
+
+      // Si no se enviaron imágenes, conservar las actuales.
+      const fotoPublicId =
+        body.foto_public_id === undefined
+          ? product.rows[0].foto_public_id
+          : body.foto_public_id;
+
+      const fotoUrl =
+        body.foto_url === undefined
+          ? product.rows[0].foto_url
+          : body.foto_url;
+
+      const category = await client.query(
+        `SELECT id
+          FROM public.categorias
+          WHERE id = $1
+            AND company_id = $2
+          FOR SHARE`,
+        [categoryId, actor.company_id],
+      );
+
+      if (!category.rows[0]) {
+        throw new HttpError(
+          404,
+          "Categoría no encontrada en tu empresa",
+        );
+      }
+
+      const updatedProduct = await client.query(
+        `UPDATE public.productos
+          SET
+            name = $1,
+            description = $2,
+            price = $3,
+            category_id = $4,
+            foto_public_id = $5,
+            foto_url = $6,
+            updated_at = NOW()
+          WHERE id = $7
+            AND company_id = $8
+         RETURNING *`,
+        [
+          name,
+          body.description ?? null,
+          body.price,
+          categoryId,
+          fotoPublicId,
+          fotoUrl,
+          productId,
+          actor.company_id,
+        ],
+      );
+
+      return {
+        product: updatedProduct.rows[0],
+        oldFotoPublicId,
+      };
+    });
+
+    // Eliminar la imagen anterior SOLO después de que la BD haya actualizado correctamente.
+    if (
+      result.oldFotoPublicId &&
+      result.product.foto_public_id !== result.oldFotoPublicId
+    ) {
+      try {
+        await cloudinary.uploader.destroy(result.oldFotoPublicId);
+      } catch (cloudinaryError) {
+        console.error(
+          "Error al eliminar la imagen anterior de Cloudinary:",
+          cloudinaryError,
+        );
+      }
+    }
+
+    return NextResponse.json(
+      {
+        success: "Producto actualizado correctamente",
+        data: result.product,
+      },
+      { status: 200 },
     );
   } catch (error) {
     return apiError(error);

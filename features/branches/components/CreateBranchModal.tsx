@@ -24,6 +24,9 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
     // OJO: por ahora el backend no recibe imagen, así que solo se muestra la vista previa
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [fotoPublicId, setFotoPublicId] = useState("");
+    const [fotoUrl, setFotoUrl] = useState("");
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
 
     // Referencia para activar el input de tipo file de manera oculta
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -32,6 +35,9 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
         setFormData(initialForm);
         setImageFile(null);
         setImagePreview(null);
+        setFotoPublicId("");
+        setFotoUrl("");
+        setIsUploadingImage(false);
     };
 
     const { mutate: mutateCreateBranch, isPending: isCreating } = useMutation({
@@ -55,29 +61,100 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
     };
 
     // Manejar el cambio de imagen
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+const handleImageChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-        if (!["image/jpeg", "image/png"].includes(file.type)) {
-            toast.error("Solo se permiten imágenes JPG o PNG.");
-            return;
-        }
+    if (!["image/jpeg", "image/png"].includes(file.type)) {
+        toast.error("Solo se permiten imágenes JPG o PNG.");
+        e.target.value = "";
+        return;
+    }
 
-        if (file.size > 2 * 1024 * 1024) {
-            toast.error("La imagen no puede pesar más de 2 MB.");
-            return;
-        }
 
-        setImageFile(file);
+    setImageFile(file);
 
-        // Generar una vista previa en tiempo real
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setImagePreview(reader.result as string);
-        };
-        reader.readAsDataURL(file);
+    // Mantener la vista previa actual
+    const reader = new FileReader();
+    reader.onloadend = () => {
+        setImagePreview(reader.result as string);
     };
+    reader.readAsDataURL(file);
+
+    try {
+        setIsUploadingImage(true);
+
+        // 1. Solicitar firma al servidor
+        const signatureResponse = await fetch(
+            "/api/cloudinary/signature",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    folder: "sucursales",
+                }),
+            }
+        );
+
+        if (!signatureResponse.ok) {
+            throw new Error("No se pudo obtener la firma.");
+        }
+
+        const signatureData = await signatureResponse.json();
+
+        // 2. Preparar la imagen para subirla
+        const uploadFormData = new FormData();
+
+        uploadFormData.append("file", file);
+        uploadFormData.append("api_key", signatureData.apiKey);
+        uploadFormData.append(
+            "timestamp",
+            String(signatureData.timestamp)
+        );
+        uploadFormData.append("signature", signatureData.signature);
+        uploadFormData.append("folder", signatureData.folder);
+
+        // 3. Subir la imagen directamente a Cloudinary
+        const uploadResponse = await fetch(
+            `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`,
+            {
+                method: "POST",
+                body: uploadFormData,
+            }
+        );
+
+        if (!uploadResponse.ok) {
+            const errorData = await uploadResponse.json();
+        
+            console.error("Error de Cloudinary:", errorData);
+        
+            throw new Error(
+                errorData?.error?.message || "No se pudo subir la imagen."
+            );
+        }
+
+        const uploadedImage = await uploadResponse.json();
+
+        // 4. Guardar los datos de la imagen en el estado
+        setFotoPublicId(uploadedImage.public_id);
+        setFotoUrl(uploadedImage.secure_url);
+
+        toast.success("Imagen subida correctamente");
+    } catch (error) {
+        console.error("Error al subir imagen:", error);
+
+        setFotoPublicId("");
+        setFotoUrl("");
+
+        toast.error("No se pudo subir la imagen a Cloudinary.");
+    } finally {
+        setIsUploadingImage(false);
+    }
+};
 
     const triggerFileSelect = () => {
         fileInputRef.current?.click();
@@ -102,6 +179,8 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
             direction: formData.company_address.trim(),
             phone: formData.company_phone.trim(),
             contact_info: formData.company_description.trim(),
+            foto_public_id: fotoPublicId || null,
+            foto_url: fotoUrl || null,
         });
     };
 
@@ -152,7 +231,6 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                     >
                         {imagePreview ? "Elegir otra imagen" : "Subir imagen"}
                     </button>
-                    <span className="text-[10px] text-neutral-400">Formatos permitidos: JPG, PNG. Máx 2MB.</span>
                 </div>
 
                 {/* Campos de texto */}
@@ -208,7 +286,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                     <button
                         type="button"
                         onClick={handleClose}
-                        disabled={isCreating}
+                        disabled={isCreating||isUploadingImage}
                         className="px-4 py-2 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 transition-colors ease-in-out duration-200 cursor-pointer disabled:opacity-50"
                     >
                         Cancelar
@@ -222,7 +300,8 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                                 : "bg-cyan-400 hover:bg-cyan-500 cursor-pointer"
                         }`}
                     >
-                        {isCreating ? "Creando sucursal..." : "Crear sucursal"}
+                        {isUploadingImage? "Subiendo imagen...":
+                            isCreating ? "Creando sucursal..." : "Crear sucursal"}
                     </button>
                 </div>
             </form>
