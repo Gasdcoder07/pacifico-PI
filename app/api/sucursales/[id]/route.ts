@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { pool } from "@/shared/lib/db"
 import { supabase } from "@/shared/lib/supabase";
 import { validarAdmin } from "@/shared/utils/backend-funcs";
-
+import cloudinary from "@/shared/lib/cloudinary";
 /**
  * @swagger
  * /api/sucursales/{id}:
@@ -393,9 +393,21 @@ export async function DELETE(
         }
 
         const deleteResult = await pool.query(
-            `DELETE FROM public.sucursales WHERE id = $1 RETURNING id`,
+            `DELETE FROM public.sucursales WHERE id = $1 RETURNING id,foto_public_id`,
             [targetBranchId]
         );
+        const deletedBranch = deleteResult.rows[0];
+
+        if (deletedBranch?.foto_public_id) {
+            try {
+                await cloudinary.uploader.destroy(deletedBranch.foto_public_id);
+            } catch (cloudinaryError) {
+                console.error(
+                    "Error al eliminar la imagen de Cloudinary:",
+                    cloudinaryError
+                );
+            }
+        }
 
         if (deleteResult.rowCount === 0) {
             return NextResponse.json(

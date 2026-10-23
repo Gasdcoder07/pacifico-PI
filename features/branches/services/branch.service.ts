@@ -6,6 +6,8 @@ export interface CreateBranchPayload {
     direction: string;
     phone?: string;
     contact_info?: string;
+    foto_public_id?: string | null;
+    foto_url?: string | null;
 }
 
 export interface Branch {
@@ -16,6 +18,8 @@ export interface Branch {
     direction: string
     phone: string
     contact_info: string
+    foto_public_id?: string | null;
+    foto_url?: string | null;
     status: boolean
     created_at: string
     updated_at: string
