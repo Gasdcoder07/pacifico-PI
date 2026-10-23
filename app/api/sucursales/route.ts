@@ -249,7 +249,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const { name, direction, phone, contact_info } = body;
+        const { name, direction, phone, contact_info,foto_public_id,foto_url } = body;
 
         if (!name || !direction) {
             return NextResponse.json(
@@ -267,16 +267,20 @@ export async function POST(request: Request) {
                 contact_info,
                 created_at,
                 updated_at,
-                admin_id
-            ) VALUES ($1, $2, $3, $4, $5, NOW(), NOW(), $6)
-            RETURNING id, company_id, name, direction, phone, contact_info, status, created_at, updated_at, admin_id;`,
+                admin_id,
+                foto_public_id,
+                foto_url
+            ) VALUES ($1, $2, $3, $4, $5, NOW(), NOW(), $6, $7, $8)
+            RETURNING id, company_id, name, direction, phone, contact_info, status, created_at, updated_at, admin_id, foto_public_id,foto_url;`,
             [
                 name,
                 currentUser.company_id,
                 direction,
                 phone || null,
                 contact_info || null,
-                currentUser.id
+                currentUser.id,
+                foto_public_id || null,
+                foto_url || null
             ]
         );
 

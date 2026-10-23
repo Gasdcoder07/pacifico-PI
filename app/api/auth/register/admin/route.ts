@@ -118,6 +118,8 @@ export async function POST(request: Request) {
       company_name,
       company_description,
       company_address,
+      company_foto_public_id,
+      company_foto_url,
     } = body;
 
     if (!name || !last_name || !email || !password) {
@@ -164,15 +166,26 @@ export async function POST(request: Request) {
       await client.query("BEGIN");
 
       const insertEmpresaQuery = `
-                INSERT INTO public.empresas (name, description, address, status, created_at, updated_at)
-                VALUES ($1, $2, $3, true, NOW(), NOW())
-                RETURNING id;
-            `;
+          INSERT INTO public.empresas (
+              name,
+              description,
+              address,
+              status,
+              created_at,
+              updated_at,
+              foto_public_id,
+              foto_url
+          )
+          VALUES ($1, $2, $3, true, NOW(), NOW(), $4, $5)
+          RETURNING id;
+      `;
 
       const resEmpresa = await client.query(insertEmpresaQuery, [
         company_name,
         company_description,
         company_address,
+        company_foto_public_id || null,
+        company_foto_url || null,
       ]);
       const companyId = resEmpresa.rows[0].id;
 

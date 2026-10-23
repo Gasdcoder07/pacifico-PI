@@ -169,6 +169,15 @@
     "createUserButton": {
       "label": "Create user"
     },
+    "card": {
+      "breadcrumb": "Branch",
+      "managerRole": "Manager",
+      "defaultBranchImageAlt": "Branch image"
+    },
+    "dropdownActions":{
+      "edit": "Edit",
+      "delete": "Delete"
+    },
     "usersContainer": {
       "title": "Branch team",
       "subtitle": "The people running your branch.",

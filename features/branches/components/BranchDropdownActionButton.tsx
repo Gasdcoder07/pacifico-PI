@@ -1,13 +1,16 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Trash, Edit, Ellipsis } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { DeleteBranchModal } from "@/features/branch-details/components/DeleteBranchModal";
 import { Branch } from "../types/branch";
 import EditBranchPanel from "@/features/branch-details/components/EditBranchPanel";
 import { useTranslations } from "next-intl";
 
 interface BranchDropdownActionButtonProps {
-    branch: Branch | null | undefined;
+  branch: Branch | null | undefined;
 }
 
 const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps) => {
@@ -29,21 +32,13 @@ const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const hoverAnimation = { scaleX: 1.1, scaleY: 1.1, borderRadius: "35%" };
-    const tapAnimation = { scaleX: 0.9, scaleY: 1.1, borderRadius: "50%" };
+  const hoverAnimation = { scaleX: 1.1, scaleY: 1.1, borderRadius: "35%" };
+  const tapAnimation = { scaleX: 0.9, scaleY: 1.1, borderRadius: "50%" };
 
-    return (
-        <div className="relative shrink-0 flex justify-center items-center gap-2" ref={containerRef}>
-            <motion.button
-                aria-haspopup="true"
-                aria-expanded={open}
-                whileHover={hoverAnimation}
-                whileTap={tapAnimation}
-                transition={ { type: "spring", bounce: 0.6, duration: 0.8 } }
-                className={`bg-linear-to-b from-brand-50 to-brand-100 text-brand-700 p-2 rounded-lg ${false ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                onClick={() => setOpen(!open)}>
-                <Ellipsis size={20}/>
-            </motion.button>
+  const handleOpenDeleteModal = () => {
+    setOpen(false);
+    setShowDeleteModal(true);
+  };
 
             {
                 open && (
@@ -83,7 +78,18 @@ const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps
                 )
             }
         </div>
-    );
+      )}
+
+      {showDeleteModal && (
+        <DeleteBranchModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          branchName={branch?.name}
+          branchId={branch?.id}
+        />
+      )}
+    </div>
+  );
 };
 
 export default BranchDropdownActionButton;

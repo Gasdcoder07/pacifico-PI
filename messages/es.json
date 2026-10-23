@@ -169,6 +169,16 @@
     "createUserButton": {
       "label": "Crear usuario"
     },
+    "card": {
+      "breadcrumb": "Sucursal",
+      "managerRole": "Gerente",
+      "defaultBranchImageAlt": "Imagen de la sucursal"
+
+    },
+    "dropdownActions":{
+      "edit": "Editar",
+      "delete": "Eliminar"
+    },
     "usersContainer": {
       "title": "Equipo de la sucursal",
       "subtitle": "Las personas que mantienen tu sucursal.",
