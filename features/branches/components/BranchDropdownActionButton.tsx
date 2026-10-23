@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Trash, Edit, Ellipsis } from "lucide-react";
 import { DeleteBranchModal } from "@/features/branch-details/components/DeleteBranchModal";
 import { Branch } from "../types/branch";
+import EditBranchPanel from "@/features/branch-details/components/EditBranchPanel";
 
 interface BranchDropdownActionButtonProps {
     branch: Branch | null | undefined;
@@ -12,6 +13,7 @@ const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps
     const containerRef = useRef<HTMLDivElement>(null);
 
     const [open, setOpen] = useState(false);
+    const [showEditPanel, setShowEditPanel] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     
     useEffect(() => {
@@ -45,6 +47,7 @@ const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps
                     <div
                         className="absolute right-2 -top-12 -translate-x-1/5 z-10 flex flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white shadow-lg p-2 w-48 origin-top-right">
                         <button
+                            onClick={() => setShowEditPanel(true)}
                             className="h-10 w-full text-neutral-800 flex items-center gap-3 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-neutral-100">
                             <Edit size={18}/>
                             <span>Editar</span>
@@ -66,6 +69,14 @@ const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps
                         onClose={() => setShowDeleteModal(false)}
                         branchName={branch?.name}
                         branchId={branch?.id}/>
+                )
+            }
+
+            {
+                showEditPanel && (
+                    <EditBranchPanel
+                        isOpen={showEditPanel}
+                        onClose={() => setShowEditPanel(false)}/>
                 )
             }
         </div>
