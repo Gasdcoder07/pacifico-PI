@@ -1,12 +1,17 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
+
 import BranchDropdownActionButton from "@/features/branches/components/BranchDropdownActionButton";
 import { getBranchById } from "@/features/branches/services/branch.service";
+import { useTranslations } from "next-intl";
 import { formatPhoneNumber } from "@/shared/utils/formatters";
-import { useQuery } from "@tanstack/react-query";
+
 import { House, Mail, Phone, Pin } from "lucide-react";
 
 const BranchDetailsCard = ({ id } : { id : string | number}) => {
+    const t = useTranslations("BranchDetails")
+
     const { data, isLoading } = useQuery({
         queryKey: ["getBranch", id],
         queryFn: () => getBranchById(id),
@@ -23,7 +28,7 @@ const BranchDetailsCard = ({ id } : { id : string | number}) => {
                 <div className="text-neutral-600 flex gap-2 items-center">
                     <House size={16}/>
 
-                    <span className="text-sm font-semibold">Sucursal / {branch?.name}</span>
+                    <span className="text-sm font-semibold">{t("title.branch")} / {branch?.name}</span>
                 </div>
             </div>
 
@@ -56,7 +61,7 @@ const BranchDetailsCard = ({ id } : { id : string | number}) => {
                                 Juan Pérez
                             </p>
                             <span className="text-sm text-neutral-400">
-                                Gerente
+                                {t("cardDetails.manager")}
                             </span>
                         </div>
                     </div>

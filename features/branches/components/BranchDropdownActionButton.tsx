@@ -4,12 +4,15 @@ import { Trash, Edit, Ellipsis } from "lucide-react";
 import { DeleteBranchModal } from "@/features/branch-details/components/DeleteBranchModal";
 import { Branch } from "../types/branch";
 import EditBranchPanel from "@/features/branch-details/components/EditBranchPanel";
+import { useTranslations } from "next-intl";
 
 interface BranchDropdownActionButtonProps {
     branch: Branch | null | undefined;
 }
 
 const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps) => {
+    const t = useTranslations("BranchDetails.cardDetails.actions");
+
     const containerRef = useRef<HTMLDivElement>(null);
 
     const [open, setOpen] = useState(false);
@@ -50,13 +53,13 @@ const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps
                             onClick={() => setShowEditPanel(true)}
                             className="h-10 w-full text-neutral-800 flex items-center gap-3 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-neutral-100">
                             <Edit size={18}/>
-                            <span>Editar</span>
+                            <span>{t("edit")}</span>
                         </button>
                         <button
                             onClick={() => setShowDeleteModal(true)}
                             className="h-10 w-full flex items-center gap-3 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer text-red-600 hover:bg-red-50">
                             <Trash size={18}/>
-                            <span>Eliminar</span>
+                            <span>{t("delete")}</span>
                         </button>
                     </div>
                 )
