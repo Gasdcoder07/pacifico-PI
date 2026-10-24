@@ -4,6 +4,7 @@ import { supabase, supabaseAdmin } from "@/shared/lib/supabase";
 import { resend } from "@/shared/lib/resend";
 import { readFileSync } from "fs";
 import path from "path"
+import { RegisterResponse } from "../admin/route";
 
 const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-email.png"))
 
@@ -278,8 +279,13 @@ export async function POST(request: Request) {
 
         const response = await pool.query(queryDB, values);
 
-        const { error: emailError } = await resend.emails.send(
-            {
+        const data: RegisterResponse = {
+            message: "Haz creado tu usuario con éxito",
+            usuario: response.rows[0],
+        }
+
+        try {
+            const { error: emailError } = await resend.emails.send({
                 from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
                 to: email,
                 subject: "Creación de un usuario tipo Gerente",
@@ -311,14 +317,21 @@ export async function POST(request: Request) {
                         contentId: "pacifico-logo"
                     }
                 ]
+            })
+
+            if (emailError) {
+                console.error(emailError.message)
+                data.emailError = emailError.message
             }
-        )
+            
+        } catch(err) {
+            console.error(err)
+            data.emailError = err as string
+
+        }
 
         return NextResponse.json(
-            {
-                message: "Haz creado tu usuario con éxito",
-                usuario: response.rows[0],
-            },
+            data,
             { status: 201 },
         );
     } catch (err) {
