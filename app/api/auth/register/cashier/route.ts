@@ -6,6 +6,8 @@ import { supabaseAdmin } from "@/shared/lib/supabase";
 import { resend } from "@/shared/lib/resend";
 import { RegisterResponse } from "../admin/route";
 
+const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-email.png"))
+
 /**
  * @swagger
  * /api/auth/register/cashier:
@@ -292,7 +294,14 @@ export async function POST(request: Request) {
                             <strong>Guarda estos datos en un lugar seguro.</strong> Si los pierdes tendrás que pedir que restablezcan tu contraseña. No compartas este correo con nadie.
                         </div>
                         </div>
-                    </div>`
+                    </div>`,
+                    attachments: [
+                        {
+                            filename: "pacifico-logo.png",
+                            content: logo,
+                            contentId: "pacifico-logo"
+                        }
+                    ]
                 }
             )
 

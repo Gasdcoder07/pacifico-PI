@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import pool from "@/shared/lib/db";
 import { supabase, supabaseAdmin } from "@/shared/lib/supabase";
+import { resend } from "@/shared/lib/resend";
+import { readFileSync } from "fs";
+import path from "path"
+
+const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-email.png"))
 
 /**
  * @swagger
@@ -272,6 +277,42 @@ export async function POST(request: Request) {
         ];
 
         const response = await pool.query(queryDB, values);
+
+        const { error: emailError } = await resend.emails.send(
+            {
+                from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
+                to: email,
+                subject: "Creación de un usuario tipo Gerente",
+                html: `
+                    <div style="max-width:560px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;color:#334155;border:1px solid #E2E8F0;border-radius:12px;overflow:hidden;">
+                        <div style="background:#06B6D4;padding:20px;text-align:center;">
+                        <div style="display:inline-block;background:#FFFFFF;border-radius:10px;padding:8px 16px;">
+                            <img src="cid:pacifico-logo" width="200" alt="Pacífico" style="display:block;">
+                        </div>
+                        </div>
+                        <div style="padding:32px;">
+                        <h1 style="margin:0 0 12px;font-size:24px;color:#164E63;">Hola, ${name}</h1>
+                        <p style="margin:0 0 20px;font-size:16px;">Te has registrado correctamente en PACIFICO. Estos son tus datos de acceso:</p>
+                        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:16px 20px;">
+                            <p style="margin:0 0 4px;font-size:13px;color:#64748B;">Correo</p>
+                            <p style="margin:0 0 16px;font-size:16px;font-weight:bold;color:#164E63;">${email}</p>
+                            <p style="margin:0 0 4px;font-size:13px;color:#64748B;">Contraseña</p>
+                            <p style="margin:0;font-size:18px;font-weight:bold;font-family:Consolas,monospace;color:#164E63;">${password}</p>
+                        </div>
+                        <div style="margin-top:20px;background:#FFFBEB;border-left:4px solid #F59E0B;border-radius:6px;padding:14px 18px;font-size:14px;color:#78350F;">
+                            <strong>Guarda estos datos en un lugar seguro.</strong> Si los pierdes tendrás que pedir que restablezcan tu contraseña. No compartas este correo con nadie.
+                        </div>
+                        </div>
+                    </div>`,
+                attachments: [
+                    {
+                        filename: "pacifico-logo.png",
+                        content: logo,
+                        contentId: "pacifico-logo"
+                    }
+                ]
+            }
+        )
 
         return NextResponse.json(
             {
