@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import pool from "@/shared/lib/db";
 import { supabaseAdmin } from "@/shared/lib/supabase";
-
+import { resend } from "@/shared/lib/resend";
 /**
  * @swagger
  * /api/auth/register/admin:
@@ -105,6 +105,12 @@ import { supabaseAdmin } from "@/shared/lib/supabase";
  *                   example: "Hubo un error al registrar el usuario. Error: ..."
  */
 
+type RegisterResponse = {
+  message: string;
+  usuario: Record<string, unknown>;
+  emailError?: string;
+};
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -161,6 +167,7 @@ export async function POST(request: Request) {
 
     const userId = authData.user.id;
     const client = await pool.connect();
+    let usuario: Record<string, unknown>;
 
     try {
       await client.query("BEGIN");
@@ -211,10 +218,7 @@ export async function POST(request: Request) {
 
       await client.query("COMMIT");
 
-      return NextResponse.json(
-        { message: "Admin y empresa creados con éxito", usuario: response.rows[0] },
-        { status: 201 },
-      );
+      usuario = response.rows[0];
     } catch (dbError) {
       await client.query("ROLLBACK");
       await supabaseAdmin.auth.admin.deleteUser(userId);
@@ -222,6 +226,34 @@ export async function POST(request: Request) {
     } finally {
       client.release();
     }
+
+    const data: RegisterResponse = {
+      message: "Admin y empresa creados con éxito",
+      usuario,
+    };
+
+    try {
+      const { error: emailError } = await resend.emails.send({
+        from: process.env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev",
+        to: email,
+        subject: "Creación de un nuevo usuario en PACIFICO",
+        html: `
+          <div style="">
+          </div>
+        `,
+        text: `Hola ${name}, te has registrado correctamente en PACIFICO.`,
+      });
+
+      if (emailError) {
+        console.error(emailError);
+        data.emailError = "No se pudo enviar el correo de bienvenida";
+      }
+    } catch (emailException) {
+      console.error(emailException);
+      data.emailError = "No se pudo enviar el correo de bienvenida";
+    }
+
+    return NextResponse.json(data, { status: 201 });
   } catch (err) {
     console.error(err);
     return NextResponse.json(
