@@ -249,5 +249,87 @@
         "description": "Todavía no hay personas registradas en esta sucursal. Crea un usuario para comenzar a formar tu equipo."
       }
     }
+  },
+  "InventoryPage": {
+    "addProductButton": {
+      "label": "Agregar Producto"
+    },
+    "addProductModal": {
+      "title": "Ingresa un nuevo producto",
+      "image": {
+        "label": "Foto del producto",
+        "previewAlt": "Previsualización",
+        "changeOverlay": "Cambiar foto",
+        "uploadButton": "Subir imagen",
+        "changeButton": "Elegir otra imagen",
+        "requirements": "Formatos permitidos: JPG, PNG. Máx 2MB."
+      },
+      "fields": {
+        "name": {
+          "label": "Nombre del producto",
+          "placeholder": "Ej. Producto A"
+        },
+        "description": {
+          "label": "Descripción",
+          "placeholder": "Ej. Producto de alta calidad"
+        },
+        "price": {
+          "label": "Precio",
+          "placeholder": "Ej. 100"
+        },
+        "quantity": {
+          "label": "Cantidad inicial",
+          "placeholder": "Ej. 20"
+        },
+        "minStock": {
+          "label": "Stock mínimo",
+          "placeholder": "Ej. 5"
+        },
+        "category": {
+          "label": "Categoría",
+          "placeholder": "Categoría"
+        },
+        "branches": {
+          "label": "Sucursales",
+          "placeholder": "1 o más sucursales"
+        }
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "submit": "Crear producto",
+        "submitting": "Creando producto..."
+      },
+      "notifications": {
+        "success": "Producto creado correctamente",
+        "error": "Ocurrió un error al crear el producto",
+        "requiredFields": "Completa los campos obligatorios",
+        "invalidPrice": "El precio debe ser positivo y con máximo 2 decimales",
+        "invalidQuantity": "La cantidad debe ser un número entero de 0 o más",
+        "invalidMinStock": "El stock mínimo debe ser un número entero de 0 o más",
+        "selectBranch": "Selecciona al menos una sucursal",
+        "invalidFormat": "Solo se permiten imágenes JPG o PNG",
+        "imageSizeError": "La imagen no puede pesar más de 2 MB."
+      }
+    },
+    "table": {
+      "headers": {
+        "id": "ID",
+        "product": "Producto",
+        "branch": "Sucursal",
+        "stock": "Stock",
+        "status": "Estatus",
+        "price": "Precio",
+        "action": "Acción"
+      },
+      "stockStatus": {
+        "outOfStock": "Sin stock",
+        "lowStock": "Stock bajo",
+        "inStock": "En stock"
+      },
+      "actions": {
+        "edit": "Editar",
+        "delete": "Eliminar"
+      }
+    }
   }
 }
