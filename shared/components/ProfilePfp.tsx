@@ -8,7 +8,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 interface ProfilePfpProps {
   name?: string | null;
   role?: number | null;
-  avatar?: string | null | undefined;
+  avatar?: string;
 }
 
 const menuVariants: Variants = {
@@ -91,21 +91,14 @@ const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
           duration: 0.8
         }}
       >
-        {
-            avatar ? (
-                <div className="relative">
-                    <img
-                        src={avatar}
-                        alt={name || "Foto de perfil"}
-                        className="size-10 object-cover rounded-full cursor-pointer border border-neutral-200 shadow-sm"/>
-            
-                    <div className="absolute bottom-0 translate-x-1/2 size-2 rounded-full bg-green-600"/>
-                </div>
-            ) : (
-                <div className="rounded-full object-cover bg-cyan-400 size-10"/>
-            )
-        }
-
+        <div className="relative">
+            <img
+                src={avatar}
+                alt={name || "Foto de perfil"}
+                className="size-10 object-cover rounded-full cursor-pointer border border-neutral-200 shadow-sm"/>
+    
+            <div className="absolute bottom-0 translate-x-1/2 size-2 rounded-full bg-green-600"/>
+        </div>
 
       </motion.button>
       

@@ -77,6 +77,7 @@
     },
     "card": {
       "managerRole": "Manager",
+      "noManager": "No manager assigned",
       "viewDetails": "View details",
       "status": {
         "active": "Active",
@@ -156,12 +157,23 @@
     }
   },
   "BranchDetails": {
+    "title": {
+        "branch": "Branch"
+    },
+    "cardDetails": {
+        "manager": "Manager",
+        "actions": {
+            "edit" : "Edit",
+            "delete": "Delete"
+        }
+    },
     "createUserButton": {
       "label": "Create user"
     },
     "card": {
       "breadcrumb": "Branch",
       "managerRole": "Manager",
+      "noManager": "No manager assigned",
       "defaultBranchImageAlt": "Branch image"
     },
     "dropdownActions": {

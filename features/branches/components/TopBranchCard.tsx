@@ -130,7 +130,7 @@ const TopBranchCardEmptyState = () => {
       </svg>
 
       <div className="max-w-3/4 relative z-10 flex flex-col justify-between gap-4">
-        <div className="flex items-start gap-4">
+        <div className="flex items-center gap-4">
           <div className="mb-2 rounded-full border border-brand-200 bg-brand-50 p-4 text-brand-600">
             <Warehouse size={28} />
           </div>

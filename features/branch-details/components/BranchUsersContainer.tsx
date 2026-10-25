@@ -2,7 +2,6 @@
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { getBranchById } from "@/features/branches/services/branch.service";
-import { getUsers } from "@/features/users/services/users.service";
 import { User } from "@/features/users/types/user";
 import CreateUserButton from "@/features/users/components/CreateUserButton";
 import UsersCard from "@/features/users/components/UsersCard";
@@ -14,23 +13,19 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
   const t = useTranslations("BranchDetails.usersContainer");
   const { user: currentUser } = useAuth();
 
-  const { data: usersData, isLoading: isLoadingUsers } = useQuery({
-    queryKey: ["users"],
-    queryFn: getUsers,
-  });
-
   const { data: branchData, isLoading: isLoadingBranch } = useQuery({
     queryKey: ["getBranch", id],
     queryFn: () => getBranchById(id),
     enabled: !!id,
   });
 
-  const rawUsers = usersData?.data ?? [];
-  const users = rawUsers.filter(
-    (user) => String(user.id) !== String(currentUser?.id)
-  );
+  const rawUsers = branchData?.data?.usuarios ?? [];
 
-  if (isLoadingUsers) return <UsersContainerSkeleton />;
+  const users = rawUsers
+    .filter((user) => String(user.id) !== String(currentUser?.id))
+    .sort((a, b) => (Number(b.rol_id) === 2 ? 1 : Number(a.rol_id) === 2 ? -1 : 0));
+
+  if (isLoadingBranch) return <UsersContainerSkeleton />;
 
   return (
     <div className="flex flex-col gap-4">
