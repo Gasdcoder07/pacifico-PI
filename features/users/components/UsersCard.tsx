@@ -39,11 +39,22 @@ const UsersCard = ({
   return (
     <div className="flex w-full items-center justify-between gap-4 rounded-lg border border-neutral-200 bg-white px-8 py-4 shadow-sm">
       <div className="flex items-center gap-4 min-w-3/10">
-        <div
-          className={`${colors[index]} flex size-12 items-center justify-center rounded-full border`}
-        >
-          <p>{initials}</p>
-        </div>
+        {
+            !user.foto_url ? (
+                <div
+                    className={`${colors[index]} flex size-12 items-center justify-center rounded-full border`}
+                >
+                    <p>{initials}</p>
+                </div>
+            ) : (
+                <div className="size-12">
+                    <img
+                        className="w-full h-full object-cover origin-center rounded-full border border-neutral-200 shadow"
+                        src={user.foto_url}
+                        alt={user.name} />
+                </div>
+            )
+        }
         <p className="font-medium text-[15px]">
           {user.name} {user.last_name}
         </p>
