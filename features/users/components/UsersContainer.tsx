@@ -8,7 +8,11 @@ import UsersCard from "./UsersCard";
 import { useTranslations } from "next-intl";
 import { Users } from "lucide-react";
 
-const UsersContainer = () => {
+interface UsersContainerProps {
+  branchId?: string | number;
+}
+
+const UsersContainer = ({ branchId }: UsersContainerProps) => {
   const t = useTranslations("UsersPage.container");
   const scrollbarStyles =
     "[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
@@ -39,10 +43,15 @@ const UsersContainer = () => {
           <div className="flex flex-col gap-4">
             {users.map((user: User) => {
               const isMe = String(user.id) === String(currentUser?.id);
+              const fallbackBranchId = (user as any).branch_id ?? 0;
 
               return (
                 <div key={user.id} className="flex items-center gap-4">
-                  <UsersCard user={user} isMe={isMe} />
+                  <UsersCard
+                    user={user}
+                    isMe={isMe}
+                    branchId={Number(branchId ?? fallbackBranchId)}
+                  />
                 </div>
               );
             })}
