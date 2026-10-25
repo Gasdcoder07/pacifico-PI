@@ -249,7 +249,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const { name, direction, phone, contact_info,foto_public_id,foto_url } = body;
+        const { name, direction, phone, contact_info, foto_public_id, foto_url } = body;
 
         if (!name || !direction) {
             return NextResponse.json(
