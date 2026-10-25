@@ -236,5 +236,87 @@
         "description": "There are no users registered in this branch yet. Create a user to start building your team."
       }
     }
+  },
+  "InventoryPage": {
+    "addProductButton": {
+      "label": "Add Product"
+    },
+    "addProductModal": {
+      "title": "Enter a new product",
+      "image": {
+        "label": "Product photo",
+        "previewAlt": "Preview",
+        "changeOverlay": "Change photo",
+        "uploadButton": "Upload image",
+        "changeButton": "Choose another image",
+        "requirements": "Allowed formats: JPG, PNG. Max 2MB."
+      },
+      "fields": {
+        "name": {
+          "label": "Product name",
+          "placeholder": "e.g. Product A"
+        },
+        "description": {
+          "label": "Description",
+          "placeholder": "e.g. High quality product"
+        },
+        "price": {
+          "label": "Price",
+          "placeholder": "e.g. 100"
+        },
+        "quantity": {
+          "label": "Initial quantity",
+          "placeholder": "e.g. 20"
+        },
+        "minStock": {
+          "label": "Minimum stock",
+          "placeholder": "e.g. 5"
+        },
+        "category": {
+          "label": "Category",
+          "placeholder": "Category"
+        },
+        "branches": {
+          "label": "Branches",
+          "placeholder": "1 or more branches"
+        }
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "submit": "Create product",
+        "submitting": "Creating product..."
+      },
+      "notifications": {
+        "success": "Product created successfully",
+        "error": "An error occurred while creating the product",
+        "requiredFields": "Please fill in all required fields",
+        "invalidPrice": "Price must be positive and have at most 2 decimal places",
+        "invalidQuantity": "Quantity must be an integer of 0 or more",
+        "invalidMinStock": "Minimum stock must be an integer of 0 or more",
+        "selectBranch": "Select at least one branch",
+        "invalidFormat": "Only JPG or PNG images are allowed",
+        "imageSizeError": "Image size cannot exceed 2 MB."
+      }
+    },
+    "table": {
+      "headers": {
+        "id": "ID",
+        "product": "Product",
+        "branch": "Branch",
+        "stock": "Stock",
+        "status": "Status",
+        "price": "Price",
+        "action": "Action"
+      },
+      "stockStatus": {
+        "outOfStock": "Out of stock",
+        "lowStock": "Low stock",
+        "inStock": "In stock"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
+    }
   }
 }

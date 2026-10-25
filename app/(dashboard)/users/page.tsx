@@ -15,7 +15,11 @@ const Page = () => {
       </div>
 
       <div className="flex flex-1 min-h-0 min-w-0 flex-col gap-4">
-        <CreateUserButton />
+        <CreateUserButton 
+          isDisabled={false} 
+          branch_id={1} 
+          company_id={1} 
+        />
         <UsersContainer />
       </div>
     </section>

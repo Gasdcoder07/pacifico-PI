@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { getBranchById } from "@/features/branches/services/branch.service";
 import { getUsers } from "@/features/users/services/users.service";
@@ -59,7 +58,7 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
 
             return (
               <div key={user.id} className="flex items-center gap-4">
-                <UsersCard user={user} isMe={isMe} />
+                <UsersCard user={user} isMe={isMe} branchId={Number(id)} />
               </div>
             );
           })
