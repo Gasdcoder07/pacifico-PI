@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 
 import { User } from "../types/user";
 import { BranchId } from "@/features/branches/types/branch";
+import { Blobatar } from "blobatar/react";
+import "blobatar/motion.css"
 
 import UserDropdownActionButton from "./UserDropdownActionButton";
 
@@ -29,21 +31,16 @@ const UsersCard = ({
   branchId: BranchId;
 }) => {
   const t = useTranslations("UsersPage.card");
-  const initials = `${user.name.charAt(0)}${user.last_name.charAt(0)}`;
-
-  const index =
-    user.name
-      .split("")
-      .reduce((sum, char) => sum + char.charCodeAt(0), 0) % colors.length;
 
   return (
     <div className="flex w-full items-center justify-between gap-4 rounded-lg border border-neutral-200 bg-white px-8 py-4 shadow-sm">
       <div className="flex items-center gap-4 min-w-3/10">
-        <div
-          className={`${colors[index]} flex size-12 items-center justify-center rounded-full border`}
+        <Blobatar
+          name={user.name + user.last_name}
+          animate="always"
+          className={`flex size-12 items-center justify-center rounded-full`}
         >
-          <p>{initials}</p>
-        </div>
+        </Blobatar>
         <p className="font-medium text-[15px]">
           {user.name} {user.last_name}
         </p>

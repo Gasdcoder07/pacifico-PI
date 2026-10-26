@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import { readFileSync } from "fs"
-import path from "path"
+import { readFileSync } from "fs";
+import path from "path";
 import pool from "@/shared/lib/db";
 import { supabaseAdmin } from "@/shared/lib/supabase";
 import { resend } from "@/shared/lib/resend";
 
-const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-email.png"))
+const aviso = readFileSync(path.join(process.cwd(), "public", "AVISOS_DE_PRIVACIDAD_PACIFICO.pdf"));
+const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-email.png"));
 
 /**
  * @swagger
@@ -269,9 +270,13 @@ export async function POST(request: Request) {
           {
             filename: "pacifico-logo.png",
             content: logo,
-            contentId: "pacifico-logo"
-          }
-        ]
+            contentId: "pacifico-logo",
+          },
+          {
+            filename: "Avisos-de-privacidad.pdf",
+            content: aviso,
+          },
+        ],
       });
 
       if (emailError) {
@@ -292,4 +297,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
