@@ -88,7 +88,8 @@ const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps
                 showEditPanel && (
                     <EditBranchPanel
                         isOpen={showEditPanel}
-                        onClose={() => setShowEditPanel(false)}/>
+                        onClose={() => setShowEditPanel(false)}
+                        branch={branch ? branch : null}/>
                 )
             }
         </div>

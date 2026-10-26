@@ -232,7 +232,7 @@ export async function PUT(
         );
     }
 
-    const { nombre, direccion, telefono, info_contacto, estado } = body;
+    const { nombre, direccion, telefono, info_contacto, foto_url, estado } = body;
 
     if (
         typeof nombre !== "string" || !nombre.trim() ||
@@ -249,19 +249,21 @@ export async function PUT(
 
     const response = await pool.query(
         `UPDATE public.sucursales
-        SET nombre = $1,
-            direccion = $2,
-            telefono = $3,
-            info_contacto = $4,
-            estado = $5,
+        SET name = $1,
+            direction = $2,
+            phone = $3,
+            contact_info = $4,
+            foto_url = $5,
+            status = $6,
             updated_at = now()
-        WHERE id = $6 AND admin_id = $7
+        WHERE id = $7 AND admin_id = $8
         RETURNING *`,
         [
             nombre.trim(),
             direccion.trim(),
             telefono?.trim() || null,
             info_contacto?.trim() || null,
+            foto_url || "",
             estado,
             id,
             adminId,
