@@ -6,6 +6,7 @@ import { Mail, MoveRight, Phone, Pin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { formatPhoneNumber } from "@/shared/utils/formatters";
 import { createSlug } from "@/shared/utils/create.slug";
+import { Blobatar } from "blobatar/react";
 
 interface BranchCardProps {
   id: string | number;
@@ -44,11 +45,19 @@ const BranchCard = ({ id, name, managerName, managerPhoto, photo, status, direct
         </div>
 
         <div className="flex min-w-0 items-center gap-4">
-          <img
-            src={managerPhoto || "/default_profile.webp"}
-            alt={managerName}
-            className="size-14 rounded-full border border-neutral-200 object-cover object-center shadow"
-          />
+          {managerName ? (
+            <Blobatar 
+              animate="always"
+              name={managerName}
+              className="size-10 rounded-full object-cover object-center shadow"
+            />
+          ) : (
+            <img
+              src={"/default_profile.webp"}
+              alt={"Not found"}
+              className="size-10 rounded-full border border-neutral-200 object-cover object-center shadow"
+            />
+          )}
 
           <div className="flex min-w-0 flex-col gap-0">
             {

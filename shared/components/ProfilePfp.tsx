@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { LogOut } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { Blobatar } from "@blobatar/react" 
+import "blobatar/motion.css"
 
 interface ProfilePfpProps {
   name?: string | null;
@@ -92,9 +94,9 @@ const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
         }}
       >
         <div className="relative">
-            <img
-                src={avatar}
-                alt={name || "Foto de perfil"}
+            <Blobatar
+                name={name as string}
+                animate="always"
                 className="size-10 object-cover rounded-full cursor-pointer border border-neutral-200 shadow-sm"/>
     
             <div className="absolute bottom-0 translate-x-1/2 size-2 rounded-full bg-green-600"/>
@@ -121,7 +123,11 @@ const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
               >
                 {
                     avatar ? (
-                        <img src={avatar} alt={name || "Foto de perfil"} className="size-10 object-cover rounded-full border border-neutral-200 shadow-sm"/>
+                        <Blobatar
+                          name={name as string}
+                          animate="always"
+                          className="size-10"
+                        />
                     ) : (
                         <div
                           style={{ width: 40, height: 40 }}
