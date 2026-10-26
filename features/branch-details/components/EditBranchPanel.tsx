@@ -7,6 +7,7 @@ import { SlideOverPanelLayout } from "@/shared/components/SlideOverPanelLayout";
 
 import { ImagePlus } from "lucide-react";
 import { updateBranch } from "@/features/branches/services/branch.service";
+import { useTranslations } from "next-intl";
 
 interface EditBranchPanelProps {
     isOpen: boolean;
@@ -16,6 +17,8 @@ interface EditBranchPanelProps {
 
 const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
     const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
+
+    const t = useTranslations("BranchDetails.editBranchModal");
     const queryClient = useQueryClient();
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -83,7 +86,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
         mutationFn: (data: EditBranchPayload) => updateBranch(branch!.id, data),
 
         onSuccess: async () => {
-            toast.success("si")
+            toast.success(t("generalData.notifications.success"))
 
             await queryClient.invalidateQueries({ queryKey: ["getBranch", branch?.id] });
 
@@ -91,8 +94,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
         },
 
         onError: async (e) => {
-            toast.error("Error")
-
+            toast.error(t("generalData.notifications.error"));
             console.log(e);
         }
     })
@@ -108,7 +110,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
         const status = formData.status;
 
         if (!name || !adress) {
-            toast.error("No");
+            toast.error(t("generalData.notifications.requiredFields"));
             return;
         }
 
@@ -123,14 +125,14 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
     }
 
     return (
-        <SlideOverPanelLayout isOpen={isOpen} onClose={onClose} title="Editar sucursal">
+        <SlideOverPanelLayout isOpen={isOpen} onClose={onClose} title={t("title")}>
             <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-between min-h-0 h-full">
                 <div className={`flex-1 flex flex-col min-h-0 h-full p-6 gap-4 overflow-y-auto ${scrollbarStyles}`}>
-                    <span className="text-[10px] text-neutral-400 uppercase font-medium">Datos generales</span>
+                    <span className="text-[10px] text-neutral-400 uppercase font-medium">{t("generalData.title")}</span>
 
                     <div className="flex flex-col gap-2">
-                        <label className="font-medium text-neutral-600">Foto de la sucursal</label>
-                        <div className="relative flex items-center gap-4 rounded-lg border border-dashed border-neutral-200 bg-neutral-50 p-4 h-32">
+                        <label className="font-medium text-neutral-600">{t("generalData.fields.photo")}</label>
+                        <div className="relative flex items-center gap-4 rounded-lg border border-dashed border-neutral-200 bg-neutral-50 p-4 h-32 overflow-hidden">
                             {
                                 imagePreview ? (
                                     <img
@@ -143,25 +145,26 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
                                             <ImagePlus size={24} strokeWidth={1.5} />
                                         </div>
                                         <div className="flex flex-col gap-1">
-                                            <span className="text-sm font-medium text-neutral-600">Foto de la sucursal</span>
-                                            <span className="text-xs text-neutral-400">Sin foto seleccionada</span>
+                                            <span className="text-sm font-medium text-neutral-600">{t("generalData.fields.photo")}</span>
+                                            <span className="text-xs text-neutral-400">{t("generalData.noPhoto")}</span>
                                         </div>
                                     </>
                                 )
                             }
                         </div>
-
-                        <button
-                            type="button"
-                            onClick={triggerFileSelect}
-                            className="text-sm font-medium text-cyan-600 hover:text-cyan-700 cursor-pointer duration-200 ease-in-out transition-all"
-                        >
-                            {/* {imagePreview ? t("image.changeButton") : t("image.uploadButton")} */}
-                            No
-                        </button>
-                        {/* <span className="text-xs text-neutral-400">
-                            {t("image.requirements")}
-                        </span> */}
+                        
+                        <div className="flex flex-col gap-1">
+                            <button
+                                type="button"
+                                onClick={triggerFileSelect}
+                                className="text-sm font-medium text-cyan-600 hover:text-cyan-700 cursor-pointer duration-200 ease-in-out transition-all"
+                            >
+                                {imagePreview ? t("generalData.changeButton") : t("generalData.uploadButton")}
+                            </button>
+                            <span className="text-xs text-neutral-400 text-center">
+                                {t("generalData.requirements")}
+                            </span>
+                        </div>
 
                         <input
                             type="file"
@@ -172,7 +175,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="branch-name" className="font-medium text-neutral-600">Nombre de la sucursal</label>
+                        <label htmlFor="branch-name" className="font-medium text-neutral-600">{t("generalData.fields.name")}</label>
                         <input
                             id="branch-name"
                             type="text"
@@ -185,7 +188,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="branch-address" className="font-medium text-neutral-600">Dirección</label>
+                        <label htmlFor="branch-address" className="font-medium text-neutral-600">{t("generalData.fields.address")}</label>
                         <textarea
                             id="branch-address"
                             name="adress"
@@ -198,7 +201,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="branch-phone" className="font-medium text-neutral-600">Número de teléfono de contacto</label>
+                        <label htmlFor="branch-phone" className="font-medium text-neutral-600">{t("generalData.fields.contact")}</label>
                         <input
                             id="branch-phone"
                             type="tel"
@@ -211,7 +214,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="branch-email" className="font-medium text-neutral-600">Correo electrónico de la sucursal</label>
+                        <label htmlFor="branch-email" className="font-medium text-neutral-600">{t("generalData.fields.email")}</label>
                         <input
                             id="branch-email"
                             type="email"
@@ -226,13 +229,22 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
 
                 <div className="border-t border-neutral-200 flex justify-end items-center gap-4 p-6">
                     <button
+                        type="button"
+                        onClick={onClose}
+                        disabled={isPending}
+                        className="px-4 py-2 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 transition-colors ease-in-out duration-200 cursor-pointer disabled:opacity-50"
+                    >
+                        {t("generalData.actions.cancel")}
+                    </button>
+
+                    <button
                         type="submit"
                         className={`px-4 py-2 rounded-lg text-white font-medium transition-colors ease-in-out duration-200 ${isPending
                             ? 'bg-neutral-600 cursor-not-allowed'
                             : 'bg-cyan-400 hover:bg-cyan-500 cursor-pointer'
                         }`}
                     >
-                        Guardar sucursal
+                        {isPending ? t("generalData.actions.submitting") : t("generalData.actions.submit")}
                     </button>
                 </div>
             </form>

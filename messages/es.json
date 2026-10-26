@@ -230,6 +230,33 @@
       "errors": {
         "invalidRole": "Selecciona un rol válido"
       }
+    },
+    "editBranchModal": {
+        "title" : "Editar sucursal",
+        "generalData" : {
+            "title" : "Datos generales",
+            "noPhoto": "Sin foto seleccionada",
+            "fields" : {
+                "photo" : "Foto de la sucursal",
+                "name" : "Nombre",
+                "address" : "Dirección",
+                "contact" : "Número de contacto",
+                "email" : "Correo electrónico"
+            },
+            "actions" : {
+                "cancel": "Cancelar",
+                "submit": "Guardar sucursal",
+                "submitting": "Guardando sucursal..."
+            },
+            "notifications" : {
+                "success": "Sucursal actualizada correctamente",
+                "error": "Ocurrió un error al actualizar la sucursal",
+                "requiredFields": "Por favor, completa todos los campos obligatorios."
+            },
+            "uploadButton": "Subir imagen",
+            "changeButton": "Elegir otra imagen",
+            "requirements": "Formatos permitidos: JPG, PNG. Máx 2MB."
+        }
     }
   },
   "UsersPage": {
