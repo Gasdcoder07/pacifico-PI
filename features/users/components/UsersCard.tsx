@@ -36,7 +36,7 @@ const UsersCard = ({
     <div className="flex w-full items-center justify-between gap-4 rounded-lg border border-neutral-200 bg-white px-8 py-4 shadow-sm">
       <div className="flex items-center gap-4 min-w-3/10">
         <Blobatar
-          name={user.name + user.last_name}
+          name={user.name + " " + user.last_name}
           animate="always"
           className={`flex size-12 items-center justify-center rounded-full`}
         >
