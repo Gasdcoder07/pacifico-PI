@@ -1,5 +1,5 @@
 import { apiClient } from "@/shared/lib/axios";
-import { Branch, BranchResponse, DeleteBranchResponse } from "../types/branch";
+import { Branch, BranchResponse, DeleteBranchResponse, EditBranchPayload } from "../types/branch";
 
 export interface CreateBranchPayload {
     name: string;
@@ -39,6 +39,11 @@ export const getBranchById = async (id : string | number) : Promise<BranchRespon
 export const createBranch = async (data: CreateBranchPayload): Promise<Branch> => {
     const response = await apiClient.post("/api/sucursales", data);
     return response.data.data;
+}
+
+export const updateBranch = async (id : string | number, data: EditBranchPayload): Promise<BranchResponse> => {
+    const response = await apiClient.put(`/api/sucursales/${id}`, data);
+    return response.data;
 }
 
 export const deleteBranch = async (id: string | number) : Promise<DeleteBranchResponse> => {

@@ -117,9 +117,9 @@
           "label": "Nombre de la sucursal",
           "placeholder": "Ej. Sucursal Centro"
         },
-        "description": {
-          "label": "Descripción",
-          "placeholder": "Ej. Sucursal principal de ventas"
+        "contact": {
+          "label": "Contacto",
+          "placeholder": "Ej. centro@gmail.com"
         },
         "address": {
           "label": "Dirección",

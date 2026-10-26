@@ -118,8 +118,8 @@
           "placeholder": "e.g. Downtown Branch"
         },
         "description": {
-          "label": "Description",
-          "placeholder": "e.g. Main sales branch"
+          "label": "Contact",
+          "placeholder": "e.g. downtown@gmail.com"
         },
         "address": {
           "label": "Address",
