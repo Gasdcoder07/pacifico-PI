@@ -130,7 +130,7 @@ export async function GET(
         );
 
         const usersResponse = await pool.query(
-            `SELECT id, name, last_name, email, rol_id
+            `SELECT id, name, last_name, email, foto_url, rol_id
             FROM usuarios
             WHERE branch_id = $1`,
             [branchId]
