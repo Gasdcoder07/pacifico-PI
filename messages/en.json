@@ -117,7 +117,7 @@
           "label": "Branch name",
           "placeholder": "e.g. Downtown Branch"
         },
-        "description": {
+        "contact": {
           "label": "Contact",
           "placeholder": "e.g. downtown@gmail.com"
         },
@@ -229,6 +229,33 @@
       "errors": {
         "invalidRole": "Select a valid role"
       }
+    },
+    "editBranchModal": {
+        "title": "Edit branch",
+        "generalData" : {
+            "title" : "General information",
+            "noPhoto": "No photo selected",
+            "fields" : {
+                "photo" : "Branch photo",
+                "name" : "Name",
+                "address" : "Address",
+                "contact" : "Contact phone number",
+                "email" : "Email address"
+            },
+            "actions" : {
+                "cancel": "Cancel",
+                "submit": "Save branch",
+                "submitting": "Saving branch..."
+            },
+            "notifications" : {
+                "success": "Branch updated successfully",
+                "error": "An error occurred while updating the branch",
+                "requiredFields": "Please fill in all required fields."
+            },
+            "uploadButton": "Upload image",
+            "changeButton": "Choose another image",
+            "requirements": "Allowed formats: JPG, PNG. Max 2MB."
+        }
     }
   },
   "UsersPage": {

@@ -231,14 +231,14 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
 
                 <div className="flex flex-col gap-2">
                     <label className="font-medium text-neutral-600">
-                        {t("fields.description.label")}
+                        {t("fields.contact.label")}
                     </label>
                     <input
                         type="text"
                         name="company_contact_info"
                         value={formData.company_contact_info}
                         onChange={handleInputChange}
-                        placeholder={t("fields.description.placeholder")}
+                        placeholder={t("fields.contact.placeholder")}
                         className="w-full rounded-lg border border-neutral-200 p-3 outline-none transition-colors duration-200 ease-in-out focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5"
                     />
                 </div>
