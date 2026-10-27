@@ -20,6 +20,7 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
   });
 
   const rawUsers = branchData?.data?.usuarios ?? [];
+  const haveManager = branchData?.data.gerente !== null;
 
   const users = rawUsers
     .filter((user) => String(user.id) !== String(currentUser?.id))
@@ -53,7 +54,7 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
 
             return (
               <div key={user.id} className="flex items-center gap-4">
-                <UsersCard user={user} isMe={isMe} branchId={Number(id)} />
+                <UsersCard user={user} managerExists={haveManager} isMe={isMe} branchId={Number(id)} />
               </div>
             );
           })

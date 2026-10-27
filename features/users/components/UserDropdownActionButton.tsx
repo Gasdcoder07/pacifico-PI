@@ -13,12 +13,14 @@ import { menuVariants, itemVariants } from "@/shared/animations/dropdown.animati
 
 interface UserDropdownActionButtonProps {
   user: User;
+  haveManager: boolean;
   isMe: boolean;
   branchId: BranchId;
 }
 
 const UserDropdownActionButton = ({
   user,
+  haveManager,
   isMe,
   branchId,
 }: UserDropdownActionButtonProps) => {
@@ -114,6 +116,8 @@ const UserDropdownActionButton = ({
           isOpen={showEditPanel}
           onClose={() => setShowEditPanel(false)}
           user={user}
+          managerExists={haveManager}
+          branchId={branchId}
         />
       )}
 

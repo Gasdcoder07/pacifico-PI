@@ -1,6 +1,6 @@
 import { apiClient } from "@/shared/lib/axios";
 import { AxiosResponse } from "axios";
-import { CreateUserRequest, UsersResponse } from "../types/user";
+import { CreateUserRequest, EditUserPayload, UsersResponse } from "../types/user";
 
 type DeleteUserResponse = {
     message: string;
@@ -8,6 +8,11 @@ type DeleteUserResponse = {
 
 export const deleteUser = async (id: string | number): Promise<AxiosResponse<DeleteUserResponse>> => {
     const response = await apiClient.delete<DeleteUserResponse>(`/api/usuarios/${id}`);
+    return response;
+}
+
+export const updateUser = async (id: string | number, data: EditUserPayload): Promise<AxiosResponse<UsersResponse>> => {
+    const response = await apiClient.put<UsersResponse>(`/api/usuarios/${id}`, data);
     return response;
 }
 

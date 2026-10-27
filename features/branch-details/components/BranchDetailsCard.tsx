@@ -15,7 +15,7 @@ const BranchDetailsCard = ({ id }: { id: string | number }) => {
   const t = useTranslations("BranchDetails.card");
 
   const { data, isLoading } = useQuery({
-    queryKey: ["getBranch", id],
+    queryKey: ["getBranch", Number(id)],
     queryFn: () => getBranchById(id),
     enabled: !!id,
   });
