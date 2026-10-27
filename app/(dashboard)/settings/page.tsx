@@ -1,18 +1,23 @@
 import CompanyForm from "@/features/settings/CompanyForm";
+import { useTranslations } from "next-intl";
 
 const Page = () => {
-    return (
-        <section className="w-full flex flex-col p-8 gap-6">
-            <div className="flex flex-col gap-1">
-                <h1 className="text-2xl font-semibold tracking-tight">Ajustes de tu empresa</h1>
-                <p className="text-neutral-600 text-sm">
-                    Actualiza los datos de tu empresa que aparecerán en tus comprobantes y documentos.
-                </p>
-            </div>
+  const t = useTranslations("SettingsPage");
 
-            <CompanyForm />
-        </section>
-    );
+  return (
+    <section className="flex w-full flex-col gap-6 p-8">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          {t("header.title")}
+        </h1>
+        <p className="text-sm text-neutral-600">
+          {t("header.subtitle")}
+        </p>
+      </div>
+
+      <CompanyForm />
+    </section>
+  );
 };
 
 export default Page;
