@@ -357,5 +357,48 @@
         "delete": "Delete"
       }
     }
+  },
+      "SettingsPage": {
+      "header": {
+        "title": "Company Settings",
+        "subtitle": "Update your company information that will appear on your receipts and documents."
+      },
+      "companyForm": {
+        "cardTitle": "Company Identity",
+        "cardSubtitle": "Configure your company name, logo, and location details to customize your documentation.",
+        "logo": {
+          "label": "Company Logo",
+          "hint": "Upload your company logo. It will be displayed on your receipts.",
+          "alt": "Company logo",
+          "noLogo": "No logo",
+          "noLogoHint": "Upload an image to identify your company",
+          "noFileSelected": "No file selected",
+          "requirementsSize": "JPG, PNG or WebP · Maximum 2 MB",
+          "requirementsDimensions": "Up to 4096 × 4096 px.",
+          "uploadButton": "Upload logo",
+          "notifications": {
+            "invalidType": "Only JPG, PNG or WebP images are allowed.",
+            "sizeError": "The logo size cannot exceed 2 MB."
+          }
+        },
+        "fields": {
+          "name": {
+            "label": "Company Name",
+            "hint": "This name will appear on your receipts and documents.",
+            "placeholder": "e.g. My Company LLC"
+          },
+          "address": {
+            "label": "Company Address",
+            "hint": "Enter the tax address or primary location of your company.",
+            "placeholder": "e.g. Street, number, neighborhood, city, state, zip code."
+          },
+          "description": {
+            "label": "Company Description",
+            "hint": "Add a brief description of your company. This information may appear on your receipts and documents.",
+            "placeholder": "e.g. We specialize in selling tech products and services..."
+          }
+        },
+        "submitButton": "Save changes"
   }
+}
 }

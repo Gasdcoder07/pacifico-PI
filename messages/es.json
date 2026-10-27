@@ -358,5 +358,48 @@
         "delete": "Eliminar"
       }
     }
+  },
+    "SettingsPage": {
+      "header": {
+      "title": "Ajustes de tu empresa",
+      "subtitle": "Actualiza los datos de tu empresa que aparecerán en tus comprobantes y documentos."
+    },
+    "companyForm": {
+      "cardTitle": "Identidad de tu empresa",
+      "cardSubtitle": "Configura el nombre, logo y datos de ubicación de tu empresa para personalizar tu documentación.",
+      "logo": {
+        "label": "Logo de la empresa",
+        "hint": "Sube el logo de tu empresa. Se mostrará en tus comprobantes.",
+        "alt": "Logo de la empresa",
+        "noLogo": "Sin logo",
+        "noLogoHint": "Sube una imagen para identificar tu empresa",
+        "noFileSelected": "Ningún archivo seleccionado",
+        "requirementsSize": "JPG, PNG o WebP · Máximo 2 MB",
+        "requirementsDimensions": "Hasta 4096 × 4096 px.",
+        "uploadButton": "Subir logo",
+        "notifications": {
+          "invalidType": "Solo se permiten imágenes JPG, PNG o WebP.",
+          "sizeError": "El logo no puede pesar más de 2 MB."
+        }
+      },
+       "fields": {
+        "name": {
+          "label": "Nombre de la empresa",
+          "hint": "Este nombre aparecerá en tus comprobantes y documentos.",
+          "placeholder": "Ej. Mi Empresa S.A de C.V."
+        },
+        "address": {
+          "label": "Domicilio de la empresa",
+          "hint": "Ingresa el domicilio fiscal o la ubicación principal de tu empresa.",
+          "placeholder": "Ej. Calle, número, colonia, ciudad, estado, código postal."
+        },
+        "description": {
+          "label": "Descripción de la empresa",
+          "hint": "Agrega una breve descripción de tu empresa. Esta información puede aparecer en tus comprobantes y documentos.",
+          "placeholder": "Ej. Nos dedicamos a la venta de productos y servicios tecnológicos..."
+        }
+      },
+      "submitButton": "Guardar cambios"
   }
+}
 }
