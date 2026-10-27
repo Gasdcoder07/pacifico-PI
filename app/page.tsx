@@ -1,7 +1,5 @@
-export default function Home() {
+import LandingPage from "@/features/landing/components/LandingPage";
 
-  return (
-    <div>
-    </div>  
-  );
+export default function Home() {
+  return <LandingPage />;
 }
