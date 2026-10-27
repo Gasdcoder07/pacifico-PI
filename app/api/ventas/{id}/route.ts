@@ -74,7 +74,7 @@ export async function GET(
             `
             SELECT
                 v.id,
-                v,.company_id,
+                v.company_id,
                 v.branch_id,
                 v.cashier_id,
                 v.payment_method_id,
