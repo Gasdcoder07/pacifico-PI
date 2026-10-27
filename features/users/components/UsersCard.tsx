@@ -10,23 +10,25 @@ import "blobatar/motion.css"
 
 import UserDropdownActionButton from "./UserDropdownActionButton";
 
-const colors = [
-  "bg-rose-100 border-rose-200 text-rose-700",
-  "bg-orange-100 border-orange-200 text-orange-700",
-  "bg-amber-100 border-amber-200 text-amber-700",
-  "bg-emerald-100 border-emerald-200 text-emerald-700",
-  "bg-teal-100 border-teal-200 text-teal-700",
-  "bg-sky-100 border-sky-200 text-sky-700",
-  "bg-indigo-100 border-indigo-200 text-indigo-700",
-  "bg-violet-100 border-violet-200 text-violet-700",
-];
+// const colors = [
+//   "bg-rose-100 border-rose-200 text-rose-700",
+//   "bg-orange-100 border-orange-200 text-orange-700",
+//   "bg-amber-100 border-amber-200 text-amber-700",
+//   "bg-emerald-100 border-emerald-200 text-emerald-700",
+//   "bg-teal-100 border-teal-200 text-teal-700",
+//   "bg-sky-100 border-sky-200 text-sky-700",
+//   "bg-indigo-100 border-indigo-200 text-indigo-700",
+//   "bg-violet-100 border-violet-200 text-violet-700",
+// ];
 
 const UsersCard = ({
   user,
+  managerExists,
   isMe,
   branchId,
 }: {
   user: User;
+  managerExists: boolean,
   isMe: boolean;
   branchId: BranchId;
 }) => {
@@ -70,6 +72,7 @@ const UsersCard = ({
 
         <UserDropdownActionButton
           user={user}
+          haveManager={managerExists}
           isMe={isMe}
           branchId={branchId}
         />

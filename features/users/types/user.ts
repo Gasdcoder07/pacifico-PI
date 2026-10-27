@@ -21,3 +21,10 @@ export interface CreateUserRequest {
     branch_id: string | number;
     company_id: string | number;
 }
+
+export interface EditUserPayload {
+    name: string;
+    last_name: string;
+    email: string;
+    rol_id: string | number;
+}

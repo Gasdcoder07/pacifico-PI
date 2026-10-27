@@ -1,34 +1,37 @@
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { useTranslations } from "next-intl";
 import { SlideOverPanelLayout } from "@/shared/components/SlideOverPanelLayout";
-import { User } from "../types/user";
-import { useEffect, useState } from "react";
 import { CustomSelect } from "@/shared/components/CustomSelect";
+
+import { EditUserPayload, User } from "../types/user";
+import { updateUser } from "../services/users.service";
 
 interface EditUserPanelProps {
     user: User;
+    managerExists: boolean
+    branchId: number | undefined;
     isOpen: boolean;
     onClose: () => void;
 }
 
-const EditUserPanel = ({ isOpen, onClose, user } : EditUserPanelProps) => {
+const EditUserPanel = ({ isOpen, onClose, user, managerExists, branchId } : EditUserPanelProps) => {
     const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
+
+    const queryClient = useQueryClient();
+    const t = useTranslations();
 
     const [formData, setFormData] = useState({
         name: user.name ?? "",
         last_name: user.last_name ?? "",
         email: user.email ?? "",
-        password: "",
-        rol_id: String(user.rol_id)
+        rol_id: String(user.rol_id),
+        branchId:  branchId
     });
 
-    useEffect(() => {
-        setFormData({
-            name: user.name ?? "",
-            last_name: user.last_name ?? "",
-            email: user.email ?? "",
-            password: "",
-            rol_id: String(user.rol_id)
-        });
-    }, [user]);
+    const customOptions = managerExists && Number(user.rol_id) !== 2 ? [{ value: "3", label: "Cajero" }] : [{ value: "2", label: "Gerente" }, { value: "3", label: "Cajero" }];
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -37,13 +40,52 @@ const EditUserPanel = ({ isOpen, onClose, user } : EditUserPanelProps) => {
         });
     };
 
+    const { mutate: mutateUpdateUser, isPending } = useMutation({
+        mutationFn: (data: EditUserPayload) => updateUser(user.id, data),
+
+        onSuccess: async () => {
+            // toast.success(t("generalData.notifications.success"))
+            toast.success("Si");
+
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ["getBranch", Number(branchId)] }),
+                queryClient.invalidateQueries({ queryKey: ["branches"] }),
+            ]);
+
+            onClose()
+        },
+
+        onError: async (e) => {
+            // toast.error(t("generalData.notifications.error"));
+            toast.error("No")
+            console.log(e);
+        }
+    })
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        const name = formData.name.trim();
+        const last_name = formData.last_name.trim();
+        const email = formData.email.trim();
+        const rol_id = Number(formData.rol_id)
+
+        if (!name || !last_name || !email) {
+            toast.error("Pendejo");
+            return;
+        }
+
+        mutateUpdateUser({
+            name: name,
+            last_name: last_name,
+            email: email,
+            rol_id: rol_id
+        });
     }
 
     return (
         <SlideOverPanelLayout isOpen={isOpen} onClose={onClose} title="Editar usuario">
-            <form onClick={handleSubmit} className="flex-1 flex flex-col justify-between min-h-0 h-full">
+            <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-between min-h-0 h-full">
                 <div className={`flex-1 flex flex-col min-h-0 h-full p-6 gap-4 overflow-y-auto ${scrollbarStyles}`}>
                     <span className="text-[10px] text-neutral-400 uppercase font-medium">Datos generales</span>
 
@@ -82,27 +124,13 @@ const EditUserPanel = ({ isOpen, onClose, user } : EditUserPanelProps) => {
                             className="w-full p-3 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
                         />
                     </div>
-                    <div className="flex flex-col gap-2">
-                        <label className="font-medium text-neutral-600">Nueva contraseña</label>
-                        <input
-                            onChange={handleChange}
-                            value={formData.password}
-                            type="password"
-                            name="username"
-                            className="w-full p-3 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
-                        />
-                        <span className="text-xs text-neutral-500">Deja vacío para conservarla.</span>
-                    </div>
 
                     <CustomSelect
+                        isDisabled={false}
                         label="Rol *"
                         placeholder="Selecciona un rol"
-                        options={[
-                            { value: "1", label: "Admin" },
-                            { value: "2", label: "Gerente" },
-                            { value: "3", label: "Cajero" }
-                        ]}
-                        value={formData.rol_id}
+                        options={customOptions}
+                        value={String(formData.rol_id)}
                         onChange={(value) => setFormData({ ...formData, rol_id: value })}
                     />
                 </div>
