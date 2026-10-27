@@ -177,6 +177,26 @@ export async function POST(request: Request) {
                  ]
             )
 
+            const detalleInsertado = []
+
+            for (const d of detalle) {
+                const { rows: [fila] } = await client.query(
+                    `INSERT INTO detalle_ventas
+                        (company_id, sale_id, product_id, quantity, unit_price, subtotal)
+                    VALUES ($1, $2, $3, $4, $5, $6)
+                    RETURNING *`,
+                    [
+                        currentUser.company_id,
+                        venta.id,
+                        d.product_id,
+                        d.quantity,
+                        fromCents(d.unitCents),
+                        fromCents(d.subtotalCents),
+                    ]
+                )
+                detalleInsertado.push(fila)
+            }
+
             await client.query("COMMIT")
 
         } catch(err) {
