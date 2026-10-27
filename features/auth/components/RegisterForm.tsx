@@ -9,6 +9,7 @@ import { registerUser } from "@/features/auth/services/auth.service";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl";
+import { LegalModal } from "./LegalModal";
 
 const inputClass =
     "w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out";
@@ -30,6 +31,8 @@ const RegisterForm = () => {
     });
 
     const [showPassword, setShowPassword] = useState(false);
+
+    const [showModal, setShowModal] = useState<boolean>(false)
 
     const registerMutation = useMutation({
         mutationFn: registerUser,
@@ -241,6 +244,11 @@ const RegisterForm = () => {
                             {formData.company_description.length}/250
                         </span>
                     </div>
+                    <div className="flex flex-row justify-center">
+                        <button type="button" className="cursor-pointer" onClick={() => setShowModal(true)}>
+                            <p className="text-neutral-500 text-xs hover:text-neutral-700 hover:-translate-y-0.5 transition-all">Ver términos y condiciones</p>
+                        </button>
+                    </div>
                 </section>
             )}
 
@@ -295,6 +303,7 @@ const RegisterForm = () => {
                     </Link>
                 </span>
             </section>
+            <LegalModal src="/AVISOS_DE_PRIVACIDAD_PACIFICO.pdf" title="Avisos de privacidad" open={showModal} onOpenChange={setShowModal}/>
         </form>
     );
 };
