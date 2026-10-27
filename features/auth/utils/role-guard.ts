@@ -9,7 +9,7 @@ export function handleRoleRouting(request: NextRequest): string | null {
     const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/register");
     const ID_ROL_CAJERO = 3;
 
-    if (!token && !isAuthRoute) {
+    if (!token && !isAuthRoute && pathname !== "/") {
         return "/login";
     }
 
