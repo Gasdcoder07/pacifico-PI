@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Trash, Edit, Ellipsis } from "lucide-react";
+
 import { useTranslations } from "next-intl";
 import EditUserPanel from "./EditUserPanel";
 import { DeleteUserModal } from "./DeleteUserModal";
 import { User } from "../types/user";
 import { BranchId } from "@/features/branches/types/branch";
+import { menuVariants, itemVariants } from "@/shared/animations/dropdown.animations";
 
 interface UserDropdownActionButtonProps {
   user: User;
@@ -67,30 +69,45 @@ const UserDropdownActionButton = ({
         <Ellipsis size={20} />
       </motion.button>
 
+    <AnimatePresence>
       {open && (
-        <div className="text-sm absolute right-2 -top-12 z-10 flex w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg">
-          <button
-            onClick={() => {
-              setShowEditPanel(true);
-              setOpen(false);
-            }}
-            className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-gray-100"
-          >
-            <Edit size={18} />
-            <span>{t("edit")}</span>
-          </button>
-          <button
-            onClick={() => {
-              setShowDeleteModal(true);
-              setOpen(false);
-            }}
-            className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 transition-colors duration-200 ease-in-out text-red-600 hover:bg-red-50"
-          >
-            <Trash size={18} />
-            <span>{t("delete")}</span>
-          </button>
-        </div>
+        <motion.div
+            variants={menuVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="absolute right-2 -top-12 z-10 flex w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg">
+          <motion.div variants={itemVariants} className="flex flex-col gap-2">
+            <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", bounce: 0.5 }}
+                onClick={() => {
+                setShowEditPanel(true);
+                setOpen(false);
+                }}
+                className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-gray-100"
+            >
+                <Edit size={18} />
+                <span className="font-medium">{t("edit")}</span>
+            </motion.button>
+            <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", bounce: 0.5 }}
+                onClick={() => {
+                setShowDeleteModal(true);
+                setOpen(false);
+                }}
+                className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 transition-colors duration-200 ease-in-out text-red-600 hover:bg-red-50"
+            >
+                <Trash size={18} />
+                <span className="font-medium">{t("delete")}</span>
+            </motion.button>
+          </motion.div>
+        </motion.div>
       )}
+    </AnimatePresence>
 
       {showEditPanel && (
         <EditUserPanel

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { createManager, createCashier } from "../services/users.service";
 import { CreateUserRequest } from "../types/user";
+import { number } from "framer-motion";
 
 interface CreateUserModalProps {
   isOpen: boolean;
@@ -56,7 +57,7 @@ export const CreateUserModal = ({
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ["users"],
+        queryKey: ["getBranch", Number(branch_id)],
       });
 
       setFormData({

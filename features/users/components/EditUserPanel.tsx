@@ -95,10 +95,10 @@ const EditUserPanel = ({ isOpen, onClose, user } : EditUserPanelProps) => {
                     </div>
 
                     <CustomSelect
+                        isDisabled={false}
                         label="Rol *"
                         placeholder="Selecciona un rol"
                         options={[
-                            { value: "1", label: "Admin" },
                             { value: "2", label: "Gerente" },
                             { value: "3", label: "Cajero" }
                         ]}
