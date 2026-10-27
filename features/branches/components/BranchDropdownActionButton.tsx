@@ -59,13 +59,19 @@ const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps
                     <div
                         className="absolute right-2 -top-12 -translate-x-1/5 z-10 flex flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white shadow-lg p-2 w-48 origin-top-right">
                         <button
-                            onClick={() => setShowEditPanel(true)}
+                            onClick={() => {
+                                setShowEditPanel(true);
+                                setOpen(false);
+                            }}
                             className="h-10 w-full text-neutral-800 flex items-center gap-3 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-neutral-100">
                             <Edit size={18}/>
                             <span>{t("edit")}</span>
                         </button>
                         <button
-                            onClick={() => setShowDeleteModal(true)}
+                            onClick={() => {
+                                setShowDeleteModal(true);
+                                setOpen(false);
+                            }}
                             className="h-10 w-full flex items-center gap-3 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer text-red-600 hover:bg-red-50">
                             <Trash size={18}/>
                             <span>{t("delete")}</span>
@@ -88,7 +94,8 @@ const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps
                 showEditPanel && (
                     <EditBranchPanel
                         isOpen={showEditPanel}
-                        onClose={() => setShowEditPanel(false)}/>
+                        onClose={() => setShowEditPanel(false)}
+                        branch={branch ? branch : null}/>
                 )
             }
         </div>

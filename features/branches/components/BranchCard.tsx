@@ -6,6 +6,7 @@ import { Mail, MoveRight, Phone, Pin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { formatPhoneNumber } from "@/shared/utils/formatters";
 import { createSlug } from "@/shared/utils/create.slug";
+import { Blobatar } from "blobatar/react";
 
 interface BranchCardProps {
   id: string | number;
@@ -44,21 +45,29 @@ const BranchCard = ({ id, name, managerName, managerPhoto, photo, status, direct
         </div>
 
         <div className="flex min-w-0 items-center gap-4">
-          <img
-            src={managerPhoto || "/default_profile.webp"}
-            alt={managerName}
-            className="size-10 rounded-full border border-neutral-200 object-cover object-center shadow"
-          />
+          {managerName ? (
+            <Blobatar 
+              animate="always"
+              name={managerName}
+              className="size-10 rounded-full object-cover object-center shadow"
+            />
+          ) : (
+            <img
+              src={"/default_profile.webp"}
+              alt={"Not found"}
+              className="size-10 rounded-full border border-neutral-200 object-cover object-center shadow"
+            />
+          )}
 
           <div className="flex min-w-0 flex-col gap-0">
             {
                 managerName ? (
                     <>
-                        <p className="text-sm font-medium text-neutral-900">{managerName}</p>
-                        <span className="text-xs text-neutral-400">{t("managerRole")}</span>
+                        <p className="text-base font-medium text-neutral-900">{managerName}</p>
+                        <span className="text-sm text-neutral-400">{t("managerRole")}</span>
                     </>
                 ) : (
-                    <p className="text-sm font-medium text-neutral-900">
+                    <p className="text-base font-medium text-neutral-900">
                         {t("noManager")}
                     </p>
                 )
@@ -66,22 +75,22 @@ const BranchCard = ({ id, name, managerName, managerPhoto, photo, status, direct
           </div>
         </div>
 
-        <div className="flex min-w-0 flex-col gap-2 border-b border-neutral-200 pb-2 text-xs">
+        <div className="mt-2 flex min-w-0 flex-col gap-2 border-b border-neutral-200 pb-2 text-sm">
           <div className="flex flex-1 min-w-0 items-center gap-2 text-neutral-600">
-            <Pin size={12} className="shrink-0" />
-            <span className="line-clamp-2 wrap-break-word">{direction}</span>
+            <Pin size={16} className="shrink-0" />
+            <span className="line-clamp-1 wrap-break-word">{direction}</span>
           </div>
 
           <div className="flex flex-1 min-w-0 items-center gap-4 text-neutral-600">
             <div className="flex w-1/2 items-center gap-2">
-              <Phone size={12} className="shrink-0" />
+              <Phone size={16} className="shrink-0" />
               <div className="flex w-full flex-1 min-w-0">
                 <span className="truncate">{formatPhoneNumber(phone)}</span>
               </div>
             </div>
 
             <div className="flex w-1/2 items-center gap-2">
-              <Mail size={12} className="shrink-0" />
+              <Mail size={16} className="shrink-0" />
               <div className="flex w-full flex-1 min-w-0">
                 <span className="truncate">{email}</span>
               </div>

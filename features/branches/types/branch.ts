@@ -27,3 +27,13 @@ export interface BranchResponse {
 export interface DeleteBranchResponse {
     message: string;
 }
+
+export interface EditBranchPayload {
+    nombre: string;
+    direccion: string;
+    telefono?: string;
+    info_contacto?: string;
+    // foto_public_id?: string | null;
+    foto_url?: string | null;
+    estado?:boolean;
+}

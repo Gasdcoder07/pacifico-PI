@@ -8,9 +8,10 @@ interface ModalLayoutProps {
     onClose: () => void;
     title?: string;
     children: React.ReactNode;
+    width?: string;
 }
 
-export const ModalLayout = ({ isOpen, onClose, title, children }: ModalLayoutProps) => {
+export const ModalLayout = ({ isOpen, onClose, title, children, width = "max-w-lg" }: ModalLayoutProps) => {
     return (
         <AnimatePresence>
             {isOpen && (
@@ -29,7 +30,7 @@ export const ModalLayout = ({ isOpen, onClose, title, children }: ModalLayoutPro
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 10 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}
-                        className={`relative z-10 w-full bg-white rounded-lg shadow-sm border border-neutral-200 max-w-lg p-6 flex flex-col gap-6`}
+                        className={`relative z-10 w-full bg-white rounded-lg shadow-sm border border-neutral-200 ${width} p-6 flex flex-col gap-6`}
                     >
                         {
                             title && (

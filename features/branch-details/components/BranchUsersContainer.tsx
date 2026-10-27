@@ -14,7 +14,7 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
   const { user: currentUser } = useAuth();
 
   const { data: branchData, isLoading: isLoadingBranch } = useQuery({
-    queryKey: ["getBranch", id],
+    queryKey: ["getBranch", Number(id)],
     queryFn: () => getBranchById(id),
     enabled: !!id,
   });
