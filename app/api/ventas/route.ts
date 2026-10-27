@@ -1,5 +1,6 @@
 import pool from "@/shared/lib/db";
 import { supabase } from "@/shared/lib/supabase";
+import { fromCents, toCents } from "@/shared/utils/formatters";
 import { NextResponse } from "next/server";
 
 interface ItemVenta {
@@ -51,6 +52,13 @@ export async function POST(request: Request) {
 
         const branch = (await pool.query("SELECT * FROM sucursales WHERE id = $1 AND company_id = $2", [currentUser.branch_id, currentUser.company_id])).rows[0]
         const payMethod = (await pool.query("SELECT * FROM metodos_pago WHERE id = $1 AND company_id = $2", [pay_method, currentUser.company_id])).rows[0]
+
+        if (![1,2].includes(Number(currentUser.rol_id))) {
+            return NextResponse.json(
+                { error: "Solo cajeros y gerentes tienen permitido realizar compras" },
+                { status: 403 }
+            )
+        }
 
         if (!branch || !payMethod) {
             return NextResponse.json(
@@ -131,6 +139,43 @@ export async function POST(request: Request) {
                     { status: 409 }
                 )
             }
+
+            const precios = new Map(productos.map(p => [Number(p.id), p.price as string]))
+
+            const detalle = ids.map(id => {
+                const quantity = cantidades.get(id)!
+                const unitCents = toCents(precios.get(id)!)
+                return {
+                    product_id: id,
+                    quantity,
+                    unitCents,
+                    subtotalCents: unitCents * quantity
+                }
+            })
+
+            const subtotalCents = detalle.reduce((acc, d) => acc + d.subtotalCents, 0)
+
+            const taxCents = Math.round(subtotalCents * process.env.TAX_RATE)
+
+            const totalCents = subtotalCents + taxCents
+
+            const { rows: [venta] } = await client.query(
+                `INSERT INTO ventas
+                    (company_id, branch_id, cashier_id, payment_method_id,
+                    subtotal, tax_rate, tax_amount, total)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                 RETURNING *`,
+                 [
+                    currentUser.company_id,
+                    currentUser.branch_id,
+                    currentUser.id,
+                    payMethod.id,
+                    fromCents(subtotalCents),
+                    process.env.TAX_RATE,
+                    fromCents(taxCents),
+                    fromCents(totalCents)
+                 ]
+            )
 
             await client.query("COMMIT")
 

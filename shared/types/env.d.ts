@@ -4,6 +4,7 @@ declare namespace NodeJS {
     NEXT_PUBLIC_SUPABASE_URL: string;
     NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
     NODE_ENV: "development" | "production" | "test";
+    TAX_RATE: 0.16
   }
 }
 
