@@ -7,57 +7,6 @@ import cloudinary from "@/shared/lib/cloudinary";
  * @swagger
  * /api/sucursales/{id}:
  *   get:
- *     summary: Obtener la sucursal por id
- *     description: Consulta la base de datos y devuelve una lista con los registros de la tabla sucursales de acuerdo al id.
- *     tags:
- *       - Sucursales
- *     parameters:
- *      - in: path
- *       name: id
- *       required: true
- *       schema:
- *       type: integer
- *       minimum: 1
- *     responses:
- *       200:
- *         description: Lista la sucursal recuperada exitosamente.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: number
- *                     example: 2
- *                   nombre:
- *                     type: string
- *                     example: "Sucursal Centro"
- *                   direccion:
- *                     type: string
- *                     example: "Av. Principal 123"
- *                   telefono:
- *                     type: string
- *                     example: "314 125 7959"
- *                   info_contacto:
- *                     type: string
- *                     example: "Esta es la información de contacto"
- *                   estado:
- *                     type: boolean
- *                     example: true
- *                   created_at:
- *                     type: string
- *                     format: date-time
- *                     example: "2026-09-04T17:24:00Z"
- *                   updated_at:
- *                     type: string
- *                     format: date-time
- *                     example: "2026-09-04T17:25:00Z"
-/**
- * @swagger
- * /api/sucursales/{id}:
- *   get:
  *     summary: Obtener la sucursal por ID
  *     description: Devuelve la información de una sucursal.
  *     tags:
