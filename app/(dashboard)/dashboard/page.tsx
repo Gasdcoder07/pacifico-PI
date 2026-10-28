@@ -3,20 +3,48 @@ import { SalesOverviewChart } from "@/features/dashboard/components/sales/Overvi
 import { SalesByBranchChart } from "@/features/dashboard/components/sales/SalesByBranchChart";
 import { TopProductsChart } from "@/features/dashboard/components/sales/TopProductsChart";
 import { DollarSign, Receipt, TrendingUp, Package } from "lucide-react";
+import { useFormatter, useTranslations } from "next-intl";
 
 const Page = () => {
-  return (
-    <div className="p-6 flex flex-col gap-6">
-      <h1 className="text-2xl font-bold">Ventas</h1>
+  const t = useTranslations("SalesPage");
+  const format = useFormatter();
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard title="Ventas Totales" value="$182,450" icon={DollarSign} />
-        <MetricCard title="Transacciones" value="1,437" icon={Receipt} />
-        <MetricCard title="Ticket Promedio" value="$127" icon={TrendingUp} />
-        <MetricCard title="Productos Vendidos" value="674" icon={Package} />
+  return (
+    <div className="flex flex-col gap-6 p-6">
+      <h1 className="text-2xl font-bold">{t("title")}</h1>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <MetricCard
+          title={t("metrics.totalSales")}
+          value={format.number(182450, {
+            style: "currency",
+            currency: "USD",
+            currencyDisplay: "narrowSymbol",
+          })}
+          icon={DollarSign}
+        />
+        <MetricCard
+          title={t("metrics.transactions")}
+          value={format.number(1437)}
+          icon={Receipt}
+        />
+        <MetricCard
+          title={t("metrics.averageTicket")}
+          value={format.number(127, {
+            style: "currency",
+            currency: "USD",
+            currencyDisplay: "narrowSymbol",
+          })}
+          icon={TrendingUp}
+        />
+        <MetricCard
+          title={t("metrics.productsSold")}
+          value={format.number(674)}
+          icon={Package}
+        />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <SalesOverviewChart />
         <SalesByBranchChart />
 
@@ -25,7 +53,7 @@ const Page = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;
