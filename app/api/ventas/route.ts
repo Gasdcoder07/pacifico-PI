@@ -13,6 +13,8 @@ interface PayloadVentas {
     productsIds: ItemVenta[]
 }
 
+const taxRate = Number(process.env.TAX_RATE)
+
 export async function POST(request: Request) {
     try {
         const authHeader = await request.headers.get("Authorization")
@@ -53,7 +55,7 @@ export async function POST(request: Request) {
         const branch = (await pool.query("SELECT * FROM sucursales WHERE id = $1 AND company_id = $2", [currentUser.branch_id, currentUser.company_id])).rows[0]
         const payMethod = (await pool.query("SELECT * FROM metodos_pago WHERE id = $1 AND company_id = $2", [pay_method, currentUser.company_id])).rows[0]
 
-        if (![1,2].includes(Number(currentUser.rol_id))) {
+        if (![2,3].includes(Number(currentUser.rol_id))) {
             return NextResponse.json(
                 { error: "Solo cajeros y gerentes tienen permitido realizar compras" },
                 { status: 403 }
@@ -155,7 +157,7 @@ export async function POST(request: Request) {
 
             const subtotalCents = detalle.reduce((acc, d) => acc + d.subtotalCents, 0)
 
-            const taxCents = Math.round(subtotalCents * process.env.TAX_RATE)
+            const taxCents = Math.round(subtotalCents * taxRate)
 
             const totalCents = subtotalCents + taxCents
 
@@ -171,7 +173,7 @@ export async function POST(request: Request) {
                     currentUser.id,
                     payMethod.id,
                     fromCents(subtotalCents),
-                    process.env.TAX_RATE,
+                    taxRate,
                     fromCents(taxCents),
                     fromCents(totalCents)
                  ]
