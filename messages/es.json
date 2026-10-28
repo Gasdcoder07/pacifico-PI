@@ -77,7 +77,7 @@
     },
     "card": {
       "managerRole": "Gerente",
-      "noManager" :"Sin gerente asignado",
+      "noManager": "Sin gerente asignado",
       "viewDetails": "Ver detalles",
       "status": {
         "active": "Activa",
@@ -158,15 +158,15 @@
   },
   "BranchDetails": {
     "title": {
-        "branch": "Sucursal"
+      "branch": "Sucursal"
     },
     "cardDetails": {
-        "manager": "Gerente",
-        "noManager": "Sin gerente asignado",
-        "actions": {
-            "edit" : "Editar",
-            "delete": "Eliminar"
-        }
+      "manager": "Gerente",
+      "noManager": "Sin gerente asignado",
+      "actions": {
+        "edit": "Editar",
+        "delete": "Eliminar"
+      }
     },
     "createUserButton": {
       "label": "Crear usuario"
@@ -257,31 +257,31 @@
       }
     },
     "editBranchModal": {
-        "title" : "Editar sucursal",
-        "generalData" : {
-            "title" : "Datos generales",
-            "noPhoto": "Sin foto seleccionada",
-            "fields" : {
-                "photo" : "Foto de la sucursal",
-                "name" : "Nombre",
-                "address" : "Dirección",
-                "contact" : "Número de contacto",
-                "email" : "Correo electrónico"
-            },
-            "actions" : {
-                "cancel": "Cancelar",
-                "submit": "Guardar sucursal",
-                "submitting": "Guardando sucursal..."
-            },
-            "notifications" : {
-                "success": "Sucursal actualizada correctamente",
-                "error": "Ocurrió un error al actualizar la sucursal",
-                "requiredFields": "Por favor, completa todos los campos obligatorios."
-            },
-            "uploadButton": "Subir imagen",
-            "changeButton": "Elegir otra imagen",
-            "requirements": "Formatos permitidos: JPG, PNG. Máx 2MB."
-        }
+      "title": "Editar sucursal",
+      "generalData": {
+        "title": "Datos generales",
+        "noPhoto": "Sin foto seleccionada",
+        "fields": {
+          "photo": "Foto de la sucursal",
+          "name": "Nombre",
+          "address": "Dirección",
+          "contact": "Número de contacto",
+          "email": "Correo electrónico"
+        },
+        "actions": {
+          "cancel": "Cancelar",
+          "submit": "Guardar sucursal",
+          "submitting": "Guardando sucursal..."
+        },
+        "notifications": {
+          "success": "Sucursal actualizada correctamente",
+          "error": "Ocurrió un error al actualizar la sucursal",
+          "requiredFields": "Por favor, completa todos los campos obligatorios."
+        },
+        "uploadButton": "Subir imagen",
+        "changeButton": "Elegir otra imagen",
+        "requirements": "Formatos permitidos: JPG, PNG. Máx 2MB."
+      }
     }
   },
   "UsersPage": {
@@ -384,8 +384,8 @@
       }
     }
   },
-    "SettingsPage": {
-      "header": {
+  "SettingsPage": {
+    "header": {
       "title": "Ajustes de tu empresa",
       "subtitle": "Actualiza los datos de tu empresa que aparecerán en tus comprobantes y documentos."
     },
@@ -407,7 +407,7 @@
           "sizeError": "El logo no puede pesar más de 2 MB."
         }
       },
-       "fields": {
+      "fields": {
         "name": {
           "label": "Nombre de la empresa",
           "hint": "Este nombre aparecerá en tus comprobantes y documentos.",
@@ -425,6 +425,47 @@
         }
       },
       "submitButton": "Guardar cambios"
+    }
+  },
+  "SalesPage": {
+    "title": "Ventas",
+    "metrics": {
+      "totalSales": "Ventas Totales",
+      "transactions": "Transacciones",
+      "averageTicket": "Ticket Promedio",
+      "productsSold": "Productos Vendidos"
+    },
+    "months": {
+      "jan": "Ene",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Abr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Ago",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dic"
+    },
+    "branches": {
+      "center": "Centro",
+      "north": "Norte",
+      "south": "Sur",
+      "west": "Poniente"
+    },
+    "overviewChart": {
+      "title": "Resumen de Ventas",
+      "salesLabel": "Ventas"
+    },
+    "branchChart": {
+      "title": "Ventas por Sucursal"
+    },
+    "topProductsChart": {
+      "title": "Productos más vendidos",
+      "units": "unidades",
+      "soldLabel": "Vendidas"
+    }
   }
-}
 }

@@ -158,14 +158,15 @@
   },
   "BranchDetails": {
     "title": {
-        "branch": "Branch"
+      "branch": "Branch"
     },
     "cardDetails": {
-        "manager": "Manager",
-        "actions": {
-            "edit" : "Edit",
-            "delete": "Delete"
-        }
+      "manager": "Manager",
+      "noManager": "No manager assigned",
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+      }
     },
     "createUserButton": {
       "label": "Create user"
@@ -256,31 +257,31 @@
       }
     },
     "editBranchModal": {
-        "title": "Edit branch",
-        "generalData" : {
-            "title" : "General information",
-            "noPhoto": "No photo selected",
-            "fields" : {
-                "photo" : "Branch photo",
-                "name" : "Name",
-                "address" : "Address",
-                "contact" : "Contact phone number",
-                "email" : "Email address"
-            },
-            "actions" : {
-                "cancel": "Cancel",
-                "submit": "Save branch",
-                "submitting": "Saving branch..."
-            },
-            "notifications" : {
-                "success": "Branch updated successfully",
-                "error": "An error occurred while updating the branch",
-                "requiredFields": "Please fill in all required fields."
-            },
-            "uploadButton": "Upload image",
-            "changeButton": "Choose another image",
-            "requirements": "Allowed formats: JPG, PNG. Max 2MB."
-        }
+      "title": "Edit branch",
+      "generalData": {
+        "title": "General data",
+        "noPhoto": "No photo selected",
+        "fields": {
+          "photo": "Branch photo",
+          "name": "Name",
+          "address": "Address",
+          "contact": "Contact number",
+          "email": "Email address"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "submit": "Save branch",
+          "submitting": "Saving branch..."
+        },
+        "notifications": {
+          "success": "Branch updated successfully",
+          "error": "An error occurred while updating the branch",
+          "requiredFields": "Please fill in all required fields."
+        },
+        "uploadButton": "Upload image",
+        "changeButton": "Choose another image",
+        "requirements": "Allowed formats: JPG, PNG. Max 2MB."
+      }
     }
   },
   "UsersPage": {
@@ -383,47 +384,88 @@
       }
     }
   },
-      "SettingsPage": {
-      "header": {
-        "title": "Company Settings",
-        "subtitle": "Update your company information that will appear on your receipts and documents."
+  "SettingsPage": {
+    "header": {
+      "title": "Company Settings",
+      "subtitle": "Update your company information that will appear on your receipts and documents."
+    },
+    "companyForm": {
+      "cardTitle": "Company Identity",
+      "cardSubtitle": "Configure your company name, logo, and location details to customize your documentation.",
+      "logo": {
+        "label": "Company Logo",
+        "hint": "Upload your company logo. It will be displayed on your receipts.",
+        "alt": "Company logo",
+        "noLogo": "No logo",
+        "noLogoHint": "Upload an image to identify your company",
+        "noFileSelected": "No file selected",
+        "requirementsSize": "JPG, PNG or WebP · Maximum 2 MB",
+        "requirementsDimensions": "Up to 4096 × 4096 px.",
+        "uploadButton": "Upload logo",
+        "notifications": {
+          "invalidType": "Only JPG, PNG or WebP images are allowed.",
+          "sizeError": "The logo size cannot exceed 2 MB."
+        }
       },
-      "companyForm": {
-        "cardTitle": "Company Identity",
-        "cardSubtitle": "Configure your company name, logo, and location details to customize your documentation.",
-        "logo": {
-          "label": "Company Logo",
-          "hint": "Upload your company logo. It will be displayed on your receipts.",
-          "alt": "Company logo",
-          "noLogo": "No logo",
-          "noLogoHint": "Upload an image to identify your company",
-          "noFileSelected": "No file selected",
-          "requirementsSize": "JPG, PNG or WebP · Maximum 2 MB",
-          "requirementsDimensions": "Up to 4096 × 4096 px.",
-          "uploadButton": "Upload logo",
-          "notifications": {
-            "invalidType": "Only JPG, PNG or WebP images are allowed.",
-            "sizeError": "The logo size cannot exceed 2 MB."
-          }
+      "fields": {
+        "name": {
+          "label": "Company Name",
+          "hint": "This name will appear on your receipts and documents.",
+          "placeholder": "e.g. My Company LLC"
         },
-        "fields": {
-          "name": {
-            "label": "Company Name",
-            "hint": "This name will appear on your receipts and documents.",
-            "placeholder": "e.g. My Company LLC"
-          },
-          "address": {
-            "label": "Company Address",
-            "hint": "Enter the tax address or primary location of your company.",
-            "placeholder": "e.g. Street, number, neighborhood, city, state, zip code."
-          },
-          "description": {
-            "label": "Company Description",
-            "hint": "Add a brief description of your company. This information may appear on your receipts and documents.",
-            "placeholder": "e.g. We specialize in selling tech products and services..."
-          }
+        "address": {
+          "label": "Company Address",
+          "hint": "Enter the tax address or primary location of your company.",
+          "placeholder": "e.g. Street, number, neighborhood, city, state, zip code."
         },
-        "submitButton": "Save changes"
+        "description": {
+          "label": "Company Description",
+          "hint": "Add a brief description of your company. This information may appear on your receipts and documents.",
+          "placeholder": "e.g. We specialize in selling tech products and services..."
+        }
+      },
+      "submitButton": "Save changes"
+    }
+  },
+  "SalesPage": {
+    "title": "Sales",
+    "metrics": {
+      "totalSales": "Total Sales",
+      "transactions": "Transactions",
+      "averageTicket": "Average Ticket",
+      "productsSold": "Products Sold"
+    },
+    "months": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    },
+    "branches": {
+      "center": "Downtown",
+      "north": "North",
+      "south": "South",
+      "west": "West"
+    },
+    "overviewChart": {
+      "title": "Sales Overview",
+      "salesLabel": "Sales"
+    },
+    "branchChart": {
+      "title": "Sales by Branch"
+    },
+    "topProductsChart": {
+      "title": "Top Selling Products",
+      "units": "units",
+      "soldLabel": "Sold"
+    }
   }
-}
 }
