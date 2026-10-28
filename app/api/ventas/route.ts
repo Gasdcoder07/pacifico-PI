@@ -361,9 +361,9 @@ export async function POST(request: Request) {
                 `INSERT INTO ventas
                     (company_id, branch_id, cashier_id, payment_method_id,
                     subtotal, tax_rate, tax_amount, total)
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                  RETURNING *`,
-                 [
+                [
                     currentUser.company_id,
                     currentUser.branch_id,
                     currentUser.id,
@@ -372,7 +372,7 @@ export async function POST(request: Request) {
                     taxRate,
                     fromCents(taxCents),
                     fromCents(totalCents)
-                 ]
+                ]
             )
 
             const detalleInsertado = []
