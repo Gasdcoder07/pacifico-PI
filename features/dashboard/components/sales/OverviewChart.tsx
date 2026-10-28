@@ -24,15 +24,15 @@ const data: SalesData[] = [
 
 export function SalesOverviewChart() {
     return (
-        <div className="bg-white border border-neutral-200 rounded-2xl p-5">
-            <h2 className="text-sm font-semibold text-neutral-700 mb-4">Resumen de Ventas</h2>
+        <div className="bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-700 rounded-2xl p-5 [--ejes:#737373] dark:[--ejes:#cbd5e1] [--cuadricula:#e5e5e5] dark:[--cuadricula:#334155]">
+            <h2 className="text-neutral-700 dark:text-white">Resumen de Ventas</h2>
             <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
-                    <XAxis dataKey="mes" tick={{ fontSize: 12, fill: "#737373" }} />
-                    <YAxis tick={{ fontSize: 12, fill: "#737373" }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--cuadricula)" />
+                    <XAxis dataKey="mes" tick={{ fontSize: 12, fill: "var(--ejes)" }} />
+                    <YAxis tick={{ fontSize: 12, fill: "var(--ejes)" }} />
                     <Tooltip
-                        contentStyle={{ borderRadius: "12px", border: "1px solid #e5e5e5", fontSize: "13px" }}
+                        contentStyle={{ borderRadius: "12px", border: "1px solid var(--cuadricula)", fontSize: "13px" }}
                     />
                     <Line
                         type="monotone"

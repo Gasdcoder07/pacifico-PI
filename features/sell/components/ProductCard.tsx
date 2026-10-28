@@ -14,12 +14,14 @@ const ProductCard = ({ product } : ProductCardProps) => {
     const [imgHover, setImgHover] = useState(false);
 
     return (
-        <div className="group h-full w-full bg-white rounded-lg border border-neutral-200 shadow-sm hover:shadow-lg p-4 flex flex-col gap-4 transition-shadow duration-200 ease-in-out overflow-hidden">
+        <div className="group h-full w-full bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-lg border border-neutral-200 dark:border-neutral-700 shadow-sm hover:shadow-lg p-4 flex flex-col gap-4 transition-shadow duration-200 ease-in-out overflow-hidden">
             <div className="flex gap-2 justify-between items-center">
                 <StockBadge quantity={product.quantity} min_stock={product.min_stock}/>
 
-                <div className="bg-[#F4F7F9] px-1.5 py-0.5 w-fit rounded-lg">
-                    <span className="text-xs text-neutral-600 font-medium">Comidas</span>
+                <div className="bg-[#F4F7F9] dark:bg-neutral-700 px-1.5 py-0.5 w-fit rounded-lg">
+                    <span className="text-xs text-neutral-600 dark:text-neutral-200 font-medium">
+                        Comidas
+                    </span>
                 </div>
             </div>
             <div className="flex gap-4 items-center">
@@ -31,7 +33,7 @@ const ProductCard = ({ product } : ProductCardProps) => {
                     alt={product.name} />
 
                 <div className={`flex-1 min-w-0 flex flex-col transition-[padding] duration-500 ease-out ${imgHover ? "pl-20" : "pl-0"}`}>
-                    <h3 className="font-semibold truncate">{product.name}</h3>
+                    <h3 className="font-semibold truncate text-neutral-900 dark:text-white">{product.name}</h3>
                     <span className="text-sm font-bold opacity-0 -translate-y-1 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0">
                         ${product.price}
                     </span>
@@ -40,16 +42,16 @@ const ProductCard = ({ product } : ProductCardProps) => {
 
             <div className="h-1/2 flex flex-col gap-2">
                 <div className="h-8 flex items-center">
-                    <p className={`text-xs text-neutral-600 flex-1 line-clamp-2 transition-[padding] duration-500 ease-out ${imgHover ? "pl-44" : "pl-0"}`}>
+                    <p className={`text-xs text-neutral-600 dark:text-neutral-300 flex-1 line-clamp-2 transition-[padding] duration-500 ease-out ${imgHover ? "pl-44" : "pl-0"}`}>
                         {product.description}
                     </p>
                 </div>
 
                 <div className="flex justify-between items-center mt-2">
-                    <span className="text-sm font-bold transition-opacity duration-300 ease-out group-hover:opacity-0">
+                    <span className="text-sm font-bold text-neutral-900 dark:text-white">
                         ${product.price}
                     </span>
-
+                    
                     <motion.button
                         onClick={() => addToCart(product)}
                         whileHover={{ scale: 1.1 }}

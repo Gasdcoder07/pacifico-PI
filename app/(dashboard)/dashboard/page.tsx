@@ -6,8 +6,8 @@ import { DollarSign, Receipt, TrendingUp, Package } from "lucide-react";
 
 const Page = () => {
   return (
-    <div className="p-6 flex flex-col gap-6">
-      <h1 className="text-2xl font-bold">Ventas</h1>
+    <div className="p-6 flex flex-col gap-6 min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Ventas</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard title="Ventas Totales" value="$182,450" icon={DollarSign} />
