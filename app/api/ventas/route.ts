@@ -197,7 +197,25 @@ export async function POST(request: Request) {
                 detalleInsertado.push(fila)
             }
 
+            for (const d of detalle) {
+                await client.query(
+                    `UPDATE inventario
+                        SET quantity = quantity - $1,
+                            updated_at = now()
+                    WHERE branch_id = $2
+                        AND company_id = $3
+                        AND product_id = $4`,
+                    [d.quantity, currentUser.branch_id, currentUser.company_id, d.product_id]
+                )
+            }
+
             await client.query("COMMIT")
+
+            return NextResponse.json(
+                { venta, detalle: detalleInsertado },
+                { status: 201 }
+            )
+
 
         } catch(err) {
             await client.query("ROLLBACK")
