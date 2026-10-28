@@ -188,6 +188,31 @@
         "title": "Aún no tienes colaboradores",
         "description": "Todavía no hay personas registradas en esta sucursal. Crea un usuario para comenzar a formar tu equipo."
       },
+      "editUserPanel": {
+        "title": "Editar usuario",
+        "generalData": "Datos generales",
+        "credentials": "Credenciales",
+        "fields": {
+            "name": "Nombre",
+            "lastName": "Apellido",
+            "email": "Correo electrónico",
+            "role": "Rol"
+        },
+        "roles": {
+            "manager": "Gerente",
+            "cashier": "Cajero"
+        },
+        "notifications": {
+            "success": "Usuario actualizado con éxito",
+            "error": "Ocurrió un error al actualizar el usuario",
+            "requiredFields": "Por favor, completa todos los campos obligatorios."
+        },
+        "actions": {
+            "cancel": "Cancelar",
+            "submit": "Guardar cambios",
+            "submitting": "Guardando cambios..."
+        }
+      },
       "actions": {
         "edit": "Editar",
         "delete": "Eliminar"

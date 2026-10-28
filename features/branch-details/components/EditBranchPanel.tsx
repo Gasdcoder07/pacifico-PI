@@ -232,7 +232,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
                         type="button"
                         onClick={onClose}
                         disabled={isPending}
-                        className="px-4 py-2 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 transition-colors ease-in-out duration-200 cursor-pointer disabled:opacity-50"
+                        className="px-4 py-2 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 transition-colors ease-in-out duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {t("generalData.actions.cancel")}
                     </button>
