@@ -187,6 +187,31 @@
         "title": "No collaborators yet",
         "description": "There are no users registered in this branch yet. Create a user to start building your team."
       },
+      "editUserPanel": {
+            "title": "Edit User",
+            "generalData": "General Information",
+            "credentials": "Credentials",
+            "fields": {
+                "name": "First Name",
+                "lastName": "Last Name",
+                "email": "Email Address",
+                "role": "Role"
+            },
+            "roles": {
+                "manager": "Manager",
+                "cashier": "Cashier"
+            },
+            "notifications": {
+                "success": "User updated successfully",
+                "error": "An error occurred while updating the user",
+                "requiredFields": "Please fill in all required fields."
+            },
+            "actions": {
+                "cancel": "Cancel",
+                "submit": "Save Changes",
+                "submitting": "Saving Changes..."
+            }
+        },
       "actions": {
         "edit": "Edit",
         "delete": "Delete"

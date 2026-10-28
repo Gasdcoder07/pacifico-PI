@@ -21,7 +21,7 @@ const EditUserPanel = ({ isOpen, onClose, user, managerExists, branchId } : Edit
     const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
 
     const queryClient = useQueryClient();
-    const t = useTranslations();
+    const t = useTranslations("BranchDetails.usersContainer.editUserPanel");
 
     const [formData, setFormData] = useState({
         name: user.name ?? "",
@@ -31,7 +31,7 @@ const EditUserPanel = ({ isOpen, onClose, user, managerExists, branchId } : Edit
         branchId:  branchId
     });
 
-    const customOptions = managerExists && Number(user.rol_id) !== 2 ? [{ value: "3", label: "Cajero" }] : [{ value: "2", label: "Gerente" }, { value: "3", label: "Cajero" }];
+    const customOptions = managerExists && Number(user.rol_id) !== 2 ? [{ value: "3", label: t("roles.cashier") }] : [{ value: "2", label: t("roles.manager") }, { value: "3", label: t("roles.cashier") }];
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -44,8 +44,7 @@ const EditUserPanel = ({ isOpen, onClose, user, managerExists, branchId } : Edit
         mutationFn: (data: EditUserPayload) => updateUser(user.id, data),
 
         onSuccess: async () => {
-            // toast.success(t("generalData.notifications.success"))
-            toast.success("Si");
+            toast.success(t("notifications.success"))
 
             await Promise.all([
                 queryClient.invalidateQueries({ queryKey: ["getBranch", Number(branchId)] }),
@@ -56,8 +55,7 @@ const EditUserPanel = ({ isOpen, onClose, user, managerExists, branchId } : Edit
         },
 
         onError: async (e) => {
-            // toast.error(t("generalData.notifications.error"));
-            toast.error("No")
+            toast.error(t("notifications.error"));
             console.log(e);
         }
     })
@@ -71,7 +69,7 @@ const EditUserPanel = ({ isOpen, onClose, user, managerExists, branchId } : Edit
         const rol_id = Number(formData.rol_id)
 
         if (!name || !last_name || !email) {
-            toast.error("Pendejo");
+            toast.error(t("notifications.requiredFields"));
             return;
         }
 
@@ -87,11 +85,11 @@ const EditUserPanel = ({ isOpen, onClose, user, managerExists, branchId } : Edit
         <SlideOverPanelLayout isOpen={isOpen} onClose={onClose} title="Editar usuario">
             <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-between min-h-0 h-full">
                 <div className={`flex-1 flex flex-col min-h-0 h-full p-6 gap-4 overflow-y-auto ${scrollbarStyles}`}>
-                    <span className="text-[10px] text-neutral-400 uppercase font-medium">Datos generales</span>
+                    <span className="text-[10px] text-neutral-400 uppercase font-medium">{t("generalData")}</span>
 
                     <div className="flex gap-4 items-center">
                         <div className="flex flex-col gap-2">
-                            <label className="font-medium text-neutral-600">Nombre</label>
+                            <label className="font-medium text-neutral-600">{t("fields.name")}</label>
                             <input
                                 onChange={handleChange}
                                 value={formData.name}
@@ -101,7 +99,7 @@ const EditUserPanel = ({ isOpen, onClose, user, managerExists, branchId } : Edit
                             />
                         </div>
                         <div className="flex flex-col gap-2">
-                            <label className="font-medium text-neutral-600">Apellido</label>
+                            <label className="font-medium text-neutral-600">{t("fields.lastName")}</label>
                             <input 
                                 onChange={handleChange}
                                 value={formData.last_name}
@@ -112,10 +110,10 @@ const EditUserPanel = ({ isOpen, onClose, user, managerExists, branchId } : Edit
                         </div>
                     </div>
 
-                    <span className="mt-2 text-[10px] text-neutral-400 uppercase font-medium">Credenciales</span>
+                    <span className="mt-2 text-[10px] text-neutral-400 uppercase font-medium">{t("credentials")}</span>
 
                     <div className="flex flex-col gap-2">
-                        <label className="font-medium text-neutral-600">Correo electrónico</label>
+                        <label className="font-medium text-neutral-600">{t("fields.email")}</label>
                         <input
                             onChange={handleChange}
                             value={formData.email}
@@ -127,7 +125,7 @@ const EditUserPanel = ({ isOpen, onClose, user, managerExists, branchId } : Edit
 
                     <CustomSelect
                         isDisabled={false}
-                        label="Rol *"
+                        label={t("fields.role")}
                         placeholder="Selecciona un rol"
                         options={customOptions}
                         value={String(formData.rol_id)}
@@ -138,16 +136,23 @@ const EditUserPanel = ({ isOpen, onClose, user, managerExists, branchId } : Edit
                 <div className="border-t border-neutral-200 flex justify-end items-center gap-4 p-6">
                     <button
                         type="button"
+                        disabled={isPending}
                         onClick={onClose}
-                        className="px-4 py-2 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 transition-colors ease-in-out duration-200 cursor-pointer"
+                        className={`px-4 py-2 rounded-lg border border-neutral-200 text-neutral-600 transition-colors ease-in-out duration-200 ${isPending
+                            ? 'cursor-not-allowed'
+                            : 'hover:bg-neutral-50 cursor-pointer'
+                        }`}
                     >
-                        Cancelar
+                        {t("actions.cancel")}
                     </button>
                     <button
+                        disabled={isPending}
                         type="submit"
-                        className="px-4 py-2 rounded-lg bg-cyan-400 text-white font-medium hover:bg-cyan-500 transition-colors ease-in-out duration-200 cursor-pointer"
+                        className={`px-4 py-2 rounded-lg text-white font-medium transition-colors ease-in-out duration-200 ${isPending
+                            ? 'bg-neutral-600 cursor-not-allowed' 
+                            : 'bg-cyan-400 hover:bg-cyan-500 cursor-pointer'}`}
                     >
-                        Guardar cambios
+                        {isPending ? t("actions.submitting") : t("actions.submit")}   
                     </button>
                 </div>
             </form>
