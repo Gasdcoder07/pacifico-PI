@@ -9,3 +9,7 @@ export const formatPhoneNumber = (phone?: string): string => {
 
     return `(${areaCode}) ${middle}-${last}`;
 }
+
+export const toCents = (v: string | number) => Math.round(Number(v) * 100)
+
+export const fromCents = (c: number) => (c / 100).toFixed(2)
