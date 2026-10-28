@@ -15,6 +15,202 @@ interface PayloadVentas {
 
 const taxRate = Number(process.env.TAX_RATE)
 
+/**
+ * @swagger
+ * /api/ventas:
+ *   post:
+ *     summary: Registrar una venta
+ *     description: >
+ *       Registra una venta en la sucursal del usuario autenticado. Valida rol,
+ *       sucursal, método de pago, existencia de productos y stock disponible;
+ *       calcula subtotal, IVA y total; inserta la venta y su detalle, y descuenta
+ *       el inventario dentro de una transacción. Solo cajeros y gerentes pueden vender.
+ *     tags:
+ *       - Ventas
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - pay_method
+ *               - productsIds
+ *             properties:
+ *               pay_method:
+ *                 type: integer
+ *                 description: ID del método de pago (debe pertenecer a la empresa del usuario)
+ *                 example: 1
+ *               productsIds:
+ *                 type: array
+ *                 minItems: 1
+ *                 description: Productos a vender. Si un producto se repite, sus cantidades se suman.
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - idProducto
+ *                     - quantity
+ *                   properties:
+ *                     idProducto:
+ *                       type: integer
+ *                       example: 5
+ *                     quantity:
+ *                       type: integer
+ *                       minimum: 1
+ *                       example: 2
+ *     responses:
+ *       201:
+ *         description: Venta registrada correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 venta:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "120"
+ *                     company_id:
+ *                       type: string
+ *                       example: "1"
+ *                     branch_id:
+ *                       type: string
+ *                       example: "3"
+ *                     cashier_id:
+ *                       type: string
+ *                       example: "8"
+ *                     payment_method_id:
+ *                       type: string
+ *                       example: "1"
+ *                     subtotal:
+ *                       type: string
+ *                       example: "200.00"
+ *                     tax_rate:
+ *                       type: string
+ *                       example: "0.16"
+ *                     tax_amount:
+ *                       type: string
+ *                       example: "32.00"
+ *                     total:
+ *                       type: string
+ *                       example: "232.00"
+ *                     sale_date:
+ *                       type: string
+ *                       format: date-time
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *                 detalle:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: "450"
+ *                       company_id:
+ *                         type: string
+ *                         example: "1"
+ *                       sale_id:
+ *                         type: string
+ *                         example: "120"
+ *                       product_id:
+ *                         type: string
+ *                         example: "5"
+ *                       quantity:
+ *                         type: integer
+ *                         example: 2
+ *                       unit_price:
+ *                         type: string
+ *                         example: "100.00"
+ *                       subtotal:
+ *                         type: string
+ *                         example: "200.00"
+ *       400:
+ *         description: La venta no tiene productos, o algún producto o cantidad es inválido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Producto o cantidad inválida
+ *       401:
+ *         description: Token ausente, mal formado o inválido
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: No se pudo obtener el tóken de sesión
+ *       403:
+ *         description: El rol del usuario no tiene permitido registrar ventas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Solo cajeros y gerentes tienen permitido realizar compras
+ *       404:
+ *         description: Usuario, sucursal, método de pago o productos inexistentes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Algunos productos no existen o están inactivos
+ *                 faltantes:
+ *                   type: array
+ *                   description: IDs de productos no encontrados (solo cuando aplica)
+ *                   items:
+ *                     type: integer
+ *                   example: [7, 12]
+ *       409:
+ *         description: Stock insuficiente en la sucursal
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Stock insuficiente en la sucursal
+ *                 sinStock:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       product_id:
+ *                         type: integer
+ *                         example: 5
+ *                       solicitado:
+ *                         type: integer
+ *                         example: 10
+ *                       disponible:
+ *                         type: integer
+ *                         example: 3
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Ha ocurrido un error en el backend
+ */
 export async function POST(request: Request) {
     try {
         const authHeader = await request.headers.get("Authorization")
