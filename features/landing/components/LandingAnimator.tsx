@@ -5,6 +5,7 @@ import { gsap, ScrollTrigger, useGSAP } from "../../../shared/lib/gsap"
 
 const FULL_HEIGHT = () => window.innerHeight - 32
 const SHRUNK_HEIGHT = () => window.innerHeight / 3
+const IMAGE_SHIFT = () => -(FULL_HEIGHT() - SHRUNK_HEIGHT()) / 2
 
 export default function LandingAnimator ({ children } : { children: ReactNode }) {
     const rootRef = useRef<HTMLDivElement>(null)
@@ -23,6 +24,7 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
             const nav = get("nav")
             const navShell = get("nav-shell")
             const title = get("title")
+            const after = get("after")
             const titleItems = Array.from(title.children)
 
             const mm = gsap.matchMedia()
@@ -39,12 +41,21 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                     gsap.set(imageWrap, { clipPath: "inset(0% 0% 0% 0%)" });
                     gsap.set([nav, ...titleItems], { autoAlpha: 1, y: 0 });
                     gsap.set(frame, { height: SHRUNK_HEIGHT });
+                    gsap.set(image, { y: IMAGE_SHIFT });
                     gsap.set(navShell, {
                         backgroundColor: "rgba(10,10,10,0.55)",
-                        backdropFilter: "blur(12px)",
                     });
                     return;
                 }
+
+                gsap.set(frame, { willChange: "height" });
+                gsap.set(image, { willChange: "transform", force3D: true });
+
+                const applyOffset = () =>
+                    gsap.set(after, { marginTop: () => -(FULL_HEIGHT() - SHRUNK_HEIGHT()) });
+
+                applyOffset();
+                ScrollTrigger.addEventListener("refresh", applyOffset);
 
                 gsap
                     .timeline({ defaults: { ease: "power3.out" } })
@@ -63,8 +74,6 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                         0.95,
                     );
 
-                // El hero queda fijo mientras se encoge a 1/3 de la pantalla,
-                // luego sigue el scroll normal junto al resto de la pagina.
                 gsap
                     .timeline({
                         defaults: { ease: "none" },
@@ -77,6 +86,7 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                             pinSpacing: true,
                             anticipatePin: 1,
                             invalidateOnRefresh: true,
+                            fastScrollEnd: true,
                         },
                     })
                     .fromTo(
@@ -85,16 +95,15 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                         { height: SHRUNK_HEIGHT },
                         0,
                     )
+                    .fromTo(image, { y: 0 }, { y: IMAGE_SHIFT }, 0)
                     .to(titleItems, { autoAlpha: 0, y: -24, stagger: 0.05 }, 0)
                     .to(overlay, { opacity: 0.45 }, 0);
 
-                // La barra flotante gana fondo apenas empieza el scroll.
                 gsap.fromTo(
                     navShell,
-                    { backgroundColor: "rgba(10,10,10,0)", backdropFilter: "blur(0px)" },
+                    { backgroundColor: "rgba(255,255,255,0)" },
                     {
-                        backgroundColor: "rgba(10,10,10,0.55)",
-                        backdropFilter: "blur(12px)",
+                        backgroundColor: "rgba(255,255,255,0.1)",
                         ease: "none",
                         scrollTrigger: {
                             trigger: stage,
@@ -104,6 +113,12 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                         },
                     },
                 );
+
+                return () => {
+                    ScrollTrigger.removeEventListener("refresh", applyOffset);
+                    gsap.set(after, { clearProps: "marginTop" });
+                    gsap.set([frame, image], { clearProps: "willChange" });
+                };
                 },
             )
             return () => mm.revert()

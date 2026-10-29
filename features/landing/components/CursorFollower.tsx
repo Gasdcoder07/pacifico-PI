@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 const SIZE = 512;       
 const STIFFNESS = 120;  
 const DAMPING = 20;     
+const EPSILON = 0.15;
 
 export default function CursorFollower() {
   const ref = useRef<HTMLDivElement>(null);
@@ -13,10 +14,19 @@ export default function CursorFollower() {
     const vel = { x: 0, y: 0 };
     let last = performance.now();
     let raf = 0;
+    let running = false;
+
+    const start = (): void => {
+      if (running) return;
+      running = true;
+      last = performance.now();
+      raf = requestAnimationFrame(tick);
+    };
 
     const handleMouseMove = (event: MouseEvent): void => {
       target.x = event.clientX;
       target.y = event.clientY;
+      start();
     };
 
     const tick = (now: number): void => {
@@ -30,14 +40,24 @@ export default function CursorFollower() {
       pos.y += vel.y * dt;
 
       if (ref.current) {
-        ref.current.style.transform = `translate3d(${pos.x - SIZE / 2}px, ${pos.y - SIZE / 2}px, 0)`;
+        ref.current.style.transform = `translate3d(${Math.round(pos.x - SIZE / 2)}px, ${Math.round(pos.y - SIZE / 2)}px, 0)`;
+      }
+
+      const settled =
+        Math.abs(target.x - pos.x) < EPSILON &&
+        Math.abs(target.y - pos.y) < EPSILON &&
+        Math.abs(vel.x) < EPSILON &&
+        Math.abs(vel.y) < EPSILON;
+
+      if (settled) {
+        running = false;
+        return;
       }
 
       raf = requestAnimationFrame(tick);
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    raf = requestAnimationFrame(tick);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
@@ -48,7 +68,7 @@ export default function CursorFollower() {
   return (
     <div
       ref={ref}
-      className="pointer-events-none fixed left-0 top-0 -z-50 min-h-126 w-126 rounded-full bg-blue-50 blur-3xl will-change-transform"
+      className="pointer-events-none fixed left-0 top-0 -z-50 min-h-126 w-126 transform-gpu rounded-full bg-blue-50 blur-3xl will-change-transform"
     />
   );
 }
