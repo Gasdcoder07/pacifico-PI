@@ -13,6 +13,7 @@ export interface UserProfile {
     email: string;
     rol_id: number;
     sucursal_id?: number;
+    company_id?: string | number;
     status: boolean;
     foto_url?: string;
     context_name?: string | null;
