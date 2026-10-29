@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Sun, Moon } from "lucide-react";
 
 export default function ThemeToggle() {
     const [dark, setDark] = useState(false);
@@ -29,12 +30,8 @@ export default function ThemeToggle() {
     }
 
     return (
-        <button
-            type="button"
-            onClick={cambiarTema}
-            className="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-neutral-800 dark:border-neutral-600 dark:bg-neutral-800 dark:text-white"
-        >
-            {dark ? "🌙" : "☀️"}
+        <button type="button" onClick={cambiarTema} aria-label={dark ? "Activar modo claro" : "Activar modo oscuro"} title={dark ? "Activar modo claro" : "Activar modo oscuro"} className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black text-neutral-700 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-900 focus-visible:outline-2 focus-visible:outline-cyan-400 focus-visible:outline-offset-2 transition-colors cursor-pointer">
+            {dark ? <Sun size={20} /> : <Moon size={20} />}
         </button>
     );
 }

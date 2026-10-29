@@ -26,18 +26,14 @@ const BranchCard = ({ id, name, managerName, managerPhoto, photo, status, direct
   const t = useTranslations("Branches.card");
 
   return (
-    <div className="flex w-full gap-4 rounded-lg border border-neutral-200 bg-white p-2 shadow-sm">
+    <div className="flex w-full gap-4 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black text-neutral-900 dark:text-white p-2 shadow-sm">
       <div className="relative w-2/5 shrink-0 overflow-hidden rounded-lg shadow">
-        <img
-          src={photo || 'default_branch.webp'}
-          alt={name}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        <img src={photo || "default_branch.webp"} alt={name} className="absolute inset-0 h-full w-full object-cover" />
       </div>
 
       <div className="flex w-3/5 min-w-0 flex-col gap-2">
         <div className="flex min-w-0 items-center justify-between gap-4">
-          <h3 className="truncate text-lg font-bold tracking-wide text-neutral-900">
+          <h3 className="truncate text-lg font-bold tracking-wide text-neutral-900 dark:text-white">
             {name}
           </h3>
 
@@ -46,42 +42,32 @@ const BranchCard = ({ id, name, managerName, managerPhoto, photo, status, direct
 
         <div className="flex min-w-0 items-center gap-4">
           {managerName ? (
-            <Blobatar 
-              animate="always"
-              name={managerName}
-              className="size-10 rounded-full object-cover object-center shadow"
-            />
+            <Blobatar animate="always" name={managerName} className="size-10 rounded-full object-cover object-center shadow" />
           ) : (
-            <img
-              src={"/default_profile.webp"}
-              alt={"Not found"}
-              className="size-10 rounded-full border border-neutral-200 object-cover object-center shadow"
-            />
+            <img src="/default_profile.webp" alt="Not found" className="size-10 rounded-full border border-neutral-200 dark:border-neutral-800 object-cover object-center shadow" />
           )}
 
           <div className="flex min-w-0 flex-col gap-0">
-            {
-                managerName ? (
-                    <>
-                        <p className="text-base font-medium text-neutral-900">{managerName}</p>
-                        <span className="text-sm text-neutral-400">{t("managerRole")}</span>
-                    </>
-                ) : (
-                    <p className="text-base font-medium text-neutral-900">
-                        {t("noManager")}
-                    </p>
-                )
-            }
+            {managerName ? (
+              <>
+                <p className="text-base font-medium text-neutral-900 dark:text-white">{managerName}</p>
+                <span className="text-sm text-neutral-400">{t("managerRole")}</span>
+              </>
+            ) : (
+              <p className="text-base font-medium text-neutral-900 dark:text-white">
+                {t("noManager")}
+              </p>
+            )}
           </div>
         </div>
 
-        <div className="mt-2 flex min-w-0 flex-col gap-2 border-b border-neutral-200 pb-2 text-sm">
-          <div className="flex flex-1 min-w-0 items-center gap-2 text-neutral-600">
+        <div className="mt-2 flex min-w-0 flex-col gap-2 border-b border-neutral-200 dark:border-neutral-800 pb-2 text-sm">
+          <div className="flex flex-1 min-w-0 items-center gap-2 text-neutral-600 dark:text-neutral-300">
             <Pin size={16} className="shrink-0" />
             <span className="line-clamp-1 wrap-break-word">{direction}</span>
           </div>
 
-          <div className="flex flex-1 min-w-0 items-center gap-4 text-neutral-600">
+          <div className="flex flex-1 min-w-0 items-center gap-4 text-neutral-600 dark:text-neutral-300">
             <div className="flex w-1/2 items-center gap-2">
               <Phone size={16} className="shrink-0" />
               <div className="flex w-full flex-1 min-w-0">
@@ -103,11 +89,7 @@ const BranchCard = ({ id, name, managerName, managerPhoto, photo, status, direct
             href={`/branch/${id}/${encodeURIComponent(createSlug(name))}`}
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.9 }}
-            transition={{
-              type: "spring",
-              stiffness: 300,
-              damping: 20,
-            }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
             className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-cyan-400 px-4 py-2 text-sm font-medium text-white sm:w-3/5"
           >
             <span>{t("viewDetails")}</span>
@@ -123,10 +105,10 @@ export default BranchCard;
 
 const StatusBadge = ({ status }: { status: boolean }) => {
   const t = useTranslations("Branches.card.status");
-  const styles = status ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600";
+  const styles = status ? "bg-green-100 text-green-600 dark:bg-black dark:text-green-400 dark:border-green-900" : "bg-red-100 text-red-600 dark:bg-black dark:text-red-400 dark:border-red-900";
 
   return (
-    <span className={`${styles} rounded px-2 py-1 text-xs font-medium shadow`}>
+    <span className={`${styles} rounded border border-transparent px-2 py-1 text-xs font-medium shadow`}>
       {status ? t("active") : t("inactive")}
     </span>
   );

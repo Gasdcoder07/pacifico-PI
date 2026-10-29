@@ -2,52 +2,30 @@
 
 import { Mail, ShieldCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
-
 import { User } from "../types/user";
 import { BranchId } from "@/features/branches/types/branch";
 import { Blobatar } from "blobatar/react";
-import "blobatar/motion.css"
+import "blobatar/motion.css";
 
 import UserDropdownActionButton from "./UserDropdownActionButton";
 
-const colors = [
-  "bg-rose-100 border-rose-200 text-rose-700",
-  "bg-orange-100 border-orange-200 text-orange-700",
-  "bg-amber-100 border-amber-200 text-amber-700",
-  "bg-emerald-100 border-emerald-200 text-emerald-700",
-  "bg-teal-100 border-teal-200 text-teal-700",
-  "bg-sky-100 border-sky-200 text-sky-700",
-  "bg-indigo-100 border-indigo-200 text-indigo-700",
-  "bg-violet-100 border-violet-200 text-violet-700",
-];
-
-const UsersCard = ({
-  user,
-  isMe,
-  branchId,
-}: {
-  user: User;
-  isMe: boolean;
-  branchId: BranchId;
-}) => {
+const UsersCard = ({ user, isMe, branchId }: { user: User; isMe: boolean; branchId: BranchId }) => {
   const t = useTranslations("UsersPage.card");
 
   return (
-    <div className="flex w-full items-center justify-between gap-4 rounded-lg border border-neutral-200 bg-white px-8 py-4 shadow-sm">
+    <div className="flex w-full items-center justify-between gap-4 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black text-neutral-900 dark:text-white px-8 py-4 shadow-sm">
       <div className="flex items-center gap-4 min-w-3/10">
-        <Blobatar
-          name={user.name + " " + user.last_name}
-          animate="always"
-          className={`flex size-12 items-center justify-center rounded-full`}
-        >
-        </Blobatar>
-        <p className="font-medium text-[15px]">
+        <Blobatar name={user.name + " " + user.last_name} animate="always" className="flex size-12 items-center justify-center rounded-full" />
+
+        <p className="font-medium text-[15px] text-neutral-900 dark:text-white">
           {user.name} {user.last_name}
         </p>
 
         {isMe && (
-          <div className="rounded bg-[#F4F7F9] px-2 py-1">
-            <span className="text-xs font-medium">({t("you")})</span>
+          <div className="rounded bg-[#F4F7F9] dark:bg-neutral-950 px-2 py-1">
+            <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
+              ({t("you")})
+            </span>
           </div>
         )}
       </div>
@@ -57,22 +35,16 @@ const UsersCard = ({
           <div>
             <RolSpan rol_id={user.rol_id} />
           </div>
+
           <div className="flex flex-1 min-w-0 items-center gap-2">
-            <Mail
-              size={14}
-              className="translate-y-[0.5px] shrink-0 text-neutral-500"
-            />
-            <span className="truncate text-xs text-neutral-500">
+            <Mail size={14} className="translate-y-[0.5px] shrink-0 text-neutral-500 dark:text-neutral-400" />
+            <span className="truncate text-xs text-neutral-500 dark:text-neutral-300">
               {user.email}
             </span>
           </div>
         </div>
 
-        <UserDropdownActionButton
-          user={user}
-          isMe={isMe}
-          branchId={branchId}
-        />
+        <UserDropdownActionButton user={user} isMe={isMe} branchId={branchId} />
       </div>
     </div>
   );
@@ -91,19 +63,17 @@ export const RolSpan = ({ rol_id }: RolSpanProps) => {
 
   if (String(rol_id) === "1") {
     label = t("admin");
-    spanStyles = "bg-[#EDE9FE] text-[#5B21B6] border-purple-200";
+    spanStyles = "bg-[#EDE9FE] text-[#5B21B6] border-purple-200 dark:bg-black dark:text-purple-400 dark:border-purple-900";
   } else if (String(rol_id) === "2") {
     label = t("manager");
-    spanStyles = "bg-[#DBEAFE] text-[#1E40AF] border-blue-200";
+    spanStyles = "bg-[#DBEAFE] text-[#1E40AF] border-blue-200 dark:bg-black dark:text-blue-400 dark:border-blue-900";
   } else {
     label = t("cashier");
-    spanStyles = "bg-[#CCFBF1] text-[#0F766E] border-teal-200";
+    spanStyles = "bg-[#CCFBF1] text-[#0F766E] border-teal-200 dark:bg-black dark:text-teal-400 dark:border-teal-900";
   }
 
   return (
-    <span
-      className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-1 text-xs ${spanStyles}`}
-    >
+    <span className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-1 text-xs ${spanStyles}`}>
       <ShieldCheck size={14} className="shrink-0" />
       {label}
     </span>
