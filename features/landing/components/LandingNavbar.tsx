@@ -11,7 +11,7 @@ const links = [
 
 const LandingNavbar = () => {
   return (
-    <header className="flex min-h-16 items-center justify-between rounded-2xl px-4 py-2">
+    <header className="flex min-h-16 items-center justify-between rounded-2xl px-4 py-y">
       <Image
         quality={80}
         priority
@@ -21,10 +21,9 @@ const LandingNavbar = () => {
         alt="Logo de Pacífico"
         className="flex h-16 w-auto self-start object-contain -translate-x-1.5"
       />
-
       <nav className="hidden gap-12 text-xs text-neutral-600 md:flex">
         {links.map((link) => (
-          <a key={link.href} href={link.href} className="text-center transition-all text-neutral-50 hover:text-white text-sm hover:-translate-y-0.5">
+          <a key={link.href} href={link.href} className="text-center transition-all text-neutral-50 hover:text-white text-sm hover:-translate-y-0.5 hover:font-semibold">
             {link.label}
           </a>
         ))}
@@ -32,7 +31,7 @@ const LandingNavbar = () => {
 
       <Link
         href="/login"
-        className="rounded-full bg-white px-4 py-1.5 text-xs font-medium hover:bg-neutral-50 transition-all"
+        className="rounded-full bg-white px-4 py-1.5 text-xs font-medium transition-all hover:scale-105"
       >
         <span className="text-sm">Join us!</span>
       </Link>
