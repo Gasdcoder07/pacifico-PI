@@ -1,9 +1,13 @@
-import { motion } from "framer-motion";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { ImagePlus, Save, Trash2, Upload } from "lucide-react";
+import { motion } from "framer-motion";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { useTranslations } from "next-intl";
-import { Company } from "../types/company";
+import { UserProfile } from "@/features/auth/types/authInterfaces";
+import { Company, CompanyRequest } from "../types/company";
+import { updateCompany } from "../services/company.service";
 
 const MAX_SIZE = 2 * 1024 * 1024; // 2 MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -16,18 +20,43 @@ interface CompanyFormProps {
 }
 
 const CompanyForm = ({ company } : CompanyFormProps ) => {
+    const queryClient = useQueryClient();
+
     const t = useTranslations("SettingsPage.companyForm");
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [formData, setFormData] = useState({
-        name: company?.name,
-        address: company?.address,
-        description: company?.description,
-        foto_url: company?.foto_url,
+        name: company.name ?? "",
+        address: company.address ?? "",
+        description: company.description ?? "",
+        foto_url: company.foto_url ?? "",
     });
 
     const [logoFile, setLogoFile] = useState<File | null>(null);
-    const [logoPreview, setLogoPreview] = useState<string | null>(null);
+
+    const { mutate: mutateUpdateCompany, isPending } = useMutation({
+        mutationFn: (data: CompanyRequest) => updateCompany(company.id, data),
+
+        onSuccess: async () => {
+            queryClient.setQueryData(
+            ["authUser"],
+            (oldUser: UserProfile | undefined) => {
+                if (!oldUser) return oldUser;
+
+                return {
+                ...oldUser,
+                context_name: formData.name.trim(),
+                };
+            },
+            );
+
+            toast.success("Compañía actualizada correctamente");
+        },
+
+        onError: async (e) => {
+            console.error("e");
+        }
+    })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -35,6 +64,9 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
 
     const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
+
+        e.currentTarget.value = "";
+
         if (!file) return;
 
         if (!ALLOWED_TYPES.includes(file.type)) {
@@ -47,21 +79,50 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
             return;
         }
 
-        if (logoPreview) URL.revokeObjectURL(logoPreview);
-        setLogoFile(file);
-        setLogoPreview(URL.createObjectURL(file));
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            if (typeof reader.result !== "string") return;
+
+            setFormData((prev) => ({
+                ...prev,
+                foto_url: reader.result as string,
+            }));
+
+            setLogoFile(file);
+        };
+
+        reader.readAsDataURL(file);
     };
 
     const handleRemoveLogo = () => {
-        if (logoPreview) URL.revokeObjectURL(logoPreview);
         setLogoFile(null);
-        setLogoPreview(null);
-        if (fileInputRef.current) fileInputRef.current.value = "";
+
+        setFormData((prev) => ({
+            ...prev,
+            foto_url: "",
+        }));
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("Datos:", formData, "Logo:", logoFile);
+
+        const name = formData.name.trim();
+        const address = formData.address.trim();
+        const description = formData.description.trim();
+        const foto_url = formData.foto_url;
+
+        if (!name || !address) {
+            console.log("No")
+            return;
+        }
+
+        mutateUpdateCompany({
+            name: name,
+            address: address,
+            description: description,
+            foto_url: foto_url
+        });
     };
 
   return (
@@ -84,10 +145,10 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
           </div>
 
           <div className="relative flex h-40 w-full items-center justify-center overflow-hidden rounded-xl border border-neutral-200 bg-white">
-            {logoPreview ? (
+            {formData.foto_url ? (
               <>
                 <img
-                  src={logoPreview}
+                  src={formData.foto_url}
                   alt={t("logo.alt")}
                   className="h-full w-full object-contain p-2"
                 />
