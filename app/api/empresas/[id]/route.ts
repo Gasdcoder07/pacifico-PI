@@ -152,9 +152,7 @@ export async function GET(
         }
 
         return NextResponse.json(
-            {
-                data: result.rows[0],
-            },
+            result.rows[0],
             { status: 200 }
         );
     } catch (error) {

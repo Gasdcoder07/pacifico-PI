@@ -424,7 +424,13 @@
           "placeholder": "Ej. Nos dedicamos a la venta de productos y servicios tecnológicos..."
         }
       },
-      "submitButton": "Guardar cambios"
+      "notifications": {
+        "success": "Compañía actualizada correctamente",
+        "error": "Ocurrió un error al actualizar la compañía",
+        "requiredFields": "Completa los campos obligatorios"
+      },
+      "submitButton": "Guardar cambios",
+      "submittingButton": "Guardando cambios..."
     }
   },
   "SalesPage": {

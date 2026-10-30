@@ -1,10 +1,13 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { ImagePlus, Save, Trash2, Upload } from "lucide-react";
+import { motion } from "framer-motion";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { useTranslations } from "next-intl";
+import { UserProfile } from "@/features/auth/types/authInterfaces";
+import { Company, CompanyRequest } from "../types/company";
+import { updateCompany } from "../services/company.service";
 
 const MAX_SIZE = 2 * 1024 * 1024; // 2 MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -12,54 +15,116 @@ const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const inputClass =
   "w-full p-3 text-sm border border-neutral-200 rounded-xl hover:border-neutral-300 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/10 outline-none transition-colors duration-200 ease-in-out";
 
-const CompanyForm = () => {
-  const t = useTranslations("SettingsPage.companyForm");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+interface CompanyFormProps {
+    company: Company
+}
 
-  const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    description: "",
-  });
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+const CompanyForm = ({ company } : CompanyFormProps ) => {
+    const queryClient = useQueryClient();
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    const t = useTranslations("SettingsPage.companyForm");
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const [formData, setFormData] = useState({
+        name: company.name ?? "",
+        address: company.address ?? "",
+        description: company.description ?? "",
+        foto_url: company.foto_url ?? "",
+    });
 
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      toast.error(t("logo.notifications.invalidType"));
-      return;
-    }
+    const [logoFile, setLogoFile] = useState<File | null>(null);
 
-    if (file.size > MAX_SIZE) {
-      toast.error(t("logo.notifications.sizeError"));
-      return;
-    }
+    const { mutate: mutateUpdateCompany, isPending } = useMutation({
+        mutationFn: (data: CompanyRequest) => updateCompany(company.id, data),
 
-    if (logoPreview) URL.revokeObjectURL(logoPreview);
-    setLogoFile(file);
-    setLogoPreview(URL.createObjectURL(file));
-  };
+        onSuccess: async () => {
+            queryClient.setQueryData(
+            ["authUser"],
+            (oldUser: UserProfile | undefined) => {
+                if (!oldUser) return oldUser;
 
-  const handleRemoveLogo = () => {
-    if (logoPreview) URL.revokeObjectURL(logoPreview);
-    setLogoFile(null);
-    setLogoPreview(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
+                return {
+                ...oldUser,
+                context_name: formData.name.trim(),
+                };
+            },
+            );
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Datos:", formData, "Logo:", logoFile);
-  };
+            toast.success(t("notifications.success"));
+        },
+
+        onError: async (e) => {
+            toast.error(t("notifications.error"));
+            console.log("Error: ", e);
+        }
+    })
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+
+        e.currentTarget.value = "";
+
+        if (!file) return;
+
+        if (!ALLOWED_TYPES.includes(file.type)) {
+            toast.error(t("logo.notifications.invalidType"));
+            return;
+        }
+
+        if (file.size > MAX_SIZE) {
+            toast.error(t("logo.notifications.sizeError"));
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            if (typeof reader.result !== "string") return;
+
+            setFormData((prev) => ({
+                ...prev,
+                foto_url: reader.result as string,
+            }));
+
+            setLogoFile(file);
+        };
+
+        reader.readAsDataURL(file);
+    };
+
+    const handleRemoveLogo = () => {
+        setLogoFile(null);
+
+        setFormData((prev) => ({
+            ...prev,
+            foto_url: "",
+        }));
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const name = formData.name.trim();
+        const address = formData.address.trim();
+        const description = formData.description.trim();
+        const foto_url = formData.foto_url;
+
+        if (!name || !address) {
+            toast.error(t("notifications.requiredFields"));
+            return;
+        }
+
+        mutateUpdateCompany({
+            name: name,
+            address: address,
+            description: description,
+            foto_url: foto_url
+        });
+    };
 
   return (
     <form
@@ -77,14 +142,14 @@ const CompanyForm = () => {
         <div className="flex flex-col gap-4 border-r border-neutral-200 pr-8">
           <div className="flex flex-col gap-2">
             <label className="font-medium">{t("logo.label")}</label>
-            <p className="text-xs text-neutral-500">{t("logo.hint")}</p>
+            <p className="text-sm text-neutral-500">{t("logo.hint")}</p>
           </div>
 
           <div className="relative flex h-40 w-full items-center justify-center overflow-hidden rounded-xl border border-neutral-200 bg-white">
-            {logoPreview ? (
+            {formData.foto_url ? (
               <>
                 <img
-                  src={logoPreview}
+                  src={formData.foto_url}
                   alt={t("logo.alt")}
                   className="h-full w-full object-contain p-2"
                 />
@@ -141,8 +206,12 @@ const CompanyForm = () => {
           <div className="flex justify-end">
             <button
               type="button"
+              disabled={isPending}
               onClick={() => fileInputRef.current?.click()}
-              className="flex cursor-pointer items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium hover:bg-neutral-50 transition-colors"
+              className={`flex items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2 font-medium transition-colors duration-200 ease-in-out ${isPending
+                ? 'bg-neutral-50 cursor-not-allowed'
+                : 'hover:bg-neutral-50 cursor-pointer'
+              }`}
             >
               <Upload size={16} />
               {t("logo.uploadButton")}
@@ -155,9 +224,9 @@ const CompanyForm = () => {
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <label htmlFor="name" className="font-medium">
-                {t("fields.name.label")}
+                {t("fields.name.label")} *
               </label>
-              <p className="text-xs text-neutral-500">
+              <p className="text-sm text-neutral-500">
                 {t("fields.name.hint")}
               </p>
             </div>
@@ -176,9 +245,9 @@ const CompanyForm = () => {
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <label htmlFor="address" className="font-medium">
-                {t("fields.address.label")}
+                {t("fields.address.label")} *
               </label>
-              <p className="text-xs text-neutral-400">
+              <p className="text-sm text-neutral-500">
                 {t("fields.address.hint")}
               </p>
             </div>
@@ -202,7 +271,7 @@ const CompanyForm = () => {
           <label htmlFor="description" className="font-medium">
             {t("fields.description.label")}
           </label>
-          <p className="text-xs text-neutral-500">
+          <p className="text-sm text-neutral-500">
             {t("fields.description.hint")}
           </p>
         </div>
@@ -223,8 +292,9 @@ const CompanyForm = () => {
       <div className="flex justify-end border-t border-neutral-200 pt-6">
         <motion.button
           type="submit"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.9 }}
+          disabled={isPending}
+          whileHover={{ scale: isPending ? 1 : 1.02 }}
+          whileTap={{ scale: isPending ? 1: 0.9 }}
           transition={{
             type: "spring",
             stiffness: 300,
@@ -232,7 +302,10 @@ const CompanyForm = () => {
             duration: 0.2,
             ease: "easeInOut",
           }}
-          className="flex cursor-pointer items-center gap-2 rounded-lg bg-cyan-400 px-4 py-2 text-sm font-medium text-white shadow-sm"
+          className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white shadow-sm ${isPending
+            ? 'bg-neutral-600 cursor-not-allowed'
+            : 'cursor-pointer bg-cyan-400'
+          }`}
         >
           <Save size={16} />
           {t("submitButton")}
