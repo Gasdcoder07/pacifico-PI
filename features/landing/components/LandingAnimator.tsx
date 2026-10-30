@@ -13,7 +13,7 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
     useGSAP(
         () => {
             const root = rootRef.current!;
-            const get = (name: string) => 
+            const get = (name: string) =>
                 root.querySelector<HTMLDivElement>(`[data-anim="${name}"]`)!;
 
             const stage = get("stage")
@@ -26,6 +26,11 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
             const title = get("title")
             const after = get("after")
             const titleItems = Array.from(title.children)
+            const revealSections = Array.from(
+                root.querySelectorAll<HTMLElement>("[data-reveal]"),
+            )
+
+            ScrollTrigger.config({ ignoreMobileResize: true })
 
             const mm = gsap.matchMedia()
 
@@ -43,7 +48,7 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                     gsap.set(frame, { height: SHRUNK_HEIGHT });
                     gsap.set(image, { y: IMAGE_SHIFT });
                     gsap.set(navShell, {
-                        backgroundColor: "rgba(10,10,10,0.55)",
+                        backgroundColor: "rgba(21, 113, 149, 0.8)",
                     });
                     return;
                 }
@@ -55,10 +60,37 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                     gsap.set(after, { marginTop: () => -(FULL_HEIGHT() - SHRUNK_HEIGHT()) });
 
                 applyOffset();
-                ScrollTrigger.addEventListener("refresh", applyOffset);
+                ScrollTrigger.addEventListener("refreshInit", applyOffset);
 
-                gsap
-                    .timeline({ defaults: { ease: "power3.out" } })
+                gsap.set(titleItems, { autoAlpha: 0, y: 24 });
+                gsap.set(nav, { autoAlpha: 0, y: -16 });
+
+                let titleLinked = false;
+
+                function linkTitle() {
+                    if (titleLinked) return;
+                    titleLinked = true;
+
+                    scrollTl.fromTo(
+                        titleItems,
+                        { autoAlpha: 1, y: 0 },
+                        {
+                            autoAlpha: 0,
+                            y: -24,
+                            duration: 0.45,
+                            stagger: 0.05,
+                            immediateRender: false,
+                        },
+                        0,
+                    );
+                }
+
+                const intro = gsap
+                    .timeline({
+                        paused: true,
+                        onComplete: linkTitle,
+                        defaults: { ease: "power3.out" },
+                    })
                     .fromTo(
                         imageWrap,
                         { clipPath: "inset(0% 0% 100% 0%)" },
@@ -74,7 +106,7 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                         0.95,
                     );
 
-                gsap
+                const scrollTl = gsap
                     .timeline({
                         defaults: { ease: "none" },
                         scrollTrigger: {
@@ -86,7 +118,12 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                             pinSpacing: true,
                             anticipatePin: 1,
                             invalidateOnRefresh: true,
-                            fastScrollEnd: true,
+                            onUpdate: (self) => {
+                                if (self.progress > 0 && intro.progress() < 1) {
+                                    intro.progress(1);
+                                    linkTitle();
+                                }
+                            },
                         },
                     })
                     .fromTo(
@@ -96,15 +133,25 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                         0,
                     )
                     .fromTo(image, { y: 0 }, { y: IMAGE_SHIFT }, 0)
-                    .to(titleItems, { autoAlpha: 0, y: -24, stagger: 0.05 }, 0)
-                    .to(overlay, { opacity: 0.45 }, 0);
+                    .fromTo(overlay, { opacity: 0.2 }, { opacity: 0.45, immediateRender: false }, 0);
 
                 gsap.fromTo(
                     navShell,
-                    { backgroundColor: "rgba(255,255,255,0)" },
                     {
-                        backgroundColor: "rgba(255,255,255,0.1)",
+                        backgroundColor: "rgba(21, 113, 149, 0)",
+                        borderColor: "rgba(255, 255, 255, 0)",
+                        boxShadow: "0 10px 30px rgba(8, 47, 73, 0)",
+                        backdropFilter: "blur(0px) saturate(100%)",
+                        WebkitBackdropFilter: "blur(0px) saturate(100%)",
+                    },
+                    {
+                        backgroundColor: "rgba(21, 113, 149, 0.55)",
+                        borderColor: "rgba(255, 255, 255, 0.25)",
+                        boxShadow: "0 10px 30px rgba(8, 47, 73, 0.15)",
+                        backdropFilter: "blur(16px) saturate(150%)",
+                        WebkitBackdropFilter: "blur(16px) saturate(150%)",
                         ease: "none",
+                        immediateRender: false,
                         scrollTrigger: {
                             trigger: stage,
                             start: "top top",
@@ -114,8 +161,57 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                     },
                 );
 
+                revealSections.forEach((section) => {
+                    const items = Array.from(
+                        section.querySelectorAll<HTMLElement>("[data-reveal-item]"),
+                    );
+
+                    gsap.from(items.length ? items : [section], {
+                        autoAlpha: 0,
+                        y: 32,
+                        duration: 0.7,
+                        ease: "power3.out",
+                        stagger: 0.12,
+                        scrollTrigger: {
+                            trigger: section,
+                            start: "top 85%",
+                            once: true,
+                        },
+                    });
+                });
+
+                let introStarted = false;
+
+                const startIntro = () => {
+                    if (introStarted) return;
+                    introStarted = true;
+                    fallback.kill();
+                    image.removeEventListener("load", startIntro);
+                    image.removeEventListener("error", startIntro);
+
+                    if (window.scrollY > 0) {
+                        intro.progress(1);
+                        linkTitle();
+                        return;
+                    }
+
+                    intro.play();
+                };
+
+                const fallback = gsap.delayedCall(2.5, startIntro);
+
+                if (image.complete && image.naturalWidth > 0) {
+                    startIntro();
+                } else {
+                    image.addEventListener("load", startIntro, { once: true });
+                    image.addEventListener("error", startIntro, { once: true });
+                }
+
                 return () => {
-                    ScrollTrigger.removeEventListener("refresh", applyOffset);
+                    fallback.kill();
+                    image.removeEventListener("load", startIntro);
+                    image.removeEventListener("error", startIntro);
+                    ScrollTrigger.removeEventListener("refreshInit", applyOffset);
                     gsap.set(after, { clearProps: "marginTop" });
                     gsap.set([frame, image], { clearProps: "willChange" });
                 };

@@ -32,6 +32,7 @@ const LandingPage = () => {
               <div
                 data-anim="image-wrap"
                 className="absolute inset-x-0 top-0 h-[calc(100svh-2rem)]"
+                style={{ clipPath: "inset(0% 0% 100% 0%)" }}
               >
                 <Image
                   src="/auth_image.webp"

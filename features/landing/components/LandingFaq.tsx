@@ -5,37 +5,40 @@ import { ArrowDown, ArrowUp } from "lucide-react";
 
 const faqs = [
   {
-    question: "What is included in the trip?",
+    question: "What do I need to start using Pacifico?",
     answer:
-      "Guided hikes, camping gear and meals during the whole program. You only need to bring your personal items.",
+      "Only your company details. You register the company, create your branches and invite your team, all from the same dashboard.",
   },
   {
-    question: "Is the trip suitable for beginners?",
+    question: "Can I manage more than one branch?",
     answer:
-      "Yes. We have routes for every level, and our guides adapt the pace to the group.",
+      "Yes. Every branch keeps its own inventory and sales, and you still see the consolidated numbers of the whole company.",
   },
   {
-    question: "Can I join the trip alone?",
+    question: "How are roles and permissions handled?",
     answer:
-      "Of course. Many of our travelers join solo and end up making new friends along the way.",
+      "Each employee gets a role, so people only see the operations they are responsible for inside their branch.",
   },
   {
-    question: "What do I need to have?",
+    question: "Is my information synchronized?",
     answer:
-      "Comfortable hiking shoes, a light jacket and a reusable water bottle. We send the full list after you book.",
+      "Sales, inventory and employees share the same source of truth, so a change made in one place is reflected everywhere.",
   },
 ];
 
 const LandingFaq = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(1);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <section id="faq" className="flex flex-col gap-8 py-10">
-      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+    <section id="faq" data-reveal className="flex scroll-mt-28 flex-col gap-8 py-10">
+      <div
+        data-reveal-item
+        className="flex flex-col justify-between gap-4 md:flex-row md:items-end"
+      >
         <div className="flex flex-col gap-2">
           <span className="w-fit rounded-full bg-neutral-100 px-3 py-0.5 text-[10px] text-neutral-500">
             FAQ
@@ -54,10 +57,12 @@ const LandingFaq = () => {
       <div className="flex flex-col gap-3">
         {faqs.map((faq, index) => {
           const isOpen = openIndex === index;
+          const panelId = `faq-panel-${index}`;
 
           return (
             <div
               key={faq.question}
+              data-reveal-item
               className={`rounded-2xl p-5 transition-colors ${
                 isOpen ? "bg-[#3F73DC] text-white" : "bg-neutral-50 text-neutral-900"
               }`}
@@ -65,11 +70,13 @@ const LandingFaq = () => {
               <button
                 type="button"
                 onClick={() => toggle(index)}
+                aria-expanded={isOpen}
+                aria-controls={panelId}
                 className="flex w-full items-center justify-between gap-4 text-left"
               >
                 <span className="text-sm font-medium">{faq.question}</span>
                 <span
-                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-colors ${
                     isOpen ? "bg-white text-[#3F73DC]" : "bg-neutral-900 text-white"
                   }`}
                 >
@@ -77,11 +84,18 @@ const LandingFaq = () => {
                 </span>
               </button>
 
-              {isOpen && (
-                <p className="mt-3 max-w-2xl text-xs text-white/80">
-                  {faq.answer}
-                </p>
-              )}
+              <div
+                id={panelId}
+                className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
+                  isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <p className="mt-3 max-w-2xl text-xs text-white/80">
+                    {faq.answer}
+                  </p>
+                </div>
+              </div>
             </div>
           );
         })}

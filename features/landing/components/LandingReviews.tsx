@@ -1,35 +1,37 @@
-import { Quote } from "lucide-react";
-
 const reviews = [
   {
-    tag: "2024 • May trip",
-    text: "The trip exceeded my expectations. The trails were breathtaking and the guides were friendly and very supportive.",
-    name: "Sam Walker",
-    role: "Photographer",
-    highlight: true,
+    name: "Mariana Ruiz",
+    role: "Owner, Café Nube",
+    quote:
+      "We used to close the day with three different spreadsheets. Now every branch reports to the same place and the numbers finally match.",
   },
   {
-    tag: "2024 • June trip",
-    text: "As a solo traveler, I was nervous at first, but the welcoming atmosphere made me feel at home from day one.",
-    name: "Riley Evans",
-    role: "Designer",
-    highlight: false,
+    name: "Diego Salas",
+    role: "Operations lead, Ferretería Sur",
+    quote:
+      "Setting up our branches and employees took one afternoon. The team was selling through the system the next morning.",
   },
   {
-    tag: "2024 • August trip",
-    text: "This retreat was a profound journey: exploration, nature and adventure fostered deep connection with myself.",
-    name: "Olivia Carter",
-    role: "Dancer",
-    highlight: false,
+    name: "Ana Villalobos",
+    role: "Manager, Distribuidora Mar",
+    quote:
+      "Having inventory and sales synchronized removed most of the manual errors we were fixing every single week.",
   },
 ];
 
 const LandingReviews = () => {
   return (
-    <section id="reviews" className="flex flex-col items-center gap-8 py-10">
-      <div className="flex flex-col items-center gap-2 text-center">
-        <span className="rounded-full bg-neutral-100 px-3 py-0.5 text-[10px] text-neutral-500">
-          Reviews
+    <section
+      id="reviews"
+      data-reveal
+      className="flex scroll-mt-28 flex-col items-center gap-8 py-10"
+    >
+      <div
+        data-reveal-item
+        className="flex flex-col items-center gap-2 text-center"
+      >
+        <span className="rounded-2xl bg-neutral-100 px-4 py-1 text-sm text-primary/70">
+          Who we are?
         </span>
         <h2 className="text-3xl font-medium">
           What our <span className="text-[#3F73DC]">customers feel</span>
@@ -42,46 +44,35 @@ const LandingReviews = () => {
         </p>
       </div>
 
-      <div className="grid w-full gap-3 md:grid-cols-3">
-        {reviews.map((review) => (
-          <div
-            key={review.name}
-            className={`flex min-h-[260px] flex-col justify-between gap-6 rounded-2xl p-5 ${
-              review.highlight ? "bg-[#3F73DC] text-white" : "bg-neutral-50 text-neutral-900"
-            }`}
+      <div className="grid w-full gap-4 md:grid-cols-3">
+        {reviews.map(({ name, role, quote }) => (
+          <figure
+            key={name}
+            data-reveal-item
+            className="flex h-full flex-col justify-between gap-6 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-neutral-100"
           >
-            <div className="flex flex-col gap-3">
-              <span
-                className={`w-fit rounded-full px-2.5 py-0.5 text-[10px] ${
-                  review.highlight ? "bg-white/20" : "bg-white text-neutral-500"
-                }`}
-              >
-                {review.tag}
-              </span>
-              <p className={`text-xs ${review.highlight ? "text-white/90" : "text-neutral-600"}`}>
-                {review.text}
-              </p>
-            </div>
+            <blockquote className="text-sm leading-relaxed text-neutral-700">
+              &ldquo;{quote}&rdquo;
+            </blockquote>
 
-            <div className="flex items-end justify-between">
-              <div className="flex items-center gap-2">
-                <div
-                  className={`flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-medium ${
-                    review.highlight ? "bg-white/20" : "bg-[#CFE6FB] text-[#3F73DC]"
-                  }`}
-                >
-                  {review.name.charAt(0)}
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xs font-medium">{review.name}</span>
-                  <span className={`text-[10px] ${review.highlight ? "text-white/70" : "text-neutral-500"}`}>
-                    {review.role}
-                  </span>
-                </div>
-              </div>
-              <Quote size={18} className={review.highlight ? "text-white" : "text-[#3F73DC]"} />
-            </div>
-          </div>
+            <figcaption className="flex items-center gap-3">
+              <span
+                aria-hidden
+                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-sm font-semibold text-neutral-600"
+              >
+                {name
+                  .split(" ")
+                  .map((part) => part[0])
+                  .join("")}
+              </span>
+              <span className="flex flex-col">
+                <span className="text-sm font-semibold text-neutral-900">
+                  {name}
+                </span>
+                <span className="text-xs text-neutral-500">{role}</span>
+              </span>
+            </figcaption>
+          </figure>
         ))}
       </div>
     </section>
