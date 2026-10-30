@@ -50,11 +50,12 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
             },
             );
 
-            toast.success("Compañía actualizada correctamente");
+            toast.success(t("notifications.success"));
         },
 
         onError: async (e) => {
-            console.error("e");
+            toast.error(t("notifications.error"));
+            console.log("Error: ", e);
         }
     })
 
@@ -113,7 +114,7 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
         const foto_url = formData.foto_url;
 
         if (!name || !address) {
-            console.log("No")
+            toast.error(t("notifications.requiredFields"));
             return;
         }
 
@@ -205,8 +206,12 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
           <div className="flex justify-end">
             <button
               type="button"
+              disabled={isPending}
               onClick={() => fileInputRef.current?.click()}
-              className="flex cursor-pointer items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium hover:bg-neutral-50 transition-colors"
+              className={`flex items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2 font-medium transition-colors duration-200 ease-in-out ${isPending
+                ? 'bg-neutral-50 cursor-not-allowed'
+                : 'hover:bg-neutral-50 cursor-pointer'
+              }`}
             >
               <Upload size={16} />
               {t("logo.uploadButton")}
@@ -219,7 +224,7 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <label htmlFor="name" className="font-medium">
-                {t("fields.name.label")}
+                {t("fields.name.label")} *
               </label>
               <p className="text-sm text-neutral-500">
                 {t("fields.name.hint")}
@@ -240,7 +245,7 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <label htmlFor="address" className="font-medium">
-                {t("fields.address.label")}
+                {t("fields.address.label")} *
               </label>
               <p className="text-sm text-neutral-500">
                 {t("fields.address.hint")}
@@ -287,8 +292,9 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
       <div className="flex justify-end border-t border-neutral-200 pt-6">
         <motion.button
           type="submit"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.9 }}
+          disabled={isPending}
+          whileHover={{ scale: isPending ? 1 : 1.02 }}
+          whileTap={{ scale: isPending ? 1: 0.9 }}
           transition={{
             type: "spring",
             stiffness: 300,
@@ -296,7 +302,10 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
             duration: 0.2,
             ease: "easeInOut",
           }}
-          className="flex cursor-pointer items-center gap-2 rounded-lg bg-cyan-400 px-4 py-2 text-sm font-medium text-white shadow-sm"
+          className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white shadow-sm ${isPending
+            ? 'bg-neutral-600 cursor-not-allowed'
+            : 'cursor-pointer bg-cyan-400'
+          }`}
         >
           <Save size={16} />
           {t("submitButton")}

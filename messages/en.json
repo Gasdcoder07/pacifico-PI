@@ -424,7 +424,13 @@
           "placeholder": "e.g. We specialize in selling tech products and services..."
         }
       },
-      "submitButton": "Save changes"
+      "notifications": {
+        "success": "Company updated successfully",
+        "error": "An error occurred while updating the company",
+        "requiredFields": "Please complete all required fields"
+    },
+    "submitButton": "Save changes",
+    "submittingButton": "Saving changes..."
     }
   },
   "SalesPage": {
