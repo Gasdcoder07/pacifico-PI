@@ -145,7 +145,7 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                         WebkitBackdropFilter: "blur(0px) saturate(100%)",
                     },
                     {
-                        backgroundColor: "rgba(21, 113, 149, 0.55)",
+                        backgroundColor: "rgba(21, 113, 149, 0.5)",
                         borderColor: "rgba(255, 255, 255, 0.25)",
                         boxShadow: "0 10px 30px rgba(8, 47, 73, 0.15)",
                         backdropFilter: "blur(16px) saturate(150%)",

@@ -10,13 +10,10 @@ const LandingContact = () => {
     <section
       id="contacts"
       data-reveal
-      className="scroll-mt-28 rounded-2xl bg-[#CFE6FB] px-6 py-16 md:px-12 md:py-24"
+      className="scroll-mt-28 rounded-2xl bg-neutral-200 px-6 py-16 md:px-12 md:py-24"
     >
       <div className="mx-auto grid w-full max-w-6xl gap-10 md:grid-cols-[1fr_1.4fr]">
         <div data-reveal-item className="flex flex-col justify-center gap-4">
-          <span className="w-fit rounded-full bg-white/70 px-4 py-1 text-sm text-neutral-500">
-            Contacts
-          </span>
           <h2 className="text-3xl font-bold leading-tight tracking-tight text-neutral-900 md:text-4xl lg:text-5xl">
             Ready to organize <span className="text-[#3F73DC]">your company?</span>
           </h2>

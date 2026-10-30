@@ -92,7 +92,7 @@ export const LandingQuotes = () => {
       id="reviews"
       data-reveal
       aria-labelledby="reviews-heading"
-      className="scroll-mt-8 py-12 lg:py-16"
+      className="py-12 lg:py-16"
     >
       <div data-reveal-item className="flex flex-col gap-4">
         <QuoteRow items={QUOTES} duration={40} />
