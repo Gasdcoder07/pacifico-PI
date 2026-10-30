@@ -1,4 +1,5 @@
-const temp = [1, 2, 3, 4];
+import { LandingQuotes } from "./CarrouselQuotes";
+import { LandingCarrousel } from "./LandingCarrousel";
 
 const LandingFaq = () => {
   return (
@@ -15,18 +16,10 @@ const LandingFaq = () => {
         >
           People say about us...
         </span>
-
-        <div className="grid w-full grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {temp.map((item) => (
-            <div
-              key={item}
-              data-reveal-item
-              className="flex min-h-64 flex-col gap-2 rounded-2xl bg-linear-to-b from-neutral-100 to-neutral-50 p-6"
-            >
-              <h3 className="text-lg font-semibold text-neutral-900">Elon Musk</h3>
-              <p className="italic">{'"Cada vez que pienso me doy cuenta donde estoy y en que momento nunca supe bien por que ni en que momento me empezo a ganar a mi este sentimiento."'}</p>
-            </div>
-          ))}
+        <h1 className="text-5xl font-bold">Loved by the <span className="bg-linear-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">community</span></h1>
+        <p>See what people are saying about PACIFICO</p>
+        <div className="w-full gap-8">
+          <LandingQuotes />
         </div>
       </div>
     </section>

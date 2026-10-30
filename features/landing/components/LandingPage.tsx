@@ -17,7 +17,7 @@ const LandingPage = () => {
         <div data-anim="nav" className="invisible fixed inset-x-4 top-4 z-50">
           <div
             data-anim="nav-shell"
-            className="rounded-2xl px-6 py-2 backdrop-blur-md transition-shadow"
+            className="rounded-2xl px-6 py-2 backdrop-blur-md transition-shadow mx-4"
           >
             <LandingNavbar />
           </div>
