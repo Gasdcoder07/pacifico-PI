@@ -175,18 +175,23 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                     const items = Array.from(
                         section.querySelectorAll<HTMLElement>("[data-reveal-item]"),
                     );
+                    const targets = items.length ? items : [section];
 
-                    gsap.from(items.length ? items : [section], {
-                        autoAlpha: 0,
-                        y: 32,
-                        duration: 0.7,
-                        ease: "power3.out",
-                        stagger: 0.12,
-                        scrollTrigger: {
-                            trigger: section,
-                            start: "top 85%",
-                            once: true,
-                        },
+                    gsap.set(targets, { autoAlpha: 0, y: 32 });
+
+                    ScrollTrigger.create({
+                        trigger: section,
+                        start: "clamp(top 85%)",
+                        once: true,
+                        onEnter: () =>
+                            gsap.to(targets, {
+                                autoAlpha: 1,
+                                y: 0,
+                                duration: 0.7,
+                                ease: "power3.out",
+                                stagger: 0.12,
+                                overwrite: "auto",
+                            }),
                     });
                 });
 
@@ -198,6 +203,7 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                     fallback.kill();
                     image.removeEventListener("load", startIntro);
                     image.removeEventListener("error", startIntro);
+                    ScrollTrigger.refresh();
 
                     if (window.scrollY > 0) {
                         intro.progress(1);
