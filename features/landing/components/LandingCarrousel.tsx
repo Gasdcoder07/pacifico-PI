@@ -25,18 +25,26 @@ const technologies = [
 
 export const LandingCarrousel = () => {
   return (
-    <div className="flex flex-row flex-wrap items-center gap-8">
+    <ul className="flex flex-row flex-wrap items-center gap-8">
       {technologies.map((item) => (
-        <div key={item.id} className="flex flex-row items-center gap-2">
+        <li
+          key={item.id}
+          data-reveal-item
+          className="flex flex-row items-center gap-2 transition-transform duration-300 hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+        >
           <img
             src={item.icon}
             alt=""
-            aria-hidden
-            className="size-8 object-contain transition-transform hover:scale-105"
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+            width={32}
+            height={32}
+            className="size-8 object-contain transition-transform duration-300 hover:scale-110 motion-reduce:transition-none motion-reduce:hover:scale-100"
           />
           <span className="text-sm text-neutral-700">{item.name}</span>
-        </div>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 };

@@ -26,6 +26,9 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
             const title = get("title")
             const after = get("after")
             const titleItems = Array.from(title.children)
+            const navItems = Array.from(
+                nav.querySelectorAll<HTMLElement>('[data-anim="nav-item"]'),
+            )
             const revealSections = Array.from(
                 root.querySelectorAll<HTMLElement>("[data-reveal]"),
             )
@@ -44,7 +47,7 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
 
                 if (reduce) {
                     gsap.set(imageWrap, { clipPath: "inset(0% 0% 0% 0%)" });
-                    gsap.set([nav, ...titleItems], { autoAlpha: 1, y: 0 });
+                    gsap.set([nav, ...navItems, ...titleItems], { autoAlpha: 1, y: 0 });
                     gsap.set(frame, { height: SHRUNK_HEIGHT });
                     gsap.set(image, { y: IMAGE_SHIFT });
                     gsap.set(navShell, {
@@ -64,6 +67,7 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
 
                 gsap.set(titleItems, { autoAlpha: 0, y: 24 });
                 gsap.set(nav, { autoAlpha: 0, y: -16 });
+                gsap.set(navItems, { autoAlpha: 0, y: -8 });
 
                 let titleLinked = false;
 
@@ -99,6 +103,12 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                     )
                     .fromTo(image, { scale: 1.12 }, { scale: 1, duration: 1.6, ease: "expo.out" }, 0)
                     .fromTo(nav, { autoAlpha: 0, y: -16 }, { autoAlpha: 1, y: 0, duration: 0.6 }, 0.75)
+                    .fromTo(
+                        navItems,
+                        { autoAlpha: 0, y: -8 },
+                        { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.08 },
+                        0.85,
+                    )
                     .fromTo(
                         titleItems,
                         { autoAlpha: 0, y: 24 },

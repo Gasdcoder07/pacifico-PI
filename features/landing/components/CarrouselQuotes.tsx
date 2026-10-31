@@ -50,13 +50,13 @@ const QUOTES: QuoteItem[] = [
 
 const QuoteRow = ({ items, reverse = false, duration = 40 }: QuoteRowProps) => {
   const track = (hidden: boolean) =>
-    items.map((item) => (
+    items.map((item, index) => (
       <li
-        key={`${item.author}-${hidden ? "b" : "a"}`}
+        key={`${hidden ? "b" : "a"}-${index}-${item.author}`}
         aria-hidden={hidden}
         className="w-80 shrink-0"
       >
-        <figure className="flex h-full min-h-64 flex-col justify-between gap-2 rounded-2xl bg-linear-to-b from-neutral-100 to-neutral-50 p-6 shadow-sm transition-transform hover:scale-105">
+        <figure className="flex h-full min-h-64 flex-col justify-between gap-2 rounded-2xl bg-linear-to-b from-neutral-100 to-neutral-50 p-6 shadow-sm transition-transform duration-300 hover:scale-105 motion-reduce:transition-none motion-reduce:hover:scale-100">
           <span aria-hidden="true" className="text-6xl font-extrabold leading-none text-neutral-400">
             &ldquo;
           </span>
@@ -75,7 +75,7 @@ const QuoteRow = ({ items, reverse = false, duration = 40 }: QuoteRowProps) => {
       style={{ "--marquee-duration": `${duration}s` } as CSSProperties}
     >
       <ul
-        className={`flex w-max gap-4 pr-4 ${
+        className={`flex w-max gap-4 pr-4 motion-reduce:animate-none ${
           reverse ? "animate-marquee-reverse" : "animate-marquee"
         }`}
       >
@@ -88,16 +88,11 @@ const QuoteRow = ({ items, reverse = false, duration = 40 }: QuoteRowProps) => {
 
 export const LandingQuotes = () => {
   return (
-    <section
-      id="reviews"
-      data-reveal
-      aria-labelledby="reviews-heading"
-      className="py-12 lg:py-16"
-    >
-      <div data-reveal-item className="flex flex-col gap-4">
+    <div className="py-12 lg:py-16">
+      <div className="flex flex-col gap-4">
         <QuoteRow items={QUOTES} duration={40} />
         <QuoteRow items={[...QUOTES].reverse()} duration={46} reverse />
       </div>
-    </section>
+    </div>
   );
 };

@@ -1,5 +1,4 @@
 import { LandingQuotes } from "./CarrouselQuotes";
-import { LandingCarrousel } from "./LandingCarrousel";
 
 const LandingFaq = () => {
   return (
@@ -16,9 +15,20 @@ const LandingFaq = () => {
         >
           People say about us...
         </span>
-        <h1 className="text-5xl font-bold">Loved by the <span className="bg-linear-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">community</span></h1>
-        <p>See what people are saying about PACIFICO</p>
-        <div className="w-full gap-8">
+        <h2
+          id="reviews-heading"
+          data-reveal-item
+          className="text-5xl font-bold"
+        >
+          Loved by the{" "}
+          <span className="bg-linear-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">
+            community
+          </span>
+        </h2>
+        <p data-reveal-item>
+          See what people are saying about PACIFICO
+        </p>
+        <div data-reveal-item className="w-full gap-8">
           <LandingQuotes />
         </div>
       </div>

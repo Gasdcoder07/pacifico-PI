@@ -28,21 +28,22 @@ export default function LandingHero() {
               alt="Team working with disconnected business data"
               fill
               sizes="(min-width: 768px) 50vw, 100vw"
-              className="object-cover"
+              className="object-cover transition-transform duration-700 hover:scale-105 motion-reduce:transition-none motion-reduce:hover:scale-100"
             />
           </div>
 
-          <div
-            data-reveal-item
-            className="flex flex-col items-center gap-4 md:items-start md:text-left"
-          >
+          <div className="flex flex-col items-center gap-4 md:items-start md:text-left">
             <h2
               id="landing-hero-title"
+              data-reveal-item
               className="text-balance text-3xl font-bold leading-tight tracking-tight text-neutral-900 md:text-4xl lg:text-5xl"
             >
               Human error, synchronization errors, decentralized data
             </h2>
-            <p className="max-w-md text-base text-neutral-600 md:text-lg">
+            <p
+              data-reveal-item
+              className="max-w-md text-base text-neutral-600 md:text-lg"
+            >
               These are among the biggest day-to-day operational challenges
               faced by small and medium sized enterprises.
             </p>

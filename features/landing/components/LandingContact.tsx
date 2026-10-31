@@ -47,6 +47,7 @@ const LandingContact = () => {
               <Image
                 src="/pacifico-logo.svg"
                 alt=""
+                aria-hidden="true"
                 width={48}
                 height={48}
                 className="h-12 w-12"
@@ -65,13 +66,13 @@ const LandingContact = () => {
             </h3>
             <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
               {AUTHORS.map((author) => (
-                <li key={author.gh}>
+                <li key={author.gh} data-reveal-item>
                   <Link
                     href={author.gh}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${author.name} on GitHub`}
-                    className="flex items-center gap-2 rounded-2xl bg-white p-3 text-neutral-700 transition-all hover:-translate-y-0.5 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+                    className="flex items-center gap-2 rounded-2xl bg-white p-3 text-neutral-700 transition-all duration-200 hover:-translate-y-0.5 hover:text-cyan-700 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                   >
                     <FaGithub aria-hidden="true" className="shrink-0" />
                     <span className="truncate text-xs font-medium">

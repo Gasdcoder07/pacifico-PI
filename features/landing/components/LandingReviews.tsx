@@ -24,10 +24,13 @@ const LandingReviews = () => {
           </p>
         </div>
 
-        <hr className="border-neutral-200" />
+        <hr data-reveal-item className="border-neutral-200" />
 
-        <div data-reveal-item className="flex flex-col items-start gap-4">
-          <h3 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
+        <div className="flex flex-col items-start gap-4">
+          <h3
+            data-reveal-item
+            className="text-sm font-medium uppercase tracking-wide text-neutral-500"
+          >
             Built with
           </h3>
           <LandingCarrousel />
@@ -38,9 +41,9 @@ const LandingReviews = () => {
             href="https://github.com/Gasdcoder07/pacifico-PI"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-6 py-2.5 text-sm font-medium text-neutral-900 shadow-sm transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+            className="group inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-6 py-2.5 text-sm font-medium text-neutral-900 shadow-sm transition-transform duration-200 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 motion-reduce:transition-none motion-reduce:hover:scale-100"
           >
-            <FaGithub aria-hidden="true" color="black" />
+            <FaGithub aria-hidden="true" color="black" className="transition-transform duration-200 group-hover:rotate-12" />
             Support the repository
           </Link>
         </div>
