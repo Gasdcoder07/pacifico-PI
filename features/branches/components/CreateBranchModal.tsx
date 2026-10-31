@@ -131,8 +131,8 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
   return (
     <ModalLayout isOpen={isOpen} onClose={handleClose} title={t("title")} width="max-w-4xl">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-sm">
-        <div className="flex gap-4">
-            <div className="w-2/5 flex flex-col items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 p-4">
+        <div className="flex gap-6">
+            <div className="w-2/5 flex flex-col items-center gap-2">
                 <span className="self-start font-medium text-neutral-600">
                     {t("image.label")}
                 </span>
@@ -148,7 +148,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                     className="absolute inset-0 h-full w-full object-cover"
                     />
                     ) : (
-                    <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-100 text-neutral-400">
+                    <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-50 text-neutral-400">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"

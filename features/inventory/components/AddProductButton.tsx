@@ -23,7 +23,7 @@ const AddProductButton = () => {
           duration: 0.2,
           ease: "easeInOut",
         }}
-        className="flex cursor-pointer items-center gap-1 rounded-lg bg-cyan-400 p-4 py-2 text-sm font-medium text-white shadow-sm"
+        className="shrink-0 flex cursor-pointer justify-center items-center gap-2 rounded-lg bg-cyan-400 px-4 py-2 text-sm font-medium text-white shadow-sm"
       >
         <Plus size={20} className="shrink-0" />
         <span>{t("label")}</span>

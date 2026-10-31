@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
+import { Edit, Ellipsis, Trash } from "lucide-react";
+
+import { menuVariants, itemVariants } from "@/shared/animations/dropdown.animations";
 import { getProducts } from "@/features/sell/services/product.service";
 import { Product } from "@/features/sell/types/product";
-import { Edit, Ellipsis, Trash } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
 
 const InventoryTable = () => {
@@ -200,25 +202,39 @@ export const DropdownActionButton = () => {
       >
         <Ellipsis size={20} />
       </motion.button>
-
-      {open && (
-        <div className="absolute -top-12 right-0 z-10 flex w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-sm">
-          <button
-            onClick={() => setOpen(false)}
-            className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-gray-100"
-          >
-            <Edit size={18} />
-            <span>{t("edit")}</span>
-          </button>
-          <button
-            onClick={() => setOpen(false)}
-            className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-red-50 hover:text-red-600"
-          >
-            <Trash size={18} />
-            <span>{t("delete")}</span>
-          </button>
-        </div>
-      )}
+        <AnimatePresence>
+            {open && (
+                <motion.div
+                    variants={menuVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    className="absolute -top-12 right-0 z-10 flex w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-sm">
+                    <motion.div variants={itemVariants} className="flex flex-col gap-2">
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ type: "spring", bounce: 0.5 }}
+                            onClick={() => setOpen(false)}
+                            className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-gray-100"
+                        >
+                            <Edit size={18} />
+                            <span>{t("edit")}</span>
+                        </motion.button>
+                        <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ type: "spring", bounce: 0.5 }}
+                            onClick={() => setOpen(false)}
+                            className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 transition-colors duration-200 ease-in-out hover:bg-red-50 text-red-600"
+                        >
+                            <Trash size={18} />
+                            <span>{t("delete")}</span>
+                        </motion.button>
+                    </motion.div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     </div>
   );
 };

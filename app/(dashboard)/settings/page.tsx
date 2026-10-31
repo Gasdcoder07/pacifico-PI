@@ -1,5 +1,11 @@
-import CompanyForm from "@/features/settings/CompanyForm";
+import CompanyFormContainer from "@/features/settings/components/CompanyFormContainer";
+import { Metadata } from "next";
 import { useTranslations } from "next-intl";
+
+export const metadata: Metadata = {
+    title: "Pacífico - Empresa",
+    description: "Gestiona tu empresa",
+};
 
 const Page = () => {
   const t = useTranslations("SettingsPage");
@@ -15,7 +21,7 @@ const Page = () => {
         </p>
       </div>
 
-      <CompanyForm />
+      <CompanyFormContainer />
     </section>
   );
 };

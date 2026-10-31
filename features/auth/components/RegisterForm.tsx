@@ -246,7 +246,7 @@ const RegisterForm = () => {
                     </div>
                     <div className="flex flex-row justify-center">
                         <button type="button" className="cursor-pointer" onClick={() => setShowModal(true)}>
-                            <p className="text-neutral-500 text-xs hover:text-neutral-700 hover:-translate-y-0.5 transition-all">Ver términos y condiciones</p>
+                            <p className="text-neutral-500 text-xs hover:text-cyan-600 transition-all duration-200 ease-in-out font-medium">{t("viewTermsAndConditions")}</p>
                         </button>
                     </div>
                 </section>
