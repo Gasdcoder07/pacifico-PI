@@ -77,7 +77,7 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
 
   return (
     <tr>
-      <td className="px-4 py-3 text-xs text-neutral-600 whitespace-nowrap">
+      <td className="px-4 py-3 text-xs text-neutral-600 whitespace-nowrap overflow-auto scroll-auto">
         #{product.inventario_id}
       </td>
       <td title={product.name} className="px-4 py-3">

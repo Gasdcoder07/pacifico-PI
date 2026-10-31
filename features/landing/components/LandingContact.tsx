@@ -1,58 +1,90 @@
-const fields = [
-  { id: "firstName", label: "First name", type: "text", placeholder: "First name" },
-  { id: "lastName", label: "Last name", type: "text", placeholder: "Last name" },
-  { id: "email", label: "Email", type: "email", placeholder: "Email" },
-  { id: "phone", label: "Phone", type: "tel", placeholder: "Phone" },
+import Image from "next/image";
+import Link from "next/link";
+import { FaGithub } from "react-icons/fa";
+
+interface Author {
+  name: string;
+  gh: string;
+}
+
+const AUTHORS: Author[] = [
+  { name: "Greco Serna", gh: "https://github.com/Gasdcoder07" },
+  { name: "Valentín Vaca", gh: "https://github.com/valent-x7" },
+  { name: "Manuel Martínez", gh: "https://github.com/IsahitMartinez" },
+  { name: "Nelvín Frías", gh: "https://github.com/nelvinfrias" },
+  { name: "Brian Sebastián", gh: "https://github.com/BSebastian-IS" },
+  { name: "Ángel Arres", gh: "https://github.com/4NGEL3MANUEL" },
 ];
 
 const LandingContact = () => {
   return (
     <section
       id="contacts"
-      className="grid gap-6 rounded-3xl bg-[#CFE6FB] p-6 md:grid-cols-[1fr_1.4fr] md:p-10"
+      data-reveal
+      aria-labelledby="contacts-heading"
+      className="scroll-mt-28 rounded-2xl bg-neutral-100 px-6 py-12 md:px-12 lg:px-24 lg:py-20"
     >
-      <div className="flex flex-col justify-center gap-3">
-        <span className="w-fit rounded-full bg-white/70 px-3 py-0.5 text-[10px] text-neutral-500">
-          Contacts
-        </span>
-        <h2 className="text-3xl font-medium">
-          Ready for your <span className="text-[#3F73DC]">adventure?</span>
-        </h2>
-        <p className="max-w-xs text-xs text-neutral-600">
-          Leave your details and we will get in touch to help you plan your
-          next trip.
-        </p>
+      <div className="mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-2 lg:gap-16">
+        <div data-reveal-item className="flex flex-col justify-center gap-4">
+          <h2
+            id="contacts-heading"
+            className="text-3xl font-bold leading-tight tracking-tight text-neutral-900 md:text-4xl lg:text-5xl"
+          >
+            Ready to organize{" "}
+            <span className="bg-linear-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">
+              your company?
+            </span>
+          </h2>
+          <p className="max-w-md text-base text-neutral-600 md:text-lg">
+            Leave your details and we will get in touch to help you set up your
+            branches and your team.
+          </p>
+        </div>
+
+        <div data-reveal-item className="flex flex-col gap-6">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <Image
+                src="/pacifico-logo.svg"
+                alt=""
+                aria-hidden="true"
+                width={48}
+                height={48}
+                className="h-12 w-12"
+              />
+              <p className="text-2xl font-bold text-neutral-900">PACIFICO</p>
+            </div>
+            <p className="max-w-md text-sm text-neutral-600 md:text-base">
+              Easy management of complex operations through software and
+              centralized data.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-3 border-t border-neutral-200 pt-6">
+            <h3 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
+              Authors
+            </h3>
+            <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
+              {AUTHORS.map((author) => (
+                <li key={author.gh} data-reveal-item>
+                  <Link
+                    href={author.gh}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${author.name} on GitHub`}
+                    className="flex items-center gap-2 rounded-2xl bg-white p-3 text-neutral-700 transition-all duration-200 hover:-translate-y-0.5 hover:text-cyan-700 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                  >
+                    <FaGithub aria-hidden="true" className="shrink-0" />
+                    <span className="truncate text-xs font-medium">
+                      {author.name}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
-
-      <form className="grid gap-3 sm:grid-cols-2">
-        {fields.map((field) => (
-          <label key={field.id} className="flex flex-col gap-1">
-            <span className="text-[10px] text-neutral-500">{field.label}</span>
-            <input
-              id={field.id}
-              type={field.type}
-              placeholder={field.placeholder}
-              className="rounded-xl bg-white px-4 py-3 text-xs outline-none placeholder:text-neutral-400 focus:ring-2 focus:ring-[#3F73DC]"
-            />
-          </label>
-        ))}
-
-        <label className="flex flex-col gap-1 sm:col-span-2">
-          <span className="text-[10px] text-neutral-500">Message</span>
-          <textarea
-            rows={4}
-            placeholder="Tell us about your plans"
-            className="resize-none rounded-xl bg-white px-4 py-3 text-xs outline-none placeholder:text-neutral-400 focus:ring-2 focus:ring-[#3F73DC]"
-          />
-        </label>
-
-        <button
-          type="button"
-          className="rounded-full bg-neutral-900 px-6 py-3 text-xs text-white hover:bg-neutral-800 sm:col-span-2 sm:w-fit"
-        >
-          Send message
-        </button>
-      </form>
     </section>
   );
 };

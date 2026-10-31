@@ -1,58 +1,55 @@
 import Image from "next/image";
+import CursorFollower from "./CursorFollower";
 
-const stats = [
-  { value: "10k+", label: "Happy customers", highlight: true },
-  { value: "1k+", label: "Wonderful adventures", highlight: false },
-  { value: "10+", label: "Waterfalls were visited", highlight: false },
-];
-
-const LandingHero = () => {
+export default function LandingHero() {
   return (
-    <section className="grid gap-3 rounded-3xl bg-[#CFE6FB] p-3 lg:grid-cols-[1.2fr_1fr]">
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-1 flex-col justify-center gap-4 rounded-2xl bg-white p-8">
-          <h1 className="text-5xl font-medium leading-tight">
-            Adventure <br /> of your lifetime
-          </h1>
-          <p className="max-w-md text-xs text-neutral-600">
-            Explore scenic trails to magnificent waterfalls, surrounded by lush
-            landscapes that invigorate your senses.
-          </p>
-          <div className="flex gap-2">
-            <button className="rounded-full bg-neutral-900 px-4 py-2 text-xs text-white">
-              Reserve a spot
-            </button>
-            <button className="rounded-full border border-neutral-300 px-4 py-2 text-xs">
-              Get a consultation
-            </button>
+    <section
+      aria-labelledby="landing-hero-title"
+      data-reveal
+      className="relative scroll-mt-28 px-6 py-16 md:px-12 md:py-24"
+    >
+      <CursorFollower />
+
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-10 text-center">
+        <span
+          data-reveal-item
+          className="w-fit rounded-full bg-neutral-100 px-4 py-1 text-sm text-primary/70"
+        >
+          What do we solve?
+        </span>
+
+        <div className="grid w-full grid-cols-1 items-center gap-8 md:grid-cols-2">
+          <div
+            data-reveal-item
+            className="relative aspect-4/3 w-full overflow-hidden rounded-2xl md:aspect-auto md:h-full md:min-h-96"
+          >
+            <Image
+              src="/3.jpg"
+              alt="Team working with disconnected business data"
+              fill
+              sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-cover transition-transform duration-700 hover:scale-105 motion-reduce:transition-none motion-reduce:hover:scale-100"
+            />
           </div>
-        </div>
 
-        <div className="grid grid-cols-3 gap-3">
-          {stats.map((stat) => (
-            <div
-              key={stat.value}
-              className={`flex flex-col gap-1 rounded-2xl p-4 ${
-                stat.highlight ? "bg-[#3F73DC] text-white" : "bg-[#E3F0FC] text-[#3F73DC]"
-              }`}
+          <div className="flex flex-col items-center gap-4 md:items-start md:text-left">
+            <h2
+              id="landing-hero-title"
+              data-reveal-item
+              className="text-balance text-3xl font-bold leading-tight tracking-tight text-neutral-900 md:text-4xl lg:text-5xl"
             >
-              <span className="text-2xl font-medium">{stat.value}</span>
-              <span className="text-[10px] opacity-80">{stat.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid min-h-[420px] grid-cols-2 gap-3">
-        <div className="relative overflow-hidden rounded-2xl">
-          <Image src="/auth_image.webp" alt="" fill sizes="(min-width: 1024px) 20vw, 50vw" className="object-cover object-left" />
-        </div>
-        <div className="relative overflow-hidden rounded-2xl">
-          <Image src="/auth_image.webp" alt="" fill sizes="(min-width: 1024px) 20vw, 50vw" className="object-cover object-right" />
+              Human error, synchronization errors, decentralized data
+            </h2>
+            <p
+              data-reveal-item
+              className="max-w-md text-base text-neutral-600 md:text-lg"
+            >
+              These are among the biggest day-to-day operational challenges
+              faced by small and medium sized enterprises.
+            </p>
+          </div>
         </div>
       </div>
     </section>
   );
-};
-
-export default LandingHero;
+}
