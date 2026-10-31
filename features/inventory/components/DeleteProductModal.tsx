@@ -13,6 +13,8 @@ interface DeleteProductModalProps {
 export const DeleteProductModal = ({ isOpen, onClose, productName }: DeleteProductModalProps) => {
     const t = useTranslations("InventoryPage.deleteProductModal");
     
+    
+
     return (
         <ModalLayout isOpen={isOpen} onClose={onClose}>
             <div className="flex flex-col gap-4 text-sm">
