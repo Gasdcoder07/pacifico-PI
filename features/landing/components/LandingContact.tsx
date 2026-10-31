@@ -1,60 +1,61 @@
-const fields = [
-  { id: "firstName", label: "First name", type: "text", placeholder: "First name" },
-  { id: "lastName", label: "Last name", type: "text", placeholder: "Last name" },
-  { id: "email", label: "Email", type: "email", placeholder: "Email" },
-  { id: "phone", label: "Phone", type: "tel", placeholder: "Phone" },
-];
+import { FaGithub } from "react-icons/fa";
+
+const authors = [
+  {
+    name: "Greco Serna",
+    gh: "https://github.com/Gasdcoder07"
+  }, {
+    name: "Valentín Vaca",
+    gh: "https://github.com/valent-x7"
+  }, {
+    name: "Manuel Martínez",
+    gh: "https://github.com/IsahitMartinez"
+  }, {
+    name: "Nelvín Frías",
+    gh: "https://github.com/nelvinfrias"
+  }, {
+    name: "Brian Sebastián",
+    gh: "https://github.com/BSebastian-IS"
+  }, {
+    name: "Ángel Arres",
+    gh: "https://github.com/4NGEL3MANUEL"
+  }
+]
+
 
 const LandingContact = () => {
   return (
     <section
       id="contacts"
       data-reveal
-      className="scroll-mt-28 rounded-2xl bg-neutral-200 px-6 py-16 md:px-12 md:py-24"
+      className="scroll-mt-28 rounded-2xl bg-neutral-100 px-6 py-16 md:px-12 md:py-24"
     >
-      <div className="mx-auto grid w-full max-w-6xl gap-10 md:grid-cols-[1fr_1.4fr]">
+      <div className="mx-auto grid w-full max-w-6xl gap-10 grid-cols-2">
         <div data-reveal-item className="flex flex-col justify-center gap-4">
           <h2 className="text-3xl font-bold leading-tight tracking-tight text-neutral-900 md:text-4xl lg:text-5xl">
-            Ready to organize <span className="text-[#3F73DC]">your company?</span>
+            Ready to organize <span className="bg-linear-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">your company?</span>
           </h2>
           <p className="max-w-md text-base text-neutral-600 md:text-lg">
             Leave your details and we will get in touch to help you set up your
             branches and your team.
           </p>
         </div>
-
-        <form data-reveal-item className="grid gap-4 sm:grid-cols-2">
-          {fields.map((field) => (
-            <label key={field.id} htmlFor={field.id} className="flex flex-col gap-2">
-              <span className="text-sm text-neutral-500">{field.label}</span>
-              <input
-                id={field.id}
-                name={field.id}
-                type={field.type}
-                placeholder={field.placeholder}
-                className="rounded-xl bg-white px-4 py-2.5 text-sm outline-none placeholder:text-neutral-400 focus:ring-2 focus:ring-[#3F73DC]"
-              />
-            </label>
-          ))}
-
-          <label htmlFor="message" className="flex flex-col gap-2 sm:col-span-2">
-            <span className="text-sm text-neutral-500">Message</span>
-            <textarea
-              id="message"
-              name="message"
-              rows={4}
-              placeholder="Tell us about your company"
-              className="resize-none rounded-xl bg-white px-4 py-2.5 text-sm outline-none placeholder:text-neutral-400 focus:ring-2 focus:ring-[#3F73DC]"
-            />
-          </label>
-
-          <button
-            type="button"
-            className="rounded-full bg-neutral-900 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-neutral-700 sm:col-span-2 sm:w-fit"
-          >
-            Send message
-          </button>
-        </form>
+        <div className="flex flex-col">
+          <div className="flex flex-row items-center gap-2">
+            <img src="/pacifico-logo.svg" alt="logo-footer" className="max-w-24" />
+            <h1 className="text-2xl font-bold">PACIFICO</h1>
+          </div>
+          <p className="">Easy management of complex operations through software and centralized data.</p>
+          <h3>Authors</h3>
+          <div className="gap-2 grid grid-cols-3">
+            {authors.map(author => (
+              <div key={author.name} className="bg-white rounded-2xl flex flex-row items-center p-2 gap-2">
+                <FaGithub />
+                <span className="text-xs">{author.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
