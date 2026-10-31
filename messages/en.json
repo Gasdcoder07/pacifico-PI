@@ -21,7 +21,8 @@
     "passwordsMismatch": "Passwords do not match.",
     "fillCompany": "Please fill in all company details.",
     "success": "Account created successfully",
-    "defaultError": "An error occurred during registration."
+    "defaultError": "An error occurred during registration.",
+    "viewTermsAndConditions": "View terms and conditions"
   },
   "Login": {
     "title": "Access your account",

@@ -85,7 +85,7 @@ export const LegalModal = ({
 
                                         <div className="flex items-center">
                                             <Dialog.Close asChild>
-                                            <button type="button" aria-label="Cerrar" className="grid h-8 w-8 place-items-center rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800">
+                                            <button type="button" aria-label="Cerrar" className="grid h-8 w-8 place-items-center rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer">
                                                 ✕
                                             </button>
                                             </Dialog.Close>

@@ -21,7 +21,8 @@
     "passwordsMismatch": "Las contraseñas no coinciden.",
     "fillCompany": "Completa todos los datos de la empresa.",
     "success": "Cuenta creada exitosamente",
-    "defaultError": "Ocurrió un error durante el registro."
+    "defaultError": "Ocurrió un error durante el registro.",
+    "viewTermsAndConditions": "Ver términos y condiciones"
   },
   "Login": {
     "title": "Accede a tu cuenta",
