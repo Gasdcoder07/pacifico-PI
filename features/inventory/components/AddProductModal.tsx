@@ -339,8 +339,8 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
                     </div>
                 </div>
 
-                <div className="flex flex-row justify-between gap-4">
-                    <div className="flex w-1/2 flex-1 min-w-0 flex-col gap-2">
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-1 min-w-0 flex-col gap-2">
                         <label className="font-medium text-neutral-600">
                         {t("fields.category.label")} *
                         </label>
@@ -358,7 +358,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
                         />
                     </div>
 
-                    <div className="flex w-1/2 flex-1 min-w-0 flex-col gap-2">
+                    <div className="flex flex-1 min-w-0 flex-col gap-2">
                         <label className="font-medium text-neutral-600">
                         {t("fields.branches.label")} *
                         </label>
