@@ -307,6 +307,12 @@
     "addProductButton": {
       "label": "Add Product"
     },
+    "deleteProductModal": {
+        "title": "Delete product",
+        "warningMessage": "This action cannot be undone. Are you sure you want to delete the product",
+        "cancelButton": "Keep product",
+        "confirmButton": "Delete product"
+    },
     "addProductModal": {
       "title": "Enter a new product",
       "image": {

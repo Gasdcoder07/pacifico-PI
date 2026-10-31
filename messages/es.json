@@ -307,6 +307,12 @@
     "addProductButton": {
       "label": "Agregar Producto"
     },
+    "deleteProductModal": {
+        "title": "Eliminar producto",
+        "warningMessage": "Esta acción no se puede deshacer. ¿Estás seguro de que quieres eliminar el producto",
+        "cancelButton": "Mantener producto",
+        "confirmButton": "Borrar producto"
+    },
     "addProductModal": {
       "title": "Ingresa un nuevo producto",
       "image": {

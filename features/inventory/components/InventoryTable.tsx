@@ -9,6 +9,7 @@ import { menuVariants, itemVariants } from "@/shared/animations/dropdown.animati
 import { getProducts } from "@/features/sell/services/product.service";
 import { Product } from "@/features/sell/types/product";
 import { useFormatter, useTranslations } from "next-intl";
+import { DeleteProductModal } from "./DeleteProductModal";
 
 const InventoryTable = () => {
   const t = useTranslations("InventoryPage.table");
@@ -115,7 +116,8 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
       </td>
       <td className="px-4 py-3">
         <div className="flex items-center justify-center gap-2">
-          <DropdownActionButton />
+          <DropdownActionButton
+            productName={product.name}/>
         </div>
       </td>
     </tr>
@@ -156,10 +158,12 @@ export const StockBadge = ({ quantity }: StockBadgeProps) => {
   );
 };
 
-export const DropdownActionButton = () => {
+export const DropdownActionButton = ({ productName } : {productName : string} ) => {
   const t = useTranslations("InventoryPage.table.actions");
   const containerRef = useRef<HTMLDivElement>(null);
+
   const [open, setOpen] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -225,7 +229,10 @@ export const DropdownActionButton = () => {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.95 }}
                             transition={{ type: "spring", bounce: 0.5 }}
-                            onClick={() => setOpen(false)}
+                            onClick={() => {
+                                setShowDeleteModal(true);
+                                setOpen(false);
+                            }}
                             className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 transition-colors duration-200 ease-in-out hover:bg-red-50 text-red-600"
                         >
                             <Trash size={18} />
@@ -235,6 +242,16 @@ export const DropdownActionButton = () => {
                 </motion.div>
             )}
         </AnimatePresence>
+
+        {
+            showDeleteModal && (
+                <DeleteProductModal
+                    isOpen={showDeleteModal}
+                    onClose={() => setShowDeleteModal(false)}
+                    productName={productName}
+                    />
+            )
+        }
     </div>
   );
 };
