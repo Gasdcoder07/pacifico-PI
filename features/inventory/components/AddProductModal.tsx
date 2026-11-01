@@ -418,80 +418,6 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
                             />
                         </div>
                     </div>
-
-                    {/* <div className="flex justify-between gap-4">
-                        <div className="flex w-1/2 flex-col gap-2">
-                            <label className="font-medium text-neutral-600">
-                            {t("fields.quantity.label")}
-                            </label>
-                            <input
-                            type="number"
-                            name="quantity"
-                            min={0}
-                            step={1}
-                            value={formData.quantity}
-                            onChange={handleInputChange}
-                            placeholder={t("fields.quantity.placeholder")}
-                            className={inputClass}
-                            />
-                        </div>
-
-                        <div className="flex w-1/2 flex-col gap-2">
-                            <label className="font-medium text-neutral-600">
-                            {t("fields.minStock.label")}
-                            </label>
-                            <input
-                            type="number"
-                            name="min_stock"
-                            min={0}
-                            step={1}
-                            value={formData.min_stock}
-                            onChange={handleInputChange}
-                            placeholder={t("fields.minStock.placeholder")}
-                            className={inputClass}
-                            />
-                        </div>
-                    </div> */}
-
-                    {/* <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-1 min-w-0 flex-col gap-2">
-                            <label className="font-medium text-neutral-600">
-                            {t("fields.category.label")} *
-                            </label>
-
-                            <Select
-                            maxMenuHeight={120}
-                            menuPlacement="auto"
-                            styles={customStyles}
-                            options={categories}
-                            getOptionLabel={(category: Category) => category.name}
-                            getOptionValue={(category: Category) => String(category.id)}
-                            value={selectedCategory}
-                            onChange={handleCategoryChange}
-                            placeholder={t("fields.category.placeholder")}
-                            />
-                        </div>
-
-                        <div className="flex flex-1 min-w-0 flex-col gap-2">
-                            <label className="font-medium text-neutral-600">
-                            {t("fields.branches.label")} *
-                            </label>
-
-                            <Select
-                            maxMenuHeight={120}
-                            menuPlacement="auto"
-                            isMulti
-                            isSearchable
-                            styles={customStyles}
-                            options={branches as any}
-                            getOptionLabel={(branch: any) => branch.name}
-                            getOptionValue={(branch: any) => String(branch.id)}
-                            value={selectedBranches}
-                            onChange={handleBranchesChange}
-                            placeholder={t("fields.branches.placeholder")}
-                            />
-                        </div>
-                    </div> */}
                 </div>
             </div>
             )
@@ -540,7 +466,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
                                     htmlFor={`quantity-${branchId}`}
                                     className="font-medium text-neutral-600"
                                 >
-                                    Stock inicial *
+                                    {t("fields.quantity.label")} *
                                 </label>
 
                                 <input
@@ -556,7 +482,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
                                         e.target.value
                                     )
                                     }
-                                    placeholder="Ej. 20"
+                                    placeholder={t("fields.quantity.placeholder")}
                                     className={inputClass}
                                 />
                                 </div>
@@ -566,7 +492,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
                                     htmlFor={`min-stock-${branchId}`}
                                     className="font-medium text-neutral-600"
                                 >
-                                    Stock mínimo
+                                    {t("fields.minStock.label")}
                                 </label>
 
                                 <input
@@ -582,7 +508,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
                                         e.target.value
                                     )
                                     }
-                                    placeholder="Ej. 5"
+                                    placeholder={t("fields.minStock.placeholder")}
                                     className={inputClass}
                                 />
                                 </div>
@@ -599,9 +525,9 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
             type="button"
             onClick={currentStep === 1 ? handleClose : handlePreviousStep}
             disabled={isCreating}
-            className="cursor-pointer rounded-lg border border-neutral-200 px-4 py-2 text-neutral-600 transition-colors duration-200 ease-in-out hover:bg-neutral-50 disabled:opacity-50"
+            className="cursor-pointer disabled:cursor-not-allowed rounded-lg border border-neutral-200 px-4 py-2 text-neutral-600 transition-colors duration-200 ease-in-out hover:bg-neutral-50 disabled:opacity-50"
             >
-                {currentStep === 1 ? t("actions.cancel") : "Atrás"}
+                {currentStep === 1 ? t("actions.cancel") : t("actions.back")}
             </button>
             
             {
@@ -611,7 +537,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
                         type="button"
                         onClick={handleNextStep}
                         className="rounded-lg px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out bg-cyan-400 hover:bg-cyan-500 cursor-pointer">
-                            Avanzar
+                            {t("actions.continue")}
                     </button>
                 ) : (
                     <button

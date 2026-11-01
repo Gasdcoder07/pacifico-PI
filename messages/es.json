@@ -355,6 +355,8 @@
       },
       "actions": {
         "cancel": "Cancelar",
+        "continue": "Continuar",
+        "back": "Volver",
         "submit": "Crear producto",
         "submitting": "Creando producto..."
       },
