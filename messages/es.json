@@ -63,6 +63,25 @@
     "users": "Usuarios",
     "settings": "Ajustes"
   },
+  "SellPage": {
+    "productCard": {
+        "outOfStock": "Sin stock",
+        "lowStock": "Stock bajo",
+        "inStock": "en stock"
+    },
+    "cartPanel":{
+        "title": "Detalles de la orden",
+        "clear": "Vaciar",
+        "unitPrice": "c/u",
+        "subtotal": "Subtotal",
+        "tax": "IVA (16%)",
+        "total": "Total",
+        "confirmOrder": "Confirmar orden",
+        "emptyCart": "El carrito está vacío",
+        "clearCartTooltip": "Vaciar todo el carrito",
+        "removeProductTooltip": "Eliminar producto del carrito"
+    }
+  },
   "ProductSearch": {
     "placeholder": "Buscar productos...",
     "ariaLabel": "Buscar productos por nombre"
@@ -363,6 +382,65 @@
       "notifications": {
         "success": "Producto creado correctamente",
         "error": "Ocurrió un error al crear el producto",
+        "requiredFields": "Completa los campos obligatorios",
+        "invalidPrice": "El precio debe ser positivo y con máximo 2 decimales",
+        "invalidQuantity": "La cantidad debe ser un número entero de 0 o más",
+        "invalidMinStock": "El stock mínimo debe ser un número entero de 0 o más",
+        "selectBranch": "Selecciona al menos una sucursal",
+        "invalidFormat": "Solo se permiten imágenes JPG o PNG",
+        "imageSizeError": "La imagen no puede pesar más de 2 MB."
+      }
+    },
+    "editProductModal": {
+      "title": "Editar producto",
+      "image": {
+        "label": "Foto del producto",
+        "previewAlt": "Previsualización",
+        "changeOverlay": "Cambiar foto",
+        "uploadButton": "Subir imagen",
+        "changeButton": "Elegir otra imagen",
+        "requirements": "Formatos permitidos: JPG, PNG. Máx 2MB."
+      },
+      "fields": {
+        "name": {
+          "label": "Nombre del producto",
+          "placeholder": "Ej. Producto A"
+        },
+        "description": {
+          "label": "Descripción",
+          "placeholder": "Ej. Producto de alta calidad"
+        },
+        "price": {
+          "label": "Precio",
+          "placeholder": "Ej. 100"
+        },
+        "quantity": {
+          "label": "Cantidad inicial",
+          "placeholder": "Ej. 20"
+        },
+        "minStock": {
+          "label": "Stock mínimo",
+          "placeholder": "Ej. 5"
+        },
+        "category": {
+          "label": "Categoría",
+          "placeholder": "Categoría"
+        },
+        "branches": {
+          "label": "Sucursales",
+          "placeholder": "1 o más sucursales"
+        }
+      },
+      "actions": {
+        "cancel": "Cancelar",
+        "continue": "Continuar",
+        "back": "Volver",
+        "submit": "Guardar cambios",
+        "submitting": "Guardando cambios..."
+      },
+      "notifications": {
+        "success": "Producto actualizado correctamente",
+        "error": "Ocurrió un error al actualizar el producto",
         "requiredFields": "Completa los campos obligatorios",
         "invalidPrice": "El precio debe ser positivo y con máximo 2 decimales",
         "invalidQuantity": "La cantidad debe ser un número entero de 0 o más",

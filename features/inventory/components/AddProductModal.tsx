@@ -170,7 +170,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!["image/jpeg", "image/png"].includes(file.type)) {
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
       toast.error(t("notifications.invalidFormat"));
       return;
     }
@@ -337,7 +337,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
                     type="file"
                     ref={fileInputRef}
                     onChange={handleImageChange}
-                    accept="image/jpeg,image/png"
+                    accept="image/jpeg,image/png,image/webp"
                     className="hidden"
                     />
 

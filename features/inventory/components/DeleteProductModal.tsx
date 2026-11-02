@@ -3,18 +3,47 @@ import { ModalLayout } from "@/shared/components/ModalLayout";
 import { useTranslations } from "next-intl";
 
 import { TriangleAlert } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteProduct } from "@/features/sell/services/product.service";
+import { DeleteProductPayload } from "@/features/sell/types/product";
 
 interface DeleteProductModalProps {
     isOpen: boolean;
     onClose: () => void;
     productName: string | null | undefined;
+    productId: string | null | undefined;
     branchName: string | null | undefined;
+    branchId: string | null | undefined;
 }
 
-export const DeleteProductModal = ({ isOpen, onClose, productName, branchName }: DeleteProductModalProps) => {
+export const DeleteProductModal = ({ isOpen, onClose, productName, productId, branchName, branchId }: DeleteProductModalProps) => {
     const t = useTranslations("InventoryPage.deleteProductModal");
-    
-    
+    const queryClient = useQueryClient();
+
+    const { mutate: mutateDeleteProduct, isPending } = useMutation({
+        mutationFn: (data: DeleteProductPayload) => deleteProduct(data),
+
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey:["products"] })
+
+            onClose();
+        },
+
+        onError: () => {
+            
+        }
+    })
+
+    const handleDeleteProduct = () => {
+        if (productId == null || branchId == null) {
+            return;
+        }
+
+        mutateDeleteProduct({
+            product_id: productId,
+            branch_ids: [branchId],
+        });
+    };
 
     return (
         <ModalLayout isOpen={isOpen} onClose={onClose}>
@@ -48,6 +77,7 @@ export const DeleteProductModal = ({ isOpen, onClose, productName, branchName }:
                         {t("cancelButton")}
                     </button>
                     <button
+                        onClick={handleDeleteProduct}
                         type="button"
                         className="px-4 py-2 rounded-lg text-white font-medium transition-colors ease-in-out duration-200 bg-red-500 hover:bg-red-600 cursor-pointer"
                     >

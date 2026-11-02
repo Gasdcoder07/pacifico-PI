@@ -11,6 +11,7 @@ import { getProducts } from "@/features/sell/services/product.service";
 import { Product } from "@/features/sell/types/product";
 import { useFormatter, useTranslations } from "next-intl";
 import { DeleteProductModal } from "./DeleteProductModal";
+import { EditProductModal } from "./EditProductModal";
 
 const InventoryTable = () => {
   const t = useTranslations("InventoryPage.table");
@@ -27,7 +28,7 @@ const InventoryTable = () => {
   if (isLoading) return <InventoryTableSkeleton />;
 
   return (
-    <div className="flex items-start min-w-0 flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm">
+    <div className="flex max-h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm">
       <div
         className={`flex-1 overflow-x-hidden overflow-y-auto ${scrollbarStyles}`}
       >
@@ -95,13 +96,13 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
             <p className="truncate font-semibold whitespace-nowrap">
                 {product.name}
             </p>
-            <p className="text-xs text-neutral-600">Comida</p>
+            <p className="text-xs text-neutral-600">{product.category_name}</p>
           </div>
         </div>
       </td>
       <td className="px-4 py-3 text-xs text-neutral-600">
         <div className="flex flex-col gap-1">
-          <p className="truncate font-medium whitespace-nowrap">Las Brisas</p>
+          <p className="truncate font-medium whitespace-nowrap">{product.branch_name}</p>
         </div>
       </td>
       <td className="px-4 py-3 text-sm text-neutral-600">{product.quantity}</td>
@@ -118,8 +119,7 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
       <td className="px-4 py-3">
         <div className="flex items-center justify-center gap-2">
           <DropdownActionButton
-            productName={product.name}
-            branchName={"Ramita"}/>
+            product={product}/>
         </div>
       </td>
     </tr>
@@ -161,16 +161,16 @@ export const StockBadge = ({ quantity }: StockBadgeProps) => {
 };
 
 interface DropdownActionButtonProps {
-    productName: string;
-    branchName: string;
+    product: Product
 }
 
-export const DropdownActionButton = ({ productName, branchName } : DropdownActionButtonProps ) => {
+export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) => {
   const t = useTranslations("InventoryPage.table.actions");
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [open, setOpen] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
 
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -296,7 +296,10 @@ export const DropdownActionButton = ({ productName, branchName } : DropdownActio
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ type: "spring", bounce: 0.5 }}
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                        setShowEditModal(true);
+                        setOpen(false);
+                    }}
                     className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 hover:bg-gray-100"
                     >
                     <Edit size={18} />
@@ -329,9 +332,20 @@ export const DropdownActionButton = ({ productName, branchName } : DropdownActio
                 <DeleteProductModal
                     isOpen={showDeleteModal}
                     onClose={() => setShowDeleteModal(false)}
-                    productName={productName}
-                    branchName={branchName}
+                    productName={product.name}
+                    productId={String(product.product_id)}
+                    branchName={product.branch_name}
+                    branchId={product.branch_id}
                     />
+            )
+        }
+
+        {
+            showEditModal && (
+                <EditProductModal
+                    isOpen={showEditModal}
+                    onClose={() => setShowEditModal(false)}
+                    product={product}/>
             )
         }
     </div>

@@ -1,7 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
-import { Box, Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
+
+import { Box, Plus } from "lucide-react";
 import { Product } from "../types/product";
 import { useCartStore } from "../store/cart-store";
 
@@ -10,6 +12,7 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product } : ProductCardProps) => {
+
     const addToCart = useCartStore((state) => state.addToCart);
     const [imgHover, setImgHover] = useState(false);
 
@@ -19,7 +22,7 @@ const ProductCard = ({ product } : ProductCardProps) => {
                 <StockBadge quantity={product.quantity} min_stock={product.min_stock}/>
 
                 <div className="bg-[#F4F7F9] px-1.5 py-0.5 w-fit rounded-lg">
-                    <span className="text-xs text-neutral-600 font-medium">Comidas</span>
+                    <span className="text-xs text-neutral-600 font-medium">{product.category_name}</span>
                 </div>
             </div>
             <div className="flex gap-4 items-center">
@@ -77,18 +80,20 @@ interface StockBadgeProps {
 }
 
 export const StockBadge = ({ quantity, min_stock } : StockBadgeProps) => {
+    const t = useTranslations("SellPage.productCard")
+
     let badgeStyles = "";
     let label = "";
 
     if (quantity === 0) {
-        badgeStyles = 'bg-red-50 text-red-600 border-red-200';
-        label = 'Sin stock';
+        badgeStyles = "bg-red-50 text-red-600 border-red-200";
+        label = t("outOfStock");
     } else if (quantity > 0 && quantity <= min_stock) {
-        badgeStyles = 'bg-amber-50 text-amber-600 border-amber-200';
-        label = 'Stock bajo';
+        badgeStyles = "bg-amber-50 text-amber-600 border-amber-200";
+        label = t("lowStock");
     } else {
-        badgeStyles = 'bg-brand-50 text-brand-600 border-brand-200';
-        label = `${quantity} en stock`;
+        badgeStyles = "bg-brand-50 text-brand-600 border-brand-200";
+        label = `${quantity} ${t("inStock")}`;
     }
 
     return (
