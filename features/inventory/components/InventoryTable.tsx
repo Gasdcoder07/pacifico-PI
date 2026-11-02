@@ -296,7 +296,10 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ type: "spring", bounce: 0.5 }}
-                    onClick={() => setShowEditModal(true)}
+                    onClick={() => {
+                        setShowEditModal(true);
+                        setOpen(false);
+                    }}
                     className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 hover:bg-gray-100"
                     >
                     <Edit size={18} />
