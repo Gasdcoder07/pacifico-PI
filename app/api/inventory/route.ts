@@ -30,6 +30,7 @@ export async function GET(request: Request) {
         const { rows } = await pool.query(
             `SELECT
                 i.branch_id::text AS branch_id,
+                s.name AS branch_name,
                 jsonb_agg(
                     jsonb_build_object(
                         'inventario_id', i.id::text,
@@ -38,6 +39,10 @@ export async function GET(request: Request) {
                         'foto_url', p.foto_url,
                         'description', p.description,
                         'price', p.price,
+                        'category_id', c.id::text,
+                        'category_name', c.name,
+                        'branch_id', i.branch_id::text,
+                        'branch_name', s.name,
                         'quantity', i.quantity,
                         'min_stock', i.min_stock,
                         'updated_at', i.updated_at
@@ -48,6 +53,9 @@ export async function GET(request: Request) {
             JOIN public.productos p
                 ON p.id = i.product_id
                 AND p.company_id = i.company_id
+            JOIN public.categorias c
+                ON c.id = p.category_id
+                AND c.company_id = p.company_id
             JOIN public.sucursales s
                 ON s.id = i.branch_id
                 AND s.company_id = i.company_id
@@ -55,12 +63,9 @@ export async function GET(request: Request) {
                 AND p.status = true
                 AND s.status = true
                 AND ($2::bigint IS NULL OR i.branch_id = $2)
-            GROUP BY i.branch_id
+            GROUP BY i.branch_id, s.name
             ORDER BY i.branch_id`,
-            [
-                actor.company_id,
-                actor.rol_id === 1 ? null : actor.branch_id,
-            ]
+            [actor.company_id, actor.rol_id === 1 ? null : actor.branch_id]
         );
 
         return NextResponse.json(rows, {
