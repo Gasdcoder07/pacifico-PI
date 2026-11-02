@@ -30,6 +30,10 @@ export const createProduct = (data : CreateProductPayload) => {
     return apiClient.post("/api/products", data)
 }
 
+// export const deleteProduct = () => {
+//     return apiClient.delete
+// }
+
 export const getCategories = async () : Promise<Category[]> => {
     const response = await apiClient.get("/api/category")
     return response.data.data

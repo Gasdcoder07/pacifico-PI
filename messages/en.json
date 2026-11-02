@@ -307,6 +307,12 @@
     "addProductButton": {
       "label": "Add Product"
     },
+    "deleteProductModal": {
+        "title": "Delete product",
+        "warningMessage": "Are you sure you want to delete the product <highlight>{productName}</highlight> from the <highlight>{branchName}</highlight> branch?",
+        "cancelButton": "Keep product",
+        "confirmButton": "Delete product"
+    },
     "addProductModal": {
       "title": "Enter a new product",
       "image": {
@@ -349,6 +355,8 @@
       },
       "actions": {
         "cancel": "Cancel",
+        "continue": "Continue",
+        "back": "Back",
         "submit": "Create product",
         "submitting": "Creating product..."
       },
