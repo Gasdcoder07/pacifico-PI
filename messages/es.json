@@ -79,7 +79,23 @@
         "confirmOrder": "Confirmar orden",
         "emptyCart": "El carrito está vacío",
         "clearCartTooltip": "Vaciar todo el carrito",
-        "removeProductTooltip": "Eliminar producto del carrito"
+        "removeProductTooltip": "Eliminar producto del carrito",
+        "saleCreated": "Venta registrada",
+        "saleError": "Error al registrar la venta"
+    },
+    "paymentMethodModal": {
+        "title": "Método de pago",
+        "description": "Selecciona cómo realizará el cliente el pago.",
+        "methods": {
+            "cash": "Efectivo",
+            "card": "Tarjeta",
+            "transfer": "Transferencia bancaria"
+        },
+        "buttons": {
+            "cancel": "Cancelar",
+            "confirm": "Confirmar venta",
+            "submitting": "Confirmando venta..."
+        }
     }
   },
   "ProductSearch": {

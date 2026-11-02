@@ -1,17 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
 import { Minus, Plus, Trash2 } from "lucide-react";
-
+import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
+
 import { useCartStore } from "../store/cart-store";
 import { PaymentMethod } from "@/app/sales/types/payment-methods";
 import { PaymentMethodModal } from "./PaymentMethodModal";
-import { useMutation } from "@tanstack/react-query";
 import { createSale } from "../services/sales.service";
 import { SalePayload } from "../types/sale";
-import axios from "axios";
 
 // Subcomponente de Input con estado local para edición fluida
 interface QuantityInputProps {
@@ -68,6 +68,7 @@ const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]
 
 const CartPanel = () => {
     const t = useTranslations("SellPage.cartPanel");
+    const queryClient = useQueryClient();
     
     const [showPaymentMethod, setShowPaymentMethod] = useState(false);
 
@@ -92,12 +93,18 @@ const CartPanel = () => {
 
         onSuccess: (response) => {
             console.log("Sale created: ", response);
+            toast.success(t("saleCreated"));
+
+            queryClient.invalidateQueries({
+                queryKey: ["products"]
+            });
 
             clearCart();
             setShowPaymentMethod(false);
         },
 
         onError: (e) => {
+            toast.error(t("saleError"));
             console.log("Error creating sale: ", e);
         }
     });

@@ -79,7 +79,23 @@
         "confirmOrder": "Confirm order",
         "emptyCart": "Your cart is empty",
         "clearCartTooltip": "Clear entire cart",
-        "removeProductTooltip": "Remove product from cart"
+        "removeProductTooltip": "Remove product from cart",
+        "saleCreated": "Sale completed",
+        "saleError": "Sale failed"
+    },
+    "paymentMethodModal": {
+        "title": "Payment method",
+        "description": "Select how the customer will pay.",
+        "methods": {
+            "cash": "Cash",
+            "card": "Card",
+            "transfer": "Bank transfer"
+        },
+        "buttons": {
+            "cancel": "Cancel",
+            "confirm": "Confirm sale",
+            "submitting": "Confirming sale..."
+        }
     }
   },
   "ProductSearch": {
