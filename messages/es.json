@@ -307,6 +307,12 @@
     "addProductButton": {
       "label": "Agregar Producto"
     },
+    "deleteProductModal": {
+        "title": "Eliminar producto",
+        "warningMessage": "¿Estás seguro de eliminar el producto <highlight>{productName}</highlight> de la sucursal <highlight>{branchName}</highlight>?",
+        "cancelButton": "Mantener producto",
+        "confirmButton": "Borrar producto"
+    },
     "addProductModal": {
       "title": "Ingresa un nuevo producto",
       "image": {
@@ -349,6 +355,8 @@
       },
       "actions": {
         "cancel": "Cancelar",
+        "continue": "Continuar",
+        "back": "Volver",
         "submit": "Crear producto",
         "submitting": "Creando producto..."
       },
