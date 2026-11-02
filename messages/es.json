@@ -309,7 +309,7 @@
     },
     "deleteProductModal": {
         "title": "Eliminar producto",
-        "warningMessage": "Esta acción no se puede deshacer. ¿Estás seguro de que quieres eliminar el producto",
+        "warningMessage": "¿Estás seguro de eliminar el producto <highlight>{productName}</highlight> de la sucursal <highlight>{branchName}</highlight>?",
         "cancelButton": "Mantener producto",
         "confirmButton": "Borrar producto"
     },

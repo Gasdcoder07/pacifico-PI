@@ -84,16 +84,16 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
       </td>
       <td title={product.name} className="px-4 py-3">
         <div className="flex items-center justify-start gap-4">
-          <div className="h-16 w-20 overflow-hidden rounded-lg border border-neutral-200 shadow-sm">
+          <div className="shrink-0 relative h-16 w-20 overflow-hidden rounded-lg border border-neutral-200 shadow-sm">
             <img
               src={product.foto_url}
               alt={product.name}
-              className="h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-cover"
             />
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
             <p className="truncate font-semibold whitespace-nowrap">
-              {product.name}
+                {product.name}
             </p>
             <p className="text-xs text-neutral-600">Comida</p>
           </div>
@@ -118,7 +118,8 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
       <td className="px-4 py-3">
         <div className="flex items-center justify-center gap-2">
           <DropdownActionButton
-            productName={product.name}/>
+            productName={product.name}
+            branchName={"Ramita"}/>
         </div>
       </td>
     </tr>
@@ -159,7 +160,12 @@ export const StockBadge = ({ quantity }: StockBadgeProps) => {
   );
 };
 
-export const DropdownActionButton = ({ productName } : {productName : string} ) => {
+interface DropdownActionButtonProps {
+    productName: string;
+    branchName: string;
+}
+
+export const DropdownActionButton = ({ productName, branchName } : DropdownActionButtonProps ) => {
   const t = useTranslations("InventoryPage.table.actions");
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -324,6 +330,7 @@ export const DropdownActionButton = ({ productName } : {productName : string} ) 
                     isOpen={showDeleteModal}
                     onClose={() => setShowDeleteModal(false)}
                     productName={productName}
+                    branchName={branchName}
                     />
             )
         }

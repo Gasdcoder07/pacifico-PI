@@ -309,7 +309,7 @@
     },
     "deleteProductModal": {
         "title": "Delete product",
-        "warningMessage": "This action cannot be undone. Are you sure you want to delete the product",
+        "warningMessage": "Are you sure you want to delete the product <highlight>{productName}</highlight> from the <highlight>{branchName}</highlight> branch?",
         "cancelButton": "Keep product",
         "confirmButton": "Delete product"
     },

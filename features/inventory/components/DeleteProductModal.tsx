@@ -8,9 +8,10 @@ interface DeleteProductModalProps {
     isOpen: boolean;
     onClose: () => void;
     productName: string | null | undefined;
+    branchName: string | null | undefined;
 }
 
-export const DeleteProductModal = ({ isOpen, onClose, productName }: DeleteProductModalProps) => {
+export const DeleteProductModal = ({ isOpen, onClose, productName, branchName }: DeleteProductModalProps) => {
     const t = useTranslations("InventoryPage.deleteProductModal");
     
     
@@ -27,7 +28,15 @@ export const DeleteProductModal = ({ isOpen, onClose, productName }: DeleteProdu
                 </div>
 
                 <p className="text-center text-muted-foreground">
-                    {t("warningMessage")} <span className="font-semibold text-neutral-900">{productName}</span>?
+                    {t.rich("warningMessage", {
+                        productName: productName ?? "",
+                        branchName: branchName ?? "",
+                        highlight: (chunks) => (
+                        <span className="font-semibold text-neutral-900">
+                            {chunks}
+                        </span>
+                        ),
+                    })}
                 </p>
 
                 <div className="flex justify-end gap-4 mt-4">

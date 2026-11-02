@@ -152,7 +152,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
     mutationFn: (data: CreateProductPayload) => createProduct(data),
     onSuccess: () => {
       toast.success(t("notifications.success"));
-      queryClient.invalidateQueries({ queryKey: ["inventory"] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
       resetForm();
       onClose();
     },
