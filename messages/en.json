@@ -63,6 +63,25 @@
     "users": "Users",
     "settings": "Settings"
   },
+  "SellPage": {
+    "productCard": {
+        "outOfStock": "Out of stock",
+        "lowStock": "Low stock",
+        "inStock": "in stock"
+    },
+    "cartPanel": {
+        "title": "Order details",
+        "clear": "Clear",
+        "unitPrice": "each",
+        "subtotal": "Subtotal",
+        "tax": "VAT (16%)",
+        "total": "Total",
+        "confirmOrder": "Confirm order",
+        "emptyCart": "Your cart is empty",
+        "clearCartTooltip": "Clear entire cart",
+        "removeProductTooltip": "Remove product from cart"
+    }
+  },
   "ProductSearch": {
     "placeholder": "Search products...",
     "ariaLabel": "Search products by name"

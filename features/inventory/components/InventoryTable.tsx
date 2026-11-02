@@ -27,7 +27,7 @@ const InventoryTable = () => {
   if (isLoading) return <InventoryTableSkeleton />;
 
   return (
-    <div className="flex items-start min-w-0 flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm">
+    <div className="flex max-h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm">
       <div
         className={`flex-1 overflow-x-hidden overflow-y-auto ${scrollbarStyles}`}
       >

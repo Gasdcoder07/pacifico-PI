@@ -63,6 +63,25 @@
     "users": "Usuarios",
     "settings": "Ajustes"
   },
+  "SellPage": {
+    "productCard": {
+        "outOfStock": "Sin stock",
+        "lowStock": "Stock bajo",
+        "inStock": "en stock"
+    },
+    "cartPanel":{
+        "title": "Detalles de la orden",
+        "clear": "Vaciar",
+        "unitPrice": "c/u",
+        "subtotal": "Subtotal",
+        "tax": "IVA (16%)",
+        "total": "Total",
+        "confirmOrder": "Confirmar orden",
+        "emptyCart": "El carrito está vacío",
+        "clearCartTooltip": "Vaciar todo el carrito",
+        "removeProductTooltip": "Eliminar producto del carrito"
+    }
+  },
   "ProductSearch": {
     "placeholder": "Buscar productos...",
     "ariaLabel": "Buscar productos por nombre"

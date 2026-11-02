@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { Minus, Plus, Trash2 } from "lucide-react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "../store/cart-store";
 
@@ -56,9 +58,10 @@ const QuantityInput = ({ quantity, maxStock, onQuantityChange }: QuantityInputPr
   );
 };
 
+const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
+
 const CartPanel = () => {
-  const scrollbarStyles =
-    "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
+    const t = useTranslations("SellPage.cartPanel");
 
   const cart = useCartStore((state) => state.cart);
   const addToCart = useCartStore((state) => state.addToCart);
@@ -81,7 +84,7 @@ const CartPanel = () => {
       <div className="flex flex-col min-h-0 min-w-0 h-full">
         {/* Encabezado */}
         <div className="border-b border-neutral-200 p-4 flex items-center justify-between">
-          <h3 className="font-semibold text-lg">Detalles de la orden</h3>
+          <h3 className="font-semibold text-lg">{t("title")}</h3>
 
           {cart.length > 0 && (
             <motion.button
@@ -89,10 +92,10 @@ const CartPanel = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="flex items-center gap-2 text-xs text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 px-2 py-1 rounded-md transition-colors font-medium cursor-pointer"
-              title="Vaciar todo el carrito"
+              title={t("clearCartTooltip")}
             >
               <Trash2 size={14} />
-              <span>Vaciar</span>
+              <span>{t("clear")}</span>
             </motion.button>
           )}
         </div>
@@ -103,7 +106,7 @@ const CartPanel = () => {
         >
           {cart.length === 0 ? (
             <p className="text-center text-xs text-neutral-400 py-8">
-              El carrito está vacío
+              {t("emptyCart")}
             </p>
           ) : (
             <AnimatePresence mode="popLayout">
@@ -147,12 +150,12 @@ const CartPanel = () => {
                                         whileHover={{ scale: 1.15 }}
                                         whileTap={{ scale: 0.85 }}
                                         className="hover:text-red-500 transition-colors p-1 rounded-md cursor-pointer"
-                                        title="Eliminar producto completo"
+                                        title={t("removeProductTooltip")}
                                     >
                                         <Trash2 size={16}/>
                                     </motion.button>
                                 </div>
-                                <span className="text-xs text-neutral-600">${product.price} c/u</span>
+                                <span className="text-xs text-neutral-600">${product.price} {t("unitPrice")}</span>
                             </div>
                             <div className="flex items-center justify-between gap-2">
                                 <div className="flex items-center bg-white border border-neutral-200 shadow rounded-full p-1 gap-1">
@@ -202,15 +205,15 @@ const CartPanel = () => {
       {/* Totales y Confirmación */}
       <div className="border-t border-neutral-200 p-4 text-sm text-neutral-600 flex flex-col gap-2">
         <div className="flex justify-between items-center">
-          <p>Subtotal</p>
+          <p>{t("subtotal")}</p>
           <p className="text-black font-semibold">${subtotal.toFixed(2)}</p>
         </div>
         <div className="flex justify-between items-center">
-          <p>IVA (16%)</p>
+          <p>{t("tax")}</p>
           <p className="text-black font-semibold">${iva.toFixed(2)}</p>
         </div>
         <div className="mt-2 flex justify-between items-center px-4 py-2 bg-cyan-50 border border-cyan-200 rounded-lg">
-          <p className="text-cyan-400 text-base">Total</p>
+          <p className="text-cyan-400 text-base">{t("total")}</p>
           <p className="text-cyan-400 font-semibold text-lg">
             ${total.toFixed(2)}
           </p>
@@ -222,7 +225,7 @@ const CartPanel = () => {
           whileTap={cart.length > 0 ? { scale: 0.98 } : {}}
           className="text-sm mt-2 bg-cyan-400 py-2 rounded-full px-4 text-white font-medium cursor-pointer disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed transition-colors"
         >
-          Confirmar orden
+          {t("confirmOrder")}
         </motion.button>
       </div>
     </section>
