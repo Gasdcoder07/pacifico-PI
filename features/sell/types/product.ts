@@ -7,9 +7,23 @@ export interface Product {
     quantity: number;
     min_stock: number;
     price: number;
+    branch_id: string;
+    branch_name: string;
+    category_id: string;
+    category_name: string;
 }
 
 export interface BranchProducts {
     branch_id: number;
     productos: Product[];
+}
+
+export interface DeleteProductResponse {
+    success: string;
+    product_id: number;
+}
+
+export interface DeleteProductPayload {
+    product_id: string;
+    branch_ids: string[];
 }

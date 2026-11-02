@@ -95,13 +95,13 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
             <p className="truncate font-semibold whitespace-nowrap">
                 {product.name}
             </p>
-            <p className="text-xs text-neutral-600">Comida</p>
+            <p className="text-xs text-neutral-600">{product.category_name}</p>
           </div>
         </div>
       </td>
       <td className="px-4 py-3 text-xs text-neutral-600">
         <div className="flex flex-col gap-1">
-          <p className="truncate font-medium whitespace-nowrap">Las Brisas</p>
+          <p className="truncate font-medium whitespace-nowrap">{product.branch_name}</p>
         </div>
       </td>
       <td className="px-4 py-3 text-sm text-neutral-600">{product.quantity}</td>
@@ -119,7 +119,9 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
         <div className="flex items-center justify-center gap-2">
           <DropdownActionButton
             productName={product.name}
-            branchName={"Ramita"}/>
+            productId={String(product.product_id)}
+            branchName={product.branch_name}
+            branchId={product.branch_id}/>
         </div>
       </td>
     </tr>
@@ -162,10 +164,12 @@ export const StockBadge = ({ quantity }: StockBadgeProps) => {
 
 interface DropdownActionButtonProps {
     productName: string;
+    productId: string;
     branchName: string;
+    branchId: string;
 }
 
-export const DropdownActionButton = ({ productName, branchName } : DropdownActionButtonProps ) => {
+export const DropdownActionButton = ({ productName, productId, branchName, branchId } : DropdownActionButtonProps ) => {
   const t = useTranslations("InventoryPage.table.actions");
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -330,7 +334,9 @@ export const DropdownActionButton = ({ productName, branchName } : DropdownActio
                     isOpen={showDeleteModal}
                     onClose={() => setShowDeleteModal(false)}
                     productName={productName}
+                    productId={productId}
                     branchName={branchName}
+                    branchId={branchId}
                     />
             )
         }
