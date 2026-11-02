@@ -11,6 +11,7 @@ interface PaymentMethodModalProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: (paymentMethod: PaymentMethod) => void;
+    isPending: boolean;
 }
 
 const paymentOptions = [
@@ -26,7 +27,8 @@ const paymentOptions = [
 export const PaymentMethodModal = ({
     isOpen,
     onClose,
-    onConfirm
+    onConfirm,
+    isPending
 }: PaymentMethodModalProps) => {
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>();
 
@@ -73,9 +75,10 @@ export const PaymentMethodModal = ({
 
                 <div className="flex justify-end gap-3">
                     <button
+                        disabled={isPending}
                         type="button"
                         onClick={onClose}
-                        className="cursor-pointer rounded-lg border border-neutral-200 px-4 py-2 text-neutral-600 transition-colors duration-200 ease-in-out hover:bg-neutral-50"
+                        className="cursor-pointer disabled:cursor-not-allowed rounded-lg border border-neutral-200 px-4 py-2 text-neutral-600 transition-colors duration-200 ease-in-out hover:bg-neutral-50 disabled:hover:bg-transparent"
                     >
                         Cancel
                     </button>
@@ -84,7 +87,7 @@ export const PaymentMethodModal = ({
                         whileHover={selectedPaymentMethod === undefined ? { } : { scale: 1.02 }}
                         whileTap={selectedPaymentMethod === undefined ? { } : { scale: 0.98 }}
                         onClick={handleCompletePurchase}
-                        disabled={selectedPaymentMethod === undefined}
+                        disabled={selectedPaymentMethod === undefined || isPending}
                         className="rounded-lg bg-cyan-400 px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out disabled:cursor-not-allowed disabled:bg-neutral-400 cursor-pointer"
                     >
                         Complete Purchase

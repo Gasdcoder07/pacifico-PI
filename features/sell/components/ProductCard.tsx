@@ -21,8 +21,8 @@ const ProductCard = ({ product } : ProductCardProps) => {
             <div className="flex gap-2 justify-between items-center">
                 <StockBadge quantity={product.quantity} min_stock={product.min_stock}/>
 
-                <div className="bg-[#F4F7F9] px-1.5 py-0.5 w-fit rounded-lg">
-                    <span className="text-xs text-neutral-600 font-medium">{product.category_name}</span>
+                <div className="bg-[#F4F7F9] px-1.5 py-0.5 max-w-52 rounded-lg overflow-hidden">
+                    <span className="block text-xs text-neutral-600 font-medium truncate px-1.5 py-0.5">{product.category_name}</span>
                 </div>
             </div>
             <div className="flex gap-4 items-center">

@@ -8,6 +8,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "../store/cart-store";
 import { PaymentMethod } from "@/app/sales/types/payment-methods";
 import { PaymentMethodModal } from "./PaymentMethodModal";
+import { useMutation } from "@tanstack/react-query";
+import { createSale } from "../services/sales.service";
+import { SalePayload } from "../types/sale";
+import axios from "axios";
 
 // Subcomponente de Input con estado local para edición fluida
 interface QuantityInputProps {
@@ -83,19 +87,31 @@ const CartPanel = () => {
   const iva = subtotal * 0.16;
   const total = subtotal + iva;
 
+    const { mutate: createSaleMutation, isPending } = useMutation({
+        mutationFn: createSale,
+
+        onSuccess: (response) => {
+            console.log("Sale created: ", response);
+
+            clearCart();
+            setShowPaymentMethod(false);
+        },
+
+        onError: (e) => {
+            console.log("Error creating sale: ", e);
+        }
+    });
+
     const handleConfirmOrder = (paymentMethod: PaymentMethod) => {
-        const payload = {
+        const payload: SalePayload = {
             pay_method: paymentMethod,
             productsIds: cart.map((item) => ({
-                idProducto: item.product.product_id,
+                idProducto: Number(item.product.product_id),
                 quantity: item.quantity,
             })),
         };
 
-        console.log("Sale payload:", payload);
-
-        clearCart();
-        setShowPaymentMethod(false);
+        createSaleMutation(payload);
     };
 
   return (
@@ -254,7 +270,8 @@ const CartPanel = () => {
             <PaymentMethodModal
                 isOpen={showPaymentMethod}
                 onClose={() => setShowPaymentMethod(false)}
-                onConfirm={handleConfirmOrder}/>
+                onConfirm={handleConfirmOrder}
+                isPending={isPending}/>
         )
       }
     </section>

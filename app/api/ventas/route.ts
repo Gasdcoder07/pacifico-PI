@@ -13,7 +13,7 @@ interface PayloadVentas {
     productsIds: ItemVenta[]
 }
 
-const taxRate = Number(process.env.TAX_RATE)
+const taxRate = Number(process.env.TAX_RATE ?? 0.16);
 
 /**
  * @swagger
@@ -249,7 +249,7 @@ export async function POST(request: Request) {
         const { pay_method, productsIds } : PayloadVentas = await request.json()
 
         const branch = (await pool.query("SELECT * FROM sucursales WHERE id = $1 AND company_id = $2", [currentUser.branch_id, currentUser.company_id])).rows[0]
-        const payMethod = (await pool.query("SELECT * FROM metodos_pago WHERE id = $1 AND company_id = $2", [pay_method, currentUser.company_id])).rows[0]
+        const payMethod = (await pool.query("SELECT * FROM metodos_pago WHERE id = $1", [pay_method])).rows[0]
 
         if (![2,3].includes(Number(currentUser.rol_id))) {
             return NextResponse.json(
