@@ -6,6 +6,8 @@ import { Minus, Plus, Trash2 } from "lucide-react";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "../store/cart-store";
+import { PaymentMethod } from "@/app/sales/types/payment-methods";
+import { PaymentMethodModal } from "./PaymentMethodModal";
 
 // Subcomponente de Input con estado local para edición fluida
 interface QuantityInputProps {
@@ -62,6 +64,8 @@ const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]
 
 const CartPanel = () => {
     const t = useTranslations("SellPage.cartPanel");
+    
+    const [showPaymentMethod, setShowPaymentMethod] = useState(false);
 
   const cart = useCartStore((state) => state.cart);
   const addToCart = useCartStore((state) => state.addToCart);
@@ -78,6 +82,21 @@ const CartPanel = () => {
   );
   const iva = subtotal * 0.16;
   const total = subtotal + iva;
+
+    const handleConfirmOrder = (paymentMethod: PaymentMethod) => {
+        const payload = {
+            pay_method: paymentMethod,
+            productsIds: cart.map((item) => ({
+                idProducto: item.product.product_id,
+                quantity: item.quantity,
+            })),
+        };
+
+        console.log("Sale payload:", payload);
+
+        clearCart();
+        setShowPaymentMethod(false);
+    };
 
   return (
     <section className="flex min-h-0 min-w-0 basis-3/10 flex-col rounded-lg border border-neutral-200 bg-white shadow-sm">
@@ -223,11 +242,21 @@ const CartPanel = () => {
           disabled={cart.length === 0}
           whileHover={cart.length > 0 ? { scale: 1.02 } : {}}
           whileTap={cart.length > 0 ? { scale: 0.98 } : {}}
+          onClick={() => setShowPaymentMethod(true)}
           className="text-sm mt-2 bg-cyan-400 py-2 rounded-full px-4 text-white font-medium cursor-pointer disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed transition-colors"
         >
           {t("confirmOrder")}
         </motion.button>
       </div>
+
+      {
+        showPaymentMethod && (
+            <PaymentMethodModal
+                isOpen={showPaymentMethod}
+                onClose={() => setShowPaymentMethod(false)}
+                onConfirm={handleConfirmOrder}/>
+        )
+      }
     </section>
   );
 };
