@@ -93,7 +93,7 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
             />
           </div>
           <div className="flex min-w-0 flex-1 flex-col gap-1">
-            <p className="truncate font-semibold whitespace-nowrap">
+            <p className="truncate font-semibold whitespace-nowrap text-sm">
                 {product.name}
             </p>
             <p className="text-xs text-neutral-600">{product.category_name}</p>

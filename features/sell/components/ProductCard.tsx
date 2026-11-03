@@ -21,8 +21,8 @@ const ProductCard = ({ product } : ProductCardProps) => {
             <div className="flex gap-2 justify-between items-center">
                 <StockBadge quantity={product.quantity} min_stock={product.min_stock}/>
 
-                <div className="bg-[#F4F7F9] px-1.5 py-0.5 w-fit rounded-lg">
-                    <span className="text-xs text-neutral-600 font-medium">{product.category_name}</span>
+                <div className="bg-[#F4F7F9] px-1.5 py-0.5 max-w-52 rounded-lg overflow-hidden">
+                    <span className="block text-xs text-neutral-600 font-medium truncate px-1.5 py-0.5">{product.category_name}</span>
                 </div>
             </div>
             <div className="flex gap-4 items-center">
@@ -87,15 +87,14 @@ export const StockBadge = ({ quantity, min_stock } : StockBadgeProps) => {
 
     if (quantity === 0) {
         badgeStyles = "bg-red-50 text-red-600 border-red-200";
-        label = t("outOfStock");
     } else if (quantity > 0 && quantity <= min_stock) {
         badgeStyles = "bg-amber-50 text-amber-600 border-amber-200";
-        label = t("lowStock");
     } else {
         badgeStyles = "bg-brand-50 text-brand-600 border-brand-200";
-        label = `${quantity} ${t("inStock")}`;
     }
 
+    label = `${quantity} ${t("inStock")}`;
+    
     return (
         <div className={`font-medium text-xs w-fit shrink-0 flex items-center justify-center gap-1.5 px-1.5 py-1 border rounded-lg ${badgeStyles}`}>
             <Box size={14}/>

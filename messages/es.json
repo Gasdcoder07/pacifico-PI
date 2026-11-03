@@ -56,7 +56,8 @@
     "hide": "Ocultar",
     "sectionBranch": "Sucursal",
     "sectionAdmin": "Administración",
-    "sell": "Ventas",
+    "sell": "Vender",
+    "sales": "Ventas",
     "dashboard": "Dashboard",
     "inventory": "Inventario",
     "branches": "Sucursales",
@@ -79,7 +80,23 @@
         "confirmOrder": "Confirmar orden",
         "emptyCart": "El carrito está vacío",
         "clearCartTooltip": "Vaciar todo el carrito",
-        "removeProductTooltip": "Eliminar producto del carrito"
+        "removeProductTooltip": "Eliminar producto del carrito",
+        "saleCreated": "Venta registrada",
+        "saleError": "Error al registrar la venta"
+    },
+    "paymentMethodModal": {
+        "title": "Método de pago",
+        "description": "Selecciona cómo realizará el cliente el pago.",
+        "methods": {
+            "cash": "Efectivo",
+            "card": "Tarjeta",
+            "transfer": "Transferencia bancaria"
+        },
+        "buttons": {
+            "cancel": "Cancelar",
+            "confirm": "Confirmar venta",
+            "submitting": "Confirmando venta..."
+        }
     }
   },
   "ProductSearch": {
@@ -522,6 +539,16 @@
   },
   "SalesPage": {
     "title": "Ventas",
+    "history": {
+      "subtitle": "Historial de ventas realizadas en la compañía.",
+      "sale": "Venta #{id}",
+      "cashier": "Cajero: {name}",
+      "ticketPdf": "Ticket (PDF)",
+      "subtotal": "Subtotal",
+      "vat": "IVA ({rate})",
+      "total": "Total",
+      "pdfPending": "La integración del ticket PDF está pendiente para la venta #{id}."
+    },
     "metrics": {
       "totalSales": "Ventas Totales",
       "transactions": "Transacciones",

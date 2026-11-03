@@ -1,4 +1,4 @@
-import { ShoppingCart, LayoutDashboard, Settings, ShelvingUnit, Store, LucideIcon, UsersRound } from "lucide-react"
+import { ShoppingCart, LayoutDashboard, Settings, ShelvingUnit, Store, LucideIcon, UsersRound, ReceiptText } from "lucide-react"
 
 export type SidebarItem = {
     id : string,
@@ -17,6 +17,7 @@ export const sidebarSections: SidebarSection[] = [
         titleKey: "sectionBranch",
         items: [
             { id: "Sell", labelKey: "sell", href: "/sell", icon: ShoppingCart },
+            { id: "Sales", labelKey: "sales", href: "/sales", icon: ReceiptText },
             { id: "Dashboard", labelKey: "dashboard", href: "/dashboard", icon: LayoutDashboard },
             { id: "Inventory", labelKey: "inventory", href: "/inventory", icon: ShelvingUnit },
         ],

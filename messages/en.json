@@ -56,7 +56,8 @@
     "hide": "Hide",
     "sectionBranch": "Branch",
     "sectionAdmin": "Administration",
-    "sell": "Sales",
+    "sell": "Sell",
+    "sales": "Sales",
     "dashboard": "Dashboard",
     "inventory": "Inventory",
     "branches": "Branches",
@@ -79,7 +80,23 @@
         "confirmOrder": "Confirm order",
         "emptyCart": "Your cart is empty",
         "clearCartTooltip": "Clear entire cart",
-        "removeProductTooltip": "Remove product from cart"
+        "removeProductTooltip": "Remove product from cart",
+        "saleCreated": "Sale completed",
+        "saleError": "Sale failed"
+    },
+    "paymentMethodModal": {
+        "title": "Payment method",
+        "description": "Select how the customer will pay.",
+        "methods": {
+            "cash": "Cash",
+            "card": "Card",
+            "transfer": "Bank transfer"
+        },
+        "buttons": {
+            "cancel": "Cancel",
+            "confirm": "Confirm sale",
+            "submitting": "Confirming sale..."
+        }
     }
   },
   "ProductSearch": {
@@ -522,6 +539,16 @@
   },
   "SalesPage": {
     "title": "Sales",
+    "history": {
+      "subtitle": "Sales history for the company.",
+      "sale": "Sale #{id}",
+      "cashier": "Cashier: {name}",
+      "ticketPdf": "Ticket (PDF)",
+      "subtotal": "Subtotal",
+      "vat": "VAT ({rate})",
+      "total": "Total",
+      "pdfPending": "PDF ticket integration is pending for sale #{id}."
+    },
     "metrics": {
       "totalSales": "Total Sales",
       "transactions": "Transactions",

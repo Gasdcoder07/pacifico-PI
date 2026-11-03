@@ -4,21 +4,23 @@ import { useState } from "react";
 import { ArrowLeftRight, Banknote, CreditCard } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { useTranslations } from "next-intl";
 import { ModalLayout } from "@/shared/components/ModalLayout";
-import { PaymentMethod } from "@/app/sales/types/payment-methods";
+import { PaymentMethod } from "@/features/sales/types/payment-methods";
 
 interface PaymentMethodModalProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: (paymentMethod: PaymentMethod) => void;
+    isPending: boolean;
 }
 
 const paymentOptions = [
-    { method: PaymentMethod.Efectivo, label: "Cash", Icon: Banknote },
-    { method: PaymentMethod.Tarjeta, label: "Card", Icon: CreditCard },
+    { method: PaymentMethod.Efectivo, key: "cash", Icon: Banknote },
+    { method: PaymentMethod.Tarjeta, key: "card", Icon: CreditCard },
     {
         method: PaymentMethod.Transferencia,
-        label: "Bank Transfer",
+        key: "transfer",
         Icon: ArrowLeftRight,
     },
 ];
@@ -26,8 +28,11 @@ const paymentOptions = [
 export const PaymentMethodModal = ({
     isOpen,
     onClose,
-    onConfirm
+    onConfirm,
+    isPending
 }: PaymentMethodModalProps) => {
+    const t = useTranslations("SellPage.paymentMethodModal")
+
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>();
 
     const handleCompletePurchase = () => {
@@ -40,12 +45,12 @@ export const PaymentMethodModal = ({
         <ModalLayout
             isOpen={isOpen}
             onClose={onClose}
-            title="Select payment method"
+            title={t("title")}
             width="max-w-lg"
         >
             <div className="flex flex-col gap-6">
                 <div className="grid grid-cols-3 gap-3">
-                    {paymentOptions.map(({ method, label, Icon }) => {
+                    {paymentOptions.map(({ method, key, Icon }) => {
                         const isSelected = selectedPaymentMethod === method;
 
                         return (
@@ -64,7 +69,7 @@ export const PaymentMethodModal = ({
                                     <Icon size={22} />
                                 </span>
                                 <span className="text-sm font-medium text-neutral-700">
-                                    {label}
+                                    {t(`methods.${key}`)}
                                 </span>
                             </button>
                         );
@@ -73,21 +78,22 @@ export const PaymentMethodModal = ({
 
                 <div className="flex justify-end gap-3">
                     <button
+                        disabled={isPending}
                         type="button"
                         onClick={onClose}
-                        className="cursor-pointer rounded-lg border border-neutral-200 px-4 py-2 text-neutral-600 transition-colors duration-200 ease-in-out hover:bg-neutral-50"
+                        className="cursor-pointer disabled:cursor-not-allowed rounded-lg border border-neutral-200 px-4 py-2 text-neutral-600 transition-colors duration-200 ease-in-out hover:bg-neutral-50 disabled:hover:bg-transparent"
                     >
-                        Cancel
+                        {t("buttons.cancel")}
                     </button>
                     <motion.button
                         type="button"
                         whileHover={selectedPaymentMethod === undefined ? { } : { scale: 1.02 }}
                         whileTap={selectedPaymentMethod === undefined ? { } : { scale: 0.98 }}
                         onClick={handleCompletePurchase}
-                        disabled={selectedPaymentMethod === undefined}
+                        disabled={selectedPaymentMethod === undefined || isPending}
                         className="rounded-lg bg-cyan-400 px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out disabled:cursor-not-allowed disabled:bg-neutral-400 cursor-pointer"
                     >
-                        Complete Purchase
+                        { isPending ? t("buttons.submitting") : t("buttons.confirm") }
                     </motion.button>
                 </div>
             </div>
