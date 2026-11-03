@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { useCartStore } from "../store/cart-store";
-import { PaymentMethod } from "@/app/sales/types/payment-methods";
+import { PaymentMethod } from "@/features/sales/types/payment-methods";
 import { PaymentMethodModal } from "./PaymentMethodModal";
 import { createSale } from "../services/sales.service";
 import { SalePayload } from "../types/sale";

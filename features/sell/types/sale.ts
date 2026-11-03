@@ -1,4 +1,4 @@
-import { PaymentMethod } from "@/app/sales/types/payment-methods";
+import { PaymentMethod } from "@/features/sales/types/payment-methods";
 
 export interface SalePayload {
     pay_method: PaymentMethod;

@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 import { useTranslations } from "next-intl";
 import { ModalLayout } from "@/shared/components/ModalLayout";
-import { PaymentMethod } from "@/app/sales/types/payment-methods";
+import { PaymentMethod } from "@/features/sales/types/payment-methods";
 
 interface PaymentMethodModalProps {
     isOpen: boolean;
