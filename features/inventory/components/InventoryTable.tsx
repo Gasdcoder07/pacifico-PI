@@ -15,8 +15,7 @@ import { EditProductModal } from "./EditProductModal";
 
 const InventoryTable = () => {
   const t = useTranslations("InventoryPage.table");
-  const scrollbarStyles =
-    "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
+  const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300 dark:[&::-webkit-scrollbar-thumb:hover]:bg-neutral-600";
 
   const { data, isLoading } = useQuery({
     queryKey: ["products"],
@@ -28,40 +27,27 @@ const InventoryTable = () => {
   if (isLoading) return <InventoryTableSkeleton />;
 
   return (
-    <div className="flex max-h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm">
+    <div className="flex max-h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white text-neutral-900 shadow-sm dark:border-neutral-800 dark:bg-black dark:text-white">
       <div
         className={`flex-1 overflow-x-hidden overflow-y-auto ${scrollbarStyles}`}
       >
         <table className="w-full table-fixed">
-          <thead className="sticky top-0 z-10 border-b border-neutral-200 bg-white text-left text-xs uppercase tracking-wider text-neutral-600 whitespace-nowrap">
+          <thead className="sticky top-0 z-10 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black text-left text-xs uppercase tracking-wider text-neutral-600 dark:text-neutral-300 whitespace-nowrap">
             <tr>
               <th className="w-14 px-4 py-3">{t("headers.id")}</th>
-              <th className="w-[clamp(160px,28vw,320px)] px-4 py-3">
-                {t("headers.product")}
-              </th>
+              <th className="w-[clamp(160px,28vw,320px)] px-4 py-3">{t("headers.product")}</th>
               <th className="w-30 px-4 py-3">{t("headers.branch")}</th>
               <th className="w-20 px-4 py-3">{t("headers.stock")}</th>
-              <th className="hidden w-30 px-4 py-3 xl:table-cell">
-                {t("headers.status")}
-              </th>
-              <th className="w-28 px-4 py-3 text-right">
-                {t("headers.price")}
-              </th>
-              <th className="w-18 px-4 py-3 text-center">
-                {t("headers.action")}
-              </th>
+              <th className="hidden w-30 px-4 py-3 xl:table-cell">{t("headers.status")}</th>
+              <th className="w-28 px-4 py-3 text-right">{t("headers.price")}</th>
+              <th className="w-18 px-4 py-3 text-center">{t("headers.action")}</th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-neutral-200">
-            {products.map((product: Product) => {
-              return (
-                <InventoryTableRow
-                  key={product.inventario_id}
-                  product={product}
-                />
-              );
-            })}
+          <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
+            {products.map((product: Product) => (
+              <InventoryTableRow key={product.inventario_id} product={product} />
+            ))}
           </tbody>
         </table>
       </div>
@@ -79,13 +65,13 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
   const format = useFormatter();
 
   return (
-    <tr>
-      <td className="px-4 py-3 text-xs text-neutral-600 whitespace-nowrap overflow-auto scroll-auto">
+    <tr className="bg-white text-neutral-900 dark:bg-black dark:text-white">
+      <td className="px-4 py-3 text-xs text-neutral-600 dark:text-neutral-300 whitespace-nowrap overflow-auto scroll-auto">
         #{product.inventario_id}
       </td>
       <td title={product.name} className="px-4 py-3">
         <div className="flex items-center justify-start gap-4">
-          <div className="shrink-0 relative h-16 w-20 overflow-hidden rounded-lg border border-neutral-200 shadow-sm">
+          <div className="shrink-0 relative h-16 w-20 overflow-hidden rounded-lg border border-neutral-200 shadow-sm dark:border-neutral-800">
             <img
               src={product.foto_url}
               alt={product.name}
@@ -93,23 +79,23 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
             />
           </div>
           <div className="flex min-w-0 flex-1 flex-col gap-1">
-            <p className="truncate font-semibold whitespace-nowrap text-sm">
+            <p className="truncate font-semibold whitespace-nowrap text-sm text-neutral-900 dark:text-white">
                 {product.name}
             </p>
-            <p className="text-xs text-neutral-600">{product.category_name}</p>
+            <p className="text-xs text-neutral-600 dark:text-neutral-400">{product.category_name}</p>
           </div>
         </div>
       </td>
-      <td className="px-4 py-3 text-xs text-neutral-600">
+      <td className="px-4 py-3 text-xs text-neutral-600 dark:text-neutral-300">
         <div className="flex flex-col gap-1">
           <p className="truncate font-medium whitespace-nowrap">{product.branch_name}</p>
         </div>
       </td>
-      <td className="px-4 py-3 text-sm text-neutral-600">{product.quantity}</td>
-      <td className="hidden px-4 py-3 text-sm text-neutral-600 xl:table-cell">
+      <td className="px-4 py-3 text-sm text-neutral-600 dark:text-neutral-300">{product.quantity}</td>
+      <td className="hidden px-4 py-3 text-sm text-neutral-600 dark:text-neutral-300 xl:table-cell">
         <StockBadge quantity={product.quantity} />
       </td>
-      <td className="px-4 py-3 text-right text-sm font-semibold">
+      <td className="px-4 py-3 text-right text-sm font-semibold text-neutral-900 dark:text-white">
         {format.number(product.price, {
           style: "currency",
           currency: "USD",
@@ -137,23 +123,21 @@ export const StockBadge = ({ quantity }: StockBadgeProps) => {
   let label = "";
 
   if (quantity === 0) {
-    badgeStyles = "bg-red-50 text-red-700 border-red-200";
+    badgeStyles = "bg-red-50 text-red-700 border-red-200 dark:bg-black dark:text-red-400 dark:border-red-900";
     dotStyles = "bg-red-500";
     label = t("outOfStock");
   } else if (quantity > 0 && quantity <= 8) {
-    badgeStyles = "bg-amber-50 text-amber-700 border-amber-200";
+    badgeStyles = "bg-amber-50 text-amber-700 border-amber-200 dark:bg-black dark:text-amber-400 dark:border-amber-900";
     dotStyles = "bg-amber-500";
     label = t("lowStock");
   } else {
-    badgeStyles = "bg-emerald-50 text-emerald-700 border-emerald-200";
+    badgeStyles = "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-black dark:text-emerald-400 dark:border-emerald-900";
     dotStyles = "bg-emerald-500";
     label = t("inStock");
   }
 
   return (
-    <span
-      className={`flex shrink-0 items-center justify-center gap-2 rounded-full border px-1.5 py-1 whitespace-nowrap ${badgeStyles}`}
-    >
+    <span className={`flex shrink-0 items-center justify-center gap-2 rounded-full border px-1.5 py-1 whitespace-nowrap ${badgeStyles}`}>
       <div className={`size-1.5 rounded-full ${dotStyles}`} />
       {label}
     </span>
@@ -242,10 +226,7 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
     }, [open]);
 
   return (
-    <div
-      className="relative flex shrink-0 items-center justify-center gap-2"
-      ref={containerRef}
-    >
+    <div className="relative flex shrink-0 items-center justify-center gap-2" ref={containerRef}>
       <motion.button
         aria-haspopup="true"
         aria-expanded={open}
@@ -264,7 +245,7 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
           bounce: 0.6,
           duration: 0.8,
         }}
-        className="cursor-pointer rounded-lg bg-linear-to-b from-brand-50 to-brand-100 p-1 text-brand-700"
+        className="cursor-pointer rounded-lg bg-linear-to-b from-brand-50 to-brand-100 p-1 text-brand-700 dark:from-neutral-950 dark:to-neutral-900 dark:text-cyan-400"
         onClick={handleToggleMenu}
       >
         <Ellipsis size={20} />
@@ -285,7 +266,7 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
                     top: menuPosition.top,
                     left: menuPosition.left,
                 }}
-                className="z-50 flex w-44 origin-center flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-sm"
+                className="z-50 flex w-44 origin-center flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-sm dark:border-neutral-800 dark:bg-black"
                 >
                 <motion.div
                     variants={itemVariants}
@@ -300,7 +281,7 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
                         setShowEditModal(true);
                         setOpen(false);
                     }}
-                    className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 hover:bg-gray-100"
+                    className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 hover:bg-gray-100 dark:text-white dark:hover:bg-neutral-900"
                     >
                     <Edit size={18} />
                     <span>{t("edit")}</span>
@@ -315,7 +296,7 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
                         setShowDeleteModal(true);
                         setOpen(false);
                     }}
-                    className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-red-600 transition-colors duration-200 hover:bg-red-50"
+                    className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-red-600 transition-colors duration-200 hover:bg-red-50 dark:text-red-400 dark:hover:bg-neutral-900"
                     >
                     <Trash size={18} />
                     <span>{t("delete")}</span>
@@ -354,6 +335,6 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
 
 export const InventoryTableSkeleton = () => {
   return (
-    <div className="h-full min-h-0 min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 shadow-sm w-full" />
+    <div className="h-full min-h-0 min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 shadow-sm w-full dark:bg-neutral-900" />
   );
 };

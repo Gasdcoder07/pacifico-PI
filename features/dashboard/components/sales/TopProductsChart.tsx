@@ -25,8 +25,10 @@ export const TopProductsChart = () => {
   const t = useTranslations("SalesPage.topProductsChart");
 
   return (
-    <div className="w-full rounded-lg border border-neutral-200 bg-white p-4 shadow-sm">
-      <h3 className="mb-4 text-lg font-semibold">{t("title")}</h3>
+    <div className="w-full rounded-lg border border-neutral-200 bg-white p-4 text-neutral-900 shadow-sm transition-colors duration-200 dark:border-neutral-800 dark:bg-black dark:text-white [--ejes:#737373] dark:[--ejes:#d4d4d4] [--cuadricula:#e5e5e5] dark:[--cuadricula:#262626] [--tooltip-fondo:#ffffff] dark:[--tooltip-fondo:#171717] [--tooltip-texto:#171717] dark:[--tooltip-texto:#ffffff] [--cursor:#f5f5f5] dark:[--cursor:#171717]">
+      <h3 className="mb-4 text-lg font-semibold text-neutral-900 dark:text-white">
+        {t("title")}
+      </h3>
 
       <div className="h-72 w-full">
         <ResponsiveContainer width="100%" height="100%">
@@ -35,15 +37,34 @@ export const TopProductsChart = () => {
             layout="vertical"
             margin={{ top: 0, right: 16, left: 16, bottom: 0 }}
           >
-            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
-            <XAxis type="number" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              horizontal={false}
+              stroke="var(--cuadricula)"
+            />
+            <XAxis
+              type="number"
+              tick={{ fontSize: 12, fill: "var(--ejes)" }}
+              stroke="var(--ejes)"
+            />
             <YAxis
               type="category"
               dataKey="name"
               width={110}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: "var(--ejes)" }}
+              stroke="var(--ejes)"
             />
             <Tooltip
+              cursor={{ fill: "var(--cursor)" }}
+              contentStyle={{
+                backgroundColor: "var(--tooltip-fondo)",
+                color: "var(--tooltip-texto)",
+                borderRadius: "12px",
+                border: "1px solid var(--cuadricula)",
+                fontSize: "13px",
+              }}
+              labelStyle={{ color: "var(--tooltip-texto)" }}
+              itemStyle={{ color: "var(--tooltip-texto)" }}
               formatter={(value: any) => [
                 `${Number(value)} ${t("units")}`,
                 t("soldLabel"),
