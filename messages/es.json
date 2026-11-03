@@ -39,7 +39,8 @@
     "registerNow": "Regístrate ahora.",
     "fillAll": "Por favor, completa todos los campos",
     "success": "Inicio de sesión exitoso",
-    "invalidCredentials": "Correo o contraseña incorrectos"
+    "invalidCredentials": "Correo o contraseña incorrectos",
+    "viewTermsAndConditions": "Ver términos y condiciones"
   },
   "Navbar": {
     "loading": "Cargando...",
