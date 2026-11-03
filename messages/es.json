@@ -52,6 +52,10 @@
     "confirm": "Sí, cerrar sesión",
     "cancel": "No, continuar aquí"
   },
+  "theme": {
+    "enableLightMode": "Activar modo claro",
+    "enableDarkMode": "Activar modo oscuro"
+  },
   "BusinessContext": {
     "company": "Compañía",
     "branch": "Sucursal",

@@ -42,6 +42,7 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
           isDisabled={isLoadingBranch}
           branch_id={branchData?.data.id}
           company_id={branchData?.data.company_id}
+          managerExists={haveManager}
         />
       </div>
 

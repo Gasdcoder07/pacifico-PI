@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { setLocale } from "@/i18n/actions";
@@ -17,8 +18,11 @@ export const LanguageSwitcher = () => {
     return (
         <div className="flex items-center gap-1 p-1 text-xs font-semibold rounded-full bg-white/90 backdrop-blur border border-neutral-200 shadow-sm">
             {(["es", "en"] as const).map((l) => (
-                <button
+                <motion.button
                     key={l}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", bounce: 0.5 }}
                     type="button"
                     onClick={() => change(l)}
                     className={`px-3 py-1 rounded-full cursor-pointer transition-colors ${
@@ -28,7 +32,7 @@ export const LanguageSwitcher = () => {
                     }`}
                 >
                     {l.toUpperCase()}
-                </button>
+                </motion.button>
             ))}
         </div>
     );
