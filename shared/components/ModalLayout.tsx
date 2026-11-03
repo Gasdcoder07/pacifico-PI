@@ -9,9 +9,10 @@ interface ModalLayoutProps {
     title?: string;
     children: React.ReactNode;
     width?: string;
+    breathingBorder?: boolean;
 }
 
-export const ModalLayout = ({ isOpen, onClose, title, children, width = "max-w-lg" }: ModalLayoutProps) => {
+export const ModalLayout = ({ isOpen, onClose, title, children, width = "max-w-lg", breathingBorder = false }: ModalLayoutProps) => {
     return (
         <AnimatePresence>
             {isOpen && (
@@ -49,6 +50,27 @@ export const ModalLayout = ({ isOpen, onClose, title, children, width = "max-w-l
                         }
 
                         <div>{children}</div>
+
+                        {breathingBorder && (
+                            <motion.div
+                                aria-hidden="true"
+                                className="pointer-events-none absolute inset-0 rounded-lg border-[1.5px]"
+                                initial={{
+                                    borderColor: "#22D3EE",
+                                    boxShadow: "0 0 5px rgba(34, 211, 238, 0.18), 0 0 10px rgba(14, 165, 233, 0.08)",
+                                }}
+                                animate={{
+                                    borderColor: ["#22D3EE", "#38BDF8", "#67E8F9", "#22D3EE"],
+                                    boxShadow: [
+                                        "0 0 5px rgba(34, 211, 238, 0.16), 0 0 10px rgba(14, 165, 233, 0.07)",
+                                        "0 0 7px rgba(56, 189, 248, 0.22), 0 0 12px rgba(14, 165, 233, 0.10)",
+                                        "0 0 5px rgba(103, 232, 249, 0.17), 0 0 10px rgba(34, 211, 238, 0.08)",
+                                        "0 0 5px rgba(34, 211, 238, 0.16), 0 0 10px rgba(14, 165, 233, 0.07)",
+                                    ],
+                                }}
+                                transition={{ duration: 5, ease: "easeInOut", repeat: Infinity }}
+                            />
+                        )}
                     </motion.div>
                 </div>
             )}

@@ -4,7 +4,10 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { LogOut } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { Blobatar } from "@blobatar/react" 
+import { LogoutModal } from "@/shared/components/LogoutModal";
 import "blobatar/motion.css"
 
 interface ProfilePfpProps {
@@ -53,8 +56,17 @@ const itemVariants: Variants = {
 
 const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
   const [open, setOpen] = useState(false);
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+  const t = useTranslations("LogoutModal");
   const { logout } = useAuth();
+
+  const handleLogoutConfirm = () => {
+    setLogoutModalOpen(false);
+    queryClient.clear();
+    logout();
+  };
 
   const roleName =
     role === 1 ? "Administrador" :
@@ -152,17 +164,25 @@ const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", bounce: 0.5 }}
-                onClick={logout}
+                onClick={() => {
+                  setOpen(false);
+                  setLogoutModalOpen(true);
+                }}
                 className="w-full text-neutral-500 flex items-center gap-4 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-red-50 hover:text-red-600"
               >
                 <LogOut className="shrink-0 w-5 h-5" />
-                <span className="text-sm font-medium">Logout</span>
+                <span className="text-sm font-medium">{t("title")}</span>
               </motion.button>
             </motion.div>
             
           </motion.div>
         )}
       </AnimatePresence>
+      <LogoutModal
+        isOpen={logoutModalOpen}
+        onClose={() => setLogoutModalOpen(false)}
+        onConfirm={handleLogoutConfirm}
+      />
     </motion.div>
   );
 };

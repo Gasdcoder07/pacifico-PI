@@ -45,6 +45,12 @@
     "loading": "Cargando...",
     "user": "Usuario"
   },
+  "LogoutModal": {
+    "title": "Cerrar sesión",
+    "message": "¿Estás seguro de que quieres cerrar sesión?",
+    "confirm": "Sí, cerrar sesión",
+    "cancel": "No, continuar aquí"
+  },
   "BusinessContext": {
     "company": "Compañía",
     "branch": "Sucursal",

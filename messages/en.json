@@ -45,6 +45,12 @@
     "loading": "Loading...",
     "user": "User"
   },
+  "LogoutModal": {
+    "title": "Log out",
+    "message": "Are you sure you want to log out?",
+    "confirm": "Yes, log out",
+    "cancel": "No, stay here"
+  },
   "BusinessContext": {
     "company": "Company",
     "branch": "Branch",
