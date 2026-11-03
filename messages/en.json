@@ -539,6 +539,16 @@
   },
   "SalesPage": {
     "title": "Sales",
+    "history": {
+      "subtitle": "Sales history for the company.",
+      "sale": "Sale #{id}",
+      "cashier": "Cashier: {name}",
+      "ticketPdf": "Ticket (PDF)",
+      "subtotal": "Subtotal",
+      "vat": "VAT ({rate})",
+      "total": "Total",
+      "pdfPending": "PDF ticket integration is pending for sale #{id}."
+    },
     "metrics": {
       "totalSales": "Total Sales",
       "transactions": "Transactions",
