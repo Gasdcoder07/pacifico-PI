@@ -56,11 +56,12 @@ const ProductCard = ({ product } : ProductCardProps) => {
                     </span>
 
                     <motion.button
+                        disabled={product.quantity <= 0}
                         onClick={() => addToCart(product)}
-                        whileHover={{ scale: 1.1 }}
+                        whileHover={product.quantity <= 0 ? { scale: 1.0 } : { scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                        className="rounded-full p-1 bg-cyan-400 cursor-pointer"
+                        className={`rounded-full p-1 ${product.quantity > 0 ? `bg-cyan-400 cursor-pointer` : `bg-neutral-200 cursor-not-allowed`}`}
                     >
                         <Plus size={20} className="text-white" />
                     </motion.button>
