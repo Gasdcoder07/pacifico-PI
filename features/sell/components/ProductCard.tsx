@@ -85,13 +85,14 @@ export const StockBadge = ({ quantity, min_stock } : StockBadgeProps) => {
 
     if (quantity === 0) {
         badgeStyles = "bg-red-50 text-red-600 border-red-200 dark:bg-black dark:text-red-400 dark:border-red-900";
+        label = `${t("outOfStock")}`;
     } else if (quantity > 0 && quantity <= min_stock) {
         badgeStyles = "bg-amber-50 text-amber-600 border-amber-200 dark:bg-black dark:text-amber-400 dark:border-amber-900";
+        label = `${quantity} ${t("inStock")}`;
     } else {
         badgeStyles = "bg-brand-50 text-brand-600 border-brand-200 dark:bg-black dark:text-cyan-400 dark:border-cyan-900";
+        label = `${quantity} ${t("inStock")}`;
     }
-
-    label = `${quantity} ${t("inStock")}`;
     
     return (
         <div className={`font-medium text-xs w-fit shrink-0 flex items-center justify-center gap-1.5 px-1.5 py-1 border rounded-lg ${badgeStyles}`}>

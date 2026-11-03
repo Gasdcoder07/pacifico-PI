@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Sun, Moon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function ThemeToggle() {
+    const t = useTranslations("theme");
     const [dark, setDark] = useState(false);
 
     useEffect(() => {
@@ -30,8 +33,27 @@ export default function ThemeToggle() {
     }
 
     return (
-        <button type="button" onClick={cambiarTema} aria-label={dark ? "Activar modo claro" : "Activar modo oscuro"} title={dark ? "Activar modo claro" : "Activar modo oscuro"} className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black text-neutral-700 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-900 focus-visible:outline-2 focus-visible:outline-cyan-400 focus-visible:outline-offset-2 transition-colors cursor-pointer">
+        <motion.button
+            aria-haspopup="true"
+            whileHover={{ 
+                scaleX: 1.1, 
+                scaleY: 1.1,
+            }}
+            whileTap={{ 
+                scaleX: 0.9, 
+                scaleY: 1.1,
+            }}
+            transition={{ 
+                type: "spring", 
+                bounce: 0.6, 
+                duration: 0.8
+            }}
+            type="button"
+            onClick={cambiarTema}
+            aria-label={dark ? t("enableLightMode") : t("enableDarkMode") }
+            title={dark ? t("enableLightMode") : t("enableDarkMode") }
+            className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black text-neutral-600 dark:text-white cursor-pointer shadow-sm">
             {dark ? <Sun size={20} /> : <Moon size={20} />}
-        </button>
+        </motion.button>
     );
 }

@@ -8,10 +8,11 @@ import { CreateUserRequest } from "../types/user";
 import { number } from "framer-motion";
 
 interface CreateUserModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  branch_id: string | number | null | undefined;
-  company_id: string | number | null | undefined;
+    isOpen: boolean;
+    onClose: () => void;
+    branch_id: string | number | null | undefined;
+    company_id: string | number | null | undefined;
+    managerExists: boolean;
 }
 
 export const CreateUserModal = ({
@@ -19,9 +20,12 @@ export const CreateUserModal = ({
   onClose,
   branch_id,
   company_id,
+  managerExists
 }: CreateUserModalProps) => {
   const t = useTranslations("BranchDetails.createUserModal");
   const queryClient = useQueryClient();
+
+    const customOptions = managerExists ? [{ value: "3", label: t("roles.cashier") }] : [{ value: "2", label: t("roles.manager") }, { value: "3", label: t("roles.cashier") }];
 
   // Inicializamos branch_id y company_id con ?? "" para que nunca sean undefined
   const [formData, setFormData] = useState({
@@ -168,10 +172,7 @@ export const CreateUserModal = ({
             isDisabled={false}
             label={t("fields.role.label")}
             placeholder={t("fields.role.placeholder")}
-            options={[
-              { value: "2", label: t("roles.manager") },
-              { value: "3", label: t("roles.cashier") },
-            ]}
+            options={customOptions}
             value={formData.rol_id}
             onChange={(value) =>
               setFormData((prev) => ({ ...prev, rol_id: value }))

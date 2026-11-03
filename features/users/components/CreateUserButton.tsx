@@ -10,12 +10,14 @@ interface CreateUserButtonProps {
   isDisabled: boolean;
   branch_id: number | string | null | undefined;
   company_id: number | string | null | undefined;
+  managerExists: boolean;
 }
 
 const CreateUserButton = ({
   isDisabled,
   branch_id,
   company_id,
+  managerExists,
 }: CreateUserButtonProps) => {
   const [showModal, setShowModal] = useState(false);
   const t = useTranslations("BranchDetails.createUserButton");
@@ -46,6 +48,7 @@ const CreateUserButton = ({
           onClose={() => setShowModal(false)}
           branch_id={branch_id}
           company_id={company_id}
+          managerExists={managerExists}
         />
       )}
     </>
