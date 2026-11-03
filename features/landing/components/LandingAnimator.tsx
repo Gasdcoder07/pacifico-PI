@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, type ReactNode } from "react"
-import { gsap, ScrollTrigger, useGSAP } from "../../../shared/lib/gsap"
+import { gsap, ScrollTrigger, useGSAP } from "@/shared/lib/gsap"
 
 const FULL_HEIGHT = () => window.innerHeight - 32
 const SHRUNK_HEIGHT = () => window.innerHeight / 3
