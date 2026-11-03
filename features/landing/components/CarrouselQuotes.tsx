@@ -14,36 +14,36 @@ interface QuoteRowProps {
 
 const QUOTES: QuoteItem[] = [
   {
-    author: "J. Epstein",
-    quote: "KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS",
-    position: "Teacher"
+    author: "Elon Musk",
+    quote: "SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX ",
+    position: "CEO of SpaceX"
   }, {
-    author: "P. Diddy",
-    quote: "BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL ",
-    position: "Singer"
+    author: "Cristiano Ronaldo",
+    quote: "Incredible.The best POS in the history. SIUUUUU ",
+    position: "Football Player"
   }, {
     author: "V. Vaca",
-    quote: "ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ",
+    quote: "Amazing. Papeleria Lily will grow up a lot with this new POS.",
     position: "Software Engineer"
   }, {
     author: "N. Frías",
-    quote: "Llave Latina Llave Latina Llave Latina Llave Latina Llave Latina Llave Latina Llave Latina Llave Latina ",
+    quote: "I love this POS. It is the best POS I have ever used.",
     position: "DB manager."
   },{
-    author: "J. Epstein",
-    quote: "KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS KIDS",
-    position: "Teacher"
+    author: "Kanye West",
+    quote: "This POS is the best POS I have ever used. It is amazing. I love it.",
+    position: "Singer"
   }, {
-    author: "P. Diddy",
-    quote: "BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL BBY OIL ",
+    author: "Greco Serna",
+    quote: "Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex ",
     position: "Singer"
   }, {
     author: "V. Vaca",
-    quote: "ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ILSE ",
+    quote: "PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY ",
     position: "Software Engineer"
   }, {
     author: "N. Frías",
-    quote: "Llave Latina Llave Latina Llave Latina Llave Latina Llave Latina Llave Latina Llave Latina Llave Latina ",
+    quote: "VALORANT ",
     position: "DB manager."
   },
 ];
