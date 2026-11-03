@@ -39,7 +39,8 @@
     "registerNow": "Sign up now.",
     "fillAll": "Please fill in all fields.",
     "success": "Logged in successfully",
-    "invalidCredentials": "Incorrect email or password"
+    "invalidCredentials": "Incorrect email or password",
+    "viewTermsAndConditions": "View terms and conditions"
   },
   "Navbar": {
     "loading": "Loading...",

@@ -7,11 +7,13 @@ import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
+import { LegalModal } from "./LegalModal";
 
 const LoginForm = () => {
     const { login, isLoggingIn } = useAuth();
     const t = useTranslations("Login");
 
+    const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -130,7 +132,14 @@ const LoginForm = () => {
                         {t("registerNow")}
                     </Link>
                 </span>
+
+                <button type="button" className="cursor-pointer w-fit mx-auto" onClick={() => setShowModal(true)}>
+                    <p className="text-neutral-600 text-xs hover:text-cyan-600 transition-all duration-200 ease-in-out">{t("viewTermsAndConditions")}</p>
+                </button>
+
             </div>
+
+            <LegalModal src="/AVISOS_DE_PRIVACIDAD_PACIFICO.pdf" title="Avisos de privacidad" open={showModal} onOpenChange={setShowModal}/>
         </form>
     );
 };
