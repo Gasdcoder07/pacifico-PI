@@ -76,6 +76,12 @@
     "settings": "Ajustes"
   },
   "SellPage": {
+    "emptyState": {
+        "title": "No hay productos disponibles",
+        "description": "Aún no hay productos disponibles para vender. Agrega productos a tu inventario para comenzar a registrar ventas.",
+        "action": "Ir al inventario",
+        "ariaLabel": "Ir a la página de inventario"
+    },
     "productCard": {
         "outOfStock": "Sin stock",
         "lowStock": "Stock bajo",
@@ -351,6 +357,10 @@
     }
   },
   "InventoryPage": {
+    "emptyState": {
+        "title": "Tu inventario está vacío",
+        "description": "Todavía no tienes productos registrados. Comienza agregando tu primer producto para gestionar tus existencias."
+    },
     "addProductButton": {
       "label": "Agregar Producto"
     },

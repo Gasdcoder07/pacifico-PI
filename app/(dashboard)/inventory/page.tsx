@@ -1,20 +1,8 @@
-import AddProductButton from "@/features/inventory/components/AddProductButton";
-import InventoryTable from "@/features/inventory/components/InventoryTable";
-import ProductSearch from "@/features/sell/components/ProductSearch";
+import InventoryLayout from "@/features/inventory/components/InventoryLayout";
 
 const Page = () => {
     return (
-        <section className="flex flex-col h-full min-h-0 overflow-hidden p-4 gap-4">
-            <div className="flex items-center justify-between gap-4 w-full">
-                <ProductSearch/>
-
-                <AddProductButton/>
-            </div>
-
-            <div className="min-h-0 min-w-0 flex-1">
-                <InventoryTable/>
-            </div>
-        </section>
+        <InventoryLayout/>
     );
 };
 

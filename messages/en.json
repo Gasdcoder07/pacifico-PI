@@ -76,6 +76,12 @@
     "settings": "Settings"
   },
   "SellPage": {
+    "emptyState": {
+        "title": "No products available",
+        "description": "There are no products available for sale yet. Add products to your inventory to start recording sales.",
+        "action": "Go to inventory",
+        "ariaLabel": "Go to inventory page"
+    },
     "productCard": {
         "outOfStock": "Out of stock",
         "lowStock": "Low stock",
@@ -351,6 +357,10 @@
     }
   },
   "InventoryPage": {
+    "emptyState": {
+        "title": "Your inventory is empty",
+        "description": "You haven't registered any products yet. Start by adding your first product to manage your stock."
+    },
     "addProductButton": {
       "label": "Add Product"
     },

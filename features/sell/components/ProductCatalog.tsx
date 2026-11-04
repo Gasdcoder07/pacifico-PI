@@ -1,18 +1,20 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { getProducts } from "../services/product.service";
+import { Product } from "../types/product";
+
 import ProductCard from "./ProductCard";
+import EmptyState from "./EmptyState";
 
-const ProductCatalog = ({ isCartPanelShowed } : { isCartPanelShowed : boolean}) => {
-    const { data, isLoading } = useQuery({
-        queryKey: ["products"],
-        queryFn: getProducts
-    })
+interface ProductCatalogProps {
+    isCartPanelShowed: boolean;
+    products: Product[];
+    isLoading: boolean;
+}
 
-    const products = data?.flatMap((branch) => branch.productos) ?? [];
-
+const ProductCatalog = ({ isCartPanelShowed, products, isLoading } : ProductCatalogProps) => {
     if (isLoading) return <Skeleton/>
+
+    if (products.length === 0) return <EmptyState/>
 
     return (
         <section className="flex flex-1 min-h-0 min-w-0 w-full flex-col gap-4">
