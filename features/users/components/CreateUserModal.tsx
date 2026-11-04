@@ -1,18 +1,18 @@
 import { CustomSelect } from "@/shared/components/CustomSelect";
 import { ModalLayout } from "@/shared/components/ModalLayout";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { createManager, createCashier } from "../services/users.service";
 import { CreateUserRequest } from "../types/user";
-import { number } from "framer-motion";
+import { getBranches } from "@/features/branches/services/branch.service";
 
 interface CreateUserModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    branch_id: string | number | null | undefined;
-    company_id: string | number | null | undefined;
-    managerExists: boolean;
+  isOpen: boolean;
+  onClose: () => void;
+  branch_id: string | number | null | undefined;
+  company_id: string | number | null | undefined;
+  managerExists: boolean;
 }
 
 export const CreateUserModal = ({
@@ -20,25 +20,52 @@ export const CreateUserModal = ({
   onClose,
   branch_id,
   company_id,
-  managerExists
+  managerExists,
 }: CreateUserModalProps) => {
   const t = useTranslations("BranchDetails.createUserModal");
   const queryClient = useQueryClient();
 
-    const customOptions = managerExists ? [{ value: "3", label: t("roles.cashier") }] : [{ value: "2", label: t("roles.manager") }, { value: "3", label: t("roles.cashier") }];
+  const {
+    data: branches,
+    error: branchError,
+    isLoading: branchIsLoading,
+  } = useQuery({
+    queryKey: ["getBranches"],
+    queryFn: () => getBranches(),
+    staleTime: 1000 * 60 * 60,
+    retry: false,
+    enabled: isOpen,
+  });
 
-  // Inicializamos branch_id y company_id con ?? "" para que nunca sean undefined
+  const customOptions = managerExists
+    ? [{ value: "3", label: t("roles.cashier") }]
+    : [
+        { value: "2", label: t("roles.manager") },
+        { value: "3", label: t("roles.cashier") },
+      ];
+
+  console.log(branches)
+
+  const filteredBranches = branches?.filter((branch) => branch.gerentes.length === 0)
+
+  const branchOptions = useMemo(
+    () =>
+      (filteredBranches ?? []).map((branch: { id: number | string; name: string }) => ({
+        value: String(branch.id),
+        label: branch.name,
+      })),
+    [branches]
+  );
+
   const [formData, setFormData] = useState({
     name: "",
     last_name: "",
     email: "",
-    password: "",
     rol_id: "",
-    branch_id: branch_id ?? "",
+    branch_id: branch_id ? String(branch_id) : "",
     company_id: company_id ?? "",
   });
 
-  // Usamos actualización funcional prev => ({ ...prev, ... })
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -59,18 +86,17 @@ export const CreateUserModal = ({
       throw new Error(t("errors.invalidRole"));
     },
 
-    onSuccess: async () => {
+    onSuccess: async (_, variables) => {
       await queryClient.invalidateQueries({
-        queryKey: ["getBranch", Number(branch_id)],
+        queryKey: ["getBranch", Number(variables.branch_id)],
       });
 
       setFormData({
         name: "",
         last_name: "",
         email: "",
-        password: "",
         rol_id: "",
-        branch_id: branch_id ?? "",
+        branch_id: branch_id ? String(branch_id) : "",
         company_id: company_id ?? "",
       });
 
@@ -88,8 +114,7 @@ export const CreateUserModal = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!formData.branch_id || !formData.company_id) {
-      console.error("branch_id y company_id son obligatorios");
+    if (!formData.branch_id || !formData.rol_id) {
       return;
     }
 
@@ -97,9 +122,8 @@ export const CreateUserModal = ({
       name: formData.name,
       last_name: formData.last_name,
       email: formData.email,
-      password: formData.password,
       rol_id: formData.rol_id,
-      branch_id: formData.branch_id,
+      branch_id: Number(formData.branch_id),
       company_id: formData.company_id,
     });
   };
@@ -150,24 +174,7 @@ export const CreateUserModal = ({
           />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label className="font-medium text-neutral-600">
-            {t("fields.password.label")} *
-          </label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-            placeholder={t("fields.password.placeholder")}
-            className="w-full p-3 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
-          />
-          <span className="text-xs text-neutral-500">
-            {t("fields.password.hint")}
-          </span>
-        </div>
-
-        <div className="w-1/2 flex gap-4">
+        <div className="flex gap-4">
           <CustomSelect
             isDisabled={false}
             label={t("fields.role.label")}
@@ -178,7 +185,23 @@ export const CreateUserModal = ({
               setFormData((prev) => ({ ...prev, rol_id: value }))
             }
           />
+          <CustomSelect
+            isDisabled={branchIsLoading || !!branchError}
+            label={t("fields.branch.label")}
+            placeholder={t("fields.branch.placeholder")}
+            options={branchOptions}
+            value={String(formData.branch_id)}
+            onChange={(value) =>
+              setFormData((prev) => ({ ...prev, branch_id: value }))
+            }
+          />
         </div>
+
+        {branchError && (
+          <span className="text-xs text-red-500">
+            No se pudieron cargar las sucursales
+          </span>
+        )}
 
         <div className="flex justify-end gap-4 mt-4">
           <button
@@ -193,9 +216,9 @@ export const CreateUserModal = ({
             type="submit"
             disabled={isPending}
             className={`px-4 py-2 rounded-lg text-white font-medium transition-all duration-200 ease-in-out ${
-                isPending
-                    ? 'bg-neutral-600 cursor-not-allowed'
-                    : 'bg-cyan-400 hover:bg-cyan-500 cursor-pointer'
+              isPending
+                ? "bg-neutral-600 cursor-not-allowed"
+                : "bg-cyan-400 hover:bg-cyan-500 cursor-pointer"
             }`}
           >
             {isPending ? t("actions.saving") : t("actions.save")}

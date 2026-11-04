@@ -295,6 +295,10 @@
         "role": {
           "label": "Role *",
           "placeholder": "Select a role"
+        },
+        "branch": {
+          "label": "Branches",
+          "placeholder": "Select a branch"
         }
       },
       "roles": {

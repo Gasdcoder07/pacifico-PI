@@ -16,7 +16,6 @@ export interface CreateUserRequest {
     name: string;
     last_name: string;
     email: string;
-    password: string;
     rol_id: string | number;
     branch_id: string | number;
     company_id: string | number;
