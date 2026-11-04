@@ -12,7 +12,7 @@ import LandingAnimator from "./LandingAnimator";
 
 const LandingPage = () => {
   return (
-    <main className="p-4">
+    <main className="p-4 dark:bg-neutral-900">
       <LandingAnimator>
         <div data-anim="nav" className="invisible fixed inset-x-4 top-4 z-50">
           <div

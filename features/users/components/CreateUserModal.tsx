@@ -15,6 +15,12 @@ interface CreateUserModalProps {
   managerExists: boolean;
 }
 
+interface Branch {
+  id: number | string;
+  name: string;
+  gerentes?: unknown[];
+}
+
 export const CreateUserModal = ({
   isOpen,
   onClose,
@@ -44,19 +50,6 @@ export const CreateUserModal = ({
         { value: "3", label: t("roles.cashier") },
       ];
 
-  console.log(branches)
-
-  const filteredBranches = branches?.filter((branch) => branch.gerentes.length === 0)
-
-  const branchOptions = useMemo(
-    () =>
-      (filteredBranches ?? []).map((branch: { id: number | string; name: string }) => ({
-        value: String(branch.id),
-        label: branch.name,
-      })),
-    [branches]
-  );
-
   const [formData, setFormData] = useState({
     name: "",
     last_name: "",
@@ -65,6 +58,36 @@ export const CreateUserModal = ({
     branch_id: branch_id ? String(branch_id) : "",
     company_id: company_id ?? "",
   });
+
+  const branchList: Branch[] = useMemo(() => branches ?? [], [branches]);
+
+  const branchOptions = useMemo(() => {
+    const available =
+      formData.rol_id === "2"
+        ? branchList.filter((branch) => (branch.gerentes?.length ?? 0) === 0)
+        : branchList;
+
+    return available.map((branch) => ({
+      value: String(branch.id),
+      label: branch.name,
+    }));
+  }, [branchList, formData.rol_id]);
+
+  const handleRoleChange = (value: string) => {
+    setFormData((prev) => {
+      const selected = branchList.find(
+        (branch) => String(branch.id) === prev.branch_id
+      );
+      const invalid =
+        value === "2" && !!selected && (selected.gerentes?.length ?? 0) > 0;
+
+      return {
+        ...prev,
+        rol_id: value,
+        branch_id: invalid ? "" : prev.branch_id,
+      };
+    });
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -90,6 +113,7 @@ export const CreateUserModal = ({
       await queryClient.invalidateQueries({
         queryKey: ["getBranch", Number(variables.branch_id)],
       });
+      await queryClient.invalidateQueries({ queryKey: ["getBranches"] });
 
       setFormData({
         name: "",
@@ -181,9 +205,7 @@ export const CreateUserModal = ({
             placeholder={t("fields.role.placeholder")}
             options={customOptions}
             value={formData.rol_id}
-            onChange={(value) =>
-              setFormData((prev) => ({ ...prev, rol_id: value }))
-            }
+            onChange={handleRoleChange}
           />
           <CustomSelect
             isDisabled={branchIsLoading || !!branchError}
