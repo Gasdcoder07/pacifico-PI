@@ -399,6 +399,8 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
                             value={selectedCategory}
                             onChange={handleCategoryChange}
                             placeholder={t("fields.category.placeholder")}
+                            isLoading={categoriesQuery.isLoading}
+                            isDisabled={categoriesQuery.isLoading}
                             />
                         </div>
                     
@@ -442,6 +444,8 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
                         value={selectedBranches}
                         onChange={handleBranchesChange}
                         placeholder={t("fields.branches.placeholder")}
+                        isLoading={branchesQuery.isLoading}
+                        isDisabled={branchesQuery.isLoading}
                         />
                     </div>
 

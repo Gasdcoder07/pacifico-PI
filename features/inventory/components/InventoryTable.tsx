@@ -3,28 +3,28 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
 import { Edit, Ellipsis, Trash } from "lucide-react";
 
 import { menuVariants, itemVariants } from "@/shared/animations/dropdown.animations";
-import { getProducts } from "@/features/sell/services/product.service";
 import { Product } from "@/features/sell/types/product";
 import { useFormatter, useTranslations } from "next-intl";
 import { DeleteProductModal } from "./DeleteProductModal";
 import { EditProductModal } from "./EditProductModal";
 
-const InventoryTable = () => {
+import EmptyState from "./EmptyState";
+
+interface InventoryTableProps {
+    isLoading: boolean;
+    products: Product[];
+}
+
+const InventoryTable = ({ isLoading, products } : InventoryTableProps) => {
   const t = useTranslations("InventoryPage.table");
   const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300 dark:[&::-webkit-scrollbar-thumb:hover]:bg-neutral-600";
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["products"],
-    queryFn: getProducts,
-  });
-
-  const products = data?.flatMap((branch) => branch.productos) ?? [];
-
   if (isLoading) return <InventoryTableSkeleton />;
+
+  if (products.length === 0) return <EmptyState/>
 
   return (
     <div className="flex max-h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white text-neutral-900 shadow-sm dark:border-neutral-800 dark:bg-black dark:text-white">

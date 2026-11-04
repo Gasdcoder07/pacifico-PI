@@ -357,6 +357,10 @@
     }
   },
   "InventoryPage": {
+    "emptyState": {
+        "title": "Tu inventario está vacío",
+        "description": "Todavía no tienes productos registrados. Comienza agregando tu primer producto para gestionar tus existencias."
+    },
     "addProductButton": {
       "label": "Agregar Producto"
     },

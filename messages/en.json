@@ -357,6 +357,10 @@
     }
   },
   "InventoryPage": {
+    "emptyState": {
+        "title": "Your inventory is empty",
+        "description": "You haven't registered any products yet. Start by adding your first product to manage your stock."
+    },
     "addProductButton": {
       "label": "Add Product"
     },
