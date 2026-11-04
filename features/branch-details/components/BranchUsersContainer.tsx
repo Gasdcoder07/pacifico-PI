@@ -32,10 +32,10 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
-          <h4 className="text-xl font-semibold tracking-wide text-neutral-900">
+          <h4 className="text-xl font-semibold tracking-wide text-neutral-900 dark:text-slate-50">
             {t("title")}
           </h4>
-          <p className="text-sm text-neutral-500">{t("subtitle")}</p>
+          <p className="text-sm text-neutral-500 dark:text-[#8493A8]">{t("subtitle")}</p>
         </div>
 
         <CreateUserButton
@@ -71,17 +71,17 @@ const EmptyState = () => {
   const t = useTranslations("BranchDetails.usersContainer.emptyState");
 
   return (
-    <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-neutral-200 bg-white px-6 py-12 text-center shadow-sm">
-      <div className="rounded-full border border-brand-200 bg-brand-50 p-4 text-brand-600">
+    <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-12 text-center shadow-sm">
+      <div className="rounded-full border border-brand-200 dark:border-cyan-500/30 bg-brand-50 dark:bg-cyan-500/10 p-4 text-brand-600 dark:text-cyan-400">
         <Users size={28} />
       </div>
 
       <div className="flex max-w-sm flex-col gap-2">
-        <h3 className="text-xl font-semibold text-neutral-900">
+        <h3 className="text-xl font-semibold text-neutral-900 dark:text-slate-50">
           {t("title")}
         </h3>
 
-        <p className="text-sm leading-relaxed text-neutral-600">
+        <p className="text-sm leading-relaxed text-neutral-600 dark:text-slate-400">
           {t("description")}
         </p>
       </div>
@@ -91,6 +91,6 @@ const EmptyState = () => {
 
 const UsersContainerSkeleton = () => {
   return (
-    <div className="flex h-full min-h-0 w-full min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 shadow-sm" />
+    <div className="flex h-full min-h-0 w-full min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 dark:bg-slate-800 shadow-sm" />
   );
 };

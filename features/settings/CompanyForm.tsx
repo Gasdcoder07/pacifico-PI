@@ -8,7 +8,7 @@ import { ImagePlus, Save, Trash2, Upload } from "lucide-react";
 const MAX_SIZE = 2 * 1024 * 1024;
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
-const inputClass = "w-full p-3 text-sm bg-white dark:bg-black text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-500 border border-neutral-200 dark:border-neutral-800 rounded-xl hover:border-neutral-300 dark:hover:border-neutral-600 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/10 outline-none transition-colors duration-200 ease-in-out";
+const inputClass = "w-full p-3 text-sm bg-white dark:bg-slate-900 text-neutral-900 dark:text-slate-50 placeholder:text-neutral-400 dark:placeholder:text-slate-400 border border-neutral-200 dark:border-slate-800 rounded-xl hover:border-neutral-300 dark:hover:border-slate-600 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/10 outline-none transition-colors duration-200 ease-in-out";
 
 const CompanyForm = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -58,41 +58,41 @@ const CompanyForm = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="w-full bg-white dark:bg-black text-neutral-900 dark:text-white border border-neutral-200 dark:border-neutral-800 rounded-lg shadow-sm py-6 px-8 flex flex-col gap-6 max-w-4xl">
-            <div className="flex flex-col gap-2 pb-6 border-b border-neutral-200 dark:border-neutral-800">
-                <h2 className="text-xl font-semibold text-neutral-900 dark:text-white">Identidad de tu empresa</h2>
-                <p className="text-neutral-500 dark:text-neutral-300 text-sm">
+        <form onSubmit={handleSubmit} className="w-full bg-white dark:bg-slate-900 text-neutral-900 dark:text-slate-50 border border-neutral-200 dark:border-slate-800 rounded-lg shadow-sm py-6 px-8 flex flex-col gap-6 max-w-4xl">
+            <div className="flex flex-col gap-2 pb-6 border-b border-neutral-200 dark:border-slate-800">
+                <h2 className="text-xl font-semibold text-neutral-900 dark:text-slate-50">Identidad de tu empresa</h2>
+                <p className="text-neutral-500 dark:text-[#8493A8] dark:text-slate-400 text-sm">
                     Configura el nombre, logo y datos de ubicación de tu empresa para personalizar tu documentación.
                 </p>
             </div>
 
             <div className="flex">
-                <div className="flex flex-col gap-4 border-r border-neutral-200 dark:border-neutral-800 pr-8">
+                <div className="flex flex-col gap-4 border-r border-neutral-200 dark:border-slate-800 pr-8">
                     <div className="flex flex-col gap-2">
                         <label className="font-medium">Logo de la empresa</label>
-                        <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                        <p className="text-xs text-neutral-500 dark:text-[#8493A8] dark:text-slate-400">
                             Sube el logo de tu empresa. Se mostrará en tus comprobantes.
                         </p>
                     </div>
 
-                    <div className="relative h-40 w-full rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black flex items-center justify-center overflow-hidden">
+                    <div className="relative h-40 w-full rounded-xl border border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden">
                         {logoPreview ? (
                             <>
                                 <img src={logoPreview} alt="Logo de la empresa" className="w-full h-full object-contain p-2" />
 
-                                <button type="button" onClick={handleRemoveLogo} className="absolute top-2 right-2 flex size-9 items-center justify-center rounded-full border border-red-50 dark:border-red-900 bg-white dark:bg-black text-red-500 dark:text-red-400 shadow-sm transition-all duration-200 ease-in-out hover:bg-red-500 dark:hover:bg-red-500 hover:text-white dark:hover:text-white cursor-pointer">
+                                <button type="button" onClick={handleRemoveLogo} className="absolute top-2 right-2 flex size-9 items-center justify-center rounded-full border border-red-50 dark:border-red-900 bg-white dark:bg-slate-900 text-red-500 dark:text-red-400 shadow-sm transition-all duration-200 ease-in-out hover:bg-red-500 dark:hover:bg-red-500 hover:text-white dark:hover:text-white cursor-pointer">
                                     <Trash2 size={16} />
                                 </button>
                             </>
                         ) : (
                             <div className="flex flex-col items-center gap-2 px-4 text-center">
-                                <div className="flex size-12 items-center justify-center rounded-xl bg-brand-50 dark:bg-neutral-950 text-brand-500 dark:text-cyan-400">
+                                <div className="flex size-12 items-center justify-center rounded-xl bg-brand-50 dark:bg-slate-800 text-brand-500 dark:text-cyan-400">
                                     <ImagePlus size={24} strokeWidth={1.6} />
                                 </div>
 
                                 <div className="flex flex-col gap-1">
                                     <span className="text-sm font-medium">Sin logo</span>
-                                    <p className="text-xs text-neutral-400">
+                                    <p className="text-xs text-neutral-400 dark:text-slate-400">
                                         Sube una imagen para identificar tu empresa
                                     </p>
                                 </div>
@@ -105,15 +105,15 @@ const CompanyForm = () => {
                             {logoFile ? logoFile.name : "Ningún archivo seleccionado"}
                         </span>
                         <div className="flex gap-2">
-                            <span className="text-xs text-neutral-500 dark:text-neutral-400">JPG, PNG o WebP · Máximo 2 MB</span>
-                            <span className="text-xs text-neutral-500 dark:text-neutral-400">Hasta 4096 × 4096 px.</span>
+                            <span className="text-xs text-neutral-500 dark:text-[#8493A8] dark:text-slate-400">JPG, PNG o WebP · Máximo 2 MB</span>
+                            <span className="text-xs text-neutral-500 dark:text-[#8493A8] dark:text-slate-400">Hasta 4096 × 4096 px.</span>
                         </div>
                     </div>
 
                     <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleLogoChange} className="hidden" />
 
                     <div className="flex justify-end">
-                        <button type="button" onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-neutral-300 dark:border-neutral-800 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors cursor-pointer">
+                        <button type="button" onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-neutral-300 dark:border-slate-800 rounded-lg hover:bg-neutral-50 dark:hover:bg-slate-800 transition-colors cursor-pointer">
                             <Upload size={16} />
                             Subir logo
                         </button>
@@ -124,7 +124,7 @@ const CompanyForm = () => {
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-2">
                             <label htmlFor="name" className="font-medium">Nombre de la empresa</label>
-                            <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                            <p className="text-xs text-neutral-500 dark:text-[#8493A8] dark:text-slate-400">
                                 Este nombre aparecerá en tus comprobantes y documentos.
                             </p>
                         </div>
@@ -134,7 +134,7 @@ const CompanyForm = () => {
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-2">
                             <label htmlFor="address" className="font-medium">Domicilio de la empresa</label>
-                            <p className="text-xs text-neutral-400">
+                            <p className="text-xs text-neutral-400 dark:text-slate-400">
                                 Ingresa el domicilio fiscal o la ubicación principal de tu empresa.
                             </p>
                         </div>
@@ -143,18 +143,18 @@ const CompanyForm = () => {
                 </div>
             </div>
 
-            <div className="flex flex-col gap-4 border-t border-neutral-200 dark:border-neutral-800 pt-4">
+            <div className="flex flex-col gap-4 border-t border-neutral-200 dark:border-slate-800 pt-4">
                 <div className="flex flex-col gap-2">
                     <label htmlFor="description" className="font-medium">Descripción de la empresa</label>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    <p className="text-xs text-neutral-500 dark:text-[#8493A8] dark:text-slate-400">
                         Agrega una breve descripción de tu empresa. Esta información puede aparecer en tus comprobantes y documentos.
                     </p>
                 </div>
                 <textarea id="description" name="description" rows={3} maxLength={250} value={formData.description} onChange={handleChange} placeholder="Ej. Nos dedicamos a la venta de productos y servicios tecnológicos..." suppressHydrationWarning className={`${inputClass} resize-none`} />
             </div>
 
-            <div className="flex justify-end pt-6 border-t border-neutral-200 dark:border-neutral-800">
-                <motion.button type="submit" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.9 }} transition={{ type: "spring", stiffness: 300, damping: 20, duration: 0.2, ease: "easeInOut" }} className="flex items-center gap-2 rounded-lg bg-cyan-400 px-4 py-2 text-sm font-medium text-white shadow-sm cursor-pointer">
+            <div className="flex justify-end pt-6 border-t border-neutral-200 dark:border-slate-800">
+                <motion.button type="submit" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.9 }} transition={{ type: "spring", stiffness: 300, damping: 20, duration: 0.2, ease: "easeInOut" }} className="flex items-center gap-2 rounded-lg bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 px-4 py-2 text-sm font-medium text-white shadow-sm cursor-pointer">
                     <Save size={16} />
                     Guardar cambios
                 </motion.button>

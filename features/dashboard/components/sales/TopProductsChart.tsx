@@ -25,8 +25,8 @@ export const TopProductsChart = () => {
   const t = useTranslations("SalesPage.topProductsChart");
 
   return (
-    <div className="w-full rounded-lg border border-neutral-200 bg-white p-4 text-neutral-900 shadow-sm transition-colors duration-200 dark:border-neutral-800 dark:bg-black dark:text-white [--ejes:#737373] dark:[--ejes:#d4d4d4] [--cuadricula:#e5e5e5] dark:[--cuadricula:#262626] [--tooltip-fondo:#ffffff] dark:[--tooltip-fondo:#171717] [--tooltip-texto:#171717] dark:[--tooltip-texto:#ffffff] [--cursor:#f5f5f5] dark:[--cursor:#171717]">
-      <h3 className="mb-4 text-lg font-semibold text-neutral-900 dark:text-white">
+    <div className="w-full rounded-lg border border-neutral-200 bg-white p-4 text-neutral-900 shadow-sm transition-colors duration-200 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50 [--ejes:#737373] dark:[--ejes:#94a3b8] [--cuadricula:#e5e5e5] dark:[--cuadricula:#1e293b] [--tooltip-fondo:#ffffff] dark:[--tooltip-fondo:#0f172a] [--tooltip-texto:#171717] dark:[--tooltip-texto:#f8fafc] [--cursor:#f5f5f5] dark:[--cursor:#1e293b] [--serie:#0891b2] dark:[--serie:#22d3ee]">
+      <h3 className="mb-4 text-lg font-semibold text-neutral-900 dark:text-slate-50">
         {t("title")}
       </h3>
 
@@ -70,7 +70,7 @@ export const TopProductsChart = () => {
                 t("soldLabel"),
               ]}
             />
-            <Bar dataKey="ventas" fill="#0891b2" radius={[0, 6, 6, 0]} />
+            <Bar dataKey="ventas" fill="var(--serie)" radius={[0, 6, 6, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

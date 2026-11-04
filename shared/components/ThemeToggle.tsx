@@ -52,7 +52,7 @@ export default function ThemeToggle() {
             onClick={cambiarTema}
             aria-label={dark ? t("enableLightMode") : t("enableDarkMode") }
             title={dark ? t("enableLightMode") : t("enableDarkMode") }
-            className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black text-neutral-600 dark:text-white cursor-pointer shadow-sm">
+            className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-neutral-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-neutral-600 dark:text-slate-200 cursor-pointer shadow-sm">
             {dark ? <Sun size={20} /> : <Moon size={20} />}
         </motion.button>
     );

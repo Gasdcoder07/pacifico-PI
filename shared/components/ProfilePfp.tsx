@@ -109,9 +109,9 @@ const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
             <Blobatar
                 name={name as string}
                 animate="always"
-                className="size-10 object-cover rounded-full cursor-pointer border border-neutral-200 shadow-sm"/>
-    
-            <div className="absolute bottom-0 translate-x-1/2 size-2 rounded-full bg-green-600"/>
+                className="size-10 object-cover rounded-full cursor-pointer border border-neutral-200 dark:border-slate-700 shadow-sm"/>
+
+            <div className="absolute bottom-0 translate-x-1/2 size-2 rounded-full bg-green-600 dark:bg-emerald-400 dark:ring-2 dark:ring-slate-900"/>
         </div>
 
       </motion.button>
@@ -123,7 +123,7 @@ const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="absolute right-0 top-14 flex flex-col items-stretch gap-1 rounded-2xl border border-gray-100 bg-white shadow-xl p-2 w-64 origin-top-right"
+            className="absolute right-0 top-14 flex flex-col items-stretch gap-1 rounded-2xl border border-gray-100 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xl p-2 w-64 origin-top-right"
           >
             <motion.div variants={itemVariants}>
               <motion.button 
@@ -131,7 +131,7 @@ const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", bounce: 0.5 }}
                 onClick={() => {}} 
-                className="w-full text-neutral-900 flex items-center gap-4 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-gray-100"
+                className="w-full text-neutral-900 dark:text-slate-50 flex items-center gap-4 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700"
               >
                 {
                     avatar ? (
@@ -143,20 +143,20 @@ const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
                     ) : (
                         <div
                           style={{ width: 40, height: 40 }}
-                          className="rounded-full object-cover bg-cyan-400 shrink-0"
+                          className="rounded-full object-cover bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 shrink-0"
                         />
                     )
                 }
 
                 <div className="text-left flex flex-col gap-0">
-                    <span className="text-xs text-neutral-600 font-medium">{roleName}</span>
-                  <p className="text-sm font-medium text-gray-900">{name}</p>
+                    <span className="text-xs text-neutral-600 dark:text-slate-400 font-medium">{roleName}</span>
+                  <p className="text-sm font-medium text-gray-900 dark:text-slate-50">{name}</p>
                 </div>
               </motion.button>
             </motion.div>
 
             <motion.div variants={itemVariants} className="px-3 py-1">
-              <div className="w-full border-t border-gray-100" />
+              <div className="w-full border-t border-gray-100 dark:border-slate-700" />
             </motion.div>
 
             <motion.div variants={itemVariants}>
@@ -168,7 +168,7 @@ const ProfilePfp = ({ name, role, avatar }: ProfilePfpProps) => {
                   setOpen(false);
                   setLogoutModalOpen(true);
                 }}
-                className="w-full text-neutral-500 flex items-center gap-4 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-red-50 hover:text-red-600"
+                className="w-full text-neutral-500 dark:text-slate-400 flex items-center gap-4 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-400"
               >
                 <LogOut className="shrink-0 w-5 h-5" />
                 <span className="text-sm font-medium">{t("title")}</span>

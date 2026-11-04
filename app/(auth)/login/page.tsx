@@ -47,7 +47,7 @@ const page = async () => {
             </h3>
 
             {/* Texto traducido */}
-            <p className="text-sm text-neutral-600 leading-relaxed">
+            <p className="text-sm text-neutral-600 dark:text-slate-400 leading-relaxed">
               {t("subtitle")}
             </p>
           </div>

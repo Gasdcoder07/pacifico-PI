@@ -75,22 +75,22 @@ const BranchesContainer = () => {
 export default BranchesContainer;
 
 const BranchCardSkeleton = () => {
-  return <div className="h-56 w-full rounded-lg bg-neutral-200 shadow-sm" />;
+  return <div className="h-56 w-full rounded-lg bg-neutral-200 dark:bg-slate-800 shadow-sm" />;
 };
 
 const BranchesEmptyState = () => {
   const t = useTranslations("Branches.emptyState");
 
   return (
-    <div className="col-span-full flex w-full flex-col gap-6 rounded-lg border border-neutral-200 bg-white p-4 shadow-sm">
+    <div className="col-span-full flex w-full flex-col gap-6 rounded-lg border border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm">
       <div className="flex flex-col items-center justify-center text-center">
-        <div className="mb-2 rounded-full border border-brand-200 bg-brand-50 p-4 text-brand-600">
+        <div className="mb-2 rounded-full border border-brand-200 dark:border-cyan-500/30 bg-brand-50 dark:bg-cyan-500/10 p-4 text-brand-600 dark:text-cyan-400">
           <Warehouse size={28} />
         </div>
         <h3 className="mb-1 text-xl font-semibold tracking-wide">
           {t("title")}
         </h3>
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-neutral-600 dark:text-slate-400">
           {t("description")}
         </p>
       </div>
@@ -135,18 +135,18 @@ const BranchesEmptyStateStep = ({
   description,
 }: BranchesEmptyStateStepProps) => {
   return (
-    <div className="flex items-start gap-4 rounded-lg border border-dashed border-neutral-200 p-4">
+    <div className="flex items-start gap-4 rounded-lg border border-dashed border-neutral-200 dark:border-slate-800 p-4">
       <div className="flex items-start gap-3">
-        <div className="rounded-full border border-brand-200 bg-brand-50 p-2 text-brand-600">
+        <div className="rounded-full border border-brand-200 dark:border-cyan-500/30 bg-brand-50 dark:bg-cyan-500/10 p-2 text-brand-600 dark:text-cyan-400">
           <Icon size={22} />
         </div>
-        <div className="flex size-7 items-center justify-center rounded-full bg-brand-100 text-brand-600">
+        <div className="flex size-7 items-center justify-center rounded-full bg-brand-100 dark:bg-cyan-500/15 text-brand-600 dark:text-cyan-400">
           <span className="text-sm font-bold">{step}</span>
         </div>
       </div>
       <div className="flex flex-col items-start gap-1">
         <h5 className="text-sm font-semibold">{title}</h5>
-        <p className="max-w-50 text-sm text-neutral-600">{description}.</p>
+        <p className="max-w-50 text-sm text-neutral-600 dark:text-slate-400">{description}.</p>
       </div>
     </div>
   );

@@ -62,13 +62,13 @@ export const PaymentMethodModal = ({
                                 className={`flex min-w-0 flex-col items-center justify-center gap-4 rounded-lg border px-10 py-8 text-center transition-colors duration-200 ease-in-out cursor-pointer ${
                                     isSelected
                                         ? "border-brand-300 bg-brand-50/50"
-                                        : "border-neutral-200 bg-white hover:border-brand-200 hover:bg-neutral-50"
+                                        : "border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-brand-200 hover:bg-neutral-50 dark:hover:bg-slate-800"
                                 }`}
                             >
-                                <span className="rounded-full border border-brand-200 bg-brand-50 p-2 text-brand-600">
+                                <span className="rounded-full border border-brand-200 dark:border-cyan-500/30 bg-brand-50 dark:bg-cyan-500/10 p-2 text-brand-600 dark:text-cyan-400">
                                     <Icon size={22} />
                                 </span>
-                                <span className="text-sm font-medium text-neutral-700">
+                                <span className="text-sm font-medium text-neutral-700 dark:text-slate-300">
                                     {t(`methods.${key}`)}
                                 </span>
                             </button>
@@ -81,7 +81,7 @@ export const PaymentMethodModal = ({
                         disabled={isPending}
                         type="button"
                         onClick={onClose}
-                        className="cursor-pointer disabled:cursor-not-allowed rounded-lg border border-neutral-200 px-4 py-2 text-neutral-600 transition-colors duration-200 ease-in-out hover:bg-neutral-50 disabled:hover:bg-transparent"
+                        className="cursor-pointer disabled:cursor-not-allowed rounded-lg border border-neutral-200 dark:border-slate-800 px-4 py-2 text-neutral-600 dark:text-slate-400 transition-colors duration-200 ease-in-out hover:bg-neutral-50 dark:hover:bg-slate-800 disabled:hover:bg-transparent"
                     >
                         {t("buttons.cancel")}
                     </button>
@@ -91,7 +91,7 @@ export const PaymentMethodModal = ({
                         whileTap={selectedPaymentMethod === undefined ? { } : { scale: 0.98 }}
                         onClick={handleCompletePurchase}
                         disabled={selectedPaymentMethod === undefined || isPending}
-                        className="rounded-lg bg-cyan-400 px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out disabled:cursor-not-allowed disabled:bg-neutral-400 cursor-pointer"
+                        className="rounded-lg bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out disabled:cursor-not-allowed disabled:bg-neutral-400 dark:disabled:bg-slate-700 cursor-pointer"
                     >
                         { isPending ? t("buttons.submitting") : t("buttons.confirm") }
                     </motion.button>

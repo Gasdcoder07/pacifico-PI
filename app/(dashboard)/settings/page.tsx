@@ -16,7 +16,7 @@ const Page = () => {
         <h1 className="text-2xl font-semibold tracking-tight">
           {t("header.title")}
         </h1>
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-neutral-600 dark:text-slate-400">
           {t("header.subtitle")}
         </p>
       </div>

@@ -11,7 +11,7 @@ const TopBranchCard = ({ isLoading, branch }: TopBranchCardProps) => {
 
   if (isLoading) {
     return (
-      <div className="h-54 w-3/5 animate-pulse rounded-lg bg-neutral-200 transition-all duration-200" />
+      <div className="h-54 w-3/5 animate-pulse rounded-lg bg-neutral-200 dark:bg-slate-800 transition-all duration-200" />
     );
   }
 
@@ -101,7 +101,7 @@ const TopBranchCardEmptyState = () => {
   const t = useTranslations("Branches.TopBranchCard.emptyState");
 
   return (
-    <div className="relative h-54 w-3/5 overflow-hidden rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+    <div className="relative h-54 w-3/5 overflow-hidden rounded-lg border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-6 shadow-sm">
       <img
         src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1000&q=80"
         alt="Sucursal"
@@ -131,7 +131,7 @@ const TopBranchCardEmptyState = () => {
 
       <div className="max-w-3/4 relative z-10 flex flex-col justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="mb-2 rounded-full border border-brand-200 bg-brand-50 p-4 text-brand-600">
+          <div className="mb-2 rounded-full border border-brand-200 dark:border-cyan-500/30 bg-brand-50 dark:bg-cyan-500/10 p-4 text-brand-600 dark:text-cyan-400">
             <Warehouse size={28} />
           </div>
 
@@ -140,7 +140,7 @@ const TopBranchCardEmptyState = () => {
           </h2>
         </div>
 
-        <p className="max-w-xs text-sm text-neutral-600">
+        <p className="max-w-xs text-sm text-neutral-600 dark:text-slate-400">
           {t("description")}
         </p>
       </div>

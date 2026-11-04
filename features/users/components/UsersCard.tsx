@@ -34,17 +34,17 @@ const UsersCard = ({
   const t = useTranslations("UsersPage.card");
 
   return (
-    <div className="flex w-full items-center justify-between gap-4 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black text-neutral-900 dark:text-white px-8 py-4 shadow-sm">
+    <div className="flex w-full items-center justify-between gap-4 rounded-lg border border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-neutral-900 dark:text-slate-50 px-8 py-4 shadow-sm">
       <div className="flex items-center gap-4 min-w-3/10">
         <Blobatar name={user.name + " " + user.last_name} animate="always" className="flex size-12 items-center justify-center rounded-full" />
 
-        <p className="font-medium text-[15px] text-neutral-900 dark:text-white">
+        <p className="font-medium text-[15px] text-neutral-900 dark:text-slate-50">
           {user.name} {user.last_name}
         </p>
 
         {isMe && (
-          <div className="rounded bg-[#F4F7F9] dark:bg-neutral-950 px-2 py-1">
-            <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
+          <div className="rounded bg-[#F4F7F9] dark:bg-slate-800 px-2 py-1">
+            <span className="text-xs font-medium text-neutral-600 dark:text-slate-400">
               ({t("you")})
             </span>
           </div>
@@ -58,8 +58,8 @@ const UsersCard = ({
           </div>
 
           <div className="flex flex-1 min-w-0 items-center gap-2">
-            <Mail size={14} className="translate-y-[0.5px] shrink-0 text-neutral-500 dark:text-neutral-400" />
-            <span className="truncate text-xs text-neutral-500 dark:text-neutral-300">
+            <Mail size={14} className="translate-y-[0.5px] shrink-0 text-neutral-500 dark:text-slate-400" />
+            <span className="truncate text-xs text-neutral-500 dark:text-slate-400">
               {user.email}
             </span>
           </div>
@@ -89,13 +89,13 @@ export const RolSpan = ({ rol_id }: RolSpanProps) => {
 
   if (String(rol_id) === "1") {
     label = t("admin");
-    spanStyles = "bg-[#EDE9FE] text-[#5B21B6] border-purple-200 dark:bg-black dark:text-purple-400 dark:border-purple-900";
+    spanStyles = "bg-[#EDE9FE] text-[#5B21B6] border-purple-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
   } else if (String(rol_id) === "2") {
     label = t("manager");
-    spanStyles = "bg-[#DBEAFE] text-[#1E40AF] border-blue-200 dark:bg-black dark:text-blue-400 dark:border-blue-900";
+    spanStyles = "bg-[#DBEAFE] text-[#1E40AF] border-blue-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
   } else {
     label = t("cashier");
-    spanStyles = "bg-[#CCFBF1] text-[#0F766E] border-teal-200 dark:bg-black dark:text-teal-400 dark:border-teal-900";
+    spanStyles = "bg-[#CCFBF1] text-[#0F766E] border-teal-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
   }
 
   return (
