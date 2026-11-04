@@ -340,7 +340,8 @@
   },
   "UsersPage": {
     "title": "User management",
-    "subtitle": "The people running your branch.",
+    "subtitleManager": "The people running your branch.",
+    "subtitleAdmin": "The people running your company.",
     "card": {
       "you": "You"
     },

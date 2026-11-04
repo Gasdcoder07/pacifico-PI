@@ -340,7 +340,8 @@
   },
   "UsersPage": {
     "title": "Gestión de usuarios",
-    "subtitle": "Las personas que mantienen tu sucursal.",
+    "subtitleManager": "Las personas que mantienen tu sucursal.",
+    "subtitleAdmin": "Las personas que mantienen tu compañía.",
     "card": {
       "you": "Tú"
     },
