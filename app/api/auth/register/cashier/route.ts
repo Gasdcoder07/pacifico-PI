@@ -1,19 +1,20 @@
 import { NextResponse } from "next/server";
 import pool from "@/shared/lib/db";
 import { readFileSync } from "fs";
-import path from "path"
+import path from "path";
 import { supabaseAdmin } from "@/shared/lib/supabase";
 import { resend } from "@/shared/lib/resend";
 import { RegisterResponse } from "../admin/route";
+import { generateRandomPassword } from "@/shared/lib/password";
 
-const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-email.png"))
+const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-email.png"));
 
 /**
  * @swagger
  * /api/auth/register/cashier:
  *   post:
  *     summary: Registrar un nuevo cajero
- *     description: Permite a administradores (rol 1) y gerentes (rol 2) crear un cajero (rol 3) en su misma empresa. Crea la cuenta en Supabase Auth con el correo confirmado e inserta su perfil en la tabla usuarios.
+ *     description: Permite a administradores (rol 1) y gerentes (rol 2) crear un cajero (rol 3) en su misma empresa. La contraseña se genera automáticamente y se envía solo al correo del usuario. Crea la cuenta en Supabase Auth con el correo confirmado e inserta su perfil en la tabla usuarios.
  *     tags:
  *       - Cajeros
  *     security:
@@ -28,7 +29,6 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  *               - name
  *               - last_name
  *               - email
- *               - password
  *             properties:
  *               name:
  *                 type: string
@@ -43,13 +43,10 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  *                 format: email
  *                 description: Correo electrónico del cajero.
  *                 example: "carlos.cajero@empresa.com"
- *               password:
- *                 type: string
- *                 format: password
- *                 minLength: 6
- *                 writeOnly: true
- *                 description: Debe contener al menos 6 caracteres, una mayúscula y un símbolo.
- *                 example: "Cajero_123"
+ *               branch_id:
+ *                 type: integer
+ *                 description: Sucursal a la que pertenece el cajero.
+ *                 example: 1
  *               foto_url:
  *                 type: string
  *                 format: uri
@@ -61,7 +58,7 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  *                 example: "usuarios/cajero_12345"
  *     responses:
  *       201:
- *         description: Cajero registrado exitosamente.
+ *         description: Cajero registrado exitosamente. La contraseña se envía únicamente al correo del cajero.
  *         content:
  *           application/json:
  *             schema:
@@ -70,6 +67,9 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  *                 message:
  *                   type: string
  *                   example: "Haz creado tu usuario con éxito"
+ *                 emailError:
+ *                   type: string
+ *                   description: Solo aparece si falló el envío del correo.
  *                 usuario:
  *                   type: object
  *                   properties:
@@ -101,7 +101,7 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  *                       nullable: true
  *                       example: "https://midominio.com/foto.jpg"
  *       400:
- *         description: Faltan campos obligatorios, la contraseña no cumple los requisitos o Supabase rechazó la creación del usuario.
+ *         description: Faltan campos obligatorios o Supabase rechazó la creación del usuario.
  *         content:
  *           application/json:
  *             schema:
@@ -112,10 +112,7 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  *             examples:
  *               camposFaltantes:
  *                 value:
- *                   error: "Hace falta alguno de estos campos: (name, last_name, email, password)"
- *               passwordInsegura:
- *                 value:
- *                   error: "La contraseña no es suficientemente segura: \n1.- 6 caracteres como mínimo\n2.- Un símbolo\n3.- Una mayúscula"
+ *                   error: "Hace falta alguno de estos campos: (name, last_name, email)"
  *               errorSupabase:
  *                 value:
  *                   error: "Ha habido un error al crear usuario en SupaBase ..."
@@ -168,89 +165,91 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  */
 export async function POST(request: Request) {
     try {
-        const authHeader = request.headers.get('Authorization');
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        const authHeader = request.headers.get("Authorization");
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return NextResponse.json(
                 { error: "Error al obtener el token" },
-                { status: 401 }
-            )
+                { status: 401 },
+            );
         }
 
-        const token = authHeader.replace('Bearer ', '')
+        const token = authHeader.replace("Bearer ", "");
 
-        const { data: { user: authUser }, error: authUserError } = await supabaseAdmin.auth.getUser(token)
+        const {
+            data: { user: authUser },
+            error: authUserError,
+        } = await supabaseAdmin.auth.getUser(token);
 
         if (!authUser || authUserError) {
             return NextResponse.json(
                 { error: "Error al adquirir la sesión actual" },
-                { status: 403 }
-            )
+                { status: 403 },
+            );
         }
 
-        const queryUser = await pool.query(`SELECT rol_id, company_id FROM usuarios where auth_user_id=$1;`, [authUser.id])
-        const currentUser = queryUser.rows[0]
+        const queryUser = await pool.query(
+            `SELECT rol_id, company_id FROM usuarios WHERE auth_user_id = $1;`,
+            [authUser.id],
+        );
+        const currentUser = queryUser.rows[0];
 
-        if (!currentUser) return NextResponse.json(
-            { error: "Error al obtener el usuario de la base de datos" },
-            { status: 404 }
-        )
+        if (!currentUser) {
+            return NextResponse.json(
+                { error: "Error al obtener el usuario de la base de datos" },
+                { status: 404 },
+            );
+        }
 
         if (Number(currentUser.rol_id) !== 2 && Number(currentUser.rol_id) !== 1) {
             return NextResponse.json(
                 { error: "No tienes permisos para registrar un nuevo Cajero" },
-                { status: 401 }
-            )
+                { status: 401 },
+            );
         }
 
         const body = await request.json();
-        const { name, last_name, email, password, foto_public_id, foto_url, branch_id } = body;
+        const { name, last_name, email, foto_public_id, foto_url, branch_id } = body;
 
-        if (!name || !last_name || !email || !password) {
+        if (!name || !last_name || !email) {
             return NextResponse.json(
-                { error: "Hace falta alguno de estos campos: (name, last_name, email, password)" },
-                { status: 400 }
-            )
+                { error: "Hace falta alguno de estos campos: (name, last_name, email)" },
+                { status: 400 },
+            );
         }
 
-        const regexPass = /^(?=.*[A-Z])(?=.*[\W_]).{6,}$/;
+        const password = generateRandomPassword();
 
-        if (!regexPass.test(password)) {
-            return NextResponse.json(
-                { error: "La contraseña no es suficientemente segura: \n1.- 6 caracteres como mínimo\n2.- Un símbolo\n3.- Una mayúscula" },
-                { status: 400 }
-            )
-        }
-
-        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-            email: email,
-            password: password,
-            email_confirm: true,
-            user_metadata: {
-                name: name,
-                last_name: last_name,
-                rol_id: 3,
-                company_id: currentUser.company_id,
-                branch_id: branch_id
-            }
-        })
+        const { data: authData, error: authError } =
+            await supabaseAdmin.auth.admin.createUser({
+                email,
+                password,
+                email_confirm: true,
+                user_metadata: {
+                    name,
+                    last_name,
+                    rol_id: 3,
+                    company_id: currentUser.company_id,
+                    branch_id,
+                },
+            });
 
         if (authError) {
             return NextResponse.json(
                 { error: `Ha habido un error al crear usuario en SupaBase ${authError.message}` },
-                { status: 400 }
-            )
+                { status: 400 },
+            );
         }
 
-        const userId = authData.user.id
+        const userId = authData.user.id;
 
         const queryDB = `
             INSERT INTO public.usuarios (auth_user_id, company_id, name, last_name, email, rol_id, status, branch_id, foto_url, foto_public_id)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             RETURNING id, company_id, name, last_name, email, rol_id, status, branch_id, foto_url;
-        `
+        `;
 
         const values = [
-            userId, 
+            userId,
             currentUser.company_id,
             name,
             last_name,
@@ -259,22 +258,22 @@ export async function POST(request: Request) {
             true,
             branch_id,
             foto_url || null,
-            foto_public_id || null
-        ]
+            foto_public_id || null,
+        ];
 
-        const response = await pool.query(queryDB, values)
+        const response = await pool.query(queryDB, values);
 
-        const data : RegisterResponse = {
-            message: "Haz creado tu usuario con éxito", usuario: response.rows[0]
-        }
+        const data: RegisterResponse = {
+            message: "Haz creado tu usuario con éxito",
+            usuario: response.rows[0],
+        };
 
         try {
-            const { error: emailError } = await resend.emails.send(
-                {
-                    from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
-                    to: email,
-                    subject: "Creación de un usuario tipo cajero",
-                    html: `
+            const { error: emailError } = await resend.emails.send({
+                from: process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
+                to: email,
+                subject: "Creación de un usuario tipo cajero",
+                html: `
                     <div style="max-width:560px;margin:0 auto;font-family:Arial,Helvetica,sans-serif;color:#334155;border:1px solid #E2E8F0;border-radius:12px;overflow:hidden;">
                         <div style="background:#06B6D4;padding:20px;text-align:center;">
                         <div style="display:inline-block;background:#FFFFFF;border-radius:10px;padding:8px 16px;">
@@ -287,44 +286,35 @@ export async function POST(request: Request) {
                         <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:16px 20px;">
                             <p style="margin:0 0 4px;font-size:13px;color:#64748B;">Correo</p>
                             <p style="margin:0 0 16px;font-size:16px;font-weight:bold;color:#164E63;">${email}</p>
-                            <p style="margin:0 0 4px;font-size:13px;color:#64748B;">Contraseña</p>
+                            <p style="margin:0 0 4px;font-size:13px;color:#64748B;">Contraseña temporal</p>
                             <p style="margin:0;font-size:18px;font-weight:bold;font-family:Consolas,monospace;color:#164E63;">${password}</p>
-                        </div>
-                        <div style="margin-top:20px;background:#FFFBEB;border-left:4px solid #F59E0B;border-radius:6px;padding:14px 18px;font-size:14px;color:#78350F;">
-                            <strong>Guarda estos datos en un lugar seguro.</strong> Si los pierdes tendrás que pedir que restablezcan tu contraseña. No compartas este correo con nadie.
                         </div>
                         </div>
                     </div>`,
-                    attachments: [
-                        {
-                            filename: "pacifico-logo.png",
-                            content: logo,
-                            contentId: "pacifico-logo"
-                        }
-                    ]
-                }
-            )
+                attachments: [
+                    {
+                        filename: "pacifico-logo.png",
+                        content: logo,
+                        contentId: "pacifico-logo",
+                    },
+                ],
+            });
 
             if (emailError) {
-                console.log(emailError.message)
-                data['emailError'] = emailError.message
+                console.error(emailError.message);
+                data.emailError = emailError.message;
             }
-        } catch(err) {
-            console.log(err)
-            data['emailError'] = err as string
-
+        } catch (err) {
+            console.error(err);
+            data.emailError = err instanceof Error ? err.message : String(err);
         }
 
-        return NextResponse.json(
-            data,
-            { status: 201 }
-        )
-
+        return NextResponse.json(data, { status: 201 });
     } catch (err) {
-        console.error(err)
+        console.error(err);
         return NextResponse.json(
             { error: `Hubo un error al registrar el usuario. ${err}` },
-            { status: 500 }
-        )
+            { status: 500 },
+        );
     }
 }

@@ -105,7 +105,6 @@ export async function POST(request: Request) {
     const categoryId = validId(body.category_id);
     const branches = readAllocations(body.branches);
 
-    // Precio no negativo, hasta 10 enteros y 2 decimales.
     if (
       !["number", "string"].includes(typeof body.price) ||
       !/^\d{1,10}(\.\d{1,2})?$/.test(String(body.price))

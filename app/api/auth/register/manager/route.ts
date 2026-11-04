@@ -3,19 +3,22 @@ import pool from "@/shared/lib/db";
 import { supabase, supabaseAdmin } from "@/shared/lib/supabase";
 import { resend } from "@/shared/lib/resend";
 import { readFileSync } from "fs";
-import path from "path"
+import path from "path";
 import { RegisterResponse } from "../admin/route";
+import { generateRandomPassword } from "@/shared/lib/password";
 
-const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-email.png"))
+const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-email.png"));
 
 /**
  * @swagger
  * /api/auth/register/manager:
  *   post:
  *     summary: Registrar un nuevo gerente
- *     description: Permite a administradores (rol 1) crear un gerente (rol 2) en su misma empresa. Crea la cuenta en Supabase Auth con el correo confirmado e inserta su perfil en la tabla usuarios.
+ *     description: Permite a administradores (rol 1) crear un gerente (rol 2) en su misma empresa. La contraseña se genera automáticamente y se envía solo al correo del usuario. Crea la cuenta en Supabase Auth con el correo confirmado e inserta su perfil en la tabla usuarios.
  *     tags:
  *       - Gerentes
+ *     security:
+ *       - BearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -26,7 +29,6 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  *               - name
  *               - last_name
  *               - email
- *               - password
  *             properties:
  *               name:
  *                 type: string
@@ -41,13 +43,10 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  *                 format: email
  *                 description: Correo electrónico.
  *                 example: "carlos.gerente@empresa.com"
- *               password:
- *                 type: string
- *                 format: password
- *                 minLength: 6
- *                 writeOnly: true
- *                 description: Debe contener al menos 6 caracteres, una mayúscula y un símbolo.
- *                 example: "Gerente_123"
+ *               branch_id:
+ *                 type: integer
+ *                 description: Sucursal a la que pertenece el gerente.
+ *                 example: 1
  *               foto_url:
  *                 type: string
  *                 description: URL de la foto de perfil (Opcional).
@@ -58,7 +57,7 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  *                 example: "foto_12345"
  *     responses:
  *       201:
- *         description: Gerente creado con éxito.
+ *         description: Gerente creado con éxito. La contraseña se envía únicamente al correo del gerente.
  *         content:
  *           application/json:
  *             schema:
@@ -67,32 +66,42 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  *                 message:
  *                   type: string
  *                   example: "Haz creado tu usuario con éxito"
+ *                 emailError:
+ *                   type: string
+ *                   description: Solo aparece si falló el envío del correo.
  *                 usuario:
  *                   type: object
  *                   properties:
  *                     id:
  *                       type: integer
  *                       example: 15
- *                     nombre:
+ *                     company_id:
+ *                       type: integer
+ *                       example: 2
+ *                     name:
  *                       type: string
  *                       example: "Carlos"
- *                     apellido:
+ *                     last_name:
  *                       type: string
  *                       example: "Gómez"
- *                     correo:
+ *                     email:
  *                       type: string
- *                       example: "carlos.admin@empresa.com"
+ *                       example: "carlos.gerente@empresa.com"
  *                     rol_id:
  *                       type: integer
  *                       example: 2
- *                     estado:
+ *                     status:
  *                       type: boolean
  *                       example: true
+ *                     branch_id:
+ *                       type: integer
+ *                       example: 1
  *                     foto_url:
  *                       type: string
+ *                       nullable: true
  *                       example: "https://midominio.com/foto.jpg"
  *       400:
- *         description: Faltan campos obligatorios, la contraseña no cumple los requisitos o Supabase rechazó la creación del usuario.
+ *         description: Faltan campos obligatorios o Supabase rechazó la creación del usuario.
  *         content:
  *           application/json:
  *             schema:
@@ -103,15 +112,32 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  *             examples:
  *               camposFaltantes:
  *                 value:
- *                   error: "Hace falta alguno de estos campos: (name, last_name, email, password)"
- *               passwordInsegura:
- *                 value:
- *                   error: "La contraseña no es suficientemente segura: \n1.- 6 caracteres como mínimo\n2.- Un símbolo\n3.- Una mayúscula"
+ *                   error: "Hace falta alguno de estos campos: (name, last_name, email)"
  *               errorSupabase:
  *                 value:
  *                   error: "Ha habido un error al crear usuario en SupaBase ..."
  *       401:
- *         description: Token ausente o usuario sin permisos para registrar gerentes.
+ *         description: Token ausente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Error al obtener la sesión del usuario"
+ *       403:
+ *         description: El usuario autenticado no tiene permisos para registrar gerentes.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "No tienes permisos para registrar un nuevo Gerente"
+ *       404:
+ *         description: El token no corresponde a un usuario, o no existe un perfil asociado en la tabla usuarios.
  *         content:
  *           application/json:
  *             schema:
@@ -120,32 +146,12 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  *                 error:
  *                   type: string
  *             examples:
- *               sinToken:
+ *               tokenInvalido:
  *                 value:
- *                   error: "Error al obtener el token"
- *               sinPermisos:
+ *                   error: "No se ha podido obtener un usuario con el token"
+ *               sinPerfil:
  *                 value:
- *                   error: "No tienes permisos para registrar un nuevo Gerente"
- *       403:
- *         description: No se pudo validar la sesión con el token proporcionado.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Error al adquirir la sesión actual"
- *       404:
- *         description: No existe un perfil asociado al usuario autenticado en la tabla usuarios.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- *                   example: "Error al obtener el usuario de la base de datos"
+ *                   error: "Error al obtener el usuario de la base de datos"
  *       500:
  *         description: Error inesperado en el servidor o al insertar el perfil en la base de datos.
  *         content:
@@ -159,17 +165,6 @@ const logo = readFileSync(path.join(process.cwd(), "public", "pacifico-logo-emai
  */
 export async function POST(request: Request) {
     try {
-        const body = await request.json();
-        const {
-            name,
-            last_name,
-            email,
-            password,
-            foto_public_id,
-            foto_url,
-            branch_id,
-        } = body;
-
         const authHeader = request.headers.get("Authorization");
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -194,7 +189,7 @@ export async function POST(request: Request) {
         }
 
         const currentUserQuery = await pool.query(
-            `SELECT rol_id, company_id from usuarios where auth_user_id = $1`,
+            `SELECT rol_id, company_id FROM usuarios WHERE auth_user_id = $1`,
             [authUser.id],
         );
 
@@ -209,49 +204,40 @@ export async function POST(request: Request) {
 
         if (Number(currentUser.rol_id) !== 1) {
             return NextResponse.json(
-                { error: "No tienes permiso para crear un nuevo Cajero" },
+                { error: "No tienes permisos para registrar un nuevo Gerente" },
                 { status: 403 },
             );
         }
 
-        if (!name || !last_name || !email || !password) {
+        const body = await request.json();
+        const { name, last_name, email, foto_public_id, foto_url, branch_id } = body;
+
+        if (!name || !last_name || !email) {
             return NextResponse.json(
-                {
-                    error: "Hace falta alguno de estos campos: (name, last_name, email, password)",
-                },
+                { error: "Hace falta alguno de estos campos: (name, last_name, email)" },
                 { status: 400 },
             );
         }
 
-        const regexPass = /^(?=.*[A-Z])(?=.*[\W_]).{6,}$/;
-
-        if (!regexPass.test(password)) {
-            return NextResponse.json(
-                {
-                    error: "La contraseña no es suficientemente segura: \n1.- 6 caracteres como mínimo\n2.- Un símbolo\n3.- Una mayúscula",
-                },
-                { status: 400 },
-            );
-        }
+        const password = generateRandomPassword();
 
         const { data: authData, error: authError } =
             await supabaseAdmin.auth.admin.createUser({
-                email: email,
-                password: password,
+                email,
+                password,
                 email_confirm: true,
                 user_metadata: {
-                    name: name,
-                    last_name: last_name,
+                    name,
+                    last_name,
                     rol_id: 2,
-                    branch_id: branch_id,
+                    company_id: currentUser.company_id,
+                    branch_id,
                 },
             });
 
         if (authError) {
             return NextResponse.json(
-                {
-                    error: `Ha habido un error al crear usuario en SupaBase ${authError.message}`,
-                },
+                { error: `Ha habido un error al crear usuario en SupaBase ${authError.message}` },
                 { status: 400 },
             );
         }
@@ -282,7 +268,7 @@ export async function POST(request: Request) {
         const data: RegisterResponse = {
             message: "Haz creado tu usuario con éxito",
             usuario: response.rows[0],
-        }
+        };
 
         try {
             const { error: emailError } = await resend.emails.send({
@@ -302,11 +288,10 @@ export async function POST(request: Request) {
                         <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:16px 20px;">
                             <p style="margin:0 0 4px;font-size:13px;color:#64748B;">Correo</p>
                             <p style="margin:0 0 16px;font-size:16px;font-weight:bold;color:#164E63;">${email}</p>
-                            <p style="margin:0 0 4px;font-size:13px;color:#64748B;">Contraseña</p>
+                            <p style="margin:0 0 4px;font-size:13px;color:#64748B;">Contraseña temporal</p>
                             <p style="margin:0;font-size:18px;font-weight:bold;font-family:Consolas,monospace;color:#164E63;">${password}</p>
                         </div>
                         <div style="margin-top:20px;background:#FFFBEB;border-left:4px solid #F59E0B;border-radius:6px;padding:14px 18px;font-size:14px;color:#78350F;">
-                            <strong>Guarda estos datos en un lugar seguro.</strong> Si los pierdes tendrás que pedir que restablezcan tu contraseña. No compartas este correo con nadie.
                         </div>
                         </div>
                     </div>`,
@@ -314,26 +299,21 @@ export async function POST(request: Request) {
                     {
                         filename: "pacifico-logo.png",
                         content: logo,
-                        contentId: "pacifico-logo"
-                    }
-                ]
-            })
+                        contentId: "pacifico-logo",
+                    },
+                ],
+            });
 
             if (emailError) {
-                console.error(emailError.message)
-                data.emailError = emailError.message
+                console.error(emailError.message);
+                data.emailError = emailError.message;
             }
-            
-        } catch(err) {
-            console.error(err)
-            data.emailError = err as string
-
+        } catch (err) {
+            console.error(err);
+            data.emailError = err instanceof Error ? err.message : String(err);
         }
 
-        return NextResponse.json(
-            data,
-            { status: 201 },
-        );
+        return NextResponse.json(data, { status: 201 });
     } catch (err) {
         console.error(err);
         return NextResponse.json(
