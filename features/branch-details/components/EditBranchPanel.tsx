@@ -53,7 +53,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
     if (!file) return;
 
     if (!["image/jpeg", "image/png"].includes(file.type)) {
-        // toast.error(t("notifications.invalidImageFormat"));
+        toast.error(t("notifications.invalidImageFormat"));
         toast.error("Nel");
         e.target.value = "";
         return;
@@ -88,7 +88,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
         onSuccess: async () => {
             toast.success(t("generalData.notifications.success"))
 
-            await queryClient.invalidateQueries({ queryKey: ["getBranch", branch?.id] });
+            await queryClient.invalidateQueries({ queryKey: ["getBranch", Number(branch?.id)] });
 
             onClose()
         },

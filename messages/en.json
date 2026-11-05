@@ -301,6 +301,10 @@
           "placeholder": "Select a branch"
         }
       },
+        "notifications": {
+          "success": "User created successfully",
+          "error": "An error occurred while creating the user"
+        },
       "roles": {
         "manager": "Manager",
         "cashier": "Cashier"

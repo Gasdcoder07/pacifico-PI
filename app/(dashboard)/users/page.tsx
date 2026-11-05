@@ -1,13 +1,8 @@
-import PageHeader from "@/features/users/components/PageHeader";
-import UsersContainer from "@/features/users/components/UsersContainer";
+import UsersLayout from "@/features/users/components/UsersLayout";
 
 const Page = () => {
     return (
-        <section className="h-full min-h-0 flex flex-col p-8 gap-8">
-            <PageHeader/>
-
-            <UsersContainer/>
-        </section>
+        <UsersLayout/>
     );
 };
 

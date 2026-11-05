@@ -1,38 +1,22 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../services/users.service";
 import { User } from "../types/user";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import UsersCard from "./UsersCard";
+import { UserProfile } from "@/features/auth/types/authInterfaces";
 import { useTranslations } from "next-intl";
 import { Users } from "lucide-react";
 
-interface UsersContainerProps {
-    branchId?: string | number;
-}
+import UsersCard from "./UsersCard";
 
 const scrollbarStyles =
     "[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]";
 
-const UsersContainer = ({ branchId }: UsersContainerProps) => {
-    const t = useTranslations("UsersPage.container");
+interface UsersContainerProps {
+    users: User[];
+    currentUser?: UserProfile | null;
+    isLoading: boolean;
+}
 
-    const { user: currentUser } = useAuth();
-
-    const { data, isLoading } = useQuery({
-        queryKey: ["users"],
-        queryFn: getUsers,
-    });
-
-    const rawUsers = data?.data ?? [];
-
-    const users = rawUsers
-        .filter((user) => String(user.id) !== String(currentUser?.id))
-        .sort((a, b) =>
-            Number(b.rol_id) === 2 ? 1 : Number(a.rol_id) === 2 ? -1 : 0,
-        );
-
+const UsersContainer = ({ users = [], currentUser, isLoading } : UsersContainerProps) => {
     if (isLoading) return <UsersContainerSkeleton />;
 
     return (
@@ -41,7 +25,7 @@ const UsersContainer = ({ branchId }: UsersContainerProps) => {
                 {users.length === 0 ? (
                     <EmptyState />
                 ) : (
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4">
                         {users.map((user: User) => {
                             const isMe =
                                 String(user.id) === String(currentUser?.id);

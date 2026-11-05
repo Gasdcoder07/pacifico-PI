@@ -300,7 +300,11 @@
           "label": "Sucursal *",
           "placeholder": "Selecciona una sucursal"
         }
-      },
+    },
+    "notifications": {
+        "success": "Usuario creado exitosamente",
+        "error": "Ocurrió un error al crear el usuario"
+        },
       "roles": {
         "manager": "Gerente",
         "cashier": "Cajero"

@@ -46,6 +46,7 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
                     branch_id={branchData?.data.id}
                     company_id={branchData?.data.company_id}
                     managerExists={haveManager}
+                    showBranchSelect={false}
                 />
             </div>
 
