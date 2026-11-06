@@ -65,7 +65,7 @@ export const LogoutModal = ({ isOpen, onClose, onConfirm }: LogoutModalProps) =>
                     </p>
                 </div>
 
-                <div className="mt-4 flex justify-end gap-4">
+                <div className="mt-4 flex justify-between gap-4">
                     <motion.button
                         ref={cancelButtonRef}
                         type="button"
