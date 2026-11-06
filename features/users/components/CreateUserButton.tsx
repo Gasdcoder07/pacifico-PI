@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Plus } from "lucide-react";
+import { UserRoundPlus, UsersRound } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { CreateUserModal } from "./CreateUserModal";
 
@@ -12,6 +12,7 @@ interface CreateUserButtonProps {
   company_id: number | string | null | undefined;
   managerExists?: boolean;
   showBranchSelect: boolean;
+  isAdmin?: boolean;
 }
 
 const CreateUserButton = ({
@@ -19,7 +20,8 @@ const CreateUserButton = ({
   branch_id,
   company_id,
   managerExists,
-  showBranchSelect
+  showBranchSelect,
+  isAdmin = false
 }: CreateUserButtonProps) => {
   const [showModal, setShowModal] = useState(false);
   const t = useTranslations("BranchDetails.createUserButton");
@@ -40,8 +42,8 @@ const CreateUserButton = ({
         }}
         className="flex cursor-pointer items-center gap-2 rounded-lg bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 px-4 py-2 text-sm font-medium text-white shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
       >
-        <Plus size={20} className="shrink-0" />
-        <span>{t("label")}</span>
+        <UserRoundPlus size={20} className="shrink-0"/>
+        <span>{ isAdmin ? t("labelAdmin") : t("labelManager") }</span>
       </motion.button>
 
       {showModal && (
@@ -52,6 +54,7 @@ const CreateUserButton = ({
           company_id={company_id}
           managerExists={managerExists}
           showBranchSelect={showBranchSelect}
+          isAdmin={isAdmin}
         />
       )}
     </>

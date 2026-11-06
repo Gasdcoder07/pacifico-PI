@@ -227,7 +227,8 @@
       }
     },
     "createUserButton": {
-      "label": "Crear usuario"
+      "labelAdmin": "Crear usuario",
+      "labelManager": "Crear cajero"
     },
     "card": {
       "breadcrumb": "Sucursal",
@@ -277,7 +278,8 @@
       }
     },
     "createUserModal": {
-      "title": "Crear cuenta",
+      "titleAdmin": "Crear cuenta",
+      "titleManager": "Crear cajero",
       "fields": {
         "name": {
           "label": "Nombre",

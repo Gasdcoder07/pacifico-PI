@@ -20,6 +20,7 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
     enabled: !!id,
   });
 
+  const isAdmin = currentUser?.rol_id === 1;
   const rawUsers = branchData?.data?.usuarios ?? [];
   const haveManager = branchData?.data.gerente !== null;
 
@@ -45,6 +46,7 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
                     company_id={branchData?.data.company_id}
                     managerExists={haveManager}
                     showBranchSelect={false}
+                    isAdmin={isAdmin}
                 />
             </div>
 

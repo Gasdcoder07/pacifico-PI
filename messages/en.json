@@ -227,7 +227,8 @@
       }
     },
     "createUserButton": {
-      "label": "Create user"
+      "labelAdmin": "Create user",
+      "labelManager": "Create cashier"
     },
     "card": {
       "breadcrumb": "Branch",
@@ -277,7 +278,8 @@
       }
     },
     "createUserModal": {
-      "title": "Create account",
+      "titleAdmin": "Create account",
+      "titleManager": "Create cashier",
       "fields": {
         "name": {
           "label": "First name",

@@ -12,29 +12,40 @@ interface PageHeaderProps {
 const PageHeader = ({ currentUser } : PageHeaderProps) => {
     const t = useTranslations("UsersPage");
 
+    const role = currentUser?.rol_id;
+    const isAdmin = role === 1;
+    const isManager = role === 2;
+
+    console.log(currentUser);
+
     return (
         <div className="flex gap-2 justify-between items-center">
             <div className="flex flex-col gap-2">
                 <h3 className="text-2xl font-semibold">{t("title")}</h3>
-                <p className="text-sm text-neutral-500 dark:text-[#8493A8]">{currentUser?.rol_id === 2 ? t("subtitleManager") : t("subtitleAdmin")}</p>
+                <p className="text-sm text-neutral-500 dark:text-[#8493A8]">{isManager ? t("subtitleManager") : t("subtitleAdmin")}</p>
             </div>
 
             {
-                currentUser?.rol_id === 1 ?
-                (
-                    <CreateUserButton
-                        isDisabled={false}
-                        company_id={currentUser.company_id}
-                        showBranchSelect={true}
+                currentUser && (
+                    isAdmin ? (
+                        <CreateUserButton
+                            key={`admin-${currentUser.id}`}
+                            isDisabled={false}
+                            company_id={currentUser.company_id}
+                            showBranchSelect={true}
+                            isAdmin={true}
                         />
-                ) : (
-                    <CreateUserButton
-                        isDisabled={false}
-                        company_id={currentUser?.company_id}
-                        branch_id={currentUser?.sucursal_id}
-                        showBranchSelect={false}
-                        managerExists={true}
+                    ) : isManager ? (
+                        <CreateUserButton
+                            key={`manager-${currentUser.id}-${currentUser.branch_id}`}
+                            isDisabled={currentUser.branch_id == null}
+                            company_id={currentUser.company_id}
+                            branch_id={currentUser.branch_id}
+                            showBranchSelect={false}
+                            managerExists={true}
+                            isAdmin={false}
                         />
+                    ) : null
                 )
             }
         </div>

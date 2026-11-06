@@ -15,6 +15,7 @@ interface CreateUserModalProps {
   company_id: string | number | null | undefined;
   managerExists?: boolean;
   showBranchSelect: boolean;
+  isAdmin: boolean;
 }
 
 interface Branch {
@@ -29,7 +30,8 @@ export const CreateUserModal = ({
   branch_id,
   company_id,
   managerExists,
-  showBranchSelect
+  showBranchSelect,
+  isAdmin = false,
 }: CreateUserModalProps) => {
   const t = useTranslations("BranchDetails.createUserModal");
   const queryClient = useQueryClient();
@@ -43,7 +45,7 @@ export const CreateUserModal = ({
     queryFn: () => getBranches(),
     staleTime: 1000 * 60 * 60,
     retry: false,
-    enabled: isOpen,
+    enabled: isOpen && isAdmin && showBranchSelect,
   });
 
   const customOptions = managerExists
@@ -57,7 +59,7 @@ export const CreateUserModal = ({
     name: "",
     last_name: "",
     email: "",
-    rol_id: "",
+    rol_id: isAdmin ? "" : "3",
     branch_id: branch_id ? String(branch_id) : "",
     company_id: company_id ?? "",
   });
@@ -113,16 +115,19 @@ export const CreateUserModal = ({
     },
 
     onSuccess: async (_, variables) => {
-        if (showBranchSelect) {
-            await queryClient.invalidateQueries({
-                queryKey: ["users"]
-            });
-        } else {
-            await queryClient.invalidateQueries({
-              queryKey: ["getBranch", Number(variables.branch_id)],
-            });
-            await queryClient.invalidateQueries({ queryKey: ["getBranches"] });
-        }
+        await Promise.all([
+            queryClient.invalidateQueries({
+                queryKey: ["users"],
+            }),
+
+            queryClient.invalidateQueries({
+                queryKey: ["getBranch", Number(variables.branch_id)],
+            }),
+
+            queryClient.invalidateQueries({
+                queryKey: ["getBranches"],
+            }),
+        ]);
 
         toast.success(t("notifications.success"));
 
@@ -130,7 +135,7 @@ export const CreateUserModal = ({
         name: "",
         last_name: "",
         email: "",
-        rol_id: "",
+        rol_id: isAdmin ? "" : "3",
         branch_id: branch_id ? String(branch_id) : "",
         company_id: company_id ?? "",
       });
@@ -151,6 +156,7 @@ export const CreateUserModal = ({
     e.preventDefault();
 
     if (!formData.branch_id || !formData.rol_id) {
+        console.log("JAJA")
       return;
     }
 
@@ -165,7 +171,7 @@ export const CreateUserModal = ({
   };
 
   return (
-    <ModalLayout isOpen={isOpen} onClose={onClose} title={t("title")}>
+    <ModalLayout isOpen={isOpen} onClose={onClose} title={ isAdmin ? t("titleAdmin") : t("titleManager") }>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-sm">
         <div className="flex items-center gap-4">
           <div className="flex flex-col gap-2 w-1/2">
@@ -210,36 +216,41 @@ export const CreateUserModal = ({
           />
         </div>
 
-        <div className={`flex gap-4 ${showBranchSelect
-            ? 'w-full'
-            : 'w-1/2'
-        }`}>
-          <CustomSelect
-            isDisabled={false}
-            label={t("fields.role.label")}
-            placeholder={t("fields.role.placeholder")}
-            options={customOptions}
-            value={formData.rol_id}
-            onChange={handleRoleChange}
-          />
+        {
+            isAdmin && (
 
-          {
-            showBranchSelect && (
+                <div className={`flex gap-4 ${showBranchSelect
+                    ? 'w-full'
+                    : 'w-1/2'
+                }`}>
                 <CustomSelect
-                  isDisabled={branchIsLoading || !!branchError}
-                  label={t("fields.branch.label")}
-                  placeholder={t("fields.branch.placeholder")}
-                  options={branchOptions}
-                  value={String(formData.branch_id)}
-                  onChange={(value) =>
-                    setFormData((prev) => ({ ...prev, branch_id: value }))
-                  }
+                    isDisabled={false}
+                    label={t("fields.role.label")}
+                    placeholder={t("fields.role.placeholder")}
+                    options={customOptions}
+                    value={formData.rol_id}
+                    onChange={handleRoleChange}
                 />
-            )
-          }
-        </div>
 
-        {branchError && (
+                {
+                    showBranchSelect && (
+                        <CustomSelect
+                        isDisabled={branchIsLoading || !!branchError}
+                        label={t("fields.branch.label")}
+                        placeholder={t("fields.branch.placeholder")}
+                        options={branchOptions}
+                        value={String(formData.branch_id)}
+                        onChange={(value) =>
+                            setFormData((prev) => ({ ...prev, branch_id: value }))
+                        }
+                        />
+                    )
+                }
+                </div>
+            )
+        }
+
+        {isAdmin && showBranchSelect && branchError && (
           <span className="text-xs text-red-500 dark:text-red-400">
             No se pudieron cargar las sucursales
           </span>
