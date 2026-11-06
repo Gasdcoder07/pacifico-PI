@@ -300,7 +300,11 @@
           "label": "Sucursal *",
           "placeholder": "Selecciona una sucursal"
         }
-      },
+    },
+    "notifications": {
+        "success": "Usuario creado exitosamente",
+        "error": "Ocurrió un error al crear el usuario"
+        },
       "roles": {
         "manager": "Gerente",
         "cashier": "Cajero"
@@ -612,6 +616,19 @@
       "title": "Productos más vendidos",
       "units": "unidades",
       "soldLabel": "Vendidas"
+    }
+  },
+  "DeleteUserModal": {
+    "title": "Eliminar usuario",
+    "description": "Esta acción no se puede deshacer. ¿Estás seguro de que quieres eliminar la información del usuario <highlight>{userName}</highlight>?",
+    "actions": {
+      "cancel": "Mantener usuario",
+      "delete": "Borrar usuario",
+      "deleting": "Eliminando usuario..."
+    },
+    "toast": {
+      "success": "Usuario eliminado correctamente",
+      "error": "Ocurrió un error al eliminar el usuario"
     }
   }
 }

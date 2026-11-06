@@ -6,13 +6,15 @@ import { useTranslations } from "next-intl";
 import { createManager, createCashier } from "../services/users.service";
 import { CreateUserRequest } from "../types/user";
 import { getBranches } from "@/features/branches/services/branch.service";
+import toast from "react-hot-toast";
 
 interface CreateUserModalProps {
   isOpen: boolean;
   onClose: () => void;
-  branch_id: string | number | null | undefined;
+  branch_id?: string | number | null | undefined;
   company_id: string | number | null | undefined;
-  managerExists: boolean;
+  managerExists?: boolean;
+  showBranchSelect: boolean;
 }
 
 interface Branch {
@@ -27,6 +29,7 @@ export const CreateUserModal = ({
   branch_id,
   company_id,
   managerExists,
+  showBranchSelect
 }: CreateUserModalProps) => {
   const t = useTranslations("BranchDetails.createUserModal");
   const queryClient = useQueryClient();
@@ -110,10 +113,18 @@ export const CreateUserModal = ({
     },
 
     onSuccess: async (_, variables) => {
-      await queryClient.invalidateQueries({
-        queryKey: ["getBranch", Number(variables.branch_id)],
-      });
-      await queryClient.invalidateQueries({ queryKey: ["getBranches"] });
+        if (showBranchSelect) {
+            await queryClient.invalidateQueries({
+                queryKey: ["users"]
+            });
+        } else {
+            await queryClient.invalidateQueries({
+              queryKey: ["getBranch", Number(variables.branch_id)],
+            });
+            await queryClient.invalidateQueries({ queryKey: ["getBranches"] });
+        }
+
+        toast.success(t("notifications.success"));
 
       setFormData({
         name: "",
@@ -128,6 +139,7 @@ export const CreateUserModal = ({
     },
 
     onError: (error: any) => {
+        toast.error(t("notifications.error"));
       console.error(
         "Error al crear usuario:",
         error.response?.data ?? error.message
@@ -198,7 +210,10 @@ export const CreateUserModal = ({
           />
         </div>
 
-        <div className="flex gap-4">
+        <div className={`flex gap-4 ${showBranchSelect
+            ? 'w-full'
+            : 'w-1/2'
+        }`}>
           <CustomSelect
             isDisabled={false}
             label={t("fields.role.label")}
@@ -207,16 +222,21 @@ export const CreateUserModal = ({
             value={formData.rol_id}
             onChange={handleRoleChange}
           />
-          <CustomSelect
-            isDisabled={branchIsLoading || !!branchError}
-            label={t("fields.branch.label")}
-            placeholder={t("fields.branch.placeholder")}
-            options={branchOptions}
-            value={String(formData.branch_id)}
-            onChange={(value) =>
-              setFormData((prev) => ({ ...prev, branch_id: value }))
-            }
-          />
+
+          {
+            showBranchSelect && (
+                <CustomSelect
+                  isDisabled={branchIsLoading || !!branchError}
+                  label={t("fields.branch.label")}
+                  placeholder={t("fields.branch.placeholder")}
+                  options={branchOptions}
+                  value={String(formData.branch_id)}
+                  onChange={(value) =>
+                    setFormData((prev) => ({ ...prev, branch_id: value }))
+                  }
+                />
+            )
+          }
         </div>
 
         {branchError && (

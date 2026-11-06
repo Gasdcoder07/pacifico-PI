@@ -13,15 +13,11 @@ import { menuVariants, itemVariants } from "@/shared/animations/dropdown.animati
 
 interface UserDropdownActionButtonProps {
   user: User;
-  haveManager: boolean;
-  isMe: boolean;
   branchId: BranchId;
 }
 
 const UserDropdownActionButton = ({
   user,
-  haveManager,
-  isMe,
   branchId,
 }: UserDropdownActionButtonProps) => {
   const t = useTranslations("BranchDetails.usersContainer.actions");
@@ -44,10 +40,8 @@ const UserDropdownActionButton = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const hoverAnimation = !isMe ? { scaleX: 1.1, scaleY: 1.1 } : undefined;
-  const tapAnimation = !isMe
-    ? { scaleX: 0.9, scaleY: 1.1, borderRadius: "50%" }
-    : undefined;
+  const hoverAnimation = { scaleX: 1.1, scaleY: 1.1 }
+  const tapAnimation = { scaleX: 0.9, scaleY: 1.1, borderRadius: "50%" }
 
   return (
     <div
@@ -59,13 +53,8 @@ const UserDropdownActionButton = ({
         aria-expanded={open}
         whileHover={hoverAnimation}
         whileTap={tapAnimation}
-        transition={
-          !isMe ? { type: "spring", bounce: 0.6, duration: 0.8 } : undefined
-        }
-        disabled={isMe}
-        className={`rounded-lg border border-brand-100 bg-linear-to-b from-brand-50 to-brand-100 p-1 text-brand-700 dark:bg-none dark:bg-cyan-500/15 dark:text-cyan-400 ${
-          isMe ? "cursor-not-allowed" : "cursor-pointer"
-        }`}
+        transition={{ type: "spring", bounce: 0.6, duration: 0.8 }}
+        className={`rounded-lg border border-brand-100 bg-linear-to-b from-brand-50 to-brand-100 p-1 text-brand-700 dark:bg-none dark:bg-cyan-500/15 dark:text-cyan-400 cursor-pointer`}
         onClick={() => setOpen(!open)}
       >
         <Ellipsis size={20} />
@@ -78,9 +67,9 @@ const UserDropdownActionButton = ({
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="absolute right-2 -top-12 z-10 flex w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 shadow-lg">
+            className="absolute right-2 z-10 flex w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg">
           <motion.div variants={itemVariants} className="flex flex-col gap-2">
-            <motion.button
+            {/* <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", bounce: 0.5 }}
@@ -92,7 +81,7 @@ const UserDropdownActionButton = ({
             >
                 <Edit size={18} />
                 <span className="font-medium">{t("edit")}</span>
-            </motion.button>
+            </motion.button> */}
             <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
@@ -111,7 +100,7 @@ const UserDropdownActionButton = ({
       )}
     </AnimatePresence>
 
-      {showEditPanel && (
+      {/* {showEditPanel && (
         <EditUserPanel
           isOpen={showEditPanel}
           onClose={() => setShowEditPanel(false)}
@@ -119,7 +108,7 @@ const UserDropdownActionButton = ({
           managerExists={haveManager}
           branchId={branchId}
         />
-      )}
+      )} */}
 
       {showDeleteModal && (
         <DeleteUserModal

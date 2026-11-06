@@ -1,65 +1,47 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../services/users.service";
 import { User } from "../types/user";
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import UsersCard from "./UsersCard";
+import { UserProfile } from "@/features/auth/types/authInterfaces";
 import { useTranslations } from "next-intl";
 import { Users } from "lucide-react";
 
-interface UsersContainerProps {
-  branchId?: string | number;
-}
+import UsersCard from "./UsersCard";
 
-const UsersContainer = ({ branchId }: UsersContainerProps) => {
-  const t = useTranslations("UsersPage.container");
-  const scrollbarStyles =
+const scrollbarStyles =
     "[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300 dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-600";
 
-  const { user: currentUser } = useAuth();
+interface UsersContainerProps {
+    users: User[];
+    isLoading: boolean;
+}
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["users"],
-    queryFn: getUsers,
-  });
+const UsersContainer = ({ users = [], isLoading } : UsersContainerProps) => {
+    if (isLoading) return <UsersContainerSkeleton />;
 
-  const rawUsers = data?.data ?? [];
-
-  const users = [...rawUsers].sort((a, b) => {
-    if (String(a.id) === String(currentUser?.id)) return -1;
-    if (String(b.id) === String(currentUser?.id)) return 1;
-    return 0;
-  });
-
-  if (isLoading) return <UsersContainerSkeleton />;
-
-  return (
-    <section className="flex flex-1 min-h-0 min-w-0">
-      <div className={`flex-1 min-h-0 overflow-y-auto ${scrollbarStyles}`}>
-        {users.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <div className="flex flex-col gap-4">
-            {users.map((user: User) => {
-              const isMe = String(user.id) === String(currentUser?.id);
-              const fallbackBranchId = (user as any).branch_id ?? 0;
-
-              return (
-                <div key={user.id} className="flex items-center gap-4">
-                  <UsersCard
-                    user={user}
-                    isMe={isMe}
-                    branchId={Number(branchId ?? fallbackBranchId)}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </section>
-  );
+    return (
+        <section className="flex flex-1 min-h-0 min-w-0">
+            <div className={`flex-1 min-h-0 ${scrollbarStyles}`}>
+                {users.length === 0 ? (
+                    <EmptyState />
+                ) : (
+                    <div className="grid grid-cols-1 gap-4 pb-8">
+                        {users.map((user: User) => {
+                            return (
+                                <div
+                                    key={user.id}
+                                    className="flex items-center gap-4"
+                                >
+                                    <UsersCard
+                                        user={user}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
+        </section>
+    );
 };
 
 export default UsersContainer;

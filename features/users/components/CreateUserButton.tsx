@@ -8,9 +8,10 @@ import { CreateUserModal } from "./CreateUserModal";
 
 interface CreateUserButtonProps {
   isDisabled: boolean;
-  branch_id: number | string | null | undefined;
+  branch_id?: number | string | null | undefined;
   company_id: number | string | null | undefined;
-  managerExists: boolean;
+  managerExists?: boolean;
+  showBranchSelect: boolean;
 }
 
 const CreateUserButton = ({
@@ -18,6 +19,7 @@ const CreateUserButton = ({
   branch_id,
   company_id,
   managerExists,
+  showBranchSelect
 }: CreateUserButtonProps) => {
   const [showModal, setShowModal] = useState(false);
   const t = useTranslations("BranchDetails.createUserButton");
@@ -49,6 +51,7 @@ const CreateUserButton = ({
           branch_id={branch_id}
           company_id={company_id}
           managerExists={managerExists}
+          showBranchSelect={showBranchSelect}
         />
       )}
     </>

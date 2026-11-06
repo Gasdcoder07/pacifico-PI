@@ -11,10 +11,8 @@ import UserDropdownActionButton from "./UserDropdownActionButton";
 
 const UsersCard = ({
     user,
-    isMe,
 }: {
     user: User;
-    isMe: boolean;
 }) => {
     const t = useTranslations("UsersPage.card");
 
@@ -30,14 +28,6 @@ const UsersCard = ({
                 <p className="font-medium text-[15px] text-neutral-900 dark:text-slate-50">
                     {user.name} {user.last_name}
                 </p>
-
-                {isMe && (
-                    <div className="rounded bg-[#F4F7F9] dark:bg-slate-800 px-2 py-1">
-                        <span className="text-xs font-medium text-neutral-600 dark:text-slate-400">
-                            ({t("you")})
-                        </span>
-                    </div>
-                )}
             </div>
 
             <div className="flex flex-1 min-w-0 items-center justify-between gap-2">
@@ -57,7 +47,9 @@ const UsersCard = ({
                     </div>
                 </div>
 
-                <UserDropdownActionButton />
+                <UserDropdownActionButton
+                    user={user}
+                    branchId={Number(user.branch_id)}/>
             </div>
         </div>
     );

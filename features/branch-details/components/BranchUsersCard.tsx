@@ -11,13 +11,9 @@ import UserDropdownActionButton from "@/features/users/components/UserDropdownAc
 
 const BranchUsersCard = ({
     user,
-    managerExists,
-    isMe,
     branchId,
 }: {
     user: User;
-    managerExists: boolean;
-    isMe: boolean;
     branchId: BranchId;
 }) => {
     const t = useTranslations("UsersPage.card");
@@ -34,14 +30,6 @@ const BranchUsersCard = ({
                 <p className="font-medium text-[15px] text-neutral-900 dark:text-white">
                     {user.name} {user.last_name}
                 </p>
-
-                {isMe && (
-                    <div className="rounded bg-[#F4F7F9] dark:bg-neutral-950 px-2 py-1">
-                        <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
-                            ({t("you")})
-                        </span>
-                    </div>
-                )}
             </div>
 
             <div className="flex flex-1 min-w-0 items-center justify-between gap-2">
@@ -63,8 +51,6 @@ const BranchUsersCard = ({
 
                 <UserDropdownActionButton
                     user={user}
-                    haveManager={managerExists}
-                    isMe={isMe}
                     branchId={branchId}
                 />
             </div>

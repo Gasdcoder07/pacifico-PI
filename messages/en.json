@@ -301,6 +301,10 @@
           "placeholder": "Select a branch"
         }
       },
+        "notifications": {
+          "success": "User created successfully",
+          "error": "An error occurred while creating the user"
+        },
       "roles": {
         "manager": "Manager",
         "cashier": "Cashier"
@@ -612,6 +616,19 @@
       "title": "Top Selling Products",
       "units": "units",
       "soldLabel": "Sold"
+    }
+  },
+  "DeleteUserModal": {
+    "title": "Delete user",
+    "description": "This action cannot be undone. Are you sure you want to delete the information of user <highlight>{userName}</highlight>?",
+    "actions": {
+      "cancel": "Keep user",
+      "delete": "Delete user",
+      "deleting": "Deleting user..."
+    },
+    "toast": {
+      "success": "User deleted successfully",
+      "error": "An error occurred while deleting the user"
     }
   }
 }

@@ -29,45 +29,45 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
 
   if (isLoadingBranch) return <UsersContainerSkeleton />;
 
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex flex-col gap-2">
-          <h4 className="text-xl font-semibold tracking-wide text-neutral-900 dark:text-slate-50">
-            {t("title")}
-          </h4>
-          <p className="text-sm text-neutral-500 dark:text-[#8493A8]">{t("subtitle")}</p>
-        </div>
+    return (
+        <div className="flex flex-col gap-4">
+            <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-col gap-2">
+                    <h4 className="text-xl font-semibold tracking-wide text-neutral-900 dark:text-slate-50">
+                        {t("title")}
+                    </h4>
+                    <p className="text-sm text-neutral-500 dark:text-[#8493A8]">{t("subtitle")}</p>
+                </div>
 
-        <CreateUserButton
-          isDisabled={isLoadingBranch}
-          branch_id={branchData?.data.id}
-          company_id={branchData?.data.company_id}
-          managerExists={haveManager}
-        />
-      </div>
-
-      <div className="flex flex-col gap-4">
-        {users.length === 0 ? (
-          <EmptyState />
-        ) : (
-          users.map((user: User) => {
-            const isMe = String(user.id) === String(currentUser?.id);
-
-            return (
-              <div key={user.id} className="flex items-center gap-4">
-                <BranchUsersCard
-                  user={user}
-                  managerExists={haveManager}
-                  isMe={isMe}
-                  branchId={Number(id)}
+                <CreateUserButton
+                    isDisabled={isLoadingBranch}
+                    branch_id={branchData?.data.id}
+                    company_id={branchData?.data.company_id}
+                    managerExists={haveManager}
+                    showBranchSelect={false}
                 />
-              </div>
-            );
-          })
-        )}
-      </div>
-    </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+                {users.length === 0 ? (
+                    <EmptyState />
+                ) : (
+                    users.map((user: User) => {
+                        return (
+                            <div
+                                key={user.id}
+                                className="flex items-center gap-4"
+                            >
+                                <BranchUsersCard
+                                    user={user}
+                                    branchId={Number(id)}
+                                />
+                            </div>
+                        );
+                    })
+                )}
+            </div>
+        </div>
   );
 };
 
