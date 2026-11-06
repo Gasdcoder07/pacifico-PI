@@ -12,24 +12,20 @@ const scrollbarStyles =
 
 interface UsersContainerProps {
     users: User[];
-    currentUser?: UserProfile | null;
     isLoading: boolean;
 }
 
-const UsersContainer = ({ users = [], currentUser, isLoading } : UsersContainerProps) => {
+const UsersContainer = ({ users = [], isLoading } : UsersContainerProps) => {
     if (isLoading) return <UsersContainerSkeleton />;
 
     return (
         <section className="flex flex-1 min-h-0 min-w-0">
-            <div className={`flex-1 min-h-0 overflow-y-auto ${scrollbarStyles}`}>
+            <div className={`flex-1 min-h-0 ${scrollbarStyles}`}>
                 {users.length === 0 ? (
                     <EmptyState />
                 ) : (
-                    <div className="grid grid-cols-1 gap-4">
+                    <div className="grid grid-cols-1 gap-4 pb-8">
                         {users.map((user: User) => {
-                            const isMe =
-                                String(user.id) === String(currentUser?.id);
-
                             return (
                                 <div
                                     key={user.id}
@@ -37,7 +33,6 @@ const UsersContainer = ({ users = [], currentUser, isLoading } : UsersContainerP
                                 >
                                     <UsersCard
                                         user={user}
-                                        isMe={isMe}
                                     />
                                 </div>
                             );

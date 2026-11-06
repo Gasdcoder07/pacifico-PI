@@ -55,9 +55,6 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
                     <EmptyState />
                 ) : (
                     users.map((user: User) => {
-                        const isMe =
-                            String(user.id) === String(currentUser?.id);
-
                         return (
                             <div
                                 key={user.id}
@@ -65,8 +62,6 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
                             >
                                 <BranchUsersCard
                                     user={user}
-                                    managerExists={haveManager}
-                                    isMe={isMe}
                                     branchId={Number(id)}
                                 />
                             </div>

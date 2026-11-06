@@ -29,7 +29,6 @@ const UsersLayout = () => {
 
             <UsersContainer
                 users={users}
-                currentUser={currentUser}
                 isLoading={isLoading}/>
         </section>
     );
