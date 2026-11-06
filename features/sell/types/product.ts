@@ -11,6 +11,15 @@ export interface Product {
     branch_name: string;
     category_id: string;
     category_name: string;
+    sucursales: ProductBranch[];
+}
+
+export interface ProductBranch {
+    quantity: number;
+    min_stock?: number | null;
+    branch_id: string;
+    branch_name: string;
+    inventario_id: string;
 }
 
 export interface BranchProducts {

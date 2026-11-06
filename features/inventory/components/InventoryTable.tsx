@@ -16,9 +16,10 @@ import EmptyState from "./EmptyState";
 interface InventoryTableProps {
     isLoading: boolean;
     products: Product[];
+    isAdmin: boolean;
 }
 
-const InventoryTable = ({ isLoading, products } : InventoryTableProps) => {
+const InventoryTable = ({ isLoading, products, isAdmin } : InventoryTableProps) => {
   const t = useTranslations("InventoryPage.table");
   const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300 dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-600";
 
@@ -36,7 +37,11 @@ const InventoryTable = ({ isLoading, products } : InventoryTableProps) => {
             <tr>
               <th className="w-14 px-4 py-3">{t("headers.id")}</th>
               <th className="w-[clamp(160px,28vw,320px)] px-4 py-3">{t("headers.product")}</th>
-              <th className="w-30 px-4 py-3">{t("headers.branch")}</th>
+              {
+                isAdmin && (
+                    <th className="w-30 px-4 py-3">{t("headers.branch")}</th>
+                )
+              }
               <th className="w-20 px-4 py-3">{t("headers.stock")}</th>
               <th className="hidden w-30 px-4 py-3 xl:table-cell">{t("headers.status")}</th>
               <th className="w-28 px-4 py-3 text-right">{t("headers.price")}</th>
@@ -46,7 +51,10 @@ const InventoryTable = ({ isLoading, products } : InventoryTableProps) => {
 
           <tbody className="divide-y divide-neutral-200 dark:divide-slate-800">
             {products.map((product: Product) => (
-              <InventoryTableRow key={product?.inventario_id} product={product} />
+              <InventoryTableRow
+                key={product?.inventario_id}
+                isAdmin={isAdmin}
+                product={product} />
             ))}
           </tbody>
         </table>
@@ -59,9 +67,10 @@ export default InventoryTable;
 
 interface InventoryTableRowProps {
   product: Product;
+  isAdmin: boolean;
 }
 
-export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
+export const InventoryTableRow = ({ product, isAdmin }: InventoryTableRowProps) => {
   const format = useFormatter();
 
   return (
@@ -86,11 +95,15 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
           </div>
         </div>
       </td>
-      <td className="px-4 py-3 text-xs text-neutral-600 dark:text-slate-400">
-        <div className="flex flex-col gap-1">
-          <p className="truncate font-medium whitespace-nowrap">{product.branch_name}</p>
-        </div>
-      </td>
+      {
+        isAdmin && (
+        <td className="px-4 py-3 text-xs text-neutral-600 dark:text-slate-400">
+            <div className="flex flex-col gap-1">
+            <p className="truncate font-medium whitespace-nowrap">{product.branch_name}</p>
+            </div>
+        </td>
+        )
+      }
       <td className="px-4 py-3 text-sm text-neutral-600 dark:text-slate-400">{product.quantity}</td>
       <td className="hidden px-4 py-3 text-sm text-neutral-600 dark:text-slate-400 xl:table-cell">
         <StockBadge quantity={product.quantity} />

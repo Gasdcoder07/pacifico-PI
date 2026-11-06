@@ -61,15 +61,26 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
   const [currentStep, setCurrentStep] = useState(1);
 
   const [imagePreview, setImagePreview] = useState<string | null>(product.foto_url || null);
-  const [selectedBranchIds, setSelectedBranchIds] = useState<string[]>([
-    String(product.branch_id),
-  ]);
-  const [branchStock, setBranchStock] = useState<Record<string, BranchStock>>(() => ({
-    [String(product.branch_id)]: {
-      quantity: String(product.quantity),
-      min_stock: String(product.min_stock),
-    },
-  }));
+  
+  const productBranches = product.sucursales ?? [];
+
+    const [selectedBranchIds, setSelectedBranchIds] = useState<string[]>(
+    () => productBranches.map((branch) => String(branch.branch_id))
+    );
+
+    const [branchStock, setBranchStock] = useState<
+    Record<string, BranchStock>
+    >(() =>
+    Object.fromEntries(
+        productBranches.map((branch) => [
+            String(branch.branch_id),
+            {
+                quantity: String(branch.quantity ?? ""),
+                min_stock: String(branch.min_stock ?? ""),
+            },
+        ])
+    )
+    );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 

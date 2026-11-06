@@ -43,7 +43,8 @@ export async function GET(request: Request) {
                                             'inventario_id', inv2.id::text,
                                             'branch_id', inv2.branch_id::text,
                                             'branch_name', suc2.name,
-                                            'quantity', inv2.quantity
+                                            'quantity', inv2.quantity,
+                                            'min_stock', inv2.min_stock
                                         )
                                     ), 
                                     '[]'::jsonb
