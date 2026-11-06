@@ -68,17 +68,17 @@ const Sidebar = () => {
                 duration: isLoaded ? 0.2 : 0,
                 ease: "easeInOut",
             }}
-            className={`p-4 flex flex-col justify-between gap-4 border-r border-neutral-300`}
+            className={`p-4 flex flex-col justify-between gap-4 border-r border-neutral-300 dark:bg-slate-900 dark:border-slate-800`}
         >
             <div className="flex-1 flex flex-col gap-8">
                 {filteredSections.map((section, index) => (
                     <div key={index} className="flex flex-col gap-4">
                         {isOpen ? (
-                            <h3 className="px-3 font-bold text-neutral-500 uppercase text-xs tracking-wider">
+                            <h3 className="px-3 font-bold text-neutral-500 dark:text-[#8493A8] uppercase text-xs tracking-wider">
                                 {t(section.titleKey)}
                             </h3>
                         ) : index > 0 ? (
-                            <div className="mb-4 border-t border-neutral-200 w-full" />
+                            <div className="mb-4 border-t border-neutral-200 dark:border-slate-800 w-full" />
                         ) : null}
 
                         <ul className="flex flex-col gap-4">
@@ -124,9 +124,9 @@ const SidebarOption = ({ open, name, href, icon: Icon, isSelected }: SidebarOpti
                 title={!open ? name : undefined}
                 className={`${
                     isSelected
-                        ? "bg-linear-to-b from-brand-50 to-brand-100 text-brand-700"
-                        : "text-neutral-500"
-                } flex items-center gap-4 px-4 py-3 rounded-md duration-200 ease-in-out hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 hover:scale-105 transition-all`}
+                        ? "bg-linear-to-b from-brand-50 to-brand-100 text-brand-700 dark:bg-none dark:bg-cyan-500/15 dark:text-cyan-400"
+                        : "text-neutral-500 dark:text-slate-400"
+                } flex items-center gap-4 px-4 py-3 rounded-md duration-200 ease-in-out hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 dark:hover:bg-none dark:hover:bg-slate-800 dark:hover:text-slate-200 hover:scale-105 transition-all`}
             >
                 <Icon className="shrink-0" size={20} />
                 <AnimatePresence initial={false}>
@@ -154,10 +154,10 @@ const ToggleClose = ({ open, setIsOpen }: ToggleCloseProps) => {
     const t = useTranslations("Sidebar");
 
     return (
-        <div className="border-t border-neutral-300 pt-4">
+        <div className="border-t border-neutral-300 dark:border-slate-800 pt-4">
             <button
                 onClick={() => setIsOpen(!open)}
-                className="w-full flex items-center px-4 py-3 gap-4 rounded-md transition-all duration-300 ease-in-out hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 cursor-pointer"
+                className="w-full flex items-center px-4 py-3 gap-4 rounded-md transition-all duration-300 ease-in-out dark:text-slate-400 hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 dark:hover:bg-none dark:hover:bg-slate-800 dark:hover:text-slate-200 cursor-pointer"
             >
                 <ChevronsRight
                     size={20}

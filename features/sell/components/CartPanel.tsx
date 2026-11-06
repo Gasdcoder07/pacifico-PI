@@ -64,7 +64,7 @@ const QuantityInput = ({ quantity, maxStock, onQuantityChange }: QuantityInputPr
   );
 };
 
-const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
+const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300 dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-600";
 
 const CartPanel = () => {
     const t = useTranslations("SellPage.cartPanel");
@@ -122,10 +122,10 @@ const CartPanel = () => {
     };
 
   return (
-    <section className="flex min-h-0 min-w-0 basis-3/10 flex-col rounded-lg border border-neutral-200 bg-white shadow-sm">
+    <section className="flex min-h-0 min-w-0 basis-3/10 flex-col rounded-lg border border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
       <div className="flex flex-col min-h-0 min-w-0 h-full">
         {/* Encabezado */}
-        <div className="border-b border-neutral-200 p-4 flex items-center justify-between">
+        <div className="border-b border-neutral-200 dark:border-slate-800 p-4 flex items-center justify-between">
           <h3 className="font-semibold text-lg">{t("title")}</h3>
 
           {cart.length > 0 && (
@@ -133,7 +133,7 @@ const CartPanel = () => {
               onClick={clearCart}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center gap-2 text-xs text-red-500 hover:text-red-600 bg-red-50 hover:bg-red-100 px-2 py-1 rounded-md transition-colors font-medium cursor-pointer"
+              className="flex items-center gap-2 text-xs text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-400 bg-red-50 dark:bg-red-500/10 hover:bg-red-100 px-2 py-1 rounded-md transition-colors font-medium cursor-pointer"
               title={t("clearCartTooltip")}
             >
               <Trash2 size={14} />
@@ -147,7 +147,7 @@ const CartPanel = () => {
           className={`flex flex-col min-h-0 min-w-0 h-full p-4 overflow-y-auto gap-2 ${scrollbarStyles}`}
         >
           {cart.length === 0 ? (
-            <p className="text-center text-xs text-neutral-400 py-8">
+            <p className="text-center text-xs text-neutral-400 dark:text-slate-400 py-8">
               {t("emptyCart")}
             </p>
           ) : (
@@ -167,7 +167,7 @@ const CartPanel = () => {
                       damping: 25,
                       mass: 0.5,
                     }}
-                    className="h-26 relative flex flex-col rounded-lg border border-neutral-200 shadow-sm p-2 gap-2 group bg-white"
+                    className="h-26 relative flex flex-col rounded-lg border border-neutral-200 dark:border-slate-800 shadow-sm p-2 gap-2 group bg-white dark:bg-slate-900"
                   >
                     <div className="flex items-center gap-2 h-full">
                         <div className="h-full w-1/3 rounded-lg overflow-hidden self-stretch">
@@ -197,15 +197,15 @@ const CartPanel = () => {
                                         <Trash2 size={16}/>
                                     </motion.button>
                                 </div>
-                                <span className="text-xs text-neutral-600">${product.price} {t("unitPrice")}</span>
+                                <span className="text-xs text-neutral-600 dark:text-slate-400">${product.price} {t("unitPrice")}</span>
                             </div>
                             <div className="flex items-center justify-between gap-2">
-                                <div className="flex items-center bg-white border border-neutral-200 shadow rounded-full p-1 gap-1">
+                                <div className="flex items-center bg-white dark:bg-slate-900 border border-neutral-200 dark:border-slate-800 shadow rounded-full p-1 gap-1">
                                     <motion.button
                                     type="button"
                                     onClick={() => removeFromCart(product.inventario_id)}
                                     whileTap={{ scale: 0.85 }}
-                                    className="p-1 rounded-md hover:bg-neutral-100 text-black transition-all ease-in-out duration-200 cursor-pointer"
+                                    className="p-1 rounded-md hover:bg-neutral-100 dark:hover:bg-slate-800 text-black dark:text-slate-50 transition-all ease-in-out duration-200 cursor-pointer"
                                     >
                                         <Minus size={14} />
                                     </motion.button>
@@ -222,7 +222,7 @@ const CartPanel = () => {
                                     type="button"
                                     onClick={() => addToCart(product)}
                                     whileTap={{ scale: 0.85 }}
-                                    className="p-1 rounded-md hover:bg-neutral-100 text-black transition-all ease-in-out duration-200 cursor-pointer"
+                                    className="p-1 rounded-md hover:bg-neutral-100 dark:hover:bg-slate-800 text-black dark:text-slate-50 transition-all ease-in-out duration-200 cursor-pointer"
                                     >
                                         <Plus size={14} />
                                     </motion.button>
@@ -245,16 +245,16 @@ const CartPanel = () => {
       </div>
 
       {/* Totales y Confirmación */}
-      <div className="border-t border-neutral-200 p-4 text-sm text-neutral-600 flex flex-col gap-2">
+      <div className="border-t border-neutral-200 dark:border-slate-800 p-4 text-sm text-neutral-600 dark:text-slate-400 flex flex-col gap-2">
         <div className="flex justify-between items-center">
           <p>{t("subtotal")}</p>
-          <p className="text-black font-semibold">${subtotal.toFixed(2)}</p>
+          <p className="text-black dark:text-slate-50 font-semibold">${subtotal.toFixed(2)}</p>
         </div>
         <div className="flex justify-between items-center">
           <p>{t("tax")}</p>
-          <p className="text-black font-semibold">${iva.toFixed(2)}</p>
+          <p className="text-black dark:text-slate-50 font-semibold">${iva.toFixed(2)}</p>
         </div>
-        <div className="mt-2 flex justify-between items-center px-4 py-2 bg-cyan-50 border border-cyan-200 rounded-lg">
+        <div className="mt-2 flex justify-between items-center px-4 py-2 bg-cyan-50 dark:bg-cyan-500/10 border border-cyan-200 dark:border-cyan-500/30 rounded-lg">
           <p className="text-cyan-400 text-base">{t("total")}</p>
           <p className="text-cyan-400 font-semibold text-lg">
             ${total.toFixed(2)}
@@ -266,7 +266,7 @@ const CartPanel = () => {
           whileHover={cart.length > 0 ? { scale: 1.02 } : {}}
           whileTap={cart.length > 0 ? { scale: 0.98 } : {}}
           onClick={() => setShowPaymentMethod(true)}
-          className="text-sm mt-2 bg-cyan-400 py-2 rounded-full px-4 text-white font-medium cursor-pointer disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed transition-colors"
+          className="text-sm mt-2 bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 py-2 rounded-full px-4 text-white font-medium cursor-pointer disabled:bg-neutral-200 dark:disabled:bg-slate-700 disabled:text-neutral-400 dark:disabled:text-slate-500 disabled:cursor-not-allowed transition-colors"
         >
           {t("confirmOrder")}
         </motion.button>

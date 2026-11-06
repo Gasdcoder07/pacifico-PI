@@ -23,7 +23,7 @@ export const ModalLayout = ({ isOpen, onClose, title, children, width = "max-w-l
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/60"
+                        className="fixed inset-0 bg-black/60 dark:bg-slate-950/70"
                     />
 
                     <motion.div
@@ -31,17 +31,17 @@ export const ModalLayout = ({ isOpen, onClose, title, children, width = "max-w-l
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 10 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}
-                        className={`relative z-10 w-full bg-white rounded-lg shadow-sm border border-neutral-200 ${width} p-6 flex flex-col gap-6`}
+                        className={`relative z-10 w-full bg-white dark:bg-slate-900 rounded-lg shadow-sm border border-neutral-200 dark:border-slate-800 ${width} p-6 flex flex-col gap-6`}
                     >
                         {
                             title && (
                                 <div className="flex items-center justify-between">
-                                    <h2 className="text-xl font-semibold text-neutral-700 tracking-wide">
+                                    <h2 className="text-xl font-semibold text-neutral-700 dark:text-slate-50 tracking-wide">
                                         {title}
                                     </h2>
                                     <button
                                         onClick={onClose}
-                                        className="p-1 rounded-full text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors duration-200 ease-in-out cursor-pointer"
+                                        className="p-1 rounded-full text-neutral-400 dark:text-slate-400 hover:text-neutral-700 hover:bg-neutral-100 dark:hover:text-slate-200 dark:hover:bg-slate-800 transition-colors duration-200 ease-in-out cursor-pointer"
                                     >
                                         <X className="size-4" />
                                     </button>

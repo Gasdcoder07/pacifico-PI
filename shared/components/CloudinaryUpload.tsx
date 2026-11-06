@@ -124,7 +124,7 @@ export default function CloudinaryUpload({
             )}
 
             {error && (
-                <p className="text-red-500">
+                <p className="text-red-500 dark:text-red-400">
                     {error}
                 </p>
             )}

@@ -63,7 +63,7 @@ const UserDropdownActionButton = ({
           !isMe ? { type: "spring", bounce: 0.6, duration: 0.8 } : undefined
         }
         disabled={isMe}
-        className={`rounded-lg border border-brand-100 bg-linear-to-b from-brand-50 to-brand-100 p-1 text-brand-700 ${
+        className={`rounded-lg border border-brand-100 bg-linear-to-b from-brand-50 to-brand-100 p-1 text-brand-700 dark:bg-none dark:bg-cyan-500/15 dark:text-cyan-400 ${
           isMe ? "cursor-not-allowed" : "cursor-pointer"
         }`}
         onClick={() => setOpen(!open)}
@@ -78,7 +78,7 @@ const UserDropdownActionButton = ({
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="absolute right-2 -top-12 z-10 flex w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg">
+            className="absolute right-2 -top-12 z-10 flex w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 shadow-lg">
           <motion.div variants={itemVariants} className="flex flex-col gap-2">
             <motion.button
                 whileHover={{ scale: 1.02 }}
@@ -88,7 +88,7 @@ const UserDropdownActionButton = ({
                 setShowEditPanel(true);
                 setOpen(false);
                 }}
-                className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-gray-100"
+                className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 dark:text-slate-50 transition-colors duration-200 ease-in-out hover:bg-gray-100 dark:hover:bg-slate-700"
             >
                 <Edit size={18} />
                 <span className="font-medium">{t("edit")}</span>
@@ -101,7 +101,7 @@ const UserDropdownActionButton = ({
                 setShowDeleteModal(true);
                 setOpen(false);
                 }}
-                className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 transition-colors duration-200 ease-in-out text-red-600 hover:bg-red-50"
+                className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 transition-colors duration-200 ease-in-out text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
             >
                 <Trash size={18} />
                 <span className="font-medium">{t("delete")}</span>

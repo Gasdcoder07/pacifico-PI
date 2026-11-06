@@ -23,7 +23,7 @@ const CreateBranchButton = () => {
           duration: 0.2,
           ease: "easeInOut",
         }}
-        className="flex cursor-pointer items-center gap-2 self-end rounded-lg bg-cyan-400 px-4 py-2 text-sm font-medium text-white shadow-sm"
+        className="flex cursor-pointer items-center gap-2 self-end rounded-lg bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 px-4 py-2 text-sm font-medium text-white shadow-sm"
       >
         <Plus size={20} className="shrink-0" />
         <span>{t("label")}</span>

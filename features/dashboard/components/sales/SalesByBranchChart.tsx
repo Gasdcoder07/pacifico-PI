@@ -22,7 +22,7 @@ const rawData: BranchData[] = [
   { sucursalKey: "west", ventas: 1900 },
 ];
 
-const COLORS = ["#0891b2", "#3b82f6", "#f59e0b", "#10b981"];
+const COLORS = ["var(--serie-1)", "var(--serie-2)", "var(--serie-3)", "var(--serie-4)"];
 
 export function SalesByBranchChart() {
   const t = useTranslations("SalesPage.branchChart");
@@ -37,8 +37,8 @@ export function SalesByBranchChart() {
   const total = data.reduce((acc, item) => acc + item.ventas, 0);
 
   return (
-    <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm transition-colors duration-200 dark:border-neutral-800 dark:bg-black [--tooltip-fondo:#ffffff] dark:[--tooltip-fondo:#171717] [--tooltip-texto:#171717] dark:[--tooltip-texto:#ffffff] [--tooltip-borde:#e5e5e5] dark:[--tooltip-borde:#262626]">
-      <h2 className="mb-4 text-sm font-semibold text-neutral-700 dark:text-white">
+    <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm transition-colors duration-200 dark:border-slate-800 dark:bg-slate-900 [--tooltip-fondo:#ffffff] dark:[--tooltip-fondo:#0f172a] [--tooltip-texto:#171717] dark:[--tooltip-texto:#f8fafc] [--tooltip-borde:#e5e5e5] dark:[--tooltip-borde:#1e293b] [--serie-1:#0891b2] dark:[--serie-1:#22d3ee] [--serie-2:#3b82f6] dark:[--serie-2:#60a5fa] [--serie-3:#f59e0b] dark:[--serie-3:#fbbf24] [--serie-4:#10b981] dark:[--serie-4:#34d399]">
+      <h2 className="mb-4 text-sm font-semibold text-neutral-700 dark:text-slate-50">
         {t("title")}
       </h2>
       <ResponsiveContainer width="100%" height={300}>
@@ -51,9 +51,18 @@ export function SalesByBranchChart() {
             cy="50%"
             outerRadius={100}
             stroke="none"
-            label={(props: any) =>
-              `${props.sucursal} ${((props.ventas / total) * 100).toFixed(0)}%`
-            }
+            label={(props: any) => (
+              <text
+                x={props.x}
+                y={props.y}
+                fill="var(--tooltip-texto)"
+                textAnchor={props.textAnchor}
+                dominantBaseline="central"
+                fontSize={12}
+              >
+                {`${props.sucursal} ${((props.ventas / total) * 100).toFixed(0)}%`}
+              </text>
+            )}
           >
             {data.map((item, index) => (
               <Cell key={item.sucursal} fill={COLORS[index % COLORS.length]} />
@@ -77,7 +86,7 @@ export function SalesByBranchChart() {
               })
             }
           />
-          <Legend />
+          <Legend wrapperStyle={{ color: "var(--tooltip-texto)" }} />
         </PieChart>
       </ResponsiveContainer>
     </div>

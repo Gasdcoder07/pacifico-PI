@@ -13,7 +13,7 @@ const MAX_SIZE = 2 * 1024 * 1024; // 2 MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 const inputClass =
-  "w-full p-3 text-sm border border-neutral-200 rounded-xl hover:border-neutral-300 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/10 outline-none transition-colors duration-200 ease-in-out";
+  "w-full p-3 text-sm border border-neutral-200 dark:border-slate-800 rounded-xl hover:border-neutral-300 dark:hover:border-slate-600 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/10 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out";
 
 interface CompanyFormProps {
     company: Company
@@ -129,23 +129,23 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex w-full max-w-4xl flex-col gap-6 rounded-lg border border-neutral-200 bg-white px-8 py-6 shadow-sm"
+      className="flex w-full max-w-4xl flex-col gap-6 rounded-lg border border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-8 py-6 shadow-sm"
     >
       {/* Encabezado de la tarjeta */}
-      <div className="flex flex-col gap-2 border-b border-neutral-200 pb-6">
+      <div className="flex flex-col gap-2 border-b border-neutral-200 dark:border-slate-800 pb-6">
         <h2 className="text-xl font-semibold">{t("cardTitle")}</h2>
-        <p className="text-sm text-neutral-500">{t("cardSubtitle")}</p>
+        <p className="text-sm text-neutral-500 dark:text-[#8493A8]">{t("cardSubtitle")}</p>
       </div>
 
       <div className="flex">
         {/* Columna izquierda: logo */}
-        <div className="flex flex-col gap-4 border-r border-neutral-200 pr-8">
+        <div className="flex flex-col gap-4 border-r border-neutral-200 dark:border-slate-800 pr-8">
           <div className="flex flex-col gap-2">
             <label className="font-medium">{t("logo.label")}</label>
-            <p className="text-sm text-neutral-500">{t("logo.hint")}</p>
+            <p className="text-sm text-neutral-500 dark:text-[#8493A8]">{t("logo.hint")}</p>
           </div>
 
-          <div className="relative flex h-40 w-full items-center justify-center overflow-hidden rounded-xl border border-neutral-200 bg-white">
+          <div className="relative flex h-40 w-full items-center justify-center overflow-hidden rounded-xl border border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900">
             {formData.foto_url ? (
               <>
                 <img
@@ -157,14 +157,14 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
                 <button
                   type="button"
                   onClick={handleRemoveLogo}
-                  className="absolute top-2 right-2 flex size-9 cursor-pointer items-center justify-center rounded-full border border-red-50 bg-white text-red-500 shadow-sm transition-all duration-200 ease-in-out hover:bg-red-500 hover:text-white"
+                  className="absolute top-2 right-2 flex size-9 cursor-pointer items-center justify-center rounded-full border border-red-50 bg-white dark:bg-slate-900 text-red-500 dark:text-red-400 shadow-sm transition-all duration-200 ease-in-out hover:bg-red-500 hover:text-white"
                 >
                   <Trash2 size={16} />
                 </button>
               </>
             ) : (
               <div className="flex flex-col items-center gap-2 px-4 text-center">
-                <div className="flex size-12 items-center justify-center rounded-xl bg-brand-50 text-brand-500">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-brand-50 dark:bg-cyan-500/10 text-brand-500 dark:text-cyan-400">
                   <ImagePlus size={24} strokeWidth={1.6} />
                 </div>
 
@@ -173,7 +173,7 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
                     {t("logo.noLogo")}
                   </span>
 
-                  <p className="text-xs text-neutral-400">
+                  <p className="text-xs text-neutral-400 dark:text-slate-400">
                     {t("logo.noLogoHint")}
                   </p>
                 </div>
@@ -186,10 +186,10 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
               {logoFile ? logoFile.name : t("logo.noFileSelected")}
             </span>
             <div className="flex gap-2">
-              <span className="text-xs text-neutral-500">
+              <span className="text-xs text-neutral-500 dark:text-[#8493A8]">
                 {t("logo.requirementsSize")}
               </span>
-              <span className="text-xs text-neutral-500">
+              <span className="text-xs text-neutral-500 dark:text-[#8493A8]">
                 {t("logo.requirementsDimensions")}
               </span>
             </div>
@@ -208,9 +208,9 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
               type="button"
               disabled={isPending}
               onClick={() => fileInputRef.current?.click()}
-              className={`flex items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2 font-medium transition-colors duration-200 ease-in-out ${isPending
-                ? 'bg-neutral-50 cursor-not-allowed'
-                : 'hover:bg-neutral-50 cursor-pointer'
+              className={`flex items-center gap-2 rounded-lg border border-neutral-300 dark:border-slate-700 px-4 py-2 font-medium transition-colors duration-200 ease-in-out ${isPending
+                ? 'bg-neutral-50 dark:bg-slate-800 cursor-not-allowed'
+                : 'hover:bg-neutral-50 dark:hover:bg-slate-800 cursor-pointer'
               }`}
             >
               <Upload size={16} />
@@ -226,7 +226,7 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
               <label htmlFor="name" className="font-medium">
                 {t("fields.name.label")} *
               </label>
-              <p className="text-sm text-neutral-500">
+              <p className="text-sm text-neutral-500 dark:text-[#8493A8]">
                 {t("fields.name.hint")}
               </p>
             </div>
@@ -247,7 +247,7 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
               <label htmlFor="address" className="font-medium">
                 {t("fields.address.label")} *
               </label>
-              <p className="text-sm text-neutral-500">
+              <p className="text-sm text-neutral-500 dark:text-[#8493A8]">
                 {t("fields.address.hint")}
               </p>
             </div>
@@ -266,12 +266,12 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
       </div>
 
       {/* Descripción a todo el ancho */}
-      <div className="flex flex-col gap-4 border-t border-neutral-200 pt-4">
+      <div className="flex flex-col gap-4 border-t border-neutral-200 dark:border-slate-800 pt-4">
         <div className="flex flex-col gap-2">
           <label htmlFor="description" className="font-medium">
             {t("fields.description.label")}
           </label>
-          <p className="text-sm text-neutral-500">
+          <p className="text-sm text-neutral-500 dark:text-[#8493A8]">
             {t("fields.description.hint")}
           </p>
         </div>
@@ -289,7 +289,7 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
       </div>
 
       {/* Pie con el botón */}
-      <div className="flex justify-end border-t border-neutral-200 pt-6">
+      <div className="flex justify-end border-t border-neutral-200 dark:border-slate-800 pt-6">
         <motion.button
           type="submit"
           disabled={isPending}
@@ -303,8 +303,8 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
             ease: "easeInOut",
           }}
           className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white shadow-sm ${isPending
-            ? 'bg-neutral-600 cursor-not-allowed'
-            : 'cursor-pointer bg-cyan-400'
+            ? 'bg-neutral-600 dark:bg-slate-700 dark:text-slate-500 cursor-not-allowed'
+            : 'cursor-pointer bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400'
           }`}
         >
           <Save size={16} />

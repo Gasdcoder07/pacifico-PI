@@ -48,7 +48,7 @@ const page = () => {
                     <div className="text-left flex flex-col gap-2 w-full">
                         <h3 className="text-2xl sm:text-3xl font-semibold tracking-wide">Crea tu cuenta</h3>
 
-                        <p className="text-sm text-neutral-600 leading-relaxed">Completa tus datos para comenzar a gestionar tu negocio.</p>
+                        <p className="text-sm text-neutral-600 dark:text-slate-400 leading-relaxed">Completa tus datos para comenzar a gestionar tu negocio.</p>
                     </div>
 
                     <RegisterForm/>

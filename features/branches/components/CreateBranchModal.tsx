@@ -133,13 +133,13 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-sm">
         <div className="flex gap-6">
             <div className="w-2/5 flex flex-col items-center gap-2">
-                <span className="self-start font-medium text-neutral-600">
+                <span className="self-start font-medium text-neutral-600 dark:text-slate-400">
                     {t("image.label")}
                 </span>
 
                 <div
                     onClick={triggerFileSelect}
-                    className="group relative h-full w-full cursor-pointer overflow-hidden rounded-lg border-2 border-neutral-200 transition-all duration-200 hover:border-cyan-400"
+                    className="group relative h-full w-full cursor-pointer overflow-hidden rounded-lg border-2 border-neutral-200 dark:border-slate-800 transition-all duration-200 hover:border-cyan-400"
                 >
                     {imagePreview ? (
                     <img
@@ -148,7 +148,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                     className="absolute inset-0 h-full w-full object-cover"
                     />
                     ) : (
-                    <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-50 text-neutral-400">
+                    <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-50 dark:bg-slate-800 text-neutral-400 dark:text-slate-400">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -191,18 +191,18 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                 <button
                     type="button"
                     onClick={triggerFileSelect}
-                    className="text-sm font-medium text-cyan-600 hover:text-cyan-700 cursor-pointer duration-200 ease-in-out transition-all"
+                    className="text-sm font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 cursor-pointer duration-200 ease-in-out transition-all"
                 >
                     {imagePreview ? t("image.changeButton") : t("image.uploadButton")}
                 </button>
-                <span className="text-xs text-neutral-400">
+                <span className="text-xs text-neutral-400 dark:text-slate-400">
                     {t("image.requirements")}
                 </span>
             </div>
 
             <div className="w-3/5 flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
-                    <label className="font-medium text-neutral-600">
+                    <label className="font-medium text-neutral-600 dark:text-slate-400">
                         {t("fields.name.label")} *
                     </label>
                     <input
@@ -211,12 +211,12 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                         value={formData.company_name}
                         onChange={handleInputChange}
                         placeholder={t("fields.name.placeholder")}
-                        className="w-full rounded-lg border border-neutral-200 p-3 outline-none transition-colors duration-200 ease-in-out focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5"
+                        className="w-full rounded-lg border border-neutral-200 dark:border-slate-800 p-3 outline-none transition-colors duration-200 ease-in-out focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20"
                     />
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <label className="font-medium text-neutral-600">
+                    <label className="font-medium text-neutral-600 dark:text-slate-400">
                         {t("fields.address.label")} *
                     </label>
                     <input
@@ -225,12 +225,12 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                         value={formData.company_address}
                         onChange={handleInputChange}
                         placeholder={t("fields.address.placeholder")}
-                        className="w-full rounded-lg border border-neutral-200 p-3 outline-none transition-colors duration-200 ease-in-out focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5"
+                        className="w-full rounded-lg border border-neutral-200 dark:border-slate-800 p-3 outline-none transition-colors duration-200 ease-in-out focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20"
                     />
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <label className="font-medium text-neutral-600">
+                    <label className="font-medium text-neutral-600 dark:text-slate-400">
                         {t("fields.contact.label")}
                     </label>
                     <input
@@ -239,12 +239,12 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                         value={formData.company_contact_info}
                         onChange={handleInputChange}
                         placeholder={t("fields.contact.placeholder")}
-                        className="w-full rounded-lg border border-neutral-200 p-3 outline-none transition-colors duration-200 ease-in-out focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5"
+                        className="w-full rounded-lg border border-neutral-200 dark:border-slate-800 p-3 outline-none transition-colors duration-200 ease-in-out focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20"
                     />
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <label className="font-medium text-neutral-600">
+                    <label className="font-medium text-neutral-600 dark:text-slate-400">
                         {t("fields.phone.label")}
                     </label>
                     <input
@@ -253,7 +253,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                         value={formData.company_phone}
                         onChange={handleInputChange}
                         placeholder={t("fields.phone.placeholder")}
-                        className="w-full rounded-lg border border-neutral-200 p-3 outline-none transition-colors duration-200 ease-in-out focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5"
+                        className="w-full rounded-lg border border-neutral-200 dark:border-slate-800 p-3 outline-none transition-colors duration-200 ease-in-out focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20"
                     />
                 </div>
             </div>
@@ -264,7 +264,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                 type="button"
                 onClick={handleClose}
                 disabled={isCreating}
-                className="cursor-pointer rounded-lg border border-neutral-200 px-4 py-2 text-neutral-600 transition-colors duration-200 ease-in-out hover:bg-neutral-50 disabled:opacity-50"
+                className="cursor-pointer rounded-lg border border-neutral-200 dark:border-slate-800 px-4 py-2 text-neutral-600 dark:text-slate-400 transition-colors duration-200 ease-in-out hover:bg-neutral-50 dark:hover:bg-slate-800 disabled:opacity-50"
             >
                 {t("actions.cancel")}
             </button>
@@ -274,8 +274,8 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                 disabled={isCreating}
                 className={`rounded-lg px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out ${
                     isCreating
-                    ? "cursor-not-allowed bg-neutral-400"
-                    : "cursor-pointer bg-cyan-400 hover:bg-cyan-500"
+                    ? "cursor-not-allowed bg-neutral-400 dark:bg-slate-700 dark:text-slate-500"
+                    : "cursor-pointer bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500"
                 }`}
             >
                 {isCreating ? t("actions.submitting") : t("actions.submit")}

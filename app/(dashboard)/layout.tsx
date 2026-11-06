@@ -3,9 +3,8 @@ import SidebarWrapper from "@/shared/components/SidebarWrapper";
 import RoleGuard from "./RoleGuard";
 import React from "react";
 
-export default function DashLayout({ children }: { children: React.ReactNode }) {
-    const scrollbarStyles =
-        "[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300 dark:[&::-webkit-scrollbar-thumb:hover]:bg-neutral-600";
+export default function DashLayout({ children } : { children : React.ReactNode; }) {
+    const scrollbarStyles = "[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300 dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-600";
 
     return (
         <RoleGuard>
@@ -15,11 +14,10 @@ export default function DashLayout({ children }: { children: React.ReactNode }) 
                 <section className="min-w-0 flex-1 w-full flex overflow-hidden">
                     <SidebarWrapper />
 
-                    <div className={`bg-[#F4F7F9] dark:bg-black w-full flex-1 overflow-y-auto ${scrollbarStyles}`}>
-                        {children}
-                    </div>
-                </section>
-            </main>
-        </RoleGuard>
+                <div className={`bg-[#F4F7F9] dark:bg-slate-950 w-full flex-1 overflow-y-auto ${scrollbarStyles}`}>
+                    {children}
+                </div>
+            </section>
+        </main>
     );
 }

@@ -37,6 +37,6 @@ export default ProductCatalog;
 
 const Skeleton = () => {
     return (
-        <div className="flex-1 animate-pulse duration-200 ease-in-out transition-all bg-neutral-200 flex min-h-0 min-w-0 basis-3/4 rounded-lg"/>
+        <div className="flex-1 animate-pulse duration-200 ease-in-out transition-all bg-neutral-200 dark:bg-slate-800 flex min-h-0 min-w-0 basis-3/4 rounded-lg"/>
     )
 }

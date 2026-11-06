@@ -20,19 +20,19 @@ interface InventoryTableProps {
 
 const InventoryTable = ({ isLoading, products } : InventoryTableProps) => {
   const t = useTranslations("InventoryPage.table");
-  const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300 dark:[&::-webkit-scrollbar-thumb:hover]:bg-neutral-600";
+  const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300 dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-600";
 
   if (isLoading) return <InventoryTableSkeleton />;
 
   if (products.length === 0) return <EmptyState/>
 
   return (
-    <div className="flex max-h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white text-neutral-900 shadow-sm dark:border-neutral-800 dark:bg-black dark:text-white">
+    <div className="flex max-h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white text-neutral-900 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50">
       <div
         className={`flex-1 overflow-x-hidden overflow-y-auto ${scrollbarStyles}`}
       >
         <table className="w-full table-fixed">
-          <thead className="sticky top-0 z-10 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-black text-left text-xs uppercase tracking-wider text-neutral-600 dark:text-neutral-300 whitespace-nowrap">
+          <thead className="sticky top-0 z-10 border-b border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-left text-xs uppercase tracking-wider text-neutral-600 dark:text-slate-400 whitespace-nowrap">
             <tr>
               <th className="w-14 px-4 py-3">{t("headers.id")}</th>
               <th className="w-[clamp(160px,28vw,320px)] px-4 py-3">{t("headers.product")}</th>
@@ -44,7 +44,7 @@ const InventoryTable = ({ isLoading, products } : InventoryTableProps) => {
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
+          <tbody className="divide-y divide-neutral-200 dark:divide-slate-800">
             {products.map((product: Product) => (
               <InventoryTableRow key={product.inventario_id} product={product} />
             ))}
@@ -65,13 +65,13 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
   const format = useFormatter();
 
   return (
-    <tr className="bg-white text-neutral-900 dark:bg-black dark:text-white">
-      <td className="px-4 py-3 text-xs text-neutral-600 dark:text-neutral-300 whitespace-nowrap overflow-auto scroll-auto">
+    <tr className="bg-white text-neutral-900 dark:bg-slate-900 dark:text-slate-50">
+      <td className="px-4 py-3 text-xs text-neutral-600 dark:text-slate-400 whitespace-nowrap overflow-auto scroll-auto">
         #{product.inventario_id}
       </td>
       <td title={product.name} className="px-4 py-3">
         <div className="flex items-center justify-start gap-4">
-          <div className="shrink-0 relative h-16 w-20 overflow-hidden rounded-lg border border-neutral-200 shadow-sm dark:border-neutral-800">
+          <div className="shrink-0 relative h-16 w-20 overflow-hidden rounded-lg border border-neutral-200 shadow-sm dark:border-slate-800">
             <img
               src={product.foto_url}
               alt={product.name}
@@ -79,20 +79,20 @@ export const InventoryTableRow = ({ product }: InventoryTableRowProps) => {
             />
           </div>
           <div className="flex min-w-0 flex-1 flex-col gap-1">
-            <p className="truncate font-semibold whitespace-nowrap text-sm text-neutral-900 dark:text-white">
+            <p className="truncate font-semibold whitespace-nowrap text-sm text-neutral-900 dark:text-slate-50">
                 {product.name}
             </p>
-            <p className="text-xs text-neutral-600 dark:text-neutral-400">{product.category_name}</p>
+            <p className="text-xs text-neutral-600 dark:text-slate-400">{product.category_name}</p>
           </div>
         </div>
       </td>
-      <td className="px-4 py-3 text-xs text-neutral-600 dark:text-neutral-300">
+      <td className="px-4 py-3 text-xs text-neutral-600 dark:text-slate-400">
         <div className="flex flex-col gap-1">
           <p className="truncate font-medium whitespace-nowrap">{product.branch_name}</p>
         </div>
       </td>
-      <td className="px-4 py-3 text-sm text-neutral-600 dark:text-neutral-300">{product.quantity}</td>
-      <td className="hidden px-4 py-3 text-sm text-neutral-600 dark:text-neutral-300 xl:table-cell">
+      <td className="px-4 py-3 text-sm text-neutral-600 dark:text-slate-400">{product.quantity}</td>
+      <td className="hidden px-4 py-3 text-sm text-neutral-600 dark:text-slate-400 xl:table-cell">
         <StockBadge quantity={product.quantity} />
       </td>
       <td className="px-4 py-3 text-right text-sm font-semibold text-neutral-900 dark:text-white">
@@ -123,15 +123,15 @@ export const StockBadge = ({ quantity }: StockBadgeProps) => {
   let label = "";
 
   if (quantity === 0) {
-    badgeStyles = "bg-red-50 text-red-700 border-red-200 dark:bg-black dark:text-red-400 dark:border-red-900";
+    badgeStyles = "bg-red-50 text-red-700 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/30";
     dotStyles = "bg-red-500";
     label = t("outOfStock");
   } else if (quantity > 0 && quantity <= 8) {
-    badgeStyles = "bg-amber-50 text-amber-700 border-amber-200 dark:bg-black dark:text-amber-400 dark:border-amber-900";
+    badgeStyles = "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/30";
     dotStyles = "bg-amber-500";
     label = t("lowStock");
   } else {
-    badgeStyles = "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-black dark:text-emerald-400 dark:border-emerald-900";
+    badgeStyles = "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/30";
     dotStyles = "bg-emerald-500";
     label = t("inStock");
   }
@@ -245,7 +245,7 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
           bounce: 0.6,
           duration: 0.8,
         }}
-        className="cursor-pointer rounded-lg bg-linear-to-b from-brand-50 to-brand-100 p-1 text-brand-700 dark:from-neutral-950 dark:to-neutral-900 dark:text-cyan-400"
+        className="cursor-pointer rounded-lg bg-linear-to-b from-brand-50 to-brand-100 p-1 text-brand-700 dark:bg-none dark:bg-cyan-500/15 dark:text-cyan-400"
         onClick={handleToggleMenu}
       >
         <Ellipsis size={20} />
@@ -266,7 +266,7 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
                     top: menuPosition.top,
                     left: menuPosition.left,
                 }}
-                className="z-50 flex w-44 origin-center flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-sm dark:border-neutral-800 dark:bg-black"
+                className="z-50 flex w-44 origin-center flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-sm dark:border-slate-700 dark:bg-slate-800"
                 >
                 <motion.div
                     variants={itemVariants}
@@ -281,7 +281,7 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
                         setShowEditModal(true);
                         setOpen(false);
                     }}
-                    className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 hover:bg-gray-100 dark:text-white dark:hover:bg-neutral-900"
+                    className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 hover:bg-gray-100 dark:text-slate-50 dark:hover:bg-slate-700"
                     >
                     <Edit size={18} />
                     <span>{t("edit")}</span>
@@ -296,7 +296,7 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
                         setShowDeleteModal(true);
                         setOpen(false);
                     }}
-                    className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-red-600 transition-colors duration-200 hover:bg-red-50 dark:text-red-400 dark:hover:bg-neutral-900"
+                    className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-red-600 transition-colors duration-200 hover:bg-red-50 dark:text-red-400 dark:hover:bg-slate-800"
                     >
                     <Trash size={18} />
                     <span>{t("delete")}</span>
@@ -335,6 +335,6 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
 
 export const InventoryTableSkeleton = () => {
   return (
-    <div className="h-full min-h-0 min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 shadow-sm w-full dark:bg-neutral-900" />
+    <div className="h-full min-h-0 min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 shadow-sm w-full dark:bg-slate-800" />
   );
 };
