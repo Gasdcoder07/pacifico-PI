@@ -46,7 +46,7 @@ const InventoryTable = ({ isLoading, products } : InventoryTableProps) => {
 
           <tbody className="divide-y divide-neutral-200 dark:divide-slate-800">
             {products.map((product: Product) => (
-              <InventoryTableRow key={product.inventario_id} product={product} />
+              <InventoryTableRow key={product?.inventario_id} product={product} />
             ))}
           </tbody>
         </table>

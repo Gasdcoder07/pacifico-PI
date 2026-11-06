@@ -14,10 +14,11 @@ export default function DashLayout({ children } : { children : React.ReactNode; 
                 <section className="min-w-0 flex-1 w-full flex overflow-hidden">
                     <SidebarWrapper />
 
-                <div className={`bg-[#F4F7F9] dark:bg-slate-950 w-full flex-1 overflow-y-auto ${scrollbarStyles}`}>
-                    {children}
-                </div>
-            </section>
-        </main>
+                    <div className={`bg-[#F4F7F9] dark:bg-slate-950 w-full flex-1 overflow-y-auto ${scrollbarStyles}`}>
+                        {children}
+                    </div>
+                </section>
+            </main>
+        </RoleGuard>
     );
 }

@@ -1,28 +1,17 @@
 import pool from "@/shared/lib/db";
 import { NextResponse } from "next/server";
-import {apiError,checkBranches,getActor,HttpError,readAllocations,readBody,transaction,validId,
+import {
+    apiError,
+    checkBranches,
+    getActor,
+    HttpError,
+    readAllocations,
+    readBody,
+    transaction,
+    validId,
 } from "@/shared/utils/inventory-access";
 import { supabase } from "@/shared/lib/supabase";
 
-/**
- * @swagger
- * /api/inventory:
- *   get:
- *     summary: Consultar inventario según empresa y rol
- *     description: ADMIN consulta su empresa. GERENTE y CAJERO consultan únicamente su sucursal activa. El acceso de CAJERO es de lectura para ventas.
- *     tags: [Inventario]
- *     security:
- *       - BearerAuth: []
- *     responses:
- *       200:
- *         description: Array agrupado por branch_id con productos. Devuelve [] si no hay existencias registradas.
- *       401:
- *         description: Sesión inválida.
- *       403:
- *         description: Usuario, empresa o sucursal no autorizados.
- *       500:
- *         description: Error interno.
- */
 export async function GET(request: Request) {
     try {
         const actor = await getActor(request, [1, 2, 3]);
@@ -31,23 +20,44 @@ export async function GET(request: Request) {
             `SELECT
                 i.branch_id::text AS branch_id,
                 s.name AS branch_name,
-                jsonb_agg(
-                    jsonb_build_object(
-                        'inventario_id', i.id::text,
-                        'product_id', p.id::text,
-                        'name', p.name,
-                        'foto_url', p.foto_url,
-                        'description', p.description,
-                        'price', p.price,
-                        'category_id', c.id::text,
-                        'category_name', c.name,
-                        'branch_id', i.branch_id::text,
-                        'branch_name', s.name,
-                        'quantity', i.quantity,
-                        'min_stock', i.min_stock,
-                        'updated_at', i.updated_at
-                    )
-                    ORDER BY p.name, p.id
+                COALESCE(
+                    jsonb_agg(
+                        jsonb_build_object(
+                            'inventario_id', i.id::text,
+                            'product_id', p.id::text,
+                            'name', p.name,
+                            'foto_url', p.foto_url,
+                            'description', p.description,
+                            'price', p.price,
+                            'category_id', c.id::text,
+                            'category_name', c.name,
+                            'branch_id', i.branch_id::text,
+                            'branch_name', s.name,
+                            'quantity', i.quantity,
+                            'min_stock', i.min_stock,
+                            'updated_at', i.updated_at,
+                            'sucursales', (
+                                SELECT COALESCE(
+                                    jsonb_agg(
+                                        jsonb_build_object(
+                                            'inventario_id', inv2.id::text,
+                                            'branch_id', inv2.branch_id::text,
+                                            'branch_name', suc2.name,
+                                            'quantity', inv2.quantity
+                                        )
+                                    ), 
+                                    '[]'::jsonb
+                                )
+                                FROM public.inventario inv2
+                                JOIN public.sucursales suc2 ON suc2.id = inv2.branch_id
+                                WHERE inv2.product_id = p.id 
+                                  AND inv2.company_id = p.company_id
+                                  AND suc2.status = true
+                            )
+                        )
+                        ORDER BY p.name, p.id
+                    ),
+                    '[]'::jsonb
                 ) AS productos
             FROM public.inventario i
             JOIN public.productos p
@@ -76,47 +86,6 @@ export async function GET(request: Request) {
     }
 }
 
-/**
- * @swagger
- * /api/inventory:
- *   post:
- *     summary: Agregar existencias de un producto registrado
- *     description: Suma quantity al inventario existente o crea su asignación. ADMIN elige sucursales de su empresa. GERENTE solo puede usar la propia. Si se omite min_stock, conserva el existente o utiliza 5 en un registro nuevo.
- *     tags: [Inventario]
- *     security:
- *       - BearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required: [product_id, branches]
- *             properties:
- *               product_id:
- *                 type: string
- *                 example: "25"
- *               branches:
- *                 type: array
- *                 minItems: 1
- *                 items:
- *                   $ref: '#/components/schemas/ProductBranchAllocation'
- *     responses:
- *       200:
- *         description: Devuelve success y data con el inventario resultante.
- *       400:
- *         description: Datos no válidos.
- *       401:
- *         description: Sesión inválida.
- *       403:
- *         description: Rol o sucursal no permitidos.
- *       404:
- *         description: Producto activo o sucursales no encontrados.
- *       409:
- *         description: Conflicto con los datos o cantidad fuera de rango.
- *       500:
- *         description: Error interno.
- */
 export async function POST(request: Request) {
     try {
         const authHeader = request.headers.get("Authorization");
