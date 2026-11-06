@@ -6,6 +6,7 @@ import { getProducts } from "@/features/sell/services/product.service";
 import ProductSearch from "@/features/sell/components/ProductSearch";
 import AddProductButton from "./AddProductButton";
 import InventoryTable from "./InventoryTable";
+import { useEffect } from "react";
 
 const InventoryLayout = () => {
     const { data, isLoading } = useQuery({
@@ -14,6 +15,7 @@ const InventoryLayout = () => {
     })
 
     const products = data?.flatMap((branch) => branch.productos) ?? [];
+
     const hasProducts = products.length > 0;
 
     return (

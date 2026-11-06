@@ -28,7 +28,7 @@ const BranchDetailsCard = ({ id }: { id: string | number }) => {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <div className="flex items-center gap-2 text-neutral-600">
+        <div className="flex items-center gap-2 text-neutral-600 dark:text-slate-400">
           <House size={16} />
           <span className="text-sm font-semibold">
             {t("breadcrumb")} / {branch?.name}
@@ -37,7 +37,7 @@ const BranchDetailsCard = ({ id }: { id: string | number }) => {
       </div>
 
       {/* Card */}
-      <div className="rounded-lg border border-neutral-200 bg-white shadow-sm">
+      <div className="rounded-lg border border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
         {/* Div de la imagen */}
         <div className="relative h-40 overflow-hidden rounded-t-lg">
           <img
@@ -56,19 +56,19 @@ const BranchDetailsCard = ({ id }: { id: string | number }) => {
         </div>
 
         {/* Div de la información */}
-        <div className="relative -mt-4 flex items-stretch gap-4 rounded-lg bg-white py-4 shadow-sm">
-          <div className="flex w-1/4 items-center gap-4 border-r border-neutral-200 px-6 py-2">
+        <div className="relative -mt-4 flex items-stretch gap-4 rounded-lg bg-white dark:bg-slate-900 py-4 shadow-sm">
+          <div className="flex w-1/4 items-center gap-4 border-r border-neutral-200 dark:border-slate-800 px-6 py-2">
             {
                 manager ? (
                     <Blobatar
                         name={manager?.name + " " + manager?.last_name}
                         animate="always"
-                        className="size-16 rounded-full border border-neutral-200 object-cover object-center shadow"/>
+                        className="size-16 rounded-full border border-neutral-200 dark:border-slate-800 object-cover object-center shadow"/>
                 ) : (
                     <img
                         src="/default_profile.webp"
                         alt={t("noManager")}
-                        className="size-16 rounded-full border border-neutral-200 object-cover object-center shadow"/>
+                        className="size-16 rounded-full border border-neutral-200 dark:border-slate-800 object-cover object-center shadow"/>
                 )
             }
 
@@ -76,21 +76,21 @@ const BranchDetailsCard = ({ id }: { id: string | number }) => {
                 {
                     manager ? (
                         <>                        
-                            <p className="text-lg font-medium text-neutral-900">
+                            <p className="text-lg font-medium text-neutral-900 dark:text-slate-50">
                                 {manager?.name} {manager?.last_name}
                             </p>
-                            <span className="text-sm text-neutral-400">
+                            <span className="text-sm text-neutral-400 dark:text-slate-400">
                                 {t("managerRole")}
                             </span>
                         </>
                     ) : (
-                        <p className="font-medium text-neutral-700">{t("noManager")}</p>
+                        <p className="font-medium text-neutral-700 dark:text-slate-300">{t("noManager")}</p>
                     )
                 }
             </div>
           </div>
 
-          <div className="flex w-3/4 items-start justify-between gap-4 px-6 py-2 text-neutral-600">
+          <div className="flex w-3/4 items-start justify-between gap-4 px-6 py-2 text-neutral-600 dark:text-slate-400">
             <div className="flex flex-col gap-2 flex-1 min-w-0">
               <div className="flex flex-1 min-w-0 items-center gap-4">
                 <Pin size={18} className="shrink-0" />
@@ -120,6 +120,6 @@ export default BranchDetailsCard;
 
 const BrachDetailsCardSkeleton = () => {
   return (
-    <div className="flex min-h-0 min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 shadow-sm h-full w-full" />
+    <div className="flex min-h-0 min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 dark:bg-slate-800 shadow-sm h-full w-full" />
   );
 };

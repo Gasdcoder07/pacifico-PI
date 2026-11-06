@@ -38,7 +38,7 @@ export const CustomSelect = ({ isDisabled, options, value, onChange, placeholder
 
     return (
         <div className="flex flex-col gap-2 w-full" ref={containerRef}>
-            {label && <label className="font-medium text-neutral-600">{label}</label>}
+            {label && <label className="font-medium text-neutral-600 dark:text-slate-400">{label}</label>}
 
             <div className="relative">
                 <button
@@ -48,29 +48,29 @@ export const CustomSelect = ({ isDisabled, options, value, onChange, placeholder
                     className={`w-full p-3 rounded-lg border flex items-center justify-between text-left outline-none transition-all duration-200
                         ${
                             isDisabled
-                                ? "bg-neutral-50 cursor-not-allowed opacity-80"
-                                : "bg-white cursor-pointer"
+                                ? "bg-neutral-50 dark:bg-slate-800 dark:text-slate-500 cursor-not-allowed opacity-80"
+                                : "bg-white dark:bg-slate-900 cursor-pointer"
                         }
                         ${
                         isOpen
-                            ? "border-cyan-500 ring-4 ring-cyan-500/5"
-                            : "border-neutral-200 hover:border-neutral-300"
+                            ? "border-cyan-500 ring-4 ring-cyan-500/5 dark:border-cyan-400 dark:ring-cyan-400/20"
+                            : "border-neutral-200 hover:border-neutral-300 dark:border-slate-700 dark:hover:border-slate-600"
                     }`}
                 >
                     <span
                         className={
-                            selectedOption ? "text-neutral-800 font-medium" : "text-neutral-400"
+                            selectedOption ? "text-neutral-800 dark:text-slate-50 font-medium" : "text-neutral-400 dark:text-slate-400"
                         }
                     >
                         {selectedOption ? selectedOption.label : placeholder}
                     </span>
                     <ChevronDown
-                        className={`size-4 text-neutral-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                        className={`size-4 text-neutral-400 dark:text-slate-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
                     />
                 </button>
 
                 {isOpen && (
-                    <div className="absolute z-50 left-0 right-0 mt-2 bg-white border border-neutral-200 rounded-lg shadow-sm overflow-hidden py-1 animate-in fade-in slide-in-from-top-2 duration-200 ease-in-out">
+                    <div className="absolute z-50 left-0 right-0 mt-2 bg-white dark:bg-slate-800 border border-neutral-200 dark:border-slate-700 rounded-lg shadow-sm overflow-hidden py-1 animate-in fade-in slide-in-from-top-2 duration-200 ease-in-out">
                         {options.map((option) => {
                             const isSelected = option.value === value;
 
@@ -85,12 +85,12 @@ export const CustomSelect = ({ isDisabled, options, value, onChange, placeholder
                                     }}
                                     className={`w-full px-4 py-2 flex items-center justify-between text-sm transition-colors cursor-pointer ${
                                         isSelected
-                                            ? "bg-cyan-50 text-cyan-700 font-semibold"
-                                            : "text-neutral-700 hover:bg-neutral-50"
+                                            ? "bg-cyan-50 text-cyan-700 dark:bg-cyan-500/15 dark:text-cyan-400 font-semibold"
+                                            : "text-neutral-700 hover:bg-neutral-50 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
                                     }`}
                                 >
                                     <span>{option.label}</span>
-                                    {isSelected && <Check className="size-4 text-cyan-600" />}
+                                    {isSelected && <Check className="size-4 text-cyan-600 dark:text-cyan-400" />}
                                 </button>
                             );
                         })}

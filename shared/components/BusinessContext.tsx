@@ -16,7 +16,7 @@ const BusinessContext = ({ role, companyImage, contextName, loading = false }: B
 
     return (
         <div className="flex items-center gap-4 min-w-0">
-            <div className="overflow-hidden rounded-md border border-neutral-200 shadow-sm h-10 w-14 shrink-0">
+            <div className="overflow-hidden rounded-md border border-neutral-200 dark:border-slate-800 shadow-sm h-10 w-14 shrink-0">
                 <img
                     src={companyImage}
                     alt={isAdmin ? t("companyAlt") : t("userCompanyAlt")}
@@ -27,7 +27,7 @@ const BusinessContext = ({ role, companyImage, contextName, loading = false }: B
             <div className="flex flex-col min-w-0">
                 {
                     !loading && (
-                        <p className="text-neutral-500 text-xs font-medium whitespace-nowrap">
+                        <p className="text-neutral-500 dark:text-[#8493A8] text-xs font-medium whitespace-nowrap">
                             {title}
                         </p>
                     )

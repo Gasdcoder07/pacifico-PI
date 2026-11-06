@@ -169,7 +169,7 @@ export const CreateUserModal = ({
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-sm">
         <div className="flex items-center gap-4">
           <div className="flex flex-col gap-2 w-1/2">
-            <label className="font-medium text-neutral-600">
+            <label className="font-medium text-neutral-600 dark:text-slate-400">
               {t("fields.name.label")} *
             </label>
             <input
@@ -178,11 +178,11 @@ export const CreateUserModal = ({
               value={formData.name}
               onChange={handleInputChange}
               placeholder={t("fields.name.placeholder")}
-              className="w-full p-3 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+              className="w-full p-3 rounded-lg border border-neutral-200 dark:border-slate-800 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
             />
           </div>
           <div className="flex flex-col gap-2 w-1/2">
-            <label className="font-medium text-neutral-600">
+            <label className="font-medium text-neutral-600 dark:text-slate-400">
               {t("fields.lastName.label")} *
             </label>
             <input
@@ -191,13 +191,13 @@ export const CreateUserModal = ({
               value={formData.last_name}
               onChange={handleInputChange}
               placeholder={t("fields.lastName.placeholder")}
-              className="w-full p-3 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+              className="w-full p-3 rounded-lg border border-neutral-200 dark:border-slate-800 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
             />
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="font-medium text-neutral-600">
+          <label className="font-medium text-neutral-600 dark:text-slate-400">
             {t("fields.email.label")} *
           </label>
           <input
@@ -206,7 +206,7 @@ export const CreateUserModal = ({
             value={formData.email}
             onChange={handleInputChange}
             placeholder={t("fields.email.placeholder")}
-            className="w-full p-3 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+            className="w-full p-3 rounded-lg border border-neutral-200 dark:border-slate-800 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
           />
         </div>
 
@@ -240,7 +240,7 @@ export const CreateUserModal = ({
         </div>
 
         {branchError && (
-          <span className="text-xs text-red-500">
+          <span className="text-xs text-red-500 dark:text-red-400">
             No se pudieron cargar las sucursales
           </span>
         )}
@@ -250,7 +250,7 @@ export const CreateUserModal = ({
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="px-4 py-2 rounded-lg border border-neutral-200 text-neutral-600 hover:bg-neutral-50 transition-colors ease-in-out duration-200 cursor-pointer disabled:opacity-50"
+            className="px-4 py-2 rounded-lg border border-neutral-200 dark:border-slate-800 text-neutral-600 dark:text-slate-400 hover:bg-neutral-50 dark:hover:bg-slate-800 transition-colors ease-in-out duration-200 cursor-pointer disabled:opacity-50"
           >
             {t("actions.cancel")}
           </button>
@@ -259,8 +259,8 @@ export const CreateUserModal = ({
             disabled={isPending}
             className={`px-4 py-2 rounded-lg text-white font-medium transition-all duration-200 ease-in-out ${
               isPending
-                ? "bg-neutral-600 cursor-not-allowed"
-                : "bg-cyan-400 hover:bg-cyan-500 cursor-pointer"
+                ? "bg-neutral-600 dark:bg-slate-700 dark:text-slate-500 cursor-not-allowed"
+                : "bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500 cursor-pointer"
             }`}
           >
             {isPending ? t("actions.saving") : t("actions.save")}

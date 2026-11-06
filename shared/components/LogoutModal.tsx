@@ -50,22 +50,22 @@ export const LogoutModal = ({ isOpen, onClose, onConfirm }: LogoutModalProps) =>
                 className="flex flex-col gap-4 text-sm"
             >
                 <div className="flex flex-col items-center justify-center gap-4">
-                    <div className="mx-auto flex size-14 items-center justify-center rounded-full border border-brand-200 bg-brand-50">
-                        <LogOut size={28} className="text-brand-600" aria-hidden="true" />
+                    <div className="mx-auto flex size-14 items-center justify-center rounded-full border border-brand-200 bg-brand-50 dark:border-cyan-500/30 dark:bg-cyan-500/10">
+                        <LogOut size={28} className="text-brand-600 dark:text-cyan-400" aria-hidden="true" />
                     </div>
 
-                    <h2 id="logout-modal-title" className="text-center text-xl font-semibold">
+                    <h2 id="logout-modal-title" className="text-center text-xl font-semibold dark:text-slate-50">
                         {t("title")}
                     </h2>
                 </div>
 
                 <div className="px-4 py-3">
-                    <p id="logout-modal-message" className="text-center text-neutral-700">
+                    <p id="logout-modal-message" className="text-center text-neutral-700 dark:text-slate-400">
                         {t("message")}
                     </p>
                 </div>
 
-                <div className="mt-4 flex justify-end gap-4">
+                <div className="mt-4 flex justify-between gap-4">
                     <motion.button
                         ref={cancelButtonRef}
                         type="button"
@@ -74,7 +74,7 @@ export const LogoutModal = ({ isOpen, onClose, onConfirm }: LogoutModalProps) =>
                         whileHover={isConfirming ? undefined : { y: -3, scale: 1.02 }}
                         whileTap={isConfirming ? undefined : { y: 0, scale: 0.98 }}
                         transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                        className="cursor-pointer rounded-lg border border-neutral-200 px-4 py-2 text-neutral-600 transition-colors duration-200 ease-in-out disabled:cursor-not-allowed disabled:opacity-50"
+                        className="cursor-pointer rounded-lg border border-neutral-200 dark:border-slate-700 px-4 py-2 text-neutral-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors duration-200 ease-in-out disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {t("cancel")}
                     </motion.button>
@@ -85,7 +85,7 @@ export const LogoutModal = ({ isOpen, onClose, onConfirm }: LogoutModalProps) =>
                         whileHover={isConfirming ? undefined : { y: -3, scale: 1.02 }}
                         whileTap={isConfirming ? undefined : { y: 0, scale: 0.98 }}
                         transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                        className="cursor-pointer rounded-lg bg-cyan-400 px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out disabled:cursor-not-allowed disabled:opacity-50"
+                        className="cursor-pointer rounded-lg bg-cyan-400 dark:bg-cyan-500 dark:hover:bg-cyan-400 px-4 py-2 font-medium text-white dark:text-slate-950 transition-colors duration-200 ease-in-out disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {t("confirm")}
                     </motion.button>

@@ -13,7 +13,7 @@ const Navbar = () => {
     const fullName = user ? `${user.name} ${user.last_name}` : t("loading");
 
     return (
-        <nav className="bg-white text-neutral-900 border border-neutral-300 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-700">
+        <nav className="bg-white text-neutral-900 border border-neutral-300 dark:bg-slate-900 dark:text-slate-50 dark:border-slate-800">
             <div className="mx-auto flex justify-between items-center py-3 px-4">
                 <BusinessContext
                     role={user?.rol_id}

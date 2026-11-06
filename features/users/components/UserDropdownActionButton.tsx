@@ -54,7 +54,7 @@ const UserDropdownActionButton = ({
         whileHover={hoverAnimation}
         whileTap={tapAnimation}
         transition={{ type: "spring", bounce: 0.6, duration: 0.8 }}
-        className={`rounded-lg border border-brand-100 bg-linear-to-b from-brand-50 to-brand-100 p-1 text-brand-700 cursor-pointer`}
+        className={`rounded-lg border border-brand-100 bg-linear-to-b from-brand-50 to-brand-100 p-1 text-brand-700 dark:bg-none dark:bg-cyan-500/15 dark:text-cyan-400 cursor-pointer`}
         onClick={() => setOpen(!open)}
       >
         <Ellipsis size={20} />
@@ -77,7 +77,7 @@ const UserDropdownActionButton = ({
                 setShowEditPanel(true);
                 setOpen(false);
                 }}
-                className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 ease-in-out hover:bg-gray-100"
+                className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 dark:text-slate-50 transition-colors duration-200 ease-in-out hover:bg-gray-100 dark:hover:bg-slate-700"
             >
                 <Edit size={18} />
                 <span className="font-medium">{t("edit")}</span>
@@ -90,7 +90,7 @@ const UserDropdownActionButton = ({
                 setShowDeleteModal(true);
                 setOpen(false);
                 }}
-                className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 transition-colors duration-200 ease-in-out text-red-600 hover:bg-red-50"
+                className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 transition-colors duration-200 ease-in-out text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10"
             >
                 <Trash size={18} />
                 <span className="font-medium">{t("delete")}</span>

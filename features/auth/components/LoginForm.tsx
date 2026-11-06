@@ -55,7 +55,7 @@ const LoginForm = () => {
             <div className="flex flex-col gap-2">
                 <label
                     htmlFor="email"
-                    className="text-neutral-600 text-xs"
+                    className="text-neutral-600 dark:text-slate-400 text-xs"
                 >
                     {t("email")}
                 </label>
@@ -65,14 +65,14 @@ const LoginForm = () => {
                     id="email"
                     type="email"
                     name="email"
-                    className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                    className="w-full p-3 pr-12 text-sm border border-neutral-300 dark:border-slate-700 rounded-xl hover:border-neutral-400 dark:hover:border-slate-600 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
                 />
             </div>
 
             <div className="flex flex-col gap-2">
                 <label
                     htmlFor="password"
-                    className="text-neutral-600 text-xs"
+                    className="text-neutral-600 dark:text-slate-400 text-xs"
                 >
                     {t("password")}
                 </label>
@@ -83,13 +83,13 @@ const LoginForm = () => {
                         id="password"
                         type={showPassword ? "text" : "password"}
                         name="password"
-                        className="w-full p-3 pr-12 text-sm border border-neutral-300 rounded-xl hover:border-neutral-400 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out"
+                        className="w-full p-3 pr-12 text-sm border border-neutral-300 dark:border-slate-700 rounded-xl hover:border-neutral-400 dark:hover:border-slate-600 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
                     />
 
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-neutral-400 dark:text-slate-400"
                         aria-label={showPassword ? t("hidePassword") : t("showPassword")}
                     >
                         {showPassword ? (
@@ -103,7 +103,7 @@ const LoginForm = () => {
                 <div className="mt-2 flex justify-end">
                     <Link
                         href="/forgot-password"
-                        className="font-semibold text-sm text-cyan-600 hover:text-cyan-500 transition-colors"
+                        className="font-semibold text-sm text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-colors"
                     >
                         {t("forgotPassword")}
                     </Link>
@@ -114,7 +114,7 @@ const LoginForm = () => {
                 <button
                     type="submit"
                     disabled={isLoggingIn}
-                    className="font-semibold text-white bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 w-full py-3 rounded-xl transition-colors ease-in-out duration-200 cursor-pointer flex items-center justify-center"
+                    className="font-semibold text-white bg-cyan-600 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500 disabled:opacity-50 w-full py-3 rounded-xl transition-colors ease-in-out duration-200 cursor-pointer flex items-center justify-center"
                 >
                     {isLoggingIn ? (
                         <LoadingIndicator />
@@ -123,18 +123,18 @@ const LoginForm = () => {
                     )}
                 </button>
 
-                <span className="text-neutral-600 text-center text-sm">
+                <span className="text-neutral-600 dark:text-slate-400 text-center text-sm">
                     {t("noAccount")}{" "}
                     <Link
                         href="/register"
-                        className="font-semibold text-cyan-600 hover:text-cyan-500 transition-colors"
+                        className="font-semibold text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-colors"
                     >
                         {t("registerNow")}
                     </Link>
                 </span>
 
                 <button type="button" className="cursor-pointer w-fit mx-auto" onClick={() => setShowModal(true)}>
-                    <p className="text-neutral-600 text-xs hover:text-cyan-600 transition-all duration-200 ease-in-out">{t("viewTermsAndConditions")}</p>
+                    <p className="text-neutral-600 dark:text-slate-400 text-xs hover:text-cyan-600 transition-all duration-200 ease-in-out">{t("viewTermsAndConditions")}</p>
                 </button>
 
             </div>

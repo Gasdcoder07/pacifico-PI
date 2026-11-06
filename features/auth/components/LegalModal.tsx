@@ -70,14 +70,14 @@ export const LegalModal = ({
                             </Dialog.Overlay>
                             <Dialog.Content asChild forceMount>
                                 <motion.div
-                                    className="fixed left-1/2 top-1/2 z-50 flex h-[85vh] w-[92vw] max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl focus:outline-none dark:bg-neutral-900"
+                                    className="fixed left-1/2 top-1/2 z-50 flex h-[85vh] w-[92vw] max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl focus:outline-none dark:bg-slate-800"
                                     style={{ x: "-50%", y: "-50%" }}
                                     initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94, y: "-46%" }}
                                     animate={{ opacity: 1, scale: 1, y: "-50%" }}
                                     exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: "-48%" }}
                                     transition={reduceMotion ? { duration: 0.15 } : spring }
                                 >
-                                    <header className="flex items-center justify-between border-b border-neutral-200 px-5 py-3 dark:border-neutral-800">
+                                    <header className="flex items-center justify-between border-b border-neutral-200 px-5 py-3 dark:border-slate-800">
                                         <Dialog.Title className="font-semibold">{title}</Dialog.Title>
                                         <Dialog.Description className="sr-only">
                                             Vista previa del documento PDF
@@ -85,7 +85,7 @@ export const LegalModal = ({
 
                                         <div className="flex items-center">
                                             <Dialog.Close asChild>
-                                            <button type="button" aria-label="Cerrar" className="grid h-8 w-8 place-items-center rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer">
+                                            <button type="button" aria-label="Cerrar" className="grid h-8 w-8 place-items-center rounded-md hover:bg-neutral-100 dark:hover:bg-slate-800 cursor-pointer">
                                                 ✕
                                             </button>
                                             </Dialog.Close>
@@ -93,13 +93,13 @@ export const LegalModal = ({
                                     </header>
                                     <div
                                         ref={viewerRef}
-                                        className="flex-1 overflow-y-auto overscroll-contain bg-neutral-100 p-4 [scrollbar-gutter:stable] dark:bg-neutral-800"
+                                        className="flex-1 overflow-y-auto overscroll-contain bg-neutral-100 p-4 [scrollbar-gutter:stable] dark:bg-slate-800"
                                     >
                                         <Document
                                             file={src}
                                             suspense={false}
                                             onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-                                            loading={<p className="py-10 text-center text-sm text-neutral-500">Cargando documento…</p>}
+                                            loading={<p className="py-10 text-center text-sm text-neutral-500 dark:text-[#8493A8]">Cargando documento…</p>}
                                             error={<p className="py-10 text-center text-sm text-red-500">No se pudo cargar el documento.</p>}
                                             className="flex flex-col items-center gap-4"
                                         >

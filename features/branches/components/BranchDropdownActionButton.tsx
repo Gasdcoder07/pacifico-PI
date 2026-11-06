@@ -50,7 +50,7 @@ const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps
                 whileHover={hoverAnimation}
                 whileTap={tapAnimation}
                 transition={ { type: "spring", bounce: 0.6, duration: 0.8 } }
-                className={`bg-linear-to-b from-brand-50 to-brand-100 text-brand-700 p-2 rounded-lg ${false ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                className={`bg-linear-to-b from-brand-50 to-brand-100 text-brand-700 dark:bg-none dark:bg-cyan-500/15 dark:text-cyan-400 p-2 rounded-lg ${false ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 onClick={() => setOpen(!open)}>
                 <Ellipsis size={20}/>
             </motion.button>
@@ -63,7 +63,7 @@ const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps
                             initial="hidden"
                             animate="visible"
                             exit="exit"
-                            className="absolute right-2 -top-12 -translate-x-1/5 z-10 flex flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white shadow-lg p-2 w-48 origin-top-right">
+                            className="absolute right-2 -top-12 -translate-x-1/5 z-10 flex flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-lg p-2 w-48 origin-top-right">
                             <motion.div variants={itemVariants} className="flex flex-col gap-2">
                                 <motion.button
                                     whileHover={{ scale: 1.02 }}
@@ -73,7 +73,7 @@ const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps
                                         setShowEditPanel(true);
                                         setOpen(false);
                                     }}
-                                    className="h-10 w-full text-neutral-800 flex items-center gap-3 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-neutral-100">
+                                    className="h-10 w-full text-neutral-800 dark:text-slate-50 flex items-center gap-3 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer hover:bg-neutral-100 dark:hover:bg-slate-700">
                                     <Edit size={18}/>
                                     <span className="font-medium">{t("edit")}</span>
                                 </motion.button>
@@ -85,7 +85,7 @@ const BranchDropdownActionButton = ({ branch } : BranchDropdownActionButtonProps
                                         setShowDeleteModal(true);
                                         setOpen(false);
                                     }}
-                                    className="h-10 w-full flex items-center gap-3 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer text-red-600 hover:bg-red-50">
+                                    className="h-10 w-full flex items-center gap-3 py-2 px-3 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10">
                                     <Trash size={18}/>
                                     <span className="font-medium">{t("delete")}</span>
                                 </motion.button>

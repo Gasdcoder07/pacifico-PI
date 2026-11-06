@@ -17,12 +17,12 @@ const ProductCard = ({ product } : ProductCardProps) => {
     const [imgHover, setImgHover] = useState(false);
 
     return (
-        <div className="group h-full w-full bg-white dark:bg-black text-neutral-900 dark:text-white rounded-lg border border-neutral-200 dark:border-neutral-800 shadow-sm hover:shadow-lg p-4 flex flex-col gap-4 transition-shadow duration-200 ease-in-out overflow-hidden">
+        <div className="group h-full w-full bg-white dark:bg-slate-900 text-neutral-900 dark:text-slate-50 rounded-lg border border-neutral-200 dark:border-slate-800 shadow-sm hover:shadow-lg p-4 flex flex-col gap-4 transition-shadow duration-200 ease-in-out overflow-hidden">
             <div className="flex gap-2 justify-between items-center">
                 <StockBadge quantity={product.quantity} min_stock={product.min_stock}/>
 
-                <div className="bg-[#F4F7F9] dark:bg-neutral-950 border border-transparent dark:border-neutral-800 px-1.5 py-0.5 max-w-52 rounded-lg overflow-hidden">
-                    <span className="block text-xs text-neutral-600 dark:text-neutral-300 font-medium truncate px-1.5 py-0.5">{product.category_name}</span>
+                <div className="bg-[#F4F7F9] dark:bg-slate-800 border border-transparent dark:border-slate-800 px-1.5 py-0.5 max-w-52 rounded-lg overflow-hidden">
+                    <span className="block text-xs text-neutral-600 dark:text-slate-400 font-medium truncate px-1.5 py-0.5">{product.category_name}</span>
                 </div>
             </div>
 
@@ -36,7 +36,7 @@ const ProductCard = ({ product } : ProductCardProps) => {
                 />
 
                 <div className={`flex-1 min-w-0 flex flex-col transition-[padding] duration-500 ease-out ${imgHover ? "pl-20" : "pl-0"}`}>
-                    <h3 className="font-semibold truncate text-neutral-900 dark:text-white">{product.name}</h3>
+                    <h3 className="font-semibold truncate text-neutral-900 dark:text-slate-50">{product.name}</h3>
                     <span className="text-sm font-bold opacity-0 -translate-y-1 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0">
                         ${product.price}
                     </span>
@@ -45,7 +45,7 @@ const ProductCard = ({ product } : ProductCardProps) => {
 
             <div className="h-1/2 flex flex-col gap-2">
                 <div className="h-8 flex items-center">
-                    <p className={`text-xs text-neutral-600 dark:text-neutral-300 flex-1 line-clamp-2 transition-[padding] duration-500 ease-out ${imgHover ? "pl-44" : "pl-0"}`}>
+                    <p className={`text-xs text-neutral-600 dark:text-slate-400 flex-1 line-clamp-2 transition-[padding] duration-500 ease-out ${imgHover ? "pl-44" : "pl-0"}`}>
                         {product.description}
                     </p>
                 </div>
@@ -61,9 +61,9 @@ const ProductCard = ({ product } : ProductCardProps) => {
                         whileHover={product.quantity <= 0 ? { scale: 1.0 } : { scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                        className={`rounded-full p-1 ${product.quantity > 0 ? `bg-cyan-400 cursor-pointer` : `bg-neutral-200 cursor-not-allowed`}`}
+                        className={`rounded-full p-1 ${product.quantity > 0 ? `bg-cyan-400 dark:bg-cyan-500 dark:hover:bg-cyan-400 cursor-pointer` : `bg-neutral-200 dark:bg-slate-700 cursor-not-allowed`}`}
                     >
-                        <Plus size={20} className="text-white" />
+                        <Plus size={20} className={product.quantity > 0 ? "text-white dark:text-slate-950" : "text-white dark:text-slate-500"} />
                     </motion.button>
                 </div>
             </div>
@@ -85,13 +85,13 @@ export const StockBadge = ({ quantity, min_stock } : StockBadgeProps) => {
     let label = "";
 
     if (quantity === 0) {
-        badgeStyles = "bg-red-50 text-red-600 border-red-200 dark:bg-black dark:text-red-400 dark:border-red-900";
+        badgeStyles = "bg-red-50 text-red-600 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/30";
         label = `${t("outOfStock")}`;
     } else if (quantity > 0 && quantity <= min_stock) {
-        badgeStyles = "bg-amber-50 text-amber-600 border-amber-200 dark:bg-black dark:text-amber-400 dark:border-amber-900";
+        badgeStyles = "bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/30";
         label = `${quantity} ${t("inStock")}`;
     } else {
-        badgeStyles = "bg-brand-50 text-brand-600 border-brand-200 dark:bg-black dark:text-cyan-400 dark:border-cyan-900";
+        badgeStyles = "bg-brand-50 text-brand-600 border-brand-200 dark:bg-cyan-500/10 dark:text-cyan-400 dark:border-cyan-500/30";
         label = `${quantity} ${t("inStock")}`;
     }
     

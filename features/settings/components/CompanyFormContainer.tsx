@@ -35,6 +35,6 @@ export default CompanyFormContainer;
 
 const CompanyFormSkeleton = () => {
     return (
-        <div className="bg-neutral-200 shadow-sm rounded-lg h-96 animate-pulse duration-200 ease-in-out"/>
+        <div className="bg-neutral-200 dark:bg-slate-800 shadow-sm rounded-lg h-96 animate-pulse duration-200 ease-in-out"/>
     )
 }

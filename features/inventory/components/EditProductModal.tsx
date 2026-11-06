@@ -10,7 +10,7 @@ import {
   Category,
 } from "../services/inventory.service";
 import toast from "react-hot-toast";
-import { customStyles } from "../utils/styles.select";
+import { customStyles, selectThemeVars } from "../utils/styles.select";
 import { getBranches } from "@/features/branches/services/branch.service";
 import { Branch } from "@/features/branches/types/branch";
 import { useTranslations } from "next-intl";
@@ -42,10 +42,10 @@ const INT_REGEX = /^\d+$/;
 const MAX_INT = 2147483647;
 
 const inputClass =
-  "w-full py-2 rounded-lg border border-neutral-200 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 outline-none transition-colors duration-200 ease-in-out px-3";
+  "w-full py-2 rounded-lg border border-neutral-200 dark:border-slate-800 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out px-3";
 
 const scrollbarStyles =
-    "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300";
+    "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300 dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-600";
 
 const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalProps) => {
   const t = useTranslations("InventoryPage.editProductModal");
@@ -286,13 +286,13 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
             currentStep === 1 && (
             <div className="flex gap-6 min-h-80">
                 <div className="w-2/5 flex flex-col items-center gap-2">
-                    <span className="self-start font-medium text-neutral-600">
+                    <span className="self-start font-medium text-neutral-600 dark:text-slate-400">
                         {t("image.label")} *
                     </span>
 
                     <div
                     onClick={triggerFileSelect}
-                    className="group relative h-full w-full cursor-pointer overflow-hidden rounded-lg border-2 border-neutral-200 transition-all duration-200 hover:border-cyan-400"
+                    className="group relative h-full w-full cursor-pointer overflow-hidden rounded-lg border-2 border-neutral-200 dark:border-slate-800 transition-all duration-200 hover:border-cyan-400"
                     >
                         {imagePreview ? (
                             <img
@@ -301,7 +301,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                             className="absolute inset-0 h-full w-full object-cover"
                             />
                         ) : (
-                        <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-50 text-neutral-400">
+                        <div className="flex h-full w-full flex-col items-center justify-center bg-neutral-50 dark:bg-slate-800 text-neutral-400 dark:text-slate-400">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -344,19 +344,19 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                     <button
                     type="button"
                     onClick={triggerFileSelect}
-                    className="text-sm font-medium text-cyan-600 hover:text-cyan-700 cursor-pointer duration-200 ease-in-out transition-all"
+                    className="text-sm font-medium text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 cursor-pointer duration-200 ease-in-out transition-all"
                     >
                         {imagePreview ? t("image.changeButton") : t("image.uploadButton")}
                     </button>
 
-                    <span className="text-xs text-neutral-400">
+                    <span className="text-xs text-neutral-400 dark:text-slate-400">
                         {t("image.requirements")}
                     </span>
                 </div>
 
                 <div className="w-3/5 flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
-                        <label className="font-medium text-neutral-600">
+                        <label className="font-medium text-neutral-600 dark:text-slate-400">
                             {t("fields.name.label")} *
                         </label>
                         <input
@@ -370,7 +370,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className="font-medium text-neutral-600">
+                        <label className="font-medium text-neutral-600 dark:text-slate-400">
                             {t("fields.description.label")}
                         </label>
                         <textarea
@@ -385,13 +385,14 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                     
                     <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-1 min-w-0 flex-col gap-2">
-                            <label className="font-medium text-neutral-600">
+                            <label className="font-medium text-neutral-600 dark:text-slate-400">
                             {t("fields.category.label")} *
                             </label>
 
                             <Select
                             maxMenuHeight={120}
                             menuPlacement="auto"
+                            className={selectThemeVars}
                             styles={customStyles}
                             options={categories}
                             getOptionLabel={(category: Category) => category.name}
@@ -403,7 +404,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                         </div>
                     
                         <div className="flex flex-col gap-2">
-                            <label className="font-medium text-neutral-600">
+                            <label className="font-medium text-neutral-600 dark:text-slate-400">
                                 {t("fields.price.label")} *
                             </label>
                             <input
@@ -426,7 +427,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
             currentStep === 2 && (
                 <div className="flex flex-col gap-4 min-h-80">
                     <div className="grid grid-cols-1 gap-2">
-                        <label className="font-medium text-neutral-600">
+                        <label className="font-medium text-neutral-600 dark:text-slate-400">
                         {t("fields.branches.label")} *
                         </label>
 
@@ -435,6 +436,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                         menuPlacement="auto"
                         isMulti
                         isSearchable
+                        className={selectThemeVars}
                         styles={customStyles}
                         options={branches}
                         getOptionLabel={(branch: Branch) => branch.name}
@@ -453,10 +455,10 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                             return (
                             <div
                                 key={branchId}
-                                className="grid grid-cols-3 items-center gap-4 rounded-lg border border-neutral-200 px-4 py-3 shadow"
+                                className="grid grid-cols-3 items-center gap-4 rounded-lg border border-neutral-200 dark:border-slate-800 px-4 py-3 shadow"
                             >
                                 <div className="flex min-w-0 items-center">
-                                    <span className="truncate font-medium text-neutral-700">
+                                    <span className="truncate font-medium text-neutral-700 dark:text-slate-300">
                                         {branch.name}
                                     </span>
                                 </div>
@@ -464,7 +466,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                                 <div className="flex min-w-0 flex-col gap-2">
                                 <label
                                     htmlFor={`quantity-${branchId}`}
-                                    className="font-medium text-neutral-600"
+                                    className="font-medium text-neutral-600 dark:text-slate-400"
                                 >
                                     {t("fields.quantity.label")} *
                                 </label>
@@ -490,7 +492,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                                 <div className="flex min-w-0 flex-col gap-2">
                                 <label
                                     htmlFor={`min-stock-${branchId}`}
-                                    className="font-medium text-neutral-600"
+                                    className="font-medium text-neutral-600 dark:text-slate-400"
                                 >
                                     {t("fields.minStock.label")}
                                 </label>
@@ -524,7 +526,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
             <button
             type="button"
             onClick={currentStep === 1 ? handleClose : handlePreviousStep}
-            className="cursor-pointer disabled:cursor-not-allowed rounded-lg border border-neutral-200 px-4 py-2 text-neutral-600 transition-colors duration-200 ease-in-out hover:bg-neutral-50 disabled:opacity-50"
+            className="cursor-pointer disabled:cursor-not-allowed rounded-lg border border-neutral-200 dark:border-slate-800 px-4 py-2 text-neutral-600 dark:text-slate-400 transition-colors duration-200 ease-in-out hover:bg-neutral-50 dark:hover:bg-slate-800 disabled:opacity-50"
             >
                 {currentStep === 1 ? t("actions.cancel") : t("actions.back")}
             </button>
@@ -535,14 +537,14 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                         key="next-step"
                         type="button"
                         onClick={handleNextStep}
-                        className="rounded-lg px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out bg-cyan-400 hover:bg-cyan-500 cursor-pointer">
+                        className="rounded-lg px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500 cursor-pointer">
                             {t("actions.continue")}
                     </button>
                 ) : (
                     <button
                     key="edit-product"
                     type="submit"
-                    className="rounded-lg px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out cursor-pointer bg-cyan-400 hover:bg-cyan-500"
+                    className="rounded-lg px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out cursor-pointer bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500"
                     >
                         {t("actions.submit")}
                     </button>
