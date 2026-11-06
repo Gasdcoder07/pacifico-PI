@@ -16,7 +16,7 @@ const PageHeader = ({ currentUser } : PageHeaderProps) => {
         <div className="flex gap-2 justify-between items-center">
             <div className="flex flex-col gap-2">
                 <h3 className="text-2xl font-semibold">{t("title")}</h3>
-                <p className="text-sm text-neutral-500">{currentUser?.rol_id === 2 ? t("subtitleManager") : t("subtitleAdmin")}</p>
+                <p className="text-sm text-neutral-500 dark:text-[#8493A8]">{currentUser?.rol_id === 2 ? t("subtitleManager") : t("subtitleAdmin")}</p>
             </div>
 
             {
