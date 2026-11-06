@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 import { LandingCarrousel } from "./LandingCarrousel";
+import { useTranslations } from "next-intl";
 
 const LandingReviews = () => {
+  const t = useTranslations("LandingPage.reviews");
+
   return (
     <section
       id="about"
@@ -16,11 +19,14 @@ const LandingReviews = () => {
             id="about-heading"
             className="text-3xl font-bold leading-tight tracking-tight text-neutral-900 md:text-4xl lg:text-5xl"
           >
-            Manage your operations and finances in a{" "}
-            <span className="text-cyan-600/60">simple way.</span>
+            {t.rich("title", {
+              highlight: (chunks) => (
+                <span className="text-cyan-600/60">{chunks}</span>
+              ),
+            })}
           </h2>
           <p className="max-w-md text-base text-neutral-600 md:text-lg">
-            Set it up once, use it anywhere.
+            {t("subtitle")}
           </p>
         </div>
 
@@ -31,7 +37,7 @@ const LandingReviews = () => {
             data-reveal-item
             className="text-sm font-medium uppercase tracking-wide text-neutral-500"
           >
-            Built with
+            {t("builtWith")}
           </h3>
           <LandingCarrousel />
         </div>
@@ -43,8 +49,12 @@ const LandingReviews = () => {
             rel="noopener noreferrer"
             className="group inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-6 py-2.5 text-sm font-medium text-neutral-900 shadow-sm transition-transform duration-200 hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 motion-reduce:transition-none motion-reduce:hover:scale-100"
           >
-            <FaGithub aria-hidden="true" color="black" className="transition-transform duration-200 group-hover:rotate-12" />
-            Support the repository
+            <FaGithub
+              aria-hidden="true"
+              color="black"
+              className="transition-transform duration-200 group-hover:rotate-12"
+            />
+            {t("githubCta")}
           </Link>
         </div>
       </div>

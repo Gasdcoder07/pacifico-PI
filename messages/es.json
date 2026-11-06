@@ -634,5 +634,62 @@
       "success": "Usuario eliminado correctamente",
       "error": "Ocurrió un error al eliminar el usuario"
     }
+  },
+    "LandingPage": {
+      "overlaySubtitle": "De manera simple.",
+      "navbar": {
+      "ariaLabel": "Navegación principal",
+      "links": {
+        "features": "Características",
+        "about": "Acerca de",
+        "reviews": "Reseñas",
+        "contacts": "Contactos"
+      },
+      "cta": "¡Únete a nosotros!"
+    },
+    "hero": {
+      "badge": "¿Qué resolvemos?",
+      "imageAlt": "Equipo trabajando con datos empresariales desconectados",
+      "title": "Error humano, errores de sincronización, datos descentralizados",
+      "description": "Estos son algunos de los mayores desafíos operativos del día a día a los que se enfrentan las pequeñas y medianas empresas."
+    },
+    "reviews": {
+      "title": "Gestiona tus operaciones y finanzas de una <highlight>manera simple.</highlight>",
+      "subtitle": "Configúralo una vez, úsalo en cualquier lugar.",
+      "builtWith": "Construido con",
+      "githubCta": "Apoya el repositorio"
+    },
+    "faq": {
+      "badge": "La gente dice de nosotros...",
+      "title": "Amado por la <highlight>comunidad</highlight>",
+      "subtitle": "Mira lo que la gente dice sobre PACIFICO"
+    },
+    "contact": {
+      "title": "¿Listo para organizar <highlight>tu empresa?</highlight>",
+      "description": "Déjanos tus datos y nos pondremos en contacto para ayudarte a configurar tus sucursales y tu equipo.",
+      "companyDescription": "Fácil gestión de operaciones complejas a través de software y datos centralizados.",
+      "authors": "Autores"
+    },
+    "features": {
+      "badge": "¿Cómo se usa?",
+      "titleLine1": "Puedes comenzar a usarlo en",
+      "titleLine2": "<highlight>3 sencillos pasos</highlight>",
+      "steps": {
+      "step1": {
+      "title": "Registra tu empresa",
+      "description": "¡Llena algunos campos y presiona enter!"
+    },
+    "step2": {
+      "title": "Configura tu gestión",
+      "description": "¡Crea algunas sucursales!"
+    },
+    "step3": {
+      "title": "Agrega a tus empleados",
+      "description": "¡Añade a todo tu equipo!"
+    }
+  },
+  "readyMessage": "¡Entonces estarás listo para administrar!",
+  "cta": "Empezar"
+}
   }
 }

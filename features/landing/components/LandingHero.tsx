@@ -1,7 +1,10 @@
 import Image from "next/image";
 import CursorFollower from "./CursorFollower";
+import { useTranslations } from "next-intl";
 
 export default function LandingHero() {
+  const t = useTranslations("LandingPage.hero");
+
   return (
     <section
       aria-labelledby="landing-hero-title"
@@ -15,7 +18,7 @@ export default function LandingHero() {
           data-reveal-item
           className="w-fit rounded-full bg-neutral-100 px-4 py-1 text-sm text-primary/70"
         >
-          What do we solve?
+          {t("badge")}
         </span>
 
         <div className="grid w-full grid-cols-1 items-center gap-8 md:grid-cols-2">
@@ -25,7 +28,7 @@ export default function LandingHero() {
           >
             <Image
               src="/3.jpg"
-              alt="Team working with disconnected business data"
+              alt={t("imageAlt")}
               fill
               sizes="(min-width: 768px) 50vw, 100vw"
               className="object-cover transition-transform duration-700 hover:scale-105 motion-reduce:transition-none motion-reduce:hover:scale-100"
@@ -38,14 +41,13 @@ export default function LandingHero() {
               data-reveal-item
               className="text-balance text-3xl font-bold leading-tight tracking-tight text-neutral-900 md:text-4xl lg:text-5xl"
             >
-              Human error, synchronization errors, decentralized data
+              {t("title")}
             </h2>
             <p
               data-reveal-item
               className="max-w-md text-base text-neutral-600 md:text-lg"
             >
-              These are among the biggest day-to-day operational challenges
-              faced by small and medium sized enterprises.
+              {t("description")}
             </p>
           </div>
         </div>
