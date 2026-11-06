@@ -46,6 +46,10 @@ const UsersCard = ({
                         </span>
                     </div>
                 </div>
+
+                <UserDropdownActionButton
+                    user={user}
+                    branchId={Number(user.branch_id)}/>
             </div>
         </div>
     );

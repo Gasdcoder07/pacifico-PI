@@ -617,5 +617,18 @@
       "units": "units",
       "soldLabel": "Sold"
     }
+  },
+  "DeleteUserModal": {
+    "title": "Delete user",
+    "description": "This action cannot be undone. Are you sure you want to delete the information of user <highlight>{userName}</highlight>?",
+    "actions": {
+      "cancel": "Keep user",
+      "delete": "Delete user",
+      "deleting": "Deleting user..."
+    },
+    "toast": {
+      "success": "User deleted successfully",
+      "error": "An error occurred while deleting the user"
+    }
   }
 }

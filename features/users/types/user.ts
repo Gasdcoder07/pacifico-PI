@@ -5,6 +5,7 @@ export interface User {
     email: string;
     rol_id: string;
     foto_url: string;
+    branch_id: string;
 }
 
 export interface UsersResponse {
