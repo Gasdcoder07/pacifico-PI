@@ -13,9 +13,10 @@ const scrollbarStyles =
 interface UsersContainerProps {
     users: User[];
     isLoading: boolean;
+    isAdmin: boolean;
 }
 
-const UsersContainer = ({ users = [], isLoading } : UsersContainerProps) => {
+const UsersContainer = ({ users = [], isLoading, isAdmin = false } : UsersContainerProps) => {
     if (isLoading) return <UsersContainerSkeleton />;
 
     return (
@@ -33,6 +34,7 @@ const UsersContainer = ({ users = [], isLoading } : UsersContainerProps) => {
                                 >
                                     <UsersCard
                                         user={user}
+                                        isAdmin={isAdmin}
                                     />
                                 </div>
                             );
@@ -70,6 +72,6 @@ const EmptyState = () => {
 
 export const UsersContainerSkeleton = () => {
   return (
-    <div className="flex min-h-0 min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 dark:bg-slate-800 shadow-sm h-full w-full" />
+    <div className="flex min-h-0 min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 dark:bg-slate-800 shadow-sm h-full w-full animate-pulse transition-all duration-200 ease-in-out" />
   );
 };

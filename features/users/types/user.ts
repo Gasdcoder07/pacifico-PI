@@ -6,6 +6,7 @@ export interface User {
     rol_id: string;
     foto_url: string;
     branch_id: string;
+    branch_name: string;
 }
 
 export interface UsersResponse {

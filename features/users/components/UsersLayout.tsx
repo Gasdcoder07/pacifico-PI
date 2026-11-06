@@ -21,6 +21,8 @@ const UsersLayout = () => {
         .sort((a, b) =>
             Number(b.rol_id) === 2 ? 1 : Number(a.rol_id) === 2 ? -1 : 0,
         );
+    
+    const isAdmin = currentUser?.rol_id === 1;
 
     return (
         <section className="h-full min-h-0 flex flex-col p-8 gap-8">
@@ -29,7 +31,8 @@ const UsersLayout = () => {
 
             <UsersContainer
                 users={users}
-                isLoading={isLoading}/>
+                isLoading={isLoading}
+                isAdmin={isAdmin}/>
         </section>
     );
 };

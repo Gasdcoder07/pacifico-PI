@@ -12,7 +12,7 @@ import { useTranslations } from "next-intl";
 import { LegalModal } from "./LegalModal";
 
 const inputClass =
-    "w-full p-3 pr-12 text-sm border border-neutral-300 dark:border-slate-700 rounded-xl hover:border-neutral-400 dark:hover:border-slate-600 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out";
+    "shadow bg-white dark:bg-slate-900 w-full p-3 pr-12 text-sm border border-neutral-300 dark:border-slate-800 rounded-xl hover:border-neutral-400 dark:hover:border-slate-600 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out";
 
 const RegisterForm = () => {
     const t = useTranslations("Register");

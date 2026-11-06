@@ -47,25 +47,25 @@ export const LogoutModal = ({ isOpen, onClose, onConfirm }: LogoutModalProps) =>
                 aria-modal="true"
                 aria-labelledby="logout-modal-title"
                 aria-describedby="logout-modal-message"
-                className="flex flex-col gap-4 text-sm"
+                className="flex flex-col gap-8 text-sm"
             >
-                <div className="flex flex-col items-center justify-center gap-4">
-                    <div className="mx-auto flex size-14 items-center justify-center rounded-full border border-brand-200 bg-brand-50 dark:border-cyan-500/30 dark:bg-cyan-500/10">
-                        <LogOut size={28} className="text-brand-600 dark:text-cyan-400" aria-hidden="true" />
+                <div className="flex flex-col items-center gap-2">
+                    <div className="flex flex-col items-center justify-center gap-4">
+                        <div className="mx-auto flex size-14 items-center justify-center rounded-full border border-brand-200 bg-brand-50 dark:border-cyan-500/30 dark:bg-cyan-500/10">
+                            <LogOut size={28} className="text-brand-600 dark:text-cyan-400" aria-hidden="true" />
+                        </div>
+                        <h2 id="logout-modal-title" className="text-center text-xl font-semibold dark:text-slate-50">
+                            {t("title")}
+                        </h2>
                     </div>
-
-                    <h2 id="logout-modal-title" className="text-center text-xl font-semibold dark:text-slate-50">
-                        {t("title")}
-                    </h2>
+                    <div className="px-4 py-2">
+                        <p id="logout-modal-message" className="text-center text-neutral-700 dark:text-slate-400">
+                            {t("message")}
+                        </p>
+                    </div>
                 </div>
 
-                <div className="px-4 py-3">
-                    <p id="logout-modal-message" className="text-center text-neutral-700 dark:text-slate-400">
-                        {t("message")}
-                    </p>
-                </div>
-
-                <div className="mt-4 flex justify-between gap-4">
+                <div className="flex justify-end items-center gap-4">
                     <motion.button
                         ref={cancelButtonRef}
                         type="button"

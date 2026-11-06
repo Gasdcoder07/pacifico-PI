@@ -65,7 +65,7 @@ const LoginForm = () => {
                     id="email"
                     type="email"
                     name="email"
-                    className="w-full p-3 pr-12 text-sm border border-neutral-300 dark:border-slate-700 rounded-xl hover:border-neutral-400 dark:hover:border-slate-600 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
+                    className="bg-white dark:bg-slate-900 shadow w-full p-3 pr-12 text-sm border border-neutral-300 dark:border-slate-800 rounded-xl hover:border-neutral-400 dark:hover:border-slate-600 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
                 />
             </div>
 
@@ -83,7 +83,7 @@ const LoginForm = () => {
                         id="password"
                         type={showPassword ? "text" : "password"}
                         name="password"
-                        className="w-full p-3 pr-12 text-sm border border-neutral-300 dark:border-slate-700 rounded-xl hover:border-neutral-400 dark:hover:border-slate-600 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
+                        className="bg-white dark:bg-slate-900 shadow w-full p-3 pr-12 text-sm border border-neutral-300 dark:border-slate-800 rounded-xl hover:border-neutral-400 dark:hover:border-slate-600 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
                     />
 
                     <button
@@ -103,7 +103,7 @@ const LoginForm = () => {
                 <div className="mt-2 flex justify-end">
                     <Link
                         href="/forgot-password"
-                        className="font-semibold text-sm text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-colors"
+                        className="font-semibold text-sm text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 transition-colors duration-200 ease-in-out"
                     >
                         {t("forgotPassword")}
                     </Link>
@@ -114,7 +114,7 @@ const LoginForm = () => {
                 <button
                     type="submit"
                     disabled={isLoggingIn}
-                    className="font-semibold text-white bg-cyan-600 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500 disabled:opacity-50 w-full py-3 rounded-xl transition-colors ease-in-out duration-200 cursor-pointer flex items-center justify-center"
+                    className="shadow font-semibold text-white bg-cyan-600 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500 disabled:opacity-50 w-full py-3 rounded-xl transition-colors ease-in-out duration-200 cursor-pointer flex items-center justify-center"
                 >
                     {isLoggingIn ? (
                         <LoadingIndicator />
@@ -127,14 +127,14 @@ const LoginForm = () => {
                     {t("noAccount")}{" "}
                     <Link
                         href="/register"
-                        className="font-semibold text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-colors"
+                        className="font-semibold text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 transition-colors"
                     >
                         {t("registerNow")}
                     </Link>
                 </span>
 
                 <button type="button" className="cursor-pointer w-fit mx-auto" onClick={() => setShowModal(true)}>
-                    <p className="text-neutral-600 dark:text-slate-400 text-xs hover:text-cyan-600 transition-all duration-200 ease-in-out">{t("viewTermsAndConditions")}</p>
+                    <p className="text-neutral-600 dark:text-slate-400 text-xs hover:text-cyan-600 dark:hover:text-cyan-400 transition-all duration-200 ease-in-out">{t("viewTermsAndConditions")}</p>
                 </button>
 
             </div>

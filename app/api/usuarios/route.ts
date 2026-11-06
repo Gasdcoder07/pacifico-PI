@@ -116,7 +116,17 @@ export async function GET(request: Request) {
         let queryParams: unknown[] = []
 
         if (Number(currentUser.rol_id) === 1) {
-            query = `SELECT * FROM usuarios where company_id = $1`;
+            query = `
+                SELECT
+                    u.*,
+                    s.name AS branch_name
+                FROM usuarios u
+                LEFT JOIN sucursales s
+                    ON u.branch_id = s.id
+                    AND u.company_id = s.company_id
+                WHERE u.company_id = $1
+            `;
+
             queryParams = [currentUser.company_id]
             
         } else if (Number(currentUser.rol_id) === 2) { 
@@ -127,7 +137,18 @@ export async function GET(request: Request) {
                 )
             }
             
-            query = `SELECT * FROM usuarios WHERE branch_id = $1 AND company_id = $2`;
+            query = `
+                SELECT
+                    u.*,
+                    s.name AS branch_name
+                FROM usuarios u
+                LEFT JOIN sucursales s
+                    ON u.branch_id = s.id
+                    AND u.company_id = s.company_id
+                WHERE u.branch_id = $1
+                AND u.company_id = $2
+            `;
+
             queryParams = [currentUser.branch_id, currentUser.company_id];
             
         } else {

@@ -1,5 +1,9 @@
 {
   "Register": {
+    "title": "Create your account",
+    "subtitle": "Enter your details to start managing your business.",
+    "heroTitle": "Your entire business, under control.",
+    "heroSubtitle": "Manage your branches, sales, and inventory simply and efficiently.",
     "name": "First name",
     "lastName": "Last name",
     "email": "Email",
@@ -268,7 +272,7 @@
             }
         },
       "actions": {
-        "edit": "Edit",
+        "viewBranch": "View branch",
         "delete": "Delete"
       }
     },

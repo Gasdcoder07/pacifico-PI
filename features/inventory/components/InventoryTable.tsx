@@ -296,7 +296,7 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
                         setShowDeleteModal(true);
                         setOpen(false);
                     }}
-                    className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-red-600 transition-colors duration-200 hover:bg-red-50 dark:text-red-400 dark:hover:bg-slate-800"
+                    className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-red-600 transition-colors duration-200 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
                     >
                     <Trash size={18} />
                     <span>{t("delete")}</span>

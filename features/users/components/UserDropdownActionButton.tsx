@@ -2,29 +2,34 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Trash, Edit, Ellipsis } from "lucide-react";
+import { Trash, Ellipsis, Building2 } from "lucide-react";
+
+import Link from "next/link";
+import { DeleteUserModal } from "./DeleteUserModal";
 
 import { useTranslations } from "next-intl";
-import EditUserPanel from "./EditUserPanel";
-import { DeleteUserModal } from "./DeleteUserModal";
 import { User } from "../types/user";
 import { BranchId } from "@/features/branches/types/branch";
 import { menuVariants, itemVariants } from "@/shared/animations/dropdown.animations";
+import { createSlug } from "@/shared/utils/create.slug";
 
 interface UserDropdownActionButtonProps {
   user: User;
   branchId: BranchId;
+  isAdminView: boolean;
 }
+
+const MotionLink = motion.create(Link);
 
 const UserDropdownActionButton = ({
   user,
   branchId,
+  isAdminView
 }: UserDropdownActionButtonProps) => {
   const t = useTranslations("BranchDetails.usersContainer.actions");
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [open, setOpen] = useState(false);
-  const [showEditPanel, setShowEditPanel] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
@@ -54,7 +59,7 @@ const UserDropdownActionButton = ({
         whileHover={hoverAnimation}
         whileTap={tapAnimation}
         transition={{ type: "spring", bounce: 0.6, duration: 0.8 }}
-        className={`rounded-lg border border-brand-100 bg-linear-to-b from-brand-50 to-brand-100 p-1 text-brand-700 dark:bg-none dark:bg-cyan-500/15 dark:text-cyan-400 cursor-pointer`}
+        className={`rounded-lg bg-linear-to-b from-brand-50 to-brand-100 p-1 text-brand-700 dark:bg-none dark:bg-cyan-500/15 dark:text-cyan-400 cursor-pointer`}
         onClick={() => setOpen(!open)}
       >
         <Ellipsis size={20} />
@@ -67,21 +72,26 @@ const UserDropdownActionButton = ({
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="absolute right-2 z-10 flex w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 bg-white p-2 shadow-lg">
+            className="absolute right-2 z-10 flex w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 shadow-lg">
           <motion.div variants={itemVariants} className="flex flex-col gap-2">
-            {/* <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", bounce: 0.5 }}
-                onClick={() => {
-                setShowEditPanel(true);
-                setOpen(false);
-                }}
-                className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 dark:text-slate-50 transition-colors duration-200 ease-in-out hover:bg-gray-100 dark:hover:bg-slate-700"
-            >
-                <Edit size={18} />
-                <span className="font-medium">{t("edit")}</span>
-            </motion.button> */}
+
+            {
+                isAdminView && (
+                    <MotionLink
+                        href={`/branch/${branchId}/${encodeURIComponent(createSlug(user.branch_name))}`}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: "spring", bounce: 0.5 }}
+                        onClick={() => {
+                            setOpen(false);
+                        }}
+                        className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 dark:text-slate-50 transition-colors duration-200 ease-in-out hover:bg-gray-100 dark:hover:bg-slate-700"
+                    >
+                        <Building2 size={18} />
+                        <span className="font-medium">{t("viewBranch")}</span>
+                    </MotionLink>
+                )
+            }
             <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
@@ -99,16 +109,6 @@ const UserDropdownActionButton = ({
         </motion.div>
       )}
     </AnimatePresence>
-
-      {/* {showEditPanel && (
-        <EditUserPanel
-          isOpen={showEditPanel}
-          onClose={() => setShowEditPanel(false)}
-          user={user}
-          managerExists={haveManager}
-          branchId={branchId}
-        />
-      )} */}
 
       {showDeleteModal && (
         <DeleteUserModal

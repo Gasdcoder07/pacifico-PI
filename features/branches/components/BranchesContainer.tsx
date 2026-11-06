@@ -75,7 +75,7 @@ const BranchesContainer = () => {
 export default BranchesContainer;
 
 const BranchCardSkeleton = () => {
-  return <div className="h-56 w-full rounded-lg bg-neutral-200 dark:bg-slate-800 shadow-sm" />;
+  return <div className="h-56 w-full animate-pulse transition-all duration-200 ease-in-out rounded-lg bg-neutral-200 dark:bg-slate-800 shadow-sm" />;
 };
 
 const BranchesEmptyState = () => {

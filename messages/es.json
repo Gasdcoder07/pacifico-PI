@@ -1,5 +1,9 @@
 {
   "Register": {
+    "title": "Crea tu cuenta",
+    "subtitle": "Completa tus datos para comenzar a gestionar tu negocio.",
+    "heroTitle": "Todo tu negocio, bajo control.",
+    "heroSubtitle": "Gestiona tus sucursales, ventas e inventario de forma simple y eficiente.",
     "name": "Nombre",
     "lastName": "Apellido",
     "email": "Email",
@@ -268,7 +272,7 @@
         }
       },
       "actions": {
-        "edit": "Editar",
+        "viewBranch": "Ver sucursal",
         "delete": "Eliminar"
       }
     },

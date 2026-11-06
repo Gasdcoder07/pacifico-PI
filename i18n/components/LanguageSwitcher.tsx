@@ -16,7 +16,7 @@ export const LanguageSwitcher = () => {
     };
 
     return (
-        <div className="flex items-center gap-1 p-1 text-xs font-semibold rounded-full bg-white/90 dark:bg-slate-800 backdrop-blur border border-neutral-200 dark:border-slate-700 shadow-sm">
+        <div className="flex items-center gap-1 p-1 text-xs font-semibold rounded-full bg-white dark:bg-slate-800 backdrop-blur border border-neutral-200 dark:border-slate-700 shadow-sm">
             {(["es", "en"] as const).map((l) => (
                 <motion.button
                     key={l}

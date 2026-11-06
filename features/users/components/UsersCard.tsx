@@ -11,8 +11,10 @@ import UserDropdownActionButton from "./UserDropdownActionButton";
 
 const UsersCard = ({
     user,
+    isAdmin
 }: {
     user: User;
+    isAdmin: boolean;
 }) => {
     const t = useTranslations("UsersPage.card");
 
@@ -49,7 +51,8 @@ const UsersCard = ({
 
                 <UserDropdownActionButton
                     user={user}
-                    branchId={Number(user.branch_id)}/>
+                    branchId={Number(user.branch_id)}
+                    isAdminView={isAdmin}/>
             </div>
         </div>
     );
@@ -69,15 +72,15 @@ export const RolSpan = ({ rol_id }: RolSpanProps) => {
     if (String(rol_id) === "1") {
         label = t("admin");
         spanStyles =
-            "bg-[#EDE9FE] text-[#5B21B6] border-purple-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
+            "bg-[#EDE9FE] text-[#5B21B6] border-purple-200 dark:bg-slate-950 dark:text-purple-400 dark:border-purple-900";
     } else if (String(rol_id) === "2") {
         label = t("manager");
         spanStyles =
-            "bg-[#DBEAFE] text-[#1E40AF] border-blue-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
+            "bg-[#DBEAFE] text-[#1E40AF] border-blue-200 dark:bg-slate-950 dark:text-blue-400 dark:border-blue-900";
     } else {
         label = t("cashier");
         spanStyles =
-            "bg-[#CCFBF1] text-[#0F766E] border-teal-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
+            "bg-[#CCFBF1] text-[#0F766E] border-teal-200 dark:bg-slate-950 dark:text-teal-400 dark:border-teal-900";
     }
 
     return (

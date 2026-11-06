@@ -11,7 +11,7 @@ const TopBranchCard = ({ isLoading, branch }: TopBranchCardProps) => {
 
   if (isLoading) {
     return (
-      <div className="h-54 w-3/5 animate-pulse rounded-lg bg-neutral-200 dark:bg-slate-800 transition-all duration-200" />
+      <div className="h-54 w-3/5 rounded-lg animate-pulse bg-neutral-200 dark:bg-slate-800 transition-all duration-200 ease-in-out" />
     );
   }
 
