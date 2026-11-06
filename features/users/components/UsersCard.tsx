@@ -9,99 +9,91 @@ import "blobatar/motion.css";
 
 import UserDropdownActionButton from "./UserDropdownActionButton";
 
-// const colors = [
-//   "bg-rose-100 border-rose-200 text-rose-700",
-//   "bg-orange-100 border-orange-200 text-orange-700",
-//   "bg-amber-100 border-amber-200 text-amber-700",
-//   "bg-emerald-100 border-emerald-200 text-emerald-700",
-//   "bg-teal-100 border-teal-200 text-teal-700",
-//   "bg-sky-100 border-sky-200 text-sky-700",
-//   "bg-indigo-100 border-indigo-200 text-indigo-700",
-//   "bg-violet-100 border-violet-200 text-violet-700",
-// ];
-
 const UsersCard = ({
-  user,
-  managerExists,
-  isMe,
-  branchId,
+    user,
+    isMe,
 }: {
-  user: User;
-  managerExists: boolean,
-  isMe: boolean;
-  branchId: BranchId;
+    user: User;
+    isMe: boolean;
 }) => {
-  const t = useTranslations("UsersPage.card");
+    const t = useTranslations("UsersPage.card");
 
-  return (
-    <div className="flex w-full items-center justify-between gap-4 rounded-lg border border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-neutral-900 dark:text-slate-50 px-8 py-4 shadow-sm">
-      <div className="flex items-center gap-4 min-w-3/10">
-        <Blobatar name={user.name + " " + user.last_name} animate="always" className="flex size-12 items-center justify-center rounded-full" />
+    return (
+        <div className="flex w-full items-center justify-between gap-4 rounded-lg border border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-neutral-900 dark:text-slate-50 px-8 py-4 shadow-sm">
+            <div className="flex items-center gap-4 min-w-3/10">
+                <Blobatar
+                    name={user.name + " " + user.last_name}
+                    animate="always"
+                    className="flex size-12 items-center justify-center rounded-full"
+                />
 
-        <p className="font-medium text-[15px] text-neutral-900 dark:text-slate-50">
-          {user.name} {user.last_name}
-        </p>
+                <p className="font-medium text-[15px] text-neutral-900 dark:text-slate-50">
+                    {user.name} {user.last_name}
+                </p>
 
-        {isMe && (
-          <div className="rounded bg-[#F4F7F9] dark:bg-slate-800 px-2 py-1">
-            <span className="text-xs font-medium text-neutral-600 dark:text-slate-400">
-              ({t("you")})
-            </span>
-          </div>
-        )}
-      </div>
+                {isMe && (
+                    <div className="rounded bg-[#F4F7F9] dark:bg-slate-800 px-2 py-1">
+                        <span className="text-xs font-medium text-neutral-600 dark:text-slate-400">
+                            ({t("you")})
+                        </span>
+                    </div>
+                )}
+            </div>
 
-      <div className="flex flex-1 min-w-0 items-center justify-between gap-2">
-        <div className="flex flex-1 min-w-0 flex-col gap-2">
-          <div>
-            <RolSpan rol_id={user.rol_id} />
-          </div>
+            <div className="flex flex-1 min-w-0 items-center justify-between gap-2">
+                <div className="flex flex-1 min-w-0 flex-col gap-2">
+                    <div>
+                        <RolSpan rol_id={user.rol_id} />
+                    </div>
 
-          <div className="flex flex-1 min-w-0 items-center gap-2">
-            <Mail size={14} className="translate-y-[0.5px] shrink-0 text-neutral-500 dark:text-slate-400" />
-            <span className="truncate text-xs text-neutral-500 dark:text-slate-400">
-              {user.email}
-            </span>
-          </div>
+                    <div className="flex flex-1 min-w-0 items-center gap-2">
+                        <Mail
+                            size={14}
+                            className="translate-y-[0.5px] shrink-0 text-neutral-500 dark:text-slate-400"
+                        />
+                        <span className="truncate text-xs text-neutral-500 dark:text-slate-400">
+                            {user.email}
+                        </span>
+                    </div>
+                </div>
+
+                <UserDropdownActionButton />
+            </div>
         </div>
-
-        <UserDropdownActionButton
-          user={user}
-          haveManager={managerExists}
-          isMe={isMe}
-          branchId={branchId}
-        />
-      </div>
-    </div>
-  );
+    );
 };
 
 export default UsersCard;
 
 interface RolSpanProps {
-  rol_id: number | string;
+    rol_id: number | string;
 }
 
 export const RolSpan = ({ rol_id }: RolSpanProps) => {
-  const t = useTranslations("UsersPage.roles");
-  let label = "";
-  let spanStyles = "";
+    const t = useTranslations("UsersPage.roles");
+    let label = "";
+    let spanStyles = "";
 
-  if (String(rol_id) === "1") {
-    label = t("admin");
-    spanStyles = "bg-[#EDE9FE] text-[#5B21B6] border-purple-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
-  } else if (String(rol_id) === "2") {
-    label = t("manager");
-    spanStyles = "bg-[#DBEAFE] text-[#1E40AF] border-blue-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
-  } else {
-    label = t("cashier");
-    spanStyles = "bg-[#CCFBF1] text-[#0F766E] border-teal-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
-  }
+    if (String(rol_id) === "1") {
+        label = t("admin");
+        spanStyles =
+            "bg-[#EDE9FE] text-[#5B21B6] border-purple-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
+    } else if (String(rol_id) === "2") {
+        label = t("manager");
+        spanStyles =
+            "bg-[#DBEAFE] text-[#1E40AF] border-blue-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
+    } else {
+        label = t("cashier");
+        spanStyles =
+            "bg-[#CCFBF1] text-[#0F766E] border-teal-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700";
+    }
 
-  return (
-    <span className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-1 text-xs ${spanStyles}`}>
-      <ShieldCheck size={14} className="shrink-0" />
-      {label}
-    </span>
-  );
+    return (
+        <span
+            className={`inline-flex shrink-0 items-center gap-2 rounded-full border px-4 py-1 text-xs ${spanStyles}`}
+        >
+            <ShieldCheck size={14} className="shrink-0" />
+            {label}
+        </span>
+    );
 };

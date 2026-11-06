@@ -1,13 +1,14 @@
 "use client";
 
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { getBranchById } from "@/features/branches/services/branch.service";
-import { User } from "@/features/users/types/user";
-import CreateUserButton from "@/features/users/components/CreateUserButton";
-import UsersCard from "@/features/users/components/UsersCard";
 import { useQuery } from "@tanstack/react-query";
 import { Users } from "lucide-react";
 import { useTranslations } from "next-intl";
+
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import BranchUsersCard from "./BranchUsersCard";
+import CreateUserButton from "@/features/users/components/CreateUserButton";
+import { getBranchById } from "@/features/branches/services/branch.service";
+import { User } from "@/features/users/types/user";
 
 const BranchUsersContainer = ({ id }: { id: string | number }) => {
   const t = useTranslations("BranchDetails.usersContainer");
@@ -55,7 +56,12 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
 
             return (
               <div key={user.id} className="flex items-center gap-4">
-                <UsersCard user={user} managerExists={haveManager} isMe={isMe} branchId={Number(id)} />
+                <BranchUsersCard
+                  user={user}
+                  managerExists={haveManager}
+                  isMe={isMe}
+                  branchId={Number(id)}
+                />
               </div>
             );
           })

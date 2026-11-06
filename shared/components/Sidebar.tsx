@@ -7,9 +7,11 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const Sidebar = () => {
     const t = useTranslations("Sidebar");
+    const { user } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -17,128 +19,153 @@ const Sidebar = () => {
 
     useEffect(() => {
         const saved = localStorage.getItem("sidebar-open");
-
         if (saved !== null) {
             setIsOpen(JSON.parse(saved));
         } else {
             setIsOpen(true);
         }
-
         setIsLoaded(true);
     }, []);
 
     useEffect(() => {
         if (!isLoaded) return;
-
         localStorage.setItem("sidebar-open", JSON.stringify(isOpen));
     }, [isOpen, isLoaded]);
+
+    const roleId = user ? Number(user.rol_id) : null;
+
+    // Filtrar secciones e ítems según el rol del usuario
+    const filteredSections = sidebarSections
+        .map((section) => {
+            const filteredItems = section.items.filter((item) => {
+                // Rol 1: Administrador -> Todo excepto /sell
+                if (roleId === 1) {
+                    return item.href !== "/sell";
+                }
+                // Rol 2: Gerente -> Todo excepto /settings y /branches
+                if (roleId === 2) {
+                    return item.href !== "/settings" && item.href !== "/branches";
+                }
+                // Rol 3: Cajero -> No ve nada en la sidebar
+                if (roleId === 3) {
+                    return false;
+                }
+                return true;
+            });
+
+            return {
+                ...section,
+                items: filteredItems,
+            };
+        })
+        .filter((section) => section.items.length > 0);
 
     return (
         <motion.aside
             initial={false}
-            animate={ { width: isOpen ? 216 : 88 } } // 256 88
-            transition={ {
+            animate={{ width: isOpen ? 216 : 88 }}
+            transition={{
                 duration: isLoaded ? 0.2 : 0,
-                ease: "easeInOut"
-            } }
-            className={`p-4 flex flex-col justify-between gap-4 border-r border-neutral-300 dark:bg-slate-900 dark:border-slate-800`}>
+                ease: "easeInOut",
+            }}
+            className={`p-4 flex flex-col justify-between gap-4 border-r border-neutral-300 dark:bg-slate-900 dark:border-slate-800`}
+        >
             <div className="flex-1 flex flex-col gap-8">
-                {
-                    sidebarSections.map((section, index) => (
-                        <div
-                            key={index}
-                            className="flex flex-col gap-4">
-                            {
-                                isOpen ? (
-                                    <h3 className="px-3 font-bold text-neutral-500 dark:text-[#8493A8] uppercase text-xs tracking-wider">{t(section.titleKey)}</h3>
-                                ) : index > 0 ? (
-                                    <div className="mb-4 border-t border-neutral-200 dark:border-slate-800 w-full" />
-                                ) : null
-                            }
+                {filteredSections.map((section, index) => (
+                    <div key={index} className="flex flex-col gap-4">
+                        {isOpen ? (
+                            <h3 className="px-3 font-bold text-neutral-500 dark:text-[#8493A8] uppercase text-xs tracking-wider">
+                                {t(section.titleKey)}
+                            </h3>
+                        ) : index > 0 ? (
+                            <div className="mb-4 border-t border-neutral-200 dark:border-slate-800 w-full" />
+                        ) : null}
 
-                            <ul className="flex flex-col gap-4">
-                                {
-                                    section.items.map((item) => {
-                                        const isAtCurrentPage = pathname === item.href;
+                        <ul className="flex flex-col gap-4">
+                            {section.items.map((item) => {
+                                const isAtCurrentPage = pathname === item.href;
 
-                                        return (
-                                            <SidebarOption
-                                                key={item.id}
-                                                open={isOpen}
-                                                name={t(item.labelKey)}
-                                                icon={item.icon}
-                                                href={item.href}
-                                                isSelected={isAtCurrentPage}
-                                            />
-                                        )
-                                    })
-                                }
-                            </ul>
-                        </div>
-                    ))
-                }
+                                return (
+                                    <SidebarOption
+                                        key={item.id}
+                                        open={isOpen}
+                                        name={t(item.labelKey)}
+                                        icon={item.icon}
+                                        href={item.href}
+                                        isSelected={isAtCurrentPage}
+                                    />
+                                );
+                            })}
+                        </ul>
+                    </div>
+                ))}
             </div>
 
-            <ToggleClose open={isOpen} setIsOpen={setIsOpen}/>
+            <ToggleClose open={isOpen} setIsOpen={setIsOpen} />
         </motion.aside>
-    )
+    );
 };
 
 export default Sidebar;
 
 interface SidebarOptionProps {
-    open : boolean;
-    name : string;
-    href : string;
-    icon : LucideIcon;
-    isSelected : boolean;
+    open: boolean;
+    name: string;
+    href: string;
+    icon: LucideIcon;
+    isSelected: boolean;
 }
 
-const SidebarOption = ({ open, name, href, icon : Icon, isSelected } : SidebarOptionProps) => {
+const SidebarOption = ({ open, name, href, icon: Icon, isSelected }: SidebarOptionProps) => {
     return (
         <li>
             <Link
                 href={href}
                 title={!open ? name : undefined}
-                className={`${isSelected ? 'bg-linear-to-b from-brand-50 to-brand-100 text-brand-700 dark:bg-none dark:bg-cyan-500/15 dark:text-cyan-400' : 'text-neutral-500 dark:text-slate-400'} flex items-center gap-4 px-4 py-3 rounded-md duration-200 ease-in-out hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 dark:hover:bg-none dark:hover:bg-slate-800 dark:hover:text-slate-200 hover:scale-105 transition-all`}>
-                <Icon className="shrink-0" size={20}/>
+                className={`${
+                    isSelected
+                        ? "bg-linear-to-b from-brand-50 to-brand-100 text-brand-700 dark:bg-none dark:bg-cyan-500/15 dark:text-cyan-400"
+                        : "text-neutral-500 dark:text-slate-400"
+                } flex items-center gap-4 px-4 py-3 rounded-md duration-200 ease-in-out hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 dark:hover:bg-none dark:hover:bg-slate-800 dark:hover:text-slate-200 hover:scale-105 transition-all`}
+            >
+                <Icon className="shrink-0" size={20} />
                 <AnimatePresence initial={false}>
                     {open && (
-                            <motion.span
-                                initial={{ opacity: 0, width: 0, x: -50 }}
-                                animate={{ opacity: 0.9, width: "auto", x: 0 }}
-                                className={`text-sm ${isSelected ? 'font-bold' : 'font-medium'}`}
-                            >
-                                    {name}
-                            </motion.span>
+                        <motion.span
+                            initial={{ opacity: 0, width: 0, x: -50 }}
+                            animate={{ opacity: 0.9, width: "auto", x: 0 }}
+                            className={`text-sm ${isSelected ? "font-bold" : "font-medium"}`}
+                        >
+                            {name}
+                        </motion.span>
                     )}
                 </AnimatePresence>
             </Link>
         </li>
-    )
-}
+    );
+};
 
 interface ToggleCloseProps {
-    open : boolean;
-    setIsOpen : Dispatch<SetStateAction<boolean>>
+    open: boolean;
+    setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const ToggleClose = ({ open, setIsOpen } : ToggleCloseProps) => {
+const ToggleClose = ({ open, setIsOpen }: ToggleCloseProps) => {
     const t = useTranslations("Sidebar");
 
     return (
         <div className="border-t border-neutral-300 dark:border-slate-800 pt-4">
             <button
                 onClick={() => setIsOpen(!open)}
-                className="w-full flex items-center px-4 py-3 gap-4 rounded-md transition-all duration-300 ease-in-out dark:text-slate-400 hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 dark:hover:bg-none dark:hover:bg-slate-800 dark:hover:text-slate-200 cursor-pointer">
-                <ChevronsRight size={20} className={`transition-transform ${open && 'rotate-180'} shrink-0`}/>
+                className="w-full flex items-center px-4 py-3 gap-4 rounded-md transition-all duration-300 ease-in-out dark:text-slate-400 hover:bg-linear-to-b from-brand-50 to-brand-100 hover:text-brand-700 dark:hover:bg-none dark:hover:bg-slate-800 dark:hover:text-slate-200 cursor-pointer"
+            >
+                <ChevronsRight
+                    size={20}
+                    className={`transition-transform ${open && "rotate-180"} shrink-0`}
+                />
 
-                {
-                    open && (
-                        <span className="text-sm font-medium">{t("hide")}</span>
-                    )
-                }
+                {open && <span className="text-sm font-medium">{t("hide")}</span>}
             </button>
         </div>
-    )
-}
+    );
+};

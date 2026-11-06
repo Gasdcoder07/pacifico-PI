@@ -1,8 +1,5 @@
-"use client";
-
-import CreateUserButton from "@/features/users/components/CreateUserButton";
+import PageHeader from "@/features/users/components/PageHeader";
 import UsersContainer from "@/features/users/components/UsersContainer";
-import { useTranslations } from "next-intl";
 
 const Page = () => {
   const t = useTranslations("UsersPage");
@@ -14,14 +11,8 @@ const Page = () => {
         <p className="text-sm text-neutral-500 dark:text-[#8493A8]">{t("subtitle")}</p>
       </div>
 
-      <div className="flex flex-1 min-h-0 min-w-0 flex-col gap-4">
-        <CreateUserButton 
-          isDisabled={false} 
-          branch_id={1} 
-          company_id={1} 
-        />
-        <UsersContainer />
-      </div>
+      <PageHeader />
+      <UsersContainer />
     </section>
   );
 };
