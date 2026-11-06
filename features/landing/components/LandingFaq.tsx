@@ -1,6 +1,9 @@
 import { LandingQuotes } from "./CarrouselQuotes";
+import { useTranslations } from "next-intl";
 
 const LandingFaq = () => {
+  const t = useTranslations("LandingPage.faq");
+
   return (
     <section
       id="reviews"
@@ -13,21 +16,22 @@ const LandingFaq = () => {
           data-reveal-item
           className="w-fit rounded-full bg-neutral-100 px-4 py-1 text-sm text-primary/70"
         >
-          People say about us...
+          {t("badge")}
         </span>
         <h2
           id="reviews-heading"
           data-reveal-item
           className="text-5xl font-bold"
         >
-          Loved by the{" "}
-          <span className="bg-linear-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">
-            community
-          </span>
+          {t.rich("title", {
+            highlight: (chunks) => (
+              <span className="bg-linear-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">
+                {chunks}
+              </span>
+            ),
+          })}
         </h2>
-        <p data-reveal-item>
-          See what people are saying about PACIFICO
-        </p>
+        <p data-reveal-item>{t("subtitle")}</p>
         <div data-reveal-item className="w-full gap-8">
           <LandingQuotes />
         </div>

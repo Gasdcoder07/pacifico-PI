@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 import LandingNavbar from "./LandingNavbar";
 import LandingHero from "./LandingHero";
@@ -11,13 +12,15 @@ import LandingContact from "./LandingContact";
 import LandingAnimator from "./LandingAnimator";
 
 const LandingPage = () => {
+  const t = useTranslations("LandingPage");
+
   return (
     <main className="p-4 dark:bg-neutral-900">
       <LandingAnimator>
         <div data-anim="nav" className="invisible fixed inset-x-4 top-4 z-50">
           <div
             data-anim="nav-shell"
-            className="rounded-2xl px-6 py-2 backdrop-blur-md transition-shadow mx-4"
+            className="mx-4 rounded-2xl px-6 py-2 backdrop-blur-md transition-shadow"
           >
             <LandingNavbar />
           </div>
@@ -41,7 +44,10 @@ const LandingPage = () => {
                 sizes="100vw"
                 className="transform-gpu object-cover will-change-transform"
               />
-              <div data-anim="overlay" className="absolute inset-0 bg-black opacity-20" />
+              <div
+                data-anim="overlay"
+                className="absolute inset-0 bg-black opacity-20"
+              />
             </div>
 
             <div
@@ -52,7 +58,7 @@ const LandingPage = () => {
                 PACIFICO
               </h1>
               <p className="invisible max-w-md text-base text-white/80 md:text-lg">
-                A simple way.
+                {t("overlaySubtitle")}
               </p>
             </div>
           </div>

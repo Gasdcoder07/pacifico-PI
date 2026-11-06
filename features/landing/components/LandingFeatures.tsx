@@ -1,25 +1,18 @@
+"use client";
+
 import Link from "next/link";
 import { Building2, Store, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-const steps = [
-  {
-    icon: Building2,
-    title: "Register your company",
-    description: "Fill some fields, and press enter!",
-  },
-  {
-    icon: Store,
-    title: "Set your management",
-    description: "Create some branches!",
-  },
-  {
-    icon: Users,
-    title: "Add your employees",
-    description: "Add all your people!",
-  },
+const stepKeys = [
+  { icon: Building2, key: "step1" },
+  { icon: Store, key: "step2" },
+  { icon: Users, key: "step3" },
 ];
 
 const LandingFeatures = () => {
+  const t = useTranslations("LandingPage.features");
+
   return (
     <section
       id="features"
@@ -33,23 +26,28 @@ const LandingFeatures = () => {
           className="flex max-w-2xl flex-col items-center gap-4 text-center"
         >
           <span className="w-fit rounded-full bg-neutral-100 px-4 py-1 text-sm text-primary/70">
-            How to use?
+            {t("badge")}
           </span>
           <h2
             id="features-heading"
             className="text-3xl font-bold leading-tight tracking-tight text-neutral-900 md:text-4xl lg:text-5xl"
           >
-            You can start to use it in{" "}<br />
-            <span className="bg-linear-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">
-              3 simple steps
-            </span>
+            {t("titleLine1")}{" "}
+            <br />
+            {t.rich("titleLine2", {
+              highlight: (chunks) => (
+                <span className="bg-linear-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">
+                  {chunks}
+                </span>
+              ),
+            })}
           </h2>
         </div>
 
         <ol className="grid w-full gap-8 md:grid-cols-3">
-          {steps.map(({ icon: Icon, title, description }, i) => (
+          {stepKeys.map(({ icon: Icon, key }, i) => (
             <li
-              key={title}
+              key={key}
               data-reveal-item
               className="group relative flex min-h-64 flex-col justify-between gap-4 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-white/60 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:ring-cyan-200 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
             >
@@ -69,8 +67,12 @@ const LandingFeatures = () => {
               </div>
 
               <div className="flex flex-col gap-2">
-                <h3 className="text-lg font-semibold text-neutral-900">{title}</h3>
-                <p className="text-sm text-neutral-600">{description}</p>
+                <h3 className="text-lg font-semibold text-neutral-900">
+                  {t(`steps.${key}.title`)}
+                </h3>
+                <p className="text-sm text-neutral-600">
+                  {t(`steps.${key}.description`)}
+                </p>
               </div>
             </li>
           ))}
@@ -81,13 +83,13 @@ const LandingFeatures = () => {
           className="flex flex-col items-center gap-4 text-center"
         >
           <p className="text-base font-medium text-neutral-800 md:text-lg">
-            Then, you are ready to manage!
+            {t("readyMessage")}
           </p>
           <Link
             href="/login"
             className="rounded-full bg-neutral-900 px-6 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:scale-105 hover:bg-neutral-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900 motion-reduce:transition-none motion-reduce:hover:scale-100"
           >
-            Get started
+            {t("cta")}
           </Link>
         </div>
       </div>
