@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
+import { useTranslations } from "next-intl";
 
 interface Author {
   name: string;
@@ -17,6 +18,8 @@ const AUTHORS: Author[] = [
 ];
 
 const LandingContact = () => {
+  const t = useTranslations("LandingPage.contact");
+
   return (
     <section
       id="contacts"
@@ -30,14 +33,16 @@ const LandingContact = () => {
             id="contacts-heading"
             className="text-3xl font-bold leading-tight tracking-tight text-neutral-900 md:text-4xl lg:text-5xl"
           >
-            Ready to organize{" "}
-            <span className="bg-linear-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">
-              your company?
-            </span>
+            {t.rich("title", {
+              highlight: (chunks) => (
+                <span className="bg-linear-to-r from-cyan-600 to-cyan-400 bg-clip-text text-transparent">
+                  {chunks}
+                </span>
+              ),
+            })}
           </h2>
           <p className="max-w-md text-base text-neutral-600 md:text-lg">
-            Leave your details and we will get in touch to help you set up your
-            branches and your team.
+            {t("description")}
           </p>
         </div>
 
@@ -55,14 +60,13 @@ const LandingContact = () => {
               <p className="text-2xl font-bold text-neutral-900">PACIFICO</p>
             </div>
             <p className="max-w-md text-sm text-neutral-600 md:text-base">
-              Easy management of complex operations through software and
-              centralized data.
+              {t("companyDescription")}
             </p>
           </div>
 
           <div className="flex flex-col gap-3 border-t border-neutral-200 pt-6">
             <h3 className="text-sm font-medium uppercase tracking-wide text-neutral-500">
-              Authors
+              {t("authors")}
             </h3>
             <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
               {AUTHORS.map((author) => (

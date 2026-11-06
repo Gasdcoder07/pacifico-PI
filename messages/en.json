@@ -630,5 +630,62 @@
       "success": "User deleted successfully",
       "error": "An error occurred while deleting the user"
     }
+  },
+    "LandingPage": {
+      "overlaySubtitle": "A simple way.",
+      "navbar": {
+      "ariaLabel": "Main navigation",
+      "links": {
+        "features": "Features",
+        "about": "About",
+        "reviews": "Reviews",
+        "contacts": "Contacts"
+      },
+      "cta": "Join us!"
+    },
+    "hero": {
+      "badge": "What do we solve?",
+      "imageAlt": "Team working with disconnected business data",
+      "title": "Human error, synchronization errors, decentralized data",
+      "description": "These are among the biggest day-to-day operational challenges faced by small and medium sized enterprises."
+    },
+    "reviews": {
+      "title": "Manage your operations and finances in a <highlight>simple way.</highlight>",
+      "subtitle": "Set it up once, use it anywhere.",
+      "builtWith": "Built with",
+      "githubCta": "Support the repository"
+    },
+    "faq": {
+      "badge": "People say about us...",
+      "title": "Loved by the <highlight>community</highlight>",
+      "subtitle": "See what people are saying about PACIFICO"
+    },
+    "contact": {
+      "title": "Ready to organize <highlight>your company?</highlight>",
+      "description": "Leave your details and we will get in touch to help you set up your branches and your team.",
+      "companyDescription": "Easy management of complex operations through software and centralized data.",
+      "authors": "Authors"
+    },
+    "features": {
+      "badge": "How to use?",
+      "titleLine1": "You can start to use it in",
+      "titleLine2": "<highlight>3 simple steps</highlight>",
+    "steps": {
+      "step1": {
+      "title": "Register your company",
+      "description": "Fill some fields, and press enter!"
+    },
+    "step2": {
+      "title": "Set your management",
+      "description": "Create some branches!"
+    },
+    "step3": {
+      "title": "Add your employees",
+      "description": "Add all your people!"
+    }
+  },
+  "readyMessage": "Then, you are ready to manage!",
+  "cta": "Get started"
+}
   }
 }
