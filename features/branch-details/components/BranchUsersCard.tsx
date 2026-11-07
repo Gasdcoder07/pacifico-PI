@@ -52,6 +52,7 @@ const BranchUsersCard = ({
                 <UserDropdownActionButton
                     user={user}
                     branchId={branchId}
+                    isAdminView={false}
                 />
             </div>
         </div>

@@ -1,5 +1,5 @@
 import { apiClient } from "@/shared/lib/axios";
-import { Branch, BranchResponse, DeleteBranchResponse, EditBranchPayload } from "../types/branch";
+import { BranchResponse, DeleteBranchResponse, EditBranchPayload } from "../types/branch";
 
 export interface CreateBranchPayload {
     name: string;
