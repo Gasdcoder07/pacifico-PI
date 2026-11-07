@@ -3,7 +3,7 @@
 import { ModalLayout } from "@/shared/components/ModalLayout";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-import Select, { MultiValue, SingleValue } from "react-select";
+import Select, { MultiValue, SingleValue, ActionMeta } from "react-select";
 import {
   createProduct,
   CreateProductPayload,
@@ -67,7 +67,11 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
     ],
   });
 
-  const handleCategoryChange = (option: SingleValue<Category>) => {
+  const handleCategoryChange = (
+    newValue: SingleValue<Category> | MultiValue<Category>,
+    actionMeta: ActionMeta<Category>
+  ) => {
+    const option = newValue as SingleValue<Category>;
     setSelectedCategory(option);
     setFormData((prev) => ({
       ...prev,
@@ -75,7 +79,11 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
     }));
   };
 
-  const handleBranchesChange = (options: MultiValue<Branch>) => {
+  const handleBranchesChange = (
+    newValue: MultiValue<Branch> | SingleValue<Branch>,
+    actionMeta: ActionMeta<Branch>
+  ) => {
+    const options = newValue as MultiValue<Branch>;
     const nextBranches = [...options];
 
     setSelectedBranches(nextBranches);
@@ -156,7 +164,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
       resetForm();
       onClose();
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast.error(error.message || t("notifications.error"));
     },
   });
@@ -239,7 +247,6 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
             }
         }
 
-        // Construir inventario individual
         const branchesPayload: CreateProductPayload["branches"] =
         selectedBranches.map((branch) => {
         const branchId = String(branch.id);
@@ -390,18 +397,18 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
                             </label>
 
                             <Select
-                            maxMenuHeight={120}
-                            menuPlacement="auto"
-                            className={selectThemeVars}
-                            styles={customStyles}
-                            options={categories}
-                            getOptionLabel={(category: Category) => category.name}
-                            getOptionValue={(category: Category) => String(category.id)}
-                            value={selectedCategory}
-                            onChange={handleCategoryChange}
-                            placeholder={t("fields.category.placeholder")}
-                            isLoading={categoriesQuery.isLoading}
-                            isDisabled={categoriesQuery.isLoading}
+                                maxMenuHeight={120}
+                                menuPlacement="auto"
+                                className={selectThemeVars}
+                                styles={customStyles}
+                                options={categories}
+                                getOptionLabel={(category: Category) => category.name}
+                                getOptionValue={(category: Category) => String(category.id)}
+                                value={selectedCategory}
+                                onChange={handleCategoryChange}
+                                placeholder={t("fields.category.placeholder")}
+                                isLoading={categoriesQuery.isLoading}
+                                isDisabled={categoriesQuery.isLoading}
                             />
                         </div>
                     
@@ -440,9 +447,9 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
                         isSearchable
                         className={selectThemeVars}
                         styles={customStyles}
-                        options={branches as any}
-                        getOptionLabel={(branch: any) => branch.name}
-                        getOptionValue={(branch: any) => String(branch.id)}
+                        options={branches}
+                        getOptionLabel={(branch: Branch) => branch.name}
+                        getOptionValue={(branch: Branch) => String(branch.id)}
                         value={selectedBranches}
                         onChange={handleBranchesChange}
                         placeholder={t("fields.branches.placeholder")}

@@ -1,41 +1,41 @@
-export const customStyles = {
+import { StylesConfig, GroupBase } from "react-select";
+
+export const customStyles: StylesConfig<any, boolean, GroupBase<any>> = {
     menu: (base) => ({
-    ...base,
-    width: "100%",
-    boxSizing: "border-box",
-    overflow: "hidden",
-    backgroundColor: "var(--sel-bg)",
-    color: "var(--sel-texto)",
+        ...base,
+        width: "100%",
+        boxSizing: "border-box",
+        overflow: "hidden",
+        backgroundColor: "var(--sel-bg)",
+        color: "var(--sel-texto)",
     }),
 
     menuList: (base) => ({
-    ...base,
-    overflowY: "auto",
+        ...base,
+        overflowY: "auto",
 
-    scrollbarGutter: "stable",
+        scrollbarGutter: "stable",
+        scrollbarWidth: "thin",
+        scrollbarColor: "var(--sel-scroll) transparent",
 
-    scrollbarWidth: "thin",
-    scrollbarColor: "var(--sel-scroll) transparent",
+        backgroundColor: "var(--sel-bg)",
 
-    backgroundColor: "var(--sel-bg)",
+        "&::-webkit-scrollbar": {
+            width: "4px",
+        },
 
-    "&::-webkit-scrollbar": {
-        width: "4px",
-    },
+        "&::-webkit-scrollbar-track": {
+            backgroundColor: "transparent",
+        },
 
-    "&::-webkit-scrollbar-track": {
-        backgroundColor: "transparent",
-    },
-
-    "&::-webkit-scrollbar-thumb": {
-        backgroundColor: "var(--sel-scroll)",
-        borderRadius: "10px",
-    },
+        "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "var(--sel-scroll)",
+            borderRadius: "10px",
+        },
     }),
 
     control: (base, state) => ({
         ...base,
-
         height: "42px",
         minHeight: "42px",
         maxHeight: "42px",
@@ -57,17 +57,17 @@ export const customStyles = {
         },
     }),
 
-    singleValue: (base: any) => ({
+    singleValue: (base) => ({
         ...base,
         color: "var(--sel-valor)",
     }),
 
-    input: (base: any) => ({
+    input: (base) => ({
         ...base,
         color: "var(--sel-valor)",
     }),
 
-    placeholder: (base: any) => ({
+    placeholder: (base) => ({
         ...base,
         color: "var(--sel-placeholder)",
     }),
@@ -96,7 +96,7 @@ export const customStyles = {
         borderRadius: "0.375rem",
     }),
 
-    multiValueLabel: (base: any) => ({
+    multiValueLabel: (base) => ({
         ...base,
         color: "var(--sel-valor)",
     }),
@@ -104,9 +104,9 @@ export const customStyles = {
     multiValueRemove: (base) => ({
         ...base,
         color: "var(--sel-valor)",
-        '&:hover': {
-        backgroundColor: 'var(--sel-remove-bg)',
-        color: 'var(--sel-remove-texto)',
+        "&:hover": {
+            backgroundColor: "var(--sel-remove-bg)",
+            color: "var(--sel-remove-texto)",
         },
     }),
 
@@ -129,9 +129,6 @@ export const customStyles = {
     }),
 };
 
-// Variables de color consumidas por customStyles.
-// Se declaran como clases de Tailwind en el propio <Select> para que la
-// variante dark: del tema las reescriba sin tocar JavaScript.
 export const selectThemeVars = [
     "[--sel-bg:#ffffff]", "dark:[--sel-bg:#0f172a]",
     "[--sel-texto:#404040]", "dark:[--sel-texto:#f8fafc]",
