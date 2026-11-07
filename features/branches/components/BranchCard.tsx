@@ -13,7 +13,7 @@ interface BranchCardProps {
   name: string;
   managerName: string;
   managerPhoto: string;
-  photo: string;
+  photo: string | null | undefined;
   status: boolean;
   direction: string;
   phone: string;

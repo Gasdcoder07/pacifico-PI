@@ -10,6 +10,12 @@ export interface CreateBranchPayload {
     foto_url?: string | null;
 }
 
+export interface BranchManager {
+  name: string;
+  last_name: string;
+  foto_url?: string;
+}
+
 export interface Branch {
     id: number
     company_id: number
@@ -23,7 +29,7 @@ export interface Branch {
     status: boolean
     created_at: string
     updated_at: string
-    gerentes: []
+    gerentes: BranchManager[]
 }
 
 export const getBranches = async (): Promise<Branch[]> => {
