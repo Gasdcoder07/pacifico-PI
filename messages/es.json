@@ -324,6 +324,19 @@
         "invalidRole": "Selecciona un rol válido"
       }
     },
+    "deleteBranchModal": {
+        "title": "Eliminar sucursal",
+        "description": "Esta acción no se puede deshacer. ¿Estás seguro de que quieres eliminar la sucursal <highlight>{branchName}</highlight>?",
+        "actions": {
+            "cancel": "Mantener sucursal",
+            "delete": "Borrar sucursal",
+            "deleting": "Borrando sucursal..."
+        },
+        "notifications": {
+            "success": "Sucursal eliminada correctamente",
+            "error": "Ocurrió un error al eliminar la sucursal"
+        }
+    },
     "editBranchModal": {
       "title": "Editar sucursal",
       "generalData": {

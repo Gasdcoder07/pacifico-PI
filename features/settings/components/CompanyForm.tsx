@@ -157,7 +157,7 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
                 <button
                   type="button"
                   onClick={handleRemoveLogo}
-                  className="absolute top-2 right-2 flex size-9 cursor-pointer items-center justify-center rounded-full border border-red-50 bg-white dark:bg-slate-900 text-red-500 dark:text-red-400 shadow-sm transition-all duration-200 ease-in-out hover:bg-red-500 hover:text-white"
+                  className="absolute top-2 right-2 flex size-9 cursor-pointer items-center justify-center rounded-full border border-red-50 dark:border-slate-800 bg-white dark:bg-slate-900 text-red-500 dark:text-red-400 shadow-sm transition-all duration-200 ease-in-out hover:bg-red-500 dark:hover:bg-red-500/10 hover:text-white"
                 >
                   <Trash2 size={16} />
                 </button>

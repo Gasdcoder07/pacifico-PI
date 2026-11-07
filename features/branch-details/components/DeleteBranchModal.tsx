@@ -7,6 +7,7 @@ import { ModalLayout } from "@/shared/components/ModalLayout";
 
 import { TriangleAlert } from "lucide-react";
 import { Branch } from "@/features/branches/types/branch";
+import { useTranslations } from "next-intl";
 
 interface DeleteBranchModalProps {
     isOpen: boolean;
@@ -16,6 +17,7 @@ interface DeleteBranchModalProps {
 }
 
 export const DeleteBranchModal = ({ isOpen, onClose, branchName, branchId }: DeleteBranchModalProps) => {
+    const t = useTranslations("BranchDetails.deleteBranchModal");
     const queryClient = useQueryClient();
     const router = useRouter();
 
@@ -34,7 +36,7 @@ export const DeleteBranchModal = ({ isOpen, onClose, branchName, branchId }: Del
                     )
             );
 
-            toast.success("Sucursal eliminada correctamente");
+            toast.success(t("notifications.success"));
             onClose();
             router.push("/branches");
 
@@ -42,7 +44,7 @@ export const DeleteBranchModal = ({ isOpen, onClose, branchName, branchId }: Del
         },
 
         onError: () => {
-            toast.error("Ocurrió un error al eliminar la sucursal");
+            toast.error(t("notifications.error"));
         },
     });
 
@@ -54,11 +56,18 @@ export const DeleteBranchModal = ({ isOpen, onClose, branchName, branchId }: Del
                         <TriangleAlert size={40} className="text-red-500 dark:text-red-400 -translate-y-0.5"/>
                     </div>
 
-                    <h3 className="text-center text-xl font-semibold">Eliminar sucursal</h3>
+                    <h3 className="text-center text-xl font-semibold">{t("title")}</h3>
                 </div>
 
                 <p className="text-center text-muted-foreground">
-                    Esta acción no se puede deshacer. ¿Estás seguro de que quieres eliminar la sucursal <span className="font-semibold text-neutral-900 dark:text-slate-50">{branchName}</span>?
+                    {t.rich("description", {
+                        branchName: branchName ?? "",
+                        highlight: (chunks) => (
+                        <span className="font-semibold text-neutral-900 dark:text-slate-50">
+                            {chunks}
+                        </span>
+                        ),
+                    })}
                 </p>
 
                 <div className="flex justify-end gap-4 mt-4">
@@ -68,11 +77,14 @@ export const DeleteBranchModal = ({ isOpen, onClose, branchName, branchId }: Del
                         disabled={isDeleting}
                         className="px-4 py-2 rounded-lg border border-neutral-200 dark:border-slate-800 text-neutral-600 dark:text-slate-400 hover:bg-neutral-50 dark:hover:bg-slate-800 transition-colors ease-in-out duration-200 cursor-pointer"
                     >
-                        Mantener surcursal
+                        {t("actions.cancel")}
                     </button>
                     <button
-                        disabled={isDeleting}
-                        onClick={() => mutateDeleteBranch(Number(branchId))}
+                        disabled={isDeleting || branchId === null}
+                        onClick={() => {
+                            if (branchId == null) return;
+                            mutateDeleteBranch(Number(branchId));
+                        }}
                         type="button"
                         className={`px-4 py-2 rounded-lg text-white font-medium transition-colors ease-in-out duration-200 ${
                             isDeleting
@@ -80,7 +92,7 @@ export const DeleteBranchModal = ({ isOpen, onClose, branchName, branchId }: Del
                                 : "bg-red-500 hover:bg-red-600 cursor-pointer"
                         }`}
                     >
-                        {isDeleting ? "Borrando sucursal..." : "Borrar sucursal"}
+                        {isDeleting ? t("actions.deleting") : t("actions.delete")}
                     </button>
                 </div>
             </div>

@@ -324,6 +324,19 @@
         "invalidRole": "Select a valid role"
       }
     },
+    "deleteBranchModal": {
+        "title": "Delete branch",
+        "description": "This action cannot be undone. Are you sure you want to delete the branch <highlight>{branchName}</highlight>?",
+        "actions": {
+            "cancel": "Keep branch",
+            "delete": "Delete branch",
+            "deleting": "Deleting branch..."
+        },
+        "notifications": {
+            "success": "Branch deleted successfully",
+            "error": "An error occurred while deleting the branch"
+        }
+    },
     "editBranchModal": {
       "title": "Edit branch",
       "generalData": {

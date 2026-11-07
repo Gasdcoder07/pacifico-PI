@@ -120,6 +120,6 @@ export default BranchDetailsCard;
 
 const BrachDetailsCardSkeleton = () => {
   return (
-    <div className="flex min-h-0 min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 dark:bg-slate-800 shadow-sm h-full w-full" />
+    <div className="flex animate-pulse transition-all duration-200 ease-in-out min-h-0 min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 dark:bg-slate-800 shadow-sm h-full w-full" />
   );
 };

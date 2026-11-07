@@ -63,6 +63,7 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
                                 <BranchUsersCard
                                     user={user}
                                     branchId={Number(id)}
+                                    isAdmin={isAdmin}
                                 />
                             </div>
                         );
@@ -99,6 +100,6 @@ const EmptyState = () => {
 
 const UsersContainerSkeleton = () => {
   return (
-    <div className="flex h-full min-h-0 w-full min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 dark:bg-slate-800 shadow-sm" />
+    <div className="flex animate-pulse transition-all duration-200 ease-in-out h-full min-h-0 w-full min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 dark:bg-slate-800 shadow-sm" />
   );
 };
