@@ -46,13 +46,48 @@ export default function LandingAnimator ({ children } : { children: ReactNode })
                 const { reduce } = ctx.conditions as { reduce: boolean };
 
                 if (reduce) {
-                    gsap.set(imageWrap, { clipPath: "inset(0% 0% 0% 0%)" });
-                    gsap.set([nav, ...navItems, ...titleItems], { autoAlpha: 1, y: 0 });
-                    gsap.set(frame, { height: SHRUNK_HEIGHT });
-                    gsap.set(image, { y: IMAGE_SHIFT });
-                    gsap.set(navShell, {
-                        backgroundColor: "rgba(21, 113, 149, 0.8)",
+                    gsap.set(imageWrap, {
+                        clipPath: "inset(0% 0% 0% 0%)",
                     });
+
+                    gsap.set(frame, {
+                        height: FULL_HEIGHT(),
+                    });
+
+                    gsap.set(image, {
+                        y: 0,
+                        scale: 1,
+                    });
+
+                    gsap.set(overlay, {
+                        opacity: 0.2,
+                    });
+
+                    gsap.set([nav, ...navItems, title, ...titleItems], {
+                        autoAlpha: 1,
+                        y: 0,
+                    });
+
+                    gsap.set(navShell, {
+                        backgroundColor: "rgba(21, 113, 149, 0.5)",
+                        borderColor: "rgba(255, 255, 255, 0.25)",
+                    });
+
+                    gsap.set(after, {
+                        clearProps: "marginTop",
+                    });
+
+                    revealSections.forEach((section) => {
+                        const items = Array.from(
+                        section.querySelectorAll<HTMLElement>("[data-reveal-item]")
+                        );
+
+                        gsap.set([section, ...items], {
+                        autoAlpha: 1,
+                        y: 0,
+                        });
+                    });
+
                     return;
                 }
 

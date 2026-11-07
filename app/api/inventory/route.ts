@@ -50,10 +50,13 @@ export async function GET(request: Request) {
                                     '[]'::jsonb
                                 )
                                 FROM public.inventario inv2
-                                JOIN public.sucursales suc2 ON suc2.id = inv2.branch_id
+                                JOIN public.sucursales suc2
+                                    ON suc2.id = inv2.branch_id
+                                    AND suc2.company_id = inv2.company_id
                                 WHERE inv2.product_id = p.id 
                                   AND inv2.company_id = p.company_id
                                   AND suc2.status = true
+                                  AND ($2::bigint is NULL OR inv2.branch_id = $2)
                             )
                         )
                         ORDER BY p.name, p.id

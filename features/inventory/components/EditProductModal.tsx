@@ -15,6 +15,7 @@ import { getBranches } from "@/features/branches/services/branch.service";
 import { Branch } from "@/features/branches/types/branch";
 import { useTranslations } from "next-intl";
 import { Product } from "@/features/sell/types/product";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 interface EditProductModalProps {
   isOpen: boolean;
@@ -25,6 +26,11 @@ interface EditProductModalProps {
 interface BranchStock {
   quantity: string;
   min_stock: string;
+}
+
+interface BranchOption {
+    id: string;
+    name: string
 }
 
 const initialForm = {
@@ -49,6 +55,15 @@ const scrollbarStyles =
 
 const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalProps) => {
   const t = useTranslations("InventoryPage.editProductModal");
+    const { user: currentUser } = useAuth();
+
+    const isAdmin = Number(currentUser?.rol_id) === 1;
+    const isManager = Number(currentUser?.rol_id) === 2;
+
+    const currentBranchId = currentUser?.branch_id != null
+        ? String(currentUser.branch_id)
+        : null;
+
 
   const [formData, setFormData] = useState(() => ({
     ...initialForm,
@@ -86,8 +101,16 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
 
   const [branchesQuery, categoriesQuery] = useQueries({
     queries: [
-      { queryKey: ["branches"], queryFn: getBranches },
-      { queryKey: ["categories"], queryFn: getCategories },
+        { 
+            queryKey: ["branches"], 
+            queryFn: getBranches,
+            enabled: isOpen && isAdmin,
+        },
+        {
+            queryKey: ["categories"],
+            queryFn: getCategories,
+            enabled: isOpen && (isAdmin || isManager),
+        },
     ],
   });
 
@@ -98,7 +121,9 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
     }));
   };
 
-  const handleBranchesChange = (options: MultiValue<Branch>) => {
+  const handleBranchesChange = (options: MultiValue<BranchOption>) => {
+    if (!isAdmin) return;
+
     const nextBranches = [...options];
 
     setSelectedBranchIds(nextBranches.map((branch) => String(branch.id)));
@@ -136,13 +161,37 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
         }));
     };
 
-  const branches = branchesQuery.data ?? [];
-  const categories = categoriesQuery.data ?? [];
-  const selectedBranches = branches.filter((branch) =>
-    selectedBranchIds.includes(String(branch.id))
-  );
-  const selectedCategory =
-    categories.find((category) => String(category.id) === formData.category_id) ?? null;
+    const branches = branchesQuery.data ?? [];
+    const categories = categoriesQuery.data ?? [];
+
+    const managerBranch = isManager && currentBranchId
+        ? productBranches.find(
+            (branch) => String(branch.branch_id) === currentBranchId
+        ) : undefined;
+
+    const branchOptions: BranchOption[] = isAdmin
+        ? branches.map((branch) => ({
+                id: String(branch.id),
+                name: branch.name,
+            }))
+        : managerBranch
+            ? [{
+                id: String(managerBranch.branch_id),
+                name: managerBranch.branch_name,
+            }] : [];
+
+    const selectedBranches: BranchOption[] = isAdmin
+        ? branchOptions.filter((branch) =>
+            selectedBranchIds.includes(branch.id)
+            )
+        : isManager
+            ? branchOptions
+            : [];
+
+    const selectedCategory =
+        categories.find(
+            (category) => String(category.id) === formData.category_id
+        ) ?? null;
 
     const handleNextStep = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -446,10 +495,17 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                         maxMenuHeight={120}
                         menuPlacement="auto"
                         isMulti
-                        isSearchable
+                        isSearchable={isAdmin}
+                        isDisabled={
+                            !isAdmin ||
+                            branchesQuery.isPending ||
+                            branchesQuery.isFetching ||
+                            branchesQuery.isError
+                        }
+                        isLoading={isAdmin && branchesQuery.isFetching}
                         className={selectThemeVars}
                         styles={customStyles}
-                        options={branches}
+                        options={branchOptions}
                         getOptionLabel={(branch) => branch.name}
                         getOptionValue={(branch) => String(branch.id)}
                         value={selectedBranches}
