@@ -406,8 +406,8 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                             className={selectThemeVars}
                             styles={customStyles}
                             options={categories}
-                            getOptionLabel={(category: Category) => category.name}
-                            getOptionValue={(category: Category) => String(category.id)}
+                            getOptionLabel={(category) => category.name}
+                            getOptionValue={(category) => String(category.id)}
                             value={selectedCategory}
                             onChange={handleCategoryChange}
                             placeholder={t("fields.category.placeholder")}
@@ -450,8 +450,8 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                         className={selectThemeVars}
                         styles={customStyles}
                         options={branches}
-                        getOptionLabel={(branch: Branch) => branch.name}
-                        getOptionValue={(branch: Branch) => String(branch.id)}
+                        getOptionLabel={(branch) => branch.name}
+                        getOptionValue={(branch) => String(branch.id)}
                         value={selectedBranches}
                         onChange={handleBranchesChange}
                         placeholder={t("fields.branches.placeholder")}

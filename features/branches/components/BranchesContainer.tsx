@@ -6,6 +6,7 @@ import { Building2, LucideIcon, MapPin, UserCheck, Warehouse } from "lucide-reac
 import BranchCard from "./BranchCard";
 import { useTranslations } from "next-intl";
 import CreateBranchButton from "./CreateBranchButton";
+import { Branch } from "../types/branch";
 
 const BranchesContainer = () => {
   const t = useTranslations("Branches");
@@ -45,7 +46,7 @@ const BranchesContainer = () => {
                 ? `${branch.gerentes[0].name} ${branch.gerentes[0].last_name}`
                 : ""
             }
-            managerPhoto={branch.gerentes?.[0]?.foto_url || "/default_profile.webp"}
+            managerPhoto={branch.gerentes[0]?.foto_url || "/default_profile.webp"}
             photo={branch.foto_url}
             status={branch.status}
             direction={branch.direction}

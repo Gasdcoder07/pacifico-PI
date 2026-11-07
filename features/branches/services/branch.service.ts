@@ -1,5 +1,5 @@
 import { apiClient } from "@/shared/lib/axios";
-import { Branch, BranchResponse, DeleteBranchResponse, EditBranchPayload } from "../types/branch";
+import { BranchResponse, DeleteBranchResponse, EditBranchPayload } from "../types/branch";
 
 export interface CreateBranchPayload {
     name: string;
@@ -8,6 +8,12 @@ export interface CreateBranchPayload {
     contact_info?: string;
     foto_public_id?: string | null;
     foto_url?: string | null;
+}
+
+export interface BranchManager {
+  name: string;
+  last_name: string;
+  foto_url?: string;
 }
 
 export interface Branch {
@@ -23,7 +29,7 @@ export interface Branch {
     status: boolean
     created_at: string
     updated_at: string
-    gerentes: []
+    gerentes: BranchManager[]
 }
 
 export const getBranches = async (): Promise<Branch[]> => {
