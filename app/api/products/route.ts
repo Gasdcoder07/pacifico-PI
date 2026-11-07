@@ -201,8 +201,8 @@ export async function POST(request: Request) {
  * @swagger
  * /api/products:
  *   put:
- *     summary: Modificar un producto
- *     description: ADMIN puede modificar productos de su empresa. GERENTE también puede modificar productos de su empresa según su alcance. La modificación incluye nombre, descripción, precio, categoría e imagen.
+ *     summary: Modificar un producto y sus existencias
+ *     description: ADMIN puede modificar productos de su empresa. GERENTE también puede modificar productos de su empresa según su alcance. La modificación incluye nombre, descripción, precio, categoría, imagen y opcionalmente el inventario por sucursal.
  *     tags: [Productos]
  *     security:
  *       - BearerAuth: []
@@ -216,30 +216,36 @@ export async function POST(request: Request) {
  *             properties:
  *               product_id:
  *                 type: string
- *                 example: "25"
+ *                 example: "22"
  *               name:
  *                 type: string
- *                 example: Sabritas Sal 170g
+ *                 example: Jersey FC Barcelona Lionel Messi Final Champions League 2015
  *               description:
  *                 type: string
  *                 nullable: true
- *                 example: Papas fritas con sal
+ *                 example: Jersey del FC Barcelona utilizado durante la final de la Champions League 2015.
  *               price:
  *                 type: number
  *                 minimum: 0
- *                 example: 25.50
+ *                 example: 1800
  *               category_id:
  *                 type: string
- *                 example: "2"
+ *                 example: "3"
  *               foto_public_id:
  *                 type: string
  *                 nullable: true
  *               foto_url:
  *                 type: string
  *                 nullable: true
+ *                 example: data:image/webp;base64,...
+ *               branches:
+ *                 type: array
+ *                 description: Opcional. Lista de sucursales para actualizar o crear el inventario del producto.
+ *                 items:
+ *                   $ref: '#/components/schemas/ProductBranchAllocation'
  *     responses:
  *       200:
- *         description: Producto actualizado correctamente.
+ *         description: Producto e inventario actualizados correctamente.
  *       400:
  *         description: Datos no válidos.
  *       401:
@@ -258,6 +264,7 @@ export async function PUT(request: Request) {
     const body = await readBody(request);
 
     const productId = validId(body.product_id);
+    const branches = body.branches ? readAllocations(body.branches) : [];
 
     if (typeof body.name !== "string" || !body.name.trim()) {
       throw new HttpError(400, "El nombre del producto es obligatorio");
@@ -282,7 +289,6 @@ export async function PUT(request: Request) {
       }
     }
 
-    // Si se modifica la imagen, ambos campos deben enviarse juntos.
     if (
       (body.foto_public_id === undefined) !==
       (body.foto_url === undefined)
@@ -312,7 +318,6 @@ export async function PUT(request: Request) {
 
       const oldFotoPublicId = product.rows[0].foto_public_id;
 
-      // Si no se enviaron imágenes, conservar las actuales.
       const fotoPublicId =
         body.foto_public_id === undefined
           ? product.rows[0].foto_public_id
@@ -364,13 +369,50 @@ export async function PUT(request: Request) {
         ],
       );
 
+      const inventory = [];
+
+      if (branches.length > 0) {
+        await checkBranches(
+          client,
+          actor,
+          branches.map((item) => item.branch_id),
+        );
+
+        for (const branch of branches) {
+          const existingStock = await client.query(
+            `SELECT id FROM public.inventario 
+             WHERE product_id = $1 AND branch_id = $2 AND company_id = $3`,
+            [productId, branch.branch_id, actor.company_id]
+          );
+
+          if (existingStock.rows[0]) {
+            const updatedStock = await client.query(
+              `UPDATE public.inventario 
+               SET quantity = $1, min_stock = $2, updated_at = NOW() 
+               WHERE id = $3 
+               RETURNING *`,
+              [branch.quantity, branch.min_stock ?? 5, existingStock.rows[0].id]
+            );
+            inventory.push(updatedStock.rows[0]);
+          } else {
+            const newStock = await client.query(
+              `INSERT INTO public.inventario (company_id, branch_id, product_id, quantity, min_stock) 
+               VALUES ($1, $2, $3, $4, $5) 
+               RETURNING *`,
+              [actor.company_id, branch.branch_id, productId, branch.quantity, branch.min_stock ?? 5]
+            );
+            inventory.push(newStock.rows[0]);
+          }
+        }
+      }
+
       return {
         product: updatedProduct.rows[0],
         oldFotoPublicId,
+        inventory
       };
     });
 
-    // Eliminar la imagen anterior SOLO después de que la BD haya actualizado correctamente.
     if (
       result.oldFotoPublicId &&
       result.product.foto_public_id !== result.oldFotoPublicId
@@ -378,10 +420,6 @@ export async function PUT(request: Request) {
       try {
         await cloudinary.uploader.destroy(result.oldFotoPublicId);
       } catch (cloudinaryError) {
-        console.error(
-          "Error al eliminar la imagen anterior de Cloudinary:",
-          cloudinaryError,
-        );
       }
     }
 
@@ -389,6 +427,7 @@ export async function PUT(request: Request) {
       {
         success: "Producto actualizado correctamente",
         data: result.product,
+        inventory: result.inventory
       },
       { status: 200 },
     );
