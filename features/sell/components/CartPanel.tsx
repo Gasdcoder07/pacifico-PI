@@ -91,12 +91,15 @@ const CartPanel = () => {
     const { mutate: createSaleMutation, isPending } = useMutation({
         mutationFn: createSale,
 
-        onSuccess: (response) => {
+        onSuccess: async (response) => {
             console.log("Sale created: ", response);
             toast.success(t("saleCreated"));
 
-            queryClient.invalidateQueries({
+            await queryClient.invalidateQueries({
                 queryKey: ["products"]
+            });
+            await queryClient.invalidateQueries({
+                queryKey: ["getSales"]
             });
 
             clearCart();

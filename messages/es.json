@@ -589,7 +589,8 @@
   "SalesPage": {
     "title": "Ventas",
     "history": {
-      "subtitle": "Historial de ventas realizadas en la compañía.",
+      "subtitleManager": "Historial de ventas realizadas en la sucursal.",
+      "subtitleAdmin": "Historial de ventas realizadas en la compañía.",
       "sale": "Venta #{id}",
       "cashier": "Cajero: {name}",
       "ticketPdf": "Ticket (PDF)",
@@ -635,6 +636,11 @@
       "title": "Productos más vendidos",
       "units": "unidades",
       "soldLabel": "Vendidas"
+    },
+    "paymentMethod": {
+        "cash": "Efectivo",
+        "card": "Tarjeta",
+        "transfer": "Transferencia"
     }
   },
   "DeleteUserModal": {

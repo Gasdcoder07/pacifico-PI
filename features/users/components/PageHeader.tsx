@@ -16,8 +16,6 @@ const PageHeader = ({ currentUser } : PageHeaderProps) => {
     const isAdmin = role === 1;
     const isManager = role === 2;
 
-    console.log(currentUser);
-
     return (
         <div className="flex gap-2 justify-between items-center">
             <div className="flex flex-col gap-2">

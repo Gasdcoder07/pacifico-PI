@@ -589,7 +589,8 @@
   "SalesPage": {
     "title": "Sales",
     "history": {
-      "subtitle": "Sales history for the company.",
+      "subtitleManager": "Sales history for the branch.",
+      "subtitleAdmin": "Sales history for the company.",
       "sale": "Sale #{id}",
       "cashier": "Cashier: {name}",
       "ticketPdf": "Ticket (PDF)",
@@ -635,6 +636,11 @@
       "title": "Top Selling Products",
       "units": "units",
       "soldLabel": "Sold"
+    },
+    "paymentMethod": {
+        "cash": "Cash",
+        "card": "Card",
+        "transfer": "Transfer"
     }
   },
   "DeleteUserModal": {
