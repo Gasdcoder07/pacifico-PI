@@ -30,18 +30,13 @@ export async function POST(request: Request) {
       }
     );
 
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-    const redirectTo = `${baseUrl}/api/auth/callback?next=${encodeURIComponent('/reset-password')}`;
-
-    const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail, {
-      redirectTo,
-    });
+    const { error } = await supabase.auth.resetPasswordForEmail(normalizedEmail);
 
     if (error) throw error;
 
-    return NextResponse.json({ message: 'Correo de recuperación enviado exitosamente' });
+    return NextResponse.json({ message: 'Código de recuperación enviado exitosamente' });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'No se pudo enviar el correo de recuperación';
+    const message = error instanceof Error ? error.message : 'No se pudo enviar el código de recuperación';
     const status = typeof error === 'object' && error !== null && 'status' in error && typeof error.status === 'number'
       ? error.status
       : 500;
