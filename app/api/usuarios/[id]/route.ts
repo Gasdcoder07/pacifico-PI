@@ -149,6 +149,7 @@ export async function GET(
             `
             SELECT 
                 u.*,
+                e.foto_url as company_image,
                 CASE 
                     WHEN u.rol_id IN (1, 3) THEN e.name
                     ELSE s.name
