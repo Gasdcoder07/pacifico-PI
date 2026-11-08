@@ -26,7 +26,7 @@ const SellLayout = () => {
     return (
         <section className="flex h-full min-h-0 min-w-0 gap-4 overflow-hidden p-4">
             <div className={`flex flex-col gap-4 overflow-auto ${hasProducts ? 'basis-7/10' : 'w-full'} ${scrollbarStyles}`}>
-                { !isLoading && hasProducts && <ProductSearch/> }
+                { !isLoading && products.length > 0 && <ProductSearch/> }
 
                 <ProductCatalog
                     isCartPanelShowed={hasProducts}

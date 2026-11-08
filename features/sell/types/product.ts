@@ -27,6 +27,26 @@ export interface BranchProducts {
     productos: Product[];
 }
 
+export interface EditProductPayload {
+    product_id: string | number;
+    name: string;
+    description: string;
+    price: number;
+    category_id: number;
+    foto_url?: string;
+    branches: EditProductBranchPayload[];
+}
+
+export interface EditProductBranchPayload {
+    branch_id: string;
+    quantity: number;
+    min_stock?: number
+}
+
+export interface EditProductResponse {
+    success: string;
+}
+
 export interface DeleteProductResponse {
     success: string;
     product_id: number;

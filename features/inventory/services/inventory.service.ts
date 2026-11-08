@@ -13,6 +13,7 @@ export interface CreateProductPayload {
     price: number
     category_id: number
     foto_url: string
+    foto_public_id?: string | null,
     branches: ProductBranchAllocation[]
 }
 
@@ -29,10 +30,6 @@ export interface Category {
 export const createProduct = (data : CreateProductPayload) => {
     return apiClient.post("/api/products", data)
 }
-
-// export const deleteProduct = () => {
-//     return apiClient.delete
-// }
 
 export const getCategories = async () : Promise<Category[]> => {
     const response = await apiClient.get("/api/category")

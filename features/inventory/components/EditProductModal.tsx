@@ -1,7 +1,7 @@
 "use client";
 
 import { ModalLayout } from "@/shared/components/ModalLayout";
-import { useQueries } from "@tanstack/react-query";
+import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import Select, { MultiValue, SingleValue } from "react-select";
 import {
@@ -16,6 +16,7 @@ import { Branch } from "@/features/branches/types/branch";
 import { useTranslations } from "next-intl";
 import { Product } from "@/features/sell/types/product";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { editProduct } from "@/features/sell/services/product.service";
 
 interface EditProductModalProps {
   isOpen: boolean;
@@ -56,6 +57,7 @@ const scrollbarStyles =
 const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalProps) => {
   const t = useTranslations("InventoryPage.editProductModal");
     const { user: currentUser } = useAuth();
+    const queryClient = useQueryClient();
 
     const isAdmin = Number(currentUser?.rol_id) === 1;
     const isManager = Number(currentUser?.rol_id) === 2;
@@ -98,6 +100,24 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
     );
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const { mutate: mutateEditProduct, isPending } = useMutation({
+        mutationFn: editProduct,
+
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
+                queryKey: ["products"]
+            });
+
+            toast.success(t("notifications.success"))
+
+            handleClose();
+        },
+
+        onError: (e) => {
+            toast.error(t("notifications.error"));
+        }
+    });
 
   const [branchesQuery, categoriesQuery] = useQueries({
     queries: [
@@ -324,6 +344,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
             category_id: Number(formData.category_id),
             branches: branchesPayload,
             foto_url: formData.foto_url,
+            foto_public_id: null,
         };
     };
 
@@ -336,7 +357,8 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
 
     if (!payload) return;
 
-    console.log("Edit product payload:", payload);
+    // console.log("Edit product payload:", payload);
+    mutateEditProduct(payload)
   };
 
   return (
@@ -592,6 +614,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
         <div className="flex justify-end items-center gap-4">
             <button
             type="button"
+            disabled={isPending}
             onClick={currentStep === 1 ? handleClose : handlePreviousStep}
             className="cursor-pointer disabled:cursor-not-allowed rounded-lg border border-neutral-200 dark:border-slate-800 px-4 py-2 text-neutral-600 dark:text-slate-400 transition-colors duration-200 ease-in-out hover:bg-neutral-50 dark:hover:bg-slate-800 disabled:opacity-50"
             >
@@ -611,9 +634,12 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                     <button
                     key="edit-product"
                     type="submit"
-                    className="rounded-lg px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out cursor-pointer bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500"
-                    >
-                        {t("actions.submit")}
+                    className={`rounded-lg px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out ${isPending
+                        ? "cursor-not-allowed bg-neutral-400 dark:bg-slate-700 dark:text-slate-500"
+                        : "cursor-pointer bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500"
+                    }`}
+                    >   
+                        { isPending ? t("actions.submitting") : t("actions.submit") }
                     </button>
                 )
             }
