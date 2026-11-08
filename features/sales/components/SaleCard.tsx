@@ -17,6 +17,7 @@ import { motion } from "framer-motion";
 import { useFormatter, useTranslations } from "next-intl";
 import { useState } from "react";
 import { getSaleTicket } from "../services/sales.services";
+import { useSaleTicket } from "../hooks/useSaleTicket";
 
 interface SaleCardProps {
     sale: Sale;
@@ -24,6 +25,8 @@ interface SaleCardProps {
 
 export const SaleCard = ({ sale }: SaleCardProps) => {
     const t = useTranslations("SalesPage.history");
+    const { viewTicket, isLoading } = useSaleTicket();
+
     const format = useFormatter();
 
     const date = format.dateTime(new Date(sale.sale_date), {
@@ -38,60 +41,6 @@ export const SaleCard = ({ sale }: SaleCardProps) => {
         style: "percent",
         maximumFractionDigits: 0,
     });
-
-    const [isLoadingTicket, setIsLoadingTicket] = useState(false);
-
-    const handleViewTicket = async () => {
-        const pdfTab = window.open("about:blank", "_blank");
-
-        if (!pdfTab) {
-            // toast.error("No se pudo abrir el PDF");
-            return;
-        }
-
-        pdfTab.opener = null;
-
-        pdfTab.document.title = "Pacífico - Ticket PDF";
-
-        pdfTab.document.body.innerHTML = `
-            <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:#f8fafc;font-family:system-ui,sans-serif;color:#0f172a;">
-                <div style="width:42px;height:42px;border:3px solid #cffafe;border-top-color:#06b6d4;border-radius:50%;animation:spin .8s linear infinite;"></div>
-                <h2 style="margin:0;font-size:20px;">Preparando comprobante</h2>
-                <p style="margin:0;color:#64748b;font-size:14px;">Tu ticket se abrirá automáticamente.</p>
-            </div>
-            <style>
-                body { margin:0; }
-                @keyframes spin { to { transform:rotate(360deg); } }
-            </style>
-        `;
-
-        setIsLoadingTicket(true);
-
-        try {
-            const pdf = await getSaleTicket(sale.id);
-
-            const pdfBlob = new Blob([pdf], {
-            type: "application/pdf",
-            });
-
-            const pdfUrl = URL.createObjectURL(pdfBlob);
-
-            pdfTab.location.href = pdfUrl;
-
-            setTimeout(() => {
-            URL.revokeObjectURL(pdfUrl);
-            }, 5 * 60 * 1000);
-
-        } catch (error) {
-            console.error("Error al obtener el ticket:", error);
-
-            pdfTab.close();
-
-            // toast.error("Ocurrió un error al generar el ticket PDF");
-        } finally {
-            setIsLoadingTicket(false);
-        }
-    };
 
     return (
         <article className="flex rounded-lg border border-neutral-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -153,8 +102,8 @@ export const SaleCard = ({ sale }: SaleCardProps) => {
                 <div className="flex min-w-0 flex-col gap-4">
                     <div className="flex justify-end">
                         <motion.button
-                            whileHover={!isLoadingTicket ? { scale: 1.02 } : undefined}
-                            whileTap={!isLoadingTicket ? { scale: 0.95 } : undefined}
+                            whileHover={!isLoading ? { scale: 1.02 } : undefined}
+                            whileTap={!isLoading ? { scale: 0.95 } : undefined}
                             transition={{
                                 type: "spring",
                                 stiffness: 300,
@@ -162,12 +111,12 @@ export const SaleCard = ({ sale }: SaleCardProps) => {
                                 duration: 0.2,
                                 ease: "easeInOut",
                             }}
-                            onClick={handleViewTicket}
-                            disabled={isLoadingTicket}
+                            onClick={() => viewTicket(sale.id)}
+                            disabled={isLoading}
                             type="button"
                             className="inline-flex w-fit cursor-pointer items-center justify-center gap-2 rounded-full border border-red-100 bg-red-50 px-3.5 py-1.5 text-xs font-semibold text-red-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-400">
                                 {
-                                    isLoadingTicket ? (
+                                    isLoading ? (
                                         <LoaderCircle size={16} className="shrink-0 animate-spin transition-all duration-200 ease-in-out" />
                                     ) : (
                                         <FileText size={16} className="shrink-0" />

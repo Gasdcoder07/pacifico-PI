@@ -641,6 +641,11 @@
         "cash": "Cash",
         "card": "Card",
         "transfer": "Transfer"
+    },
+    "voucher": {
+        "title": "Preparing receipt",
+        "subtitle": "Your ticket will open automatically.",
+        "ticketError": "Unable to open the PDF ticket"
     }
   },
   "DeleteUserModal": {
