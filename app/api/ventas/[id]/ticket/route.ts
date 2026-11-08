@@ -291,7 +291,7 @@ export async function GET(
 
     escribirTotal("Subtotal:", venta.subtotal);
     escribirTotal(
-        `IVA (${Number(venta.tax_rate)}%):`,
+        `IVA (${Number(venta.tax_rate) * 100}%):`,
         venta.tax_amount
     );
     escribirTotal("TOTAL:", venta.total, true);

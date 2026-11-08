@@ -111,7 +111,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const response = await pool.query(`SELECT * FROM categorias where company_id = $1;`, [
+    const response = await pool.query(`SELECT id,company_id,name,description,admin_id FROM categorias where company_id = $1;`, [
       currentUser.company_id,
     ]);
 

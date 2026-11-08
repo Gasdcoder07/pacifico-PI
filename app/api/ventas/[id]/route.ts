@@ -1,3 +1,4 @@
+
 import { pool } from "@/shared/lib/db";
 import { supabase } from "@/shared/lib/supabase";
 import { NextResponse } from "next/server";
@@ -6,8 +7,8 @@ import { NextResponse } from "next/server";
  * @swagger
  * /api/ventas/{id}:
  *   get:
- *     summary: Obtener una venta por ID
- *     description: Consulta la base de datos y devuelve los detalles de una venta específica usando su ID. Requiere autenticación mediante token JWT.
+ *     summary: Obtener una venta completa por ID
+ *     description: Obtiene los datos generales, cajero, sucursal, método de pago e información de los productos.
  *     tags:
  *       - Ventas
  *     security:
@@ -16,122 +17,222 @@ import { NextResponse } from "next/server";
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID único de la venta a consultar
  *         schema:
  *           type: integer
- *           example: 37
  *     responses:
  *       200:
- *         description: Datos de la venta recibidos con éxito.
+ *         description: Venta encontrada.
  *       400:
- *         description: El ID proporcionado no es válido.
+ *         description: ID inválido.
  *       401:
- *         description: Sesión expirada o token inválido.
+ *         description: Token inválido.
+ *       403:
+ *         description: Sin permisos para consultar la venta.
  *       404:
- *         description: No existe una venta con ese ID.
+ *         description: Venta no encontrada.
  *       500:
- *         description: Error interno en el servidor.
+ *         description: Error interno.
  */
+
 export async function GET(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        // 1. Autenticación
         const authHeader = request.headers.get("Authorization");
 
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        if (!authHeader?.startsWith("Bearer ")) {
             return NextResponse.json(
-                { error: "No autorizado. Falta el token de sesión" },
+                { error: "Token de autorización requerido" },
                 { status: 401 }
             );
         }
 
-        const token = authHeader.split(" ")[1];
+        const token = authHeader.slice(7).trim();
 
         const {
-            data: { user: authUser },
+            data: { user },
             error: authError
         } = await supabase.auth.getUser(token);
 
-        if (authError || !authUser) {
+        if (authError || !user) {
             return NextResponse.json(
-                { error: "Sesión expirada o token inválido" },
+                { error: "Sesión inválida o expirada" },
                 { status: 401 }
             );
         }
 
-        const resolvedParams = await params;
-        const ventaId = parseInt(resolvedParams.id, 10);
+        // 2. Validar ID
+        const { id } = await params;
 
-        if (isNaN(ventaId)) {
+        if (!/^[1-9]\d*$/.test(id)) {
             return NextResponse.json(
-                { error: "Has ingresado un parámetro que no es un número" },
+                { error: "ID de venta inválido" },
                 { status: 400 }
             );
         }
 
-        const response = await pool.query(
+        // 3. Obtener usuario y permisos
+        const userResult = await pool.query(
+            `SELECT id, rol_id, branch_id, company_id
+            FROM public.usuarios
+            WHERE auth_user_id = $1
+                AND status = true`,
+            [user.id]
+        );
+
+        const usuario = userResult.rows[0];
+
+        if (!usuario) {
+            return NextResponse.json(
+                { error: "Usuario no encontrado o inactivo" },
+                { status: 403 }
+            );
+        }
+
+        const rol = Number(usuario.rol_id);
+
+        if (![1, 2, 3].includes(rol)) {
+            return NextResponse.json(
+                { error: "No tienes permisos para consultar ventas" },
+                { status: 403 }
+            );
+        }
+
+        let branchScope: number | null = null;
+
+        if (rol !== 1) {
+            branchScope = Number(usuario.branch_id);
+
+            if (
+                !Number.isSafeInteger(branchScope) ||
+                branchScope <= 0
+            ) {
+                return NextResponse.json(
+                    { error: "El usuario no tiene una sucursal asignada" },
+                    { status: 403 }
+                );
+            }
+        }
+
+        // 4. Obtener venta y productos en una sola consulta
+        const result = await pool.query(
             `
             SELECT
+                v.id,
+                v.company_id,
+                v.branch_id,
+
+                s.name AS sucursal,
+
+                v.cashier_id,
+
+                NULLIF(
+                    TRIM(CONCAT_WS(' ', u.name, u.last_name)),
+                    ''
+                ) AS cajero,
+
+                v.payment_method_id,
+                mp.name AS metodo_pago,
+
+                v.sale_date,
+                v.created_at,
+
+                v.subtotal,
+                v.tax_rate,
+                v.tax_amount,
+                v.total,
+
+                COALESCE(
+                    jsonb_agg(
+                        jsonb_build_object(
+                            'product_id', dv.product_id,
+                            'producto', p.name,
+                            'codigo', p.code,
+                            'quantity', dv.quantity,
+                            'unit_price', dv.unit_price,
+                            'subtotal', dv.subtotal
+                        )
+                        ORDER BY dv.id
+                    ) FILTER (WHERE dv.id IS NOT NULL),
+                    '[]'::jsonb
+                ) AS productos
+
+            FROM ventas v
+
+            LEFT JOIN sucursales s
+                ON s.id = v.branch_id
+                AND s.company_id = v.company_id
+
+            LEFT JOIN public.usuarios u
+                ON u.id = v.cashier_id
+
+            LEFT JOIN metodos_pago mp
+                ON mp.id = v.payment_method_id
+
+            LEFT JOIN detalle_ventas dv
+                ON dv.sale_id = v.id
+                AND dv.company_id = v.company_id
+
+            LEFT JOIN productos p
+                ON p.id = dv.product_id
+                AND p.company_id = v.company_id
+
+            WHERE v.id = $1
+                AND v.company_id = $2
+                AND ($3::bigint IS NULL OR v.branch_id = $3)
+
+            GROUP BY
                 v.id,
                 v.company_id,
                 v.branch_id,
                 v.cashier_id,
                 v.payment_method_id,
                 v.sale_date,
+                v.created_at,
                 v.subtotal,
                 v.tax_rate,
                 v.tax_amount,
                 v.total,
-                v.created_at
-            FROM ventas v
-            WHERE v.id = $1;
+                s.name,
+                u.name,
+                u.last_name,
+                mp.name
             `,
-            [ventaId]
+            [id, usuario.company_id, branchScope]
         );
 
-        const venta = response.rows[0];
+        const venta = result.rows[0];
 
         if (!venta) {
             return NextResponse.json(
-                { error: "No existe una venta con ese ID" },
+                { error: "Venta no encontrada" },
                 { status: 404 }
             );
         }
 
-        const detalleResponse = await pool.query(
-            `
-            SELECT
-                dv.product_id,
-                p.name AS producto,
-                p.code,
-                dv.quantity,
-                dv.unit_price,
-                dv.subtotal
-            FROM detalle_ventas dv
-            LEFT JOIN productos p ON p.id = dv.product_id
-            WHERE dv.sale_id = $1
-            ORDER BY dv.product_id;
-            `,
-            [ventaId]
-        );
-
         return NextResponse.json(
             {
-                message: "Datos de la venta recibidos con éxito",
+                message: "Venta obtenida correctamente",
                 data: {
                     ...venta,
-                    productos: detalleResponse.rows
+                    ticket_url: `/api/ventas/${venta.id}/ticket`
                 }
             },
-            { status: 200 }
+            {
+                status: 200,
+                headers: {
+                    "Cache-Control": "private, no-store"
+                }
+            }
         );
 
-    } catch (err) {
-        console.error("Error en GET /api/ventas/[id]:", err);
+    } catch (error) {
+        console.error("Error en GET /api/ventas/[id]:", error);
 
         return NextResponse.json(
-            { error: "Error interno en el servidor" },
+            { error: "Error interno al consultar la venta" },
             { status: 500 }
         );
     }
