@@ -1,6 +1,7 @@
 import { pool } from "@/shared/lib/db";
 import { supabase, supabaseAdmin } from "@/shared/lib/supabase";
 import { NextResponse } from "next/server";
+import {uploadCloudinaryImage,CloudinaryImageError} from "@/shared/utils/cloudinary-upload";
 import cloudinary from "@/shared/lib/cloudinary";
 
 /**
@@ -148,7 +149,13 @@ export async function GET(
         const response = await pool.query(
             `
             SELECT 
-                u.*,
+                u.id,
+                u.name,
+                u.last_name,
+                u.email,
+                u.rol_id,
+                u.branch_id,
+                u.status,
                 e.foto_url as company_image,
                 CASE 
                     WHEN u.rol_id IN (1, 3) THEN e.name
@@ -205,7 +212,7 @@ export async function GET(
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -300,10 +307,13 @@ export async function GET(
  *                   type: string
  *                   example: "Error interno en el servidor"
  */
+
 export async function PUT(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    let newFotoPublicId: string | null = null;
+
     try {
         const authHeader = request.headers.get("Authorization");
 
@@ -316,7 +326,10 @@ export async function PUT(
 
         const token = authHeader.split(" ")[1];
 
-        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token);
+        const {
+            data: { user: authUser },
+            error: authError,
+        } = await supabase.auth.getUser(token);
 
         if (authError || !authUser) {
             return NextResponse.json(
@@ -326,7 +339,9 @@ export async function PUT(
         }
 
         const currentUserQuery = await pool.query(
-            `SELECT id, rol_id, branch_id FROM usuarios WHERE auth_user_id = $1`,
+            `SELECT id, rol_id, branch_id
+                FROM public.usuarios
+                WHERE auth_user_id = $1`,
             [authUser.id]
         );
 
@@ -342,20 +357,22 @@ export async function PUT(
         const resolvedParams = await params;
         const userId = parseInt(resolvedParams.id, 10);
 
-        if (isNaN(userId)) {
+        if (!Number.isInteger(userId) || userId <= 0) {
             return NextResponse.json(
-                { error: "Has ingresado un parámetro que no es un número" },
+                { error: "Has ingresado un parámetro que no es válido" },
                 { status: 400 }
             );
         }
 
         const targetUserQuery = await pool.query(
-            `SELECT id, rol_id, branch_id FROM usuarios WHERE id = $1`,
+            `SELECT id, rol_id, branch_id, foto_public_id
+                FROM public.usuarios
+                WHERE id = $1`,
             [userId]
         );
-        
+
         const targetUser = targetUserQuery.rows[0];
-        
+
         if (!targetUser) {
             return NextResponse.json(
                 { error: "No existe un usuario con ese ID" },
@@ -363,6 +380,7 @@ export async function PUT(
             );
         }
 
+        // Validar permisos
         if (Number(currentUser.id) !== userId) {
             if (Number(currentUser.rol_id) === 3) {
                 return NextResponse.json(
@@ -374,24 +392,94 @@ export async function PUT(
             if (Number(currentUser.rol_id) === 2) {
                 if (Number(targetUser.rol_id) !== 3) {
                     return NextResponse.json(
-                        { error: "Como gerente (rol 2) solo puedes editar a usuarios con rol 3" },
+                        { error: "Como gerente solo puedes editar usuarios con rol 3" },
                         { status: 403 }
                     );
                 }
 
-                if (targetUser.branch_id !== currentUser.branch_id) {
+                if (Number(targetUser.branch_id) !== Number(currentUser.branch_id)) {
                     return NextResponse.json(
-                        { error: "Solo puedes editar usuarios que pertenezcan a tu misma sucursal" },
+                        { error: "Solo puedes editar usuarios de tu misma sucursal" },
                         { status: 403 }
                     );
                 }
             }
         }
 
-        const body = await request.json();
+        // Leer JSON o FormData
+        const contentType = request.headers.get("content-type") ?? "";
 
+        let body: Record<string, unknown>;
+        let fotoFile: FormDataEntryValue | null = null;
+
+        if (contentType.includes("multipart/form-data")) {
+            const formData = await request.formData();
+
+            fotoFile = formData.get("foto");
+
+            body = Object.fromEntries(
+                Array.from(formData.entries()).filter(
+                    ([key]) => key !== "foto"
+                )
+            );
+        } else {
+            body = await request.json();
+        }
+
+        // No permitir modificar directamente los datos de Cloudinary
+        if (
+            body.foto_url !== undefined ||
+            body.foto_public_id !== undefined
+        ) {
+            return NextResponse.json(
+                { error: "La imagen debe enviarse mediante el campo foto" },
+                { status: 400 }
+            );
+        }
+
+        // Validar y convertir campos numéricos de FormData
+        const numericFields = [
+            "rol_id",
+            "branch_id",
+            "admin_id",
+            "manager_id",
+        ];
+
+        for (const field of numericFields) {
+            if (typeof body[field] === "string") {
+                const value = body[field] as string;
+
+                if (value === "" || value === "null") {
+                    body[field] = null;
+                } else {
+                    const parsed = Number(value);
+
+                    if (!Number.isInteger(parsed)) {
+                        return NextResponse.json(
+                            { error: `${field} debe ser un número entero` },
+                            { status: 400 }
+                        );
+                    }
+
+                    body[field] = parsed;
+                }
+            }
+        }
+
+        if (typeof body.status === "string") {
+            if (body.status !== "true" && body.status !== "false") {
+                return NextResponse.json(
+                    { error: "status debe ser true o false" },
+                    { status: 400 }
+                );
+            }
+
+            body.status = body.status === "true";
+        }
+
+        // Validar modificación de rol
         if (body.rol_id !== undefined) {
-            const newRolId = parseInt(body.rol_id, 10);
+            const newRolId = Number(body.rol_id);
 
             if (Number(currentUser.id) === userId) {
                 return NextResponse.json(
@@ -402,7 +490,7 @@ export async function PUT(
 
             if (Number(currentUser.rol_id) !== 1) {
                 return NextResponse.json(
-                    { error: "No tienes permiso de modificar el rol_id dado que no eres administrador" },
+                    { error: "No tienes permiso para modificar el rol_id" },
                     { status: 403 }
                 );
             }
@@ -415,17 +503,15 @@ export async function PUT(
             }
         }
 
-        const allowedFields = <string[]>[
+        const allowedFields = [
             "name",
             "last_name",
             "email",
             "status",
-            "foto_url",
-            "foto_public_id",
             "rol_id",
             "branch_id",
             "admin_id",
-            "manager_id"
+            "manager_id",
         ];
 
         const updates: string[] = [];
@@ -440,6 +526,24 @@ export async function PUT(
             }
         }
 
+        // Subir imagen si se recibió una
+        const uploadedImage = await uploadCloudinaryImage(
+            fotoFile,
+            `usuarios/${userId}`
+        );
+
+        if (uploadedImage) {
+            newFotoPublicId = uploadedImage.foto_public_id;
+
+            updates.push(`foto_url = $${paramIndex}`);
+            values.push(uploadedImage.foto_url);
+            paramIndex++;
+
+            updates.push(`foto_public_id = $${paramIndex}`);
+            values.push(uploadedImage.foto_public_id);
+            paramIndex++;
+        }
+
         if (updates.length === 0) {
             return NextResponse.json(
                 { error: "No se enviaron campos válidos para actualizar" },
@@ -447,20 +551,47 @@ export async function PUT(
             );
         }
 
-        updates.push(`updated_at = NOW()`);
+        updates.push("updated_at = NOW()");
 
         values.push(userId);
-        const whereIndex = paramIndex;
 
-        const query = `
-            UPDATE usuarios
+        const response = await pool.query(
+            `
+            UPDATE public.usuarios
             SET ${updates.join(", ")}
-            WHERE id = $${whereIndex}
-            RETURNING *;
-        `;
+            WHERE id = $${paramIndex}
+            RETURNING
+                id, name, last_name, email, rol_id,
+                branch_id, status, foto_url, foto_public_id,
+                admin_id, manager_id, company_id, updated_at
+            `,
+            values
+        );
 
-        const response = await pool.query(query, values);
         const updatedUser = response.rows[0];
+
+        if (!updatedUser) {
+            return NextResponse.json(
+                { error: "No existe un usuario con ese ID" },
+                { status: 404 }
+            );
+        }
+
+        // Eliminar imagen anterior después de actualizar PostgreSQL
+        if (
+            newFotoPublicId &&
+            targetUser.foto_public_id &&
+            targetUser.foto_public_id !== newFotoPublicId
+        ) {
+            try {
+                await cloudinary.uploader.destroy(targetUser.foto_public_id);
+            } catch (cloudinaryError) {
+                console.error(
+                    "Error al eliminar la imagen anterior:",
+                    cloudinaryError
+                );
+            }
+        }
 
         return NextResponse.json(
             {
@@ -469,15 +600,32 @@ export async function PUT(
             },
             { status: 200 }
         );
-    } catch (err) {
+
+    } catch (err: unknown) {
         console.error("Error en PUT /api/usuarios/[id]:", err);
+
+        // Limpiar imagen nueva si ocurrió un error al actualizar PostgreSQL
+        if (newFotoPublicId) {
+            try {
+                await cloudinary.uploader.destroy(newFotoPublicId);
+            } catch (cleanupError) {
+                console.error("Error al limpiar imagen de Cloudinary:", cleanupError);
+            }
+        }
+
+        if (err instanceof CloudinaryImageError) {
+            return NextResponse.json(
+                { error: err.message },
+                { status: err.status }
+            );
+        }
+
         return NextResponse.json(
             { error: "Error interno en el servidor" },
             { status: 500 }
         );
     }
 }
-
 /**
  * @swagger
  * /api/usuarios/{id}:
