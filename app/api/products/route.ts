@@ -383,10 +383,10 @@ export async function PUT(request: Request) {
     const result = await transaction(async (client) => {
       const product = await client.query(
         `SELECT id, foto_public_id, foto_url
-         FROM public.productos
-         WHERE id = $1
-           AND company_id = $2
-         FOR UPDATE`,
+          FROM public.productos
+          WHERE id = $1
+            AND company_id = $2
+          FOR UPDATE`,
         [productId, actor.company_id],
       );
 
@@ -398,10 +398,10 @@ export async function PUT(request: Request) {
 
       const category = await client.query(
         `SELECT id
-         FROM public.categorias
-         WHERE id = $1
-           AND company_id = $2
-         FOR SHARE`,
+          FROM public.categorias
+          WHERE id = $1
+            AND company_id = $2
+          FOR SHARE`,
         [categoryId, actor.company_id],
       );
 
