@@ -1,9 +1,9 @@
 {
   "Register": {
     "title": "Crea tu cuenta",
-    "subtitle": "Completa tus datos para comenzar a gestionar tu negocio.",
-    "heroTitle": "Todo tu negocio, bajo control.",
-    "heroSubtitle": "Gestiona tus sucursales, ventas e inventario de forma simple y eficiente.",
+    "subtitle": "Completa tus datos para comenzar",
+    "heroTitle": "Empieza a gestionar tu negocio",
+    "heroSubtitle": "Registra tu empresa y controla tus sucursales, ventas e inventario desde un solo lugar.",
     "name": "Nombre",
     "lastName": "Apellido",
     "email": "Email",
@@ -599,10 +599,10 @@
       "pdfPending": "La integración del ticket PDF está pendiente para la venta #{id}."
     },
     "metrics": {
-      "totalSales": "Ventas Totales",
+      "totalSales": "Ventas totales",
       "transactions": "Transacciones",
-      "averageTicket": "Ticket Promedio",
-      "productsSold": "Productos Vendidos"
+      "averageTicket": "Ticket promedio",
+      "productsSold": "Productos vendidos"
     },
     "months": {
       "jan": "Ene",
@@ -706,5 +706,19 @@
   "readyMessage": "¡Entonces estarás listo para administrar!",
   "cta": "Empezar"
 }
-  }
+  },
+  "Metadata": {
+    "description": "Sistema de punto de venta e inventario para negocios con varias sucursales",
+    "home": "Pacífico | Punto de venta para tu negocio",
+    "homeDescription": "Gestiona tus sucursales, ventas e inventario desde un solo lugar.",
+    "login": "Iniciar sesión",
+    "register": "Crear cuenta",
+    "sell": "Vender",
+    "sales": "Ventas",
+    "dashboard": "Dashboard",
+    "inventory": "Inventario",
+    "branches": "Sucursales",
+    "users": "Usuarios",
+    "settings": "Ajustes"
+}
 }
