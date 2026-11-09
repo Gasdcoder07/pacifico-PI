@@ -51,7 +51,7 @@ const ProductCard = ({ product } : ProductCardProps) => {
                 </div>
 
                 <div className="flex justify-between items-center mt-2">
-                    <span className="text-sm font-bold text-neutral-900 dark:text-white">
+                    <span className="group-hover:opacity-0 opacity-100 transition-all duration-200 ease-in-out text-sm font-bold text-neutral-900 dark:text-white">
                         ${product.price}
                     </span>
 

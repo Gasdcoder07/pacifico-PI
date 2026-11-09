@@ -92,38 +92,62 @@ import cloudinary from "@/shared/lib/cloudinary";
  *       500:
  *         description: Error interno.
  */
+
 export async function POST(request: Request) {
+  let uploadedPublicId: string | null = null;
+
   try {
     const actor = await getActor(request, [1, 2]);
-    const body = await readBody(request);
+    const formData = await request.formData();
 
-    if (typeof body.name !== "string" || !body.name.trim()) {
+    const name = formData.get("name");
+    const categoryId = validId(formData.get("category_id"));
+    const branchesValue = formData.get("branches");
+    const price = formData.get("price");
+    const description = formData.get("description");
+    const image = formData.get("image");
+
+    if (typeof name !== "string" || !name.trim()) {
       throw new HttpError(400, "El nombre del producto es obligatorio");
     }
 
-    const name = body.name.trim();
-    const categoryId = validId(body.category_id);
-    const branches = readAllocations(body.branches);
-
     if (
-      !["number", "string"].includes(typeof body.price) ||
-      !/^\d{1,10}(\.\d{1,2})?$/.test(String(body.price))
+      typeof price !== "string" ||
+      !/^\d{1,10}(\.\d{1,2})?$/.test(price)
     ) {
       throw new HttpError(400, "El precio debe ser no negativo y tener máximo dos decimales");
     }
 
-    for (const field of ["description", "foto_url", "foto_public_id"]) {
-      if (body[field] != null && typeof body[field] !== "string") {
-        throw new HttpError(400, `El campo ${field} debe ser texto`);
+    if (typeof branchesValue !== "string") {
+      throw new HttpError(400, "Las sucursales son obligatorias");
+    }
+
+    const branches = readAllocations(JSON.parse(branchesValue));
+
+    if (description !== null && typeof description !== "string") {
+      throw new HttpError(400, "La descripción debe ser texto");
+    }
+
+    if (image !== null && !(image instanceof File)) {
+      throw new HttpError(400, "El archivo de imagen no es válido");
+    }
+
+    if (image instanceof File) {
+      if (!image.type.startsWith("image/")) {
+        throw new HttpError(400, "El archivo debe ser una imagen");
+      }
+
+      if (image.size > 5 * 1024 * 1024) {
+        throw new HttpError(400, "La imagen no debe superar los 5 MB");
       }
     }
 
     const result = await transaction(async (client) => {
       const category = await client.query(
         `SELECT id
-                FROM public.categorias
-                WHERE id = $1 AND company_id = $2
-                FOR SHARE`,
+          FROM public.categorias
+          WHERE id = $1 AND company_id = $2
+          FOR SHARE`,
         [categoryId, actor.company_id],
       );
 
@@ -137,29 +161,56 @@ export async function POST(request: Request) {
         branches.map((item) => item.branch_id),
       );
 
+      let fotoUrl: string | null = null;
+      let fotoPublicId: string | null = null;
+
+      if (image instanceof File && image.size > 0) {
+        const buffer = Buffer.from(await image.arrayBuffer());
+
+        const uploaded = await new Promise<{ secure_url: string; public_id: string }>(
+          (resolve, reject) => {
+            cloudinary.uploader.upload_stream(
+              {
+                folder: "productos",
+                resource_type: "image",
+              },
+              (error, result) => {
+                if (error || !result) {
+                  reject(error ?? new Error("Error al subir la imagen"));
+                  return;
+                }
+
+                resolve({
+                  secure_url: result.secure_url,
+                  public_id: result.public_id,
+                });
+              },
+            ).end(buffer);
+          },
+        );
+
+        fotoUrl = uploaded.secure_url;
+        fotoPublicId = uploaded.public_id;
+        uploadedPublicId = uploaded.public_id;
+      }
+
       const adminId = actor.rol_id === 1 ? actor.id : actor.admin_id;
 
       const product = await client.query(
         `INSERT INTO public.productos (
-            company_id, 
-            name, 
-            description, 
-            price,
-            category_id, 
-            foto_public_id, 
-            foto_url, 
-            admin_id
+          company_id, name, description, price,
+          category_id, foto_public_id, foto_url, admin_id
         )
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-          RETURNING *`,
+        RETURNING *`,
         [
           actor.company_id,
-          name,
-          body.description ?? null,
-          body.price,
+          name.trim(),
+          description ?? null,
+          price,
           categoryId,
-          body.foto_public_id ?? null,
-          body.foto_url ?? null,
+          fotoPublicId,
+          fotoUrl,
           adminId,
         ],
       );
@@ -169,10 +220,10 @@ export async function POST(request: Request) {
       for (const branch of branches) {
         const stock = await client.query(
           `INSERT INTO public.inventario (
-                        company_id, branch_id, product_id, quantity, min_stock
-                    )
-                    VALUES ($1, $2, $3, $4, $5)
-                     RETURNING *`,
+            company_id, branch_id, product_id, quantity, min_stock
+          )
+          VALUES ($1, $2, $3, $4, $5)
+          RETURNING *`,
           [
             actor.company_id,
             branch.branch_id,
@@ -193,6 +244,10 @@ export async function POST(request: Request) {
       { status: 201 },
     );
   } catch (error) {
+    if (uploadedPublicId) {
+      await cloudinary.uploader.destroy(uploadedPublicId).catch(() => {});
+    }
+
     return apiError(error);
   }
 }

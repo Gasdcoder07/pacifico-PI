@@ -99,6 +99,7 @@ export async function POST(request: Request) {
         const queryDB = `
             SELECT
                 u.*,
+                e.foto_url as company_image,
                 CASE
                     WHEN u.rol_id IN (1, 2, 3) THEN e.name
                     ELSE s.name

@@ -4,11 +4,7 @@ type RetryRequestConfig = InternalAxiosRequestConfig & {
     _retry?: boolean;
 };
 
-export const apiClient = axios.create({
-    headers: {
-        "Content-Type": "application/json",
-    },
-});
+export const apiClient = axios.create({});
 
 let isRefreshing = false;
 let failedQueue: Array<{
