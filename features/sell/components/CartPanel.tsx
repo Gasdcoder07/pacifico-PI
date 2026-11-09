@@ -12,6 +12,7 @@ import { PaymentMethod } from "@/features/sales/types/payment-methods";
 import { PaymentMethodModal } from "./PaymentMethodModal";
 import { createSale } from "../services/sales.service";
 import { SalePayload } from "../types/sale";
+import { downloadSaleTicket } from "@/features/sales/utils/downloadSaleTicket";
 
 // Subcomponente de Input con estado local para edición fluida
 interface QuantityInputProps {
@@ -92,18 +93,26 @@ const CartPanel = () => {
         mutationFn: createSale,
 
         onSuccess: async (response) => {
-            console.log("Sale created: ", response);
-            toast.success(t("saleCreated"));
+            // console.log("Sale created: ", response);
+            const saleId = response.venta.id;
 
-            await queryClient.invalidateQueries({
-                queryKey: ["products"]
-            });
-            await queryClient.invalidateQueries({
-                queryKey: ["getSales"]
-            });
+            toast.success(t("saleCreated"));
 
             clearCart();
             setShowPaymentMethod(false);
+
+            void queryClient.invalidateQueries({
+                queryKey: ["products"]
+            });
+            void queryClient.invalidateQueries({
+                queryKey: ["getSales"]
+            });
+
+            try {
+                await downloadSaleTicket(saleId);
+            } catch {
+                return;
+            }
         },
 
         onError: (e) => {

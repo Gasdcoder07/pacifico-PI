@@ -597,7 +597,11 @@
       "subtotal": "Subtotal",
       "vat": "IVA ({rate})",
       "total": "Total",
-      "pdfPending": "La integración del ticket PDF está pendiente para la venta #{id}."
+      "pdfPending": "La integración del ticket PDF está pendiente para la venta #{id}.",
+      "emptyState": {
+        "title": "Aún no hay ventas registradas",
+        "description": "Las ventas que realices aparecerán aquí para que puedas consultar sus detalles y descargar sus comprobantes."
+    }
     },
     "metrics": {
       "totalSales": "Ventas Totales",

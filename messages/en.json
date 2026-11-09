@@ -597,7 +597,11 @@
       "subtotal": "Subtotal",
       "vat": "VAT ({rate})",
       "total": "Total",
-      "pdfPending": "PDF ticket integration is pending for sale #{id}."
+      "pdfPending": "PDF ticket integration is pending for sale #{id}.",
+      "emptyState": {
+        "title": "No sales recorded yet",
+        "description": "Your completed sales will appear here, where you can review their details and download their receipts."
+    }
     },
     "metrics": {
       "totalSales": "Total Sales",
