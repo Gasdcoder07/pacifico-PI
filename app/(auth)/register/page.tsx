@@ -5,10 +5,12 @@ import Image from "next/image";
 import RegisterForm from "@/features/auth/components/RegisterForm";
 
 export async function generateMetadata(): Promise<Metadata> {
-    const t = await getTranslations("Register");
+    const t = await getTranslations("Metadata");
+    const tr = await getTranslations("Register");
+
     return {
-        title: `Pacífico - ${t("title")}`,
-        description: t("subtitle"),
+        title: t("register"),
+        description: tr("subtitle"),
     };
 }
 
@@ -27,9 +29,9 @@ const page = async () => {
                     quality={75}/>
 
                 <div className="absolute top-1/2 -translate-y-1/2 right-6 lg:right-12 text-right text-white p-2 flex flex-col gap-2">
-                    <h3 className="text-3xl leading-relaxed font-semibold">{t("title")}</h3>
+                    <h3 className="text-3xl leading-relaxed font-semibold">{t("heroTitle")}</h3>
 
-                    <p className="max-w-2xl leading-relaxed font-light">{t("subtitle")}</p>
+                    <p className="max-w-2xl leading-relaxed font-light">{t("heroSubtitle")}</p>
                 </div>
             </div>
 
@@ -56,7 +58,7 @@ const page = async () => {
                     <div className="text-left flex flex-col gap-2 w-full">
                         <h3 className="text-2xl sm:text-3xl font-semibold tracking-wide">{t("title")}</h3>
 
-                        <p className="text-sm text-neutral-600 dark:text-slate-400 leading-relaxed">{t("title")}</p>
+                        <p className="text-sm text-neutral-600 dark:text-slate-400 leading-relaxed">{t("subtitle")}</p>
                     </div>
 
                     <RegisterForm/>

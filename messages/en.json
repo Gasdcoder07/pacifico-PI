@@ -1,9 +1,9 @@
 {
   "Register": {
     "title": "Create your account",
-    "subtitle": "Enter your details to start managing your business.",
-    "heroTitle": "Your entire business, under control.",
-    "heroSubtitle": "Manage your branches, sales, and inventory simply and efficiently.",
+    "subtitle": "Fill in your details to get started",
+    "heroTitle": "Start managing your business",
+    "heroSubtitle": "Register your company and control your branches, sales and inventory from one place.",
     "name": "First name",
     "lastName": "Last name",
     "email": "Email",
@@ -539,8 +539,8 @@
   },
   "SettingsPage": {
     "header": {
-      "title": "Company Settings",
-      "subtitle": "Update your company information that will appear on your receipts and documents."
+      "title": "Your company settings",
+      "subtitle": "Update your company details that will appear on your receipts and documents."
     },
     "companyForm": {
       "cardTitle": "Company Identity",
@@ -604,10 +604,10 @@
     }
     },
     "metrics": {
-      "totalSales": "Total Sales",
+      "totalSales": "Total sales",
       "transactions": "Transactions",
-      "averageTicket": "Average Ticket",
-      "productsSold": "Products Sold"
+      "averageTicket": "Average ticket",
+      "productsSold": "Products sold"
     },
     "months": {
       "jan": "Jan",
@@ -721,5 +721,19 @@
   "readyMessage": "Then, you are ready to manage!",
   "cta": "Get started"
 }
+  },
+  "Metadata": {
+    "description": "Point of sale and inventory system for multi-branch businesses",
+    "home": "Pacífico | Point of sale for your business",
+    "homeDescription": "Manage your branches, sales and inventory from one place.",
+    "login": "Log in",
+    "register": "Sign up",
+    "sell": "Sell",
+    "sales": "Sales",
+    "dashboard": "Dashboard",
+    "inventory": "Inventory",
+    "branches": "Branches",
+    "users": "Users",
+    "settings": "Settings"
   }
 }

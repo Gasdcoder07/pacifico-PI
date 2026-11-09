@@ -3,12 +3,13 @@ import Image from "next/image";
 import LoginForm from "@/features/auth/components/LoginForm";
 import { getTranslations } from "next-intl/server";
 
-// Para traducir el título de la pestaña según el idioma actual
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("Login");
+  const t = await getTranslations("Metadata");
+  const tl = await getTranslations("Login");
+
   return {
-    title: `Pacífico - ${t("title")}`,
-    description: t("subtitle"),
+    title: t("login"),
+    description: tl("subtitle"),
   };
 }
 
