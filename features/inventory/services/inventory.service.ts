@@ -12,9 +12,9 @@ export interface CreateProductPayload {
     description: string
     price: number
     category_id: number
-    foto_url: string
     foto_public_id?: string | null,
     branches: ProductBranchAllocation[]
+    image?: File | null
 }
 
 export interface Category {
@@ -27,8 +27,9 @@ export interface Category {
     updated_at: string
 }
 
-export const createProduct = (data : CreateProductPayload) => {
-    return apiClient.post("/api/products", data)
+export const createProduct = async (data: FormData) => {
+    const response = await apiClient.post("/api/products", data);
+    return response.data;
 }
 
 export const getCategories = async () : Promise<Category[]> => {

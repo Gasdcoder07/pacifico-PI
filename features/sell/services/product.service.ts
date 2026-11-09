@@ -6,7 +6,7 @@ export const getProducts = async () : Promise<BranchProducts[]> => {
     return response.data;
 }
 
-export const editProduct = async (data: EditProductPayload) : Promise<EditProductResponse> => {
+export const editProduct = async (data: FormData) : Promise<EditProductResponse> => {
     const response = await apiClient.put("/api/products", data);
     return response.data;
 }

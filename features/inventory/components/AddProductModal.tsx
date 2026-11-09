@@ -2,7 +2,7 @@
 
 import { ModalLayout } from "@/shared/components/ModalLayout";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Select, { MultiValue, SingleValue, ActionMeta } from "react-select";
 import {
   createProduct,
@@ -30,7 +30,6 @@ const initialForm = {
   description: "",
   price: "",
   category_id: "",
-  foto_url: "",
   quantity: "",
   min_stock: "",
 };
@@ -57,6 +56,21 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedBranches, setSelectedBranches] = useState<Branch[]>([]);
   const [branchStock, setBranchStock] = useState<Record<string, BranchStock>>({});
+
+    useEffect(() => {
+        if (!imageFile) {
+            setImagePreview(null);
+            return;
+        }
+
+        const previewUrl = URL.createObjectURL(imageFile);
+
+        setImagePreview(previewUrl);
+
+        return () => {
+            URL.revokeObjectURL(previewUrl);
+        };
+    }, [imageFile])
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -157,13 +171,17 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
   };
 
   const { mutate: mutateCreateProduct, isPending: isCreating } = useMutation({
-    mutationFn: (data: CreateProductPayload) => createProduct(data),
+    mutationFn: (data: FormData) => createProduct(data),
+
     onSuccess: () => {
       toast.success(t("notifications.success"));
-      queryClient.invalidateQueries({ queryKey: ["products"] });
+
+      void queryClient.invalidateQueries({ queryKey: ["products"] });
+
       resetForm();
       onClose();
     },
+
     onError: (error: Error) => {
       toast.error(error.message || t("notifications.error"));
     },
@@ -174,30 +192,25 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
 
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-      toast.error(t("notifications.invalidFormat"));
-      return;
-    }
+        e.currentTarget.value = "";
 
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error(t("notifications.imageSizeError"));
-      return;
-    }
+        if (!file) return;
 
-    setImageFile(file);
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+            toast.error(t("notifications.invalidFormat"));
+            return;
+        }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const result = reader.result as string;
-      setImagePreview(result);
-      setFormData((prev) => ({ ...prev, foto_url: result }));
+        if (file.size > 2 * 1024 * 1024) {
+            toast.error(t("notifications.imageSizeError"));
+            return;
+        }
+
+        setImageFile(file);
     };
-    reader.readAsDataURL(file);
-  };
 
   const triggerFileSelect = () => {
     fileInputRef.current?.click();
@@ -209,7 +222,7 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
     onClose();
   };
 
-    const buildPayload = (): CreateProductPayload | null => {
+    const buildPayload = (): FormData | null => {
         const name = formData.name.trim();
         const price = formData.price.trim();
 
@@ -264,14 +277,19 @@ export const CreateProductModal = ({ isOpen, onClose }: AddProductModalProps) =>
             };
         });
 
-        return {
-            name,
-            description: formData.description.trim(),
-            price: Number(price),
-            category_id: Number(formData.category_id),
-            branches: branchesPayload,
-            foto_url: formData.foto_url,
-        };
+        const payload = new FormData();
+
+        payload.append("name", name);
+        payload.append("description", formData.description.trim());
+        payload.append("price", price);
+        payload.append("category_id", formData.category_id);
+        payload.append("branches", JSON.stringify(branchesPayload));
+
+        if (imageFile) {
+            payload.append("image", imageFile);
+        }
+
+        return payload;
     };
 
   const handleSubmit = (e: React.FormEvent) => {

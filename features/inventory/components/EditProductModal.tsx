@@ -2,12 +2,13 @@
 
 import { ModalLayout } from "@/shared/components/ModalLayout";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Select, { MultiValue, SingleValue } from "react-select";
 import {
   CreateProductPayload,
   getCategories,
   Category,
+  ProductBranchAllocation,
 } from "../services/inventory.service";
 
 import toast from "react-hot-toast";
@@ -36,16 +37,6 @@ interface BranchOption {
     name: string
 }
 
-const initialForm = {
-  name: "",
-  description: "",
-  price: "",
-  category_id: "",
-  foto_url: "",
-  quantity: "",
-  min_stock: "",
-};
-
 const PRICE_REGEX = /^\d{1,10}(\.\d{1,2})?$/;
 const INT_REGEX = /^\d+$/;
 const MAX_INT = 2147483647;
@@ -71,17 +62,34 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
         : null;
 
 
-  const [formData, setFormData] = useState(() => ({
-    ...initialForm,
-    name: product.name,
-    description: product.description,
-    price: String(product.price),
-    category_id: String(product.category_id),
-    foto_url: product.foto_url,
-  }));
-  const [currentStep, setCurrentStep] = useState(1);
+    const [formData, setFormData] = useState(() => ({
+        name: product.name,
+        description: product.description ?? "",
+        price: String(product.price),
+        category_id: String(product.category_id),
+    }));
 
-  const [imagePreview, setImagePreview] = useState<string | null>(product.foto_url || null);
+    const [currentStep, setCurrentStep] = useState(1);
+
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(
+        product.foto_url ?? null
+    );
+
+    useEffect(() => {
+        if (!imageFile) {
+            setImagePreview(product.foto_url ?? null);
+            return;
+        }
+
+        const previewUrl = URL.createObjectURL(imageFile);
+
+        setImagePreview(previewUrl);
+
+        return () => {
+            URL.revokeObjectURL(previewUrl);
+        };
+    }, [imageFile, product.foto_url]);
   
   const productBranches = product.sucursales ?? [];
 
@@ -106,17 +114,18 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
   const fileInputRef = useRef<HTMLInputElement>(null);
 
     const { mutate: mutateEditProduct, isPending } = useMutation({
-        mutationFn: editProduct,
+        mutationFn: (data: FormData) => editProduct(data),
 
         onSuccess: async () => {
+            toast.success(t("notifications.success"))
+
             await queryClient.invalidateQueries({
                 queryKey: ["products"]
             });
 
-            toast.success(t("notifications.success"))
-
             clearCart();
-            handleClose();
+            resetForm();
+            onClose();
         },
 
         onError: (e) => {
@@ -240,13 +249,33 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
 
   const handlePreviousStep = () => {setCurrentStep(1)};
 
-  const resetForm = () => {
-    setFormData(initialForm);
-    setImagePreview(null);
-    setSelectedBranchIds([]);
-    setBranchStock({});
-    setCurrentStep(1);
-  };
+    const resetForm = () => {
+        setFormData({
+            name: product.name,
+            description: product.description ?? "",
+            price: String(product.price),
+            category_id: String(product.category_id),
+        });
+
+        setImageFile(null);
+        setImagePreview(product.foto_url ?? null);
+
+        setSelectedBranchIds(
+            productBranches.map((branch) => String(branch.branch_id))
+        );
+        setBranchStock(
+            Object.fromEntries(
+            productBranches.map((branch) => [
+                String(branch.branch_id),
+                {
+                quantity: String(branch.quantity ?? ""),
+                min_stock: String(branch.min_stock ?? ""),
+                },
+            ])
+            )
+        );
+        setCurrentStep(1);
+    };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -255,37 +284,36 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
+    e.currentTarget.value = "";
+
     if (!file) return;
 
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-      toast.error(t("notifications.invalidFormat"));
-      return;
+        toast.error(t("notifications.invalidFormat"));
+        return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      toast.error(t("notifications.imageSizeError"));
-      return;
+        toast.error(t("notifications.imageSizeError"));
+        return;
     }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const result = reader.result as string;
-      setImagePreview(result);
-      setFormData((prev) => ({ ...prev, foto_url: result }));
-    };
-    reader.readAsDataURL(file);
+    setImageFile(file);
   };
 
   const triggerFileSelect = () => {
     fileInputRef.current?.click();
   };
 
-  const handleClose = () => {
-    resetForm();
-    onClose();
-  };
+    const handleClose = () => {
+        if (isPending) return;
 
-    const buildPayload = (): (CreateProductPayload & Pick<Product, "product_id">) | null => {
+        resetForm();
+        onClose();
+    };
+
+    const buildPayload = (): FormData | null => {
         const name = formData.name.trim();
         const price = formData.price.trim();
 
@@ -324,45 +352,46 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
         }
 
         // Construir inventario individual
-        const branchesPayload: CreateProductPayload["branches"] =
-        selectedBranches.map((branch) => {
-        const branchId = String(branch.id);
-        const stock = branchStock[branchId];
+        const branchesPayload: ProductBranchAllocation[] =
+            selectedBranches.map((branch) => {
+                const branchId = String(branch.id);
+                const stock = branchStock[branchId];
+                const minStock = stock.min_stock.trim();
 
-        const minStock = stock.min_stock.trim();
+                return {
+                    branch_id: branchId,
+                    quantity: Number(stock.quantity),
+                    ...(minStock && {
+                        min_stock: Number(minStock),
+                    }),
+                };
+            });
 
-        return {
-            branch_id: branchId,
-            quantity: Number(stock.quantity),
+        const payload = new FormData();
+        
+        payload.append("product_id", String(product.product_id));
+        payload.append("name", name);
+        payload.append("description", formData.description.trim());
+        payload.append("price", price);
+        payload.append("category_id", formData.category_id);
+        payload.append("branches", JSON.stringify(branchesPayload));
 
-            ...(minStock && {
-                min_stock: Number(minStock),
-            }),
-            };
-        });
+        if (imageFile) {
+            payload.append("image", imageFile);
+        }
 
-        return {
-            product_id: product.product_id,
-            name,
-            description: formData.description.trim(),
-            price: Number(price),
-            category_id: Number(formData.category_id),
-            branches: branchesPayload,
-            foto_url: formData.foto_url,
-            foto_public_id: null,
-        };
+        return payload;
     };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (currentStep !== 2) return;
+    if (currentStep !== 2 || isPending) return;
 
     const payload = buildPayload();
 
     if (!payload) return;
 
-    // console.log("Edit product payload:", payload);
     mutateEditProduct(payload)
   };
 
@@ -383,7 +412,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                     >
                         {imagePreview ? (
                             <img
-                            src={imagePreview}
+                            src={imagePreview ?? ""}
                             alt={t("image.previewAlt")}
                             className="absolute inset-0 h-full w-full object-cover"
                             />
@@ -639,6 +668,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
                     <button
                     key="edit-product"
                     type="submit"
+                    disabled={isPending}
                     className={`rounded-lg px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out ${isPending
                         ? "cursor-not-allowed bg-neutral-400 dark:bg-slate-700 dark:text-slate-500"
                         : "cursor-pointer bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500"
