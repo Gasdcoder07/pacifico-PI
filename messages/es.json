@@ -389,6 +389,25 @@
         "title": "Tu inventario está vacío",
         "description": "Todavía no tienes productos registrados. Comienza agregando tu primer producto para gestionar tus existencias."
     },
+    "categoriesButton": {
+        "label": "Categorías"
+    },
+    "categoriesPanel": {
+        "title": "Gestionar categorías",
+        "createForm": {
+            "title": "Agregar nueva categoría",
+            "subtitle": "Crea una categoría para organizar tus productos.",
+            "namePlaceholder": "Nombre de la categoría",
+            "descriptionPlaceholder": "Descripción (opcional)",
+            "createButton": "Crear",
+            "creatingButton": "Creando...",
+            "notifications": {
+                "success": "Categoría creada correctamente",
+                "error": "No se pudo crear la categoría",
+                "requiredName": "El nombre de la categoría es obligatorio"
+            }
+        }
+    },
     "addProductButton": {
       "label": "Agregar Producto"
     },
