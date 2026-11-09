@@ -589,14 +589,19 @@
   "SalesPage": {
     "title": "Ventas",
     "history": {
-      "subtitle": "Historial de ventas realizadas en la compañía.",
+      "subtitleManager": "Historial de ventas realizadas en la sucursal.",
+      "subtitleAdmin": "Historial de ventas realizadas en la compañía.",
       "sale": "Venta #{id}",
       "cashier": "Cajero: {name}",
       "ticketPdf": "Ticket (PDF)",
       "subtotal": "Subtotal",
       "vat": "IVA ({rate})",
       "total": "Total",
-      "pdfPending": "La integración del ticket PDF está pendiente para la venta #{id}."
+      "pdfPending": "La integración del ticket PDF está pendiente para la venta #{id}.",
+      "emptyState": {
+        "title": "Aún no hay ventas registradas",
+        "description": "Las ventas que realices aparecerán aquí para que puedas consultar sus detalles y descargar sus comprobantes."
+    }
     },
     "metrics": {
       "totalSales": "Ventas Totales",
@@ -635,6 +640,16 @@
       "title": "Productos más vendidos",
       "units": "unidades",
       "soldLabel": "Vendidas"
+    },
+    "paymentMethod": {
+        "cash": "Efectivo",
+        "card": "Tarjeta",
+        "transfer": "Transferencia"
+    },
+    "voucher": {
+        "title": "Preparando comprobante",
+        "subtitle": "Tu ticket se abrirá automáticamente.",
+        "ticketError": "No se pudo abrir el ticket PDF"
     }
   },
   "DeleteUserModal": {

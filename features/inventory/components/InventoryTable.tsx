@@ -348,6 +348,6 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
 
 export const InventoryTableSkeleton = () => {
   return (
-    <div className="h-full min-h-0 min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 shadow-sm w-full dark:bg-slate-800" />
+    <div className="h-full animate-pulse transition-all duration-200 ease-in-out min-h-0 min-w-0 flex-1 flex-col rounded-lg bg-neutral-200 shadow-sm w-full dark:bg-slate-800" />
   );
 };

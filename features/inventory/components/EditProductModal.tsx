@@ -9,14 +9,16 @@ import {
   getCategories,
   Category,
 } from "../services/inventory.service";
+
 import toast from "react-hot-toast";
 import { customStyles, selectThemeVars } from "../utils/styles.select";
 import { getBranches } from "@/features/branches/services/branch.service";
-import { Branch } from "@/features/branches/types/branch";
 import { useTranslations } from "next-intl";
+
 import { Product } from "@/features/sell/types/product";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { editProduct } from "@/features/sell/services/product.service";
+import { useCartStore } from "@/features/sell/store/cart-store";
 
 interface EditProductModalProps {
   isOpen: boolean;
@@ -55,7 +57,9 @@ const scrollbarStyles =
     "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300 dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-600";
 
 const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalProps) => {
-  const t = useTranslations("InventoryPage.editProductModal");
+    const t = useTranslations("InventoryPage.editProductModal");
+    const clearCart = useCartStore((state) => state.clearCart);
+  
     const { user: currentUser } = useAuth();
     const queryClient = useQueryClient();
 
@@ -111,6 +115,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
 
             toast.success(t("notifications.success"))
 
+            clearCart();
             handleClose();
         },
 
