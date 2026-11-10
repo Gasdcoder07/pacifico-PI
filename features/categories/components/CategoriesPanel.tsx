@@ -24,7 +24,7 @@ const CategoriesPanel = ({ isOpen, onClose } : CategoriesPanelProps) => {
 
                 <div className={`flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-y-auto p-6 pt-0 ${scrollbarStyles}`}>
                     <h3 className="shrink-0 text-lg font-semibold text-slate-950 dark:text-slate-100">
-                        Tus categorías
+                        {t("editForm.title")}
                     </h3>
 
                     <Container />

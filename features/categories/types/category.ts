@@ -16,3 +16,13 @@ export interface CreateCategoryPayload {
 export interface CreateCategoryResponse {
     success: string;
 }
+
+export interface EditCategoryPayload {
+    id: number;
+    name: string;
+    description: string | null;
+}
+
+export interface EditCategoryResponse {
+    success: string;
+}

@@ -2,19 +2,17 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Pencil, Check } from "lucide-react";
+import { Pencil, Check, LoaderCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Category } from "@/features/inventory/services/inventory.service";
+import { EditCategoryPayload } from "../types/category";
+import { editCategory } from "../services/category.service";
 
 interface EditCategoryFormProps {
     category: Category;
-}
-
-interface EditCategoryPayload {
-    name: string;
-    description: string | null;
 }
 
 const inputStyles =
@@ -25,6 +23,7 @@ const buttonStyles =
 
 const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
     const t = useTranslations("InventoryPage.categoriesPanel.editForm");
+    const queryClient = useQueryClient();
 
     const [isEditing, setIsEditing] = useState(false);
 
@@ -32,6 +31,26 @@ const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
         name: category.name,
         description: category.description ?? "",
     });
+
+    const { mutate: mutateEditCategory, isPending } = useMutation({
+        mutationFn: editCategory,
+
+        onSuccess: async () => {
+            toast.success(t("notifications.success"));
+            setIsEditing(false);
+
+            void queryClient.invalidateQueries({
+                queryKey: ["categories"],
+            });
+            void queryClient.invalidateQueries({
+                queryKey: ["products"],
+            });
+        },
+
+        onError: (e) => {
+            toast.error(t("notifications.error"));
+        }
+    })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -43,6 +62,8 @@ const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
     };
 
     const handleCancel = () => {
+        if(isPending) return;
+
         setFormData({
             name: category.name,
             description: category.description ?? "",
@@ -51,8 +72,26 @@ const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
         setIsEditing(false);
     };
 
+    const handleEdit = () => {
+        if (isPending) return;
+
+        if (isEditing) {
+            handleCancel();
+            return;
+        }
+
+        setFormData({
+            name: category.name,
+            description: category.description ?? "",
+        });
+
+        setIsEditing(true);
+    };
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (isPending) return;
 
         const name = formData.name.trim();
         const description = formData.description.trim();
@@ -63,12 +102,12 @@ const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
         }
 
         const payload: EditCategoryPayload = {
+            id: category.id,
             name,
             description: description || null,
         };
 
-        console.log("CATEGORY ID:", category.id);
-        console.log("EDIT CATEGORY PAYLOAD:", payload);
+        mutateEditCategory(payload);
     };
 
     return (
@@ -90,7 +129,7 @@ const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
 
                 <motion.button
                     type="button"
-                    onClick={() => setIsEditing(!isEditing)}
+                    onClick={handleEdit}
                     aria-label={t("editButton")}
                     title={t("editButton")}
                     whileHover={!isEditing ? { scale: 1.05 } : undefined}
@@ -100,7 +139,9 @@ const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
                         stiffness: 300,
                         damping: 20,
                     }}
-                    className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-600 shadow-sm transition-colors hover:border-cyan-400 hover:bg-cyan-50 hover:text-cyan-600 disabled:cursor-default disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-cyan-500/10 dark:hover:text-cyan-400"
+                    disabled={isPending}
+                    aria-expanded={isEditing}
+                    className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-600 shadow-sm transition-colors hover:border-cyan-400 hover:bg-cyan-50 hover:text-cyan-600 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-cyan-500/10 dark:hover:text-cyan-400"
                 >
                     <Pencil size={16} />
                 </motion.button>
@@ -118,7 +159,7 @@ const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
                             duration: 0.25,
                             ease: "easeInOut",
                         }}
-                        className="overflow-hidden"
+                        // className="overflow-hidden"
                     >
                         <div className="mt-4 flex flex-col gap-4 border-t border-neutral-200 pt-4 dark:border-slate-800">
                             <div className="grid w-full grid-cols-1 gap-4 text-sm text-neutral-600 sm:grid-cols-2 dark:text-slate-400">
@@ -130,6 +171,7 @@ const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
                                         onChange={handleChange}
                                         maxLength={100}
                                         required
+                                        disabled={isPending}
                                         aria-label={t("nameLabel")}
                                         placeholder={t("namePlaceholder")}
                                         className={inputStyles}
@@ -140,6 +182,7 @@ const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
                                     <input
                                         name="description"
                                         type="text"
+                                        disabled={isPending}
                                         value={formData.description}
                                         onChange={handleChange}
                                         aria-label={t("descriptionLabel")}
@@ -155,21 +198,30 @@ const EditCategoryForm = ({ category }: EditCategoryFormProps) => {
                                 <motion.button
                                     type="button"
                                     onClick={handleCancel}
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.9 }}
-                                    className="cursor-pointer rounded-lg border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                                    disabled={isPending}
+                                    whileHover={!isPending ? { scale: 1.02 } : undefined}
+                                    whileTap={!isPending ? { scale: 0.9 } : undefined}
+                                    className="disabled:cursor-not-allowed cursor-pointer rounded-lg border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
                                 >
                                     {t("cancelButton")}
                                 </motion.button>
 
                                 <motion.button
                                     type="submit"
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.9 }}
-                                    className={buttonStyles}
+                                    disabled={isPending}
+                                    whileHover={!isPending ? { scale: 1.02 } : undefined}
+                                    whileTap={!isPending ? { scale: 0.9 } : undefined}
+                                    className={`${buttonStyles} disabled:cursor-not-allowed disabled:opacity-50`}
                                 >
-                                    <Check size={16} className="shrink-0" />
-                                    <span>{t("saveButton")}</span>
+                                    {isPending ? (
+                                        <LoaderCircle size={16} className="shrink-0 animate-spin transition-all duration-200 ease-in-out" />
+                                    ) : (
+                                        <Check size={16} className="shrink-0" />
+                                    )}
+
+                                    <span>
+                                        {isPending ? t("savingButton") : t("saveButton")}
+                                    </span>
                                 </motion.button>
                             </div>
                         </div>

@@ -412,6 +412,7 @@
             "description": "Las categorías que crees aparecerán aquí para que puedas organizarlas, editarlas y administrar tus productos."
         },
         "editForm": {
+            "title": "Tus categorías",
             "editButton": "Editar categoría",
             "nameLabel": "Nombre",
             "descriptionLabel": "Descripción (opcional)",
