@@ -7,6 +7,7 @@ import { getProducts } from "@/features/sell/services/product.service";
 import ProductSearch from "@/features/sell/components/ProductSearch";
 import AddProductButton from "./AddProductButton";
 import InventoryTable from "./InventoryTable";
+import { CategoryButton } from "../../categories/components/CategoriesButton";
 
 const InventoryLayout = () => {
     const { user: currentUser } = useAuth();
@@ -25,10 +26,13 @@ const InventoryLayout = () => {
         <section className="flex flex-col h-full min-h-0 overflow-hidden p-4 gap-4">
             {
                 hasProducts && (
-                <div className="flex items-center justify-between gap-4 w-full">
+                <div className="flex w-full min-w-0 items-center justify-between gap-4">
                     <ProductSearch/>
 
-                    <AddProductButton/>
+                    <div className="flex shrink-0 items-center gap-4">
+                        <CategoryButton/>
+                        <AddProductButton/>
+                    </div>
                 </div>
                 )
             }

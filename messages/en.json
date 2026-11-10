@@ -389,6 +389,44 @@
         "title": "Your inventory is empty",
         "description": "You haven't registered any products yet. Start by adding your first product to manage your stock."
     },
+    "categoriesButton": {
+        "label": "Categories"
+    },
+    "categoriesPanel": {
+        "title": "Manage categories",
+        "createForm": {
+            "title": "Add a new category",
+            "subtitle": "Create a category to organize your products.",
+            "namePlaceholder": "Category name",
+            "descriptionPlaceholder": "Description (optional)",
+            "createButton": "Create",
+            "creatingButton": "Creating...",
+            "notifications": {
+                "success": "Category created successfully",
+                "error": "Failed to create category",
+                "requiredName": "Category name is required"
+            }
+        },
+        "emptyState": {
+            "title": "No categories yet",
+            "description": "The categories you create will appear here, where you can organize, edit, and manage your products."
+        },
+        "editForm": {
+        "editButton": "Edit category",
+        "nameLabel": "Name",
+        "descriptionLabel": "Description (optional)",
+        "namePlaceholder": "Category name",
+        "descriptionPlaceholder": "Description (optional)",
+        "saveButton": "Save changes",
+        "savingButton": "Saving...",
+        "cancelButton": "Cancel",
+            "notifications": {
+                "success": "Category updated successfully",
+                "error": "Failed to update category",
+                "requiredName": "Category name is required"
+            }
+        }
+    },
     "addProductButton": {
       "label": "Add Product"
     },
