@@ -406,6 +406,25 @@
                 "error": "No se pudo crear la categoría",
                 "requiredName": "El nombre de la categoría es obligatorio"
             }
+        },
+        "emptyState": {
+            "title": "Aún no hay categorías",
+            "description": "Las categorías que crees aparecerán aquí para que puedas organizarlas, editarlas y administrar tus productos."
+        },
+        "editForm": {
+            "editButton": "Editar categoría",
+            "nameLabel": "Nombre",
+            "descriptionLabel": "Descripción (opcional)",
+            "namePlaceholder": "Nombre de la categoría",
+            "descriptionPlaceholder": "Descripción (opcional)",
+            "saveButton": "Guardar cambios",
+            "savingButton": "Guardando...",
+            "cancelButton": "Cancelar",
+            "notifications": {
+                "success": "Categoría actualizada correctamente",
+                "error": "No se pudo actualizar la categoría",
+                "requiredName": "El nombre de la categoría es obligatorio"
+            }
         }
     },
     "addProductButton": {

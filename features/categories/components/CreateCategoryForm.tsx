@@ -69,7 +69,7 @@ const CreateCategoryForm = () => {
     };
 
     return (
-        <div className="p-6">
+        <div className="p-6 pb-4">
             <form
                 onSubmit={handleSubmit}
                 className="flex flex-col gap-4 p-4 bg-white w-full rounded-lg border border-neutral-200 dark:bg-none dark:bg-slate-900 dark:border-slate-800 shadow-sm">
