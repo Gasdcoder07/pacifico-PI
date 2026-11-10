@@ -204,6 +204,7 @@ export async function GET(request: Request) {
  *             example:
  *               error: "Error interno en el servidor al crear la categoría"
  */
+
 export async function POST(request: Request) {
   try {
     const authHeader = request.headers.get("Authorization");
@@ -291,3 +292,163 @@ export async function POST(request: Request) {
   }
 }
 
+/**
+ * @swagger
+ * /api/category:
+ *   put:
+ *     summary: Modificar una categoría
+ *     description: Permite únicamente a administradores modificar categorías pertenecientes a su empresa.
+ *     tags:
+ *       - Categorías
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id
+ *               - name
+ *             properties:
+ *               id:
+ *                 type: integer
+ *                 example: 2
+ *               name:
+ *                 type: string
+ *                 example: "Tecnología"
+ *               description:
+ *                 type: string
+ *                 nullable: true
+ *                 example: "Artículos relacionados a tecnología"
+ *     responses:
+ *       200:
+ *         description: Categoría actualizada correctamente.
+ *       400:
+ *         description: Datos no válidos.
+ *       401:
+ *         description: Sesión inválida.
+ *       403:
+ *         description: Permisos insuficientes.
+ *       404:
+ *         description: Categoría o usuario no encontrados.
+ *       500:
+ *         description: Error interno.
+ */
+
+export async function PUT(request: Request) {
+  try {
+    const authHeader = request.headers.get("Authorization");
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { error: "No autorizado. Falta el token de sesión" },
+        { status: 401 },
+      );
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser(token);
+
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: "Sesión expirada o token inválido" },
+        { status: 401 },
+      );
+    }
+
+    const currentUserQuery = await pool.query(
+      `SELECT id, rol_id, company_id
+        FROM public.usuarios
+        WHERE auth_user_id = $1 AND status = true`,
+      [user.id],
+    );
+
+    const currentUser = currentUserQuery.rows[0];
+
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: "No existe un usuario activo linkeado a esta sesión" },
+        { status: 404 },
+      );
+    }
+
+    if (Number(currentUser.rol_id) !== 1) {
+      return NextResponse.json(
+        { error: "No eres administrador, no puedes editar categorías" },
+        { status: 403 },
+      );
+    }
+
+    const body = await request.json();
+    const { id, name, description } = body;
+
+    if (
+      !Number.isInteger(Number(id)) ||
+      Number(id) <= 0
+    ) {
+      return NextResponse.json(
+        { error: "El ID de la categoría no es válido" },
+        { status: 400 },
+      );
+    }
+
+    if (typeof name !== "string" || name.trim() === "") {
+      return NextResponse.json(
+        { error: "El nombre de la categoría es obligatorio" },
+        { status: 400 },
+      );
+    }
+
+    if (description != null && typeof description !== "string") {
+      return NextResponse.json(
+        { error: "La descripción debe ser texto" },
+        { status: 400 },
+      );
+    }
+
+    const response = await pool.query(
+      `UPDATE public.categorias
+        SET name = $1,
+            description = $2
+        WHERE id = $3
+          AND company_id = $4
+        RETURNING id, name, company_id, description, created_at, admin_id`,
+      [
+        name.trim(),
+        description ?? null,
+        Number(id),
+        currentUser.company_id,
+      ],
+    );
+
+    const updatedCategory = response.rows[0];
+
+    if (!updatedCategory) {
+      return NextResponse.json(
+        { error: "Categoría no encontrada en tu empresa" },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: "Categoría actualizada correctamente",
+        data: updatedCategory,
+      },
+      { status: 200 },
+    );
+  } catch (err) {
+    console.error("Error al actualizar categoría:", err);
+
+    return NextResponse.json(
+      { error: "Error interno en el servidor al actualizar la categoría" },
+      { status: 500 },
+    );
+  }
+}
