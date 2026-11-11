@@ -5,7 +5,7 @@ const ProductSearch = () => {
     const t = useTranslations("ProductSearch");
 
     return (
-        <div className="flex min-w-0 flex-1 items-center">
+        <div className="flex min-w-0 items-center">
             <div className="relative w-full max-w-sm min-w-0">
                 <Search
                     size={18}

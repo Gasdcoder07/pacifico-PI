@@ -47,7 +47,9 @@ const InventoryLayout = () => {
             {
                 hasProducts && (
                 <div className="flex w-full min-w-0 items-center justify-between gap-4">
-                    <ProductSearch/>
+                    <div className="w-full">
+                        <ProductSearch/>
+                    </div>
 
                     <div className="flex shrink-0 items-center gap-4">
                         <CategoryButton/>
