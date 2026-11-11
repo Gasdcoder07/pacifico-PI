@@ -387,7 +387,11 @@
   "InventoryPage": {
     "emptyState": {
         "title": "Tu inventario está vacío",
-        "description": "Todavía no tienes productos registrados. Comienza agregando tu primer producto para gestionar tus existencias."
+        "description": "Antes de agregar tu primer producto, necesitas configurar al menos una sucursal y una categoría.",
+        "adminOnly": "Todavía no hay productos disponibles. Un administrador debe configurar el inventario.",
+        "branches": "Sucursales",
+        "categories": "Categorías",
+        "createBranch": "Crear sucursal"
     },
     "categoriesButton": {
         "label": "Categorías"

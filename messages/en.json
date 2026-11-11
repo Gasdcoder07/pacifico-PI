@@ -387,7 +387,11 @@
   "InventoryPage": {
     "emptyState": {
         "title": "Your inventory is empty",
-        "description": "You haven't registered any products yet. Start by adding your first product to manage your stock."
+        "description": "Before adding your first product, you need to set up at least one branch and one category.",
+        "adminOnly": "There are no products available yet. An administrator must set up the inventory.",
+        "branches": "Branches",
+        "categories": "Categories",
+        "createBranch": "Create branch"
     },
     "categoriesButton": {
         "label": "Categories"
