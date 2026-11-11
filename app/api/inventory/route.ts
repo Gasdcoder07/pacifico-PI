@@ -2,12 +2,8 @@ import pool from "@/shared/lib/db";
 import { NextResponse } from "next/server";
 import {
     apiError,
-    checkBranches,
     getActor,
     HttpError,
-    readAllocations,
-    readBody,
-    transaction,
     validId,
 } from "@/shared/utils/inventory-access";
 import { supabase } from "@/shared/lib/supabase";
@@ -92,164 +88,247 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     try {
-        const authHeader = request.headers.get("Authorization");
-
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return NextResponse.json(
-                { error: "Sesión vencida o token inválido" },
-                { status: 401 }
-            );
-        }
-
-        const token = authHeader.split(" ")[1];
-        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token);
-
-        if (authError || !authUser) {
-            return NextResponse.json(
-                { error: `Ocurrió un error al obtener la información del usuario ${authError?.message || authError}` },
-                { status: 401 }
-            );
-        }
-
-        const currentUserQuery = await pool.query(
-            `SELECT rol_id, branch_id, company_id FROM usuarios WHERE auth_user_id = $1`,
-            [authUser.id]
-        );
-
-        const currentUser = currentUserQuery.rows[0];
-
-        if (!currentUser) {
-            return NextResponse.json(
-                { error: "No se encontró un perfil de usuario asociado a esta sesión" },
-                { status: 404 }
-            );
-        }
-
-        if (Number(currentUser.rol_id) !== 1 && Number(currentUser.rol_id) !== 2) {
-            return NextResponse.json(
-                { error: "No tienes permiso para actualizar el inventario" },
-                { status: 403 }
-            );
-        }
+        const actor = await getActor(request, [1, 2]);
 
         const body = await request.json();
-        const category_id = Number(body.category_id);
+        const productId = validId(String(body.category_id ?? ""));
         const branches = body.branches;
 
-        if (!category_id || isNaN(category_id)) {
-            return NextResponse.json(
-                { error: "El ID del producto es inválido o no fue enviado" },
-                { status: 400 }
-            );
-        }
-
         if (!Array.isArray(branches) || branches.length === 0) {
-            return NextResponse.json(
-                { error: "Se requiere un arreglo de sucursales válido" },
-                { status: 400 }
-            );
+            throw new HttpError(400, "Se requiere un arreglo de sucursales válido");
         }
 
-        for (const item of branches) {
-            if (!item.branch_id || typeof item.quantity !== 'number') {
-                return NextResponse.json(
-                    { error: "Los datos de asignación de sucursales están incompletos (requiere branch_id y quantity)" },
-                    { status: 400 }
-                );
+        type Allocation = {
+            branch_id: string;
+            quantity: number;
+            min_stock: number | null;
+        };
+
+        const allocations: Allocation[] = branches.map((value: unknown) => {
+            if (
+                typeof value !== "object" ||
+                value === null ||
+                Array.isArray(value)
+            ) {
+                throw new HttpError(400, "Asignación de sucursal inválida");
             }
+
+            const item = value as Record<string, unknown>;
+            const branchId = validId(String(item.branch_id ?? ""));
+
+            if (
+                typeof item.quantity !== "number" ||
+                !Number.isSafeInteger(item.quantity) ||
+                item.quantity < 0 ||
+                item.quantity > 2147483647
+            ) {
+                throw new HttpError(400, "La cantidad debe ser un entero válido");
+            }
+
+            let minStock: number | null = null;
+
+            if (item.min_stock !== undefined && item.min_stock !== null) {
+                if (
+                    typeof item.min_stock !== "number" ||
+                    !Number.isSafeInteger(item.min_stock) ||
+                    item.min_stock < 0 ||
+                    item.min_stock > 2147483647
+                ) {
+                    throw new HttpError(400, "El stock mínimo no es válido");
+                }
+
+                minStock = item.min_stock;
+            }
+
+            return {
+                branch_id: branchId,
+                quantity: item.quantity,
+                min_stock: minStock,
+            };
+        });
+
+        const branchIds = allocations.map(item => item.branch_id);
+
+        if (new Set(branchIds).size !== branchIds.length) {
+            throw new HttpError(400, "No puedes enviar sucursales duplicadas");
+        }
+
+        if (
+            actor.rol_id === 2 &&
+            allocations.some(item => item.branch_id !== String(actor.branch_id))
+        ) {
+            throw new HttpError(403, "Solo puedes actualizar el inventario de tu sucursal");
         }
 
         const client = await pool.connect();
-        const updatedInventory = [];
+
+        const updatedInventory: Record<string, unknown>[] = [];
 
         try {
-            await client.query('BEGIN');
+            await client.query("BEGIN");
 
             const productQuery = await client.query(
-                `SELECT id
+                `
+                SELECT id
                 FROM public.productos
                 WHERE id = $1
                     AND company_id = $2
                     AND status = true
-                FOR UPDATE`,
-                [category_id, currentUser.company_id]
+                FOR UPDATE
+                `,
+                [productId, actor.company_id]
             );
 
             if (!productQuery.rows[0]) {
-                await client.query('ROLLBACK');
-                return NextResponse.json(
-                    { error: "Producto activo no encontrado en tu empresa" },
-                    { status: 404 }
-                );
+                throw new HttpError(404, "Producto activo no encontrado en tu empresa");
             }
 
-            const branchIds = branches.map(item => item.branch_id);
             const checkBranchesQuery = await client.query(
-                `SELECT id FROM public.sucursales WHERE id = ANY($1) AND company_id = $2`,
-                [branchIds, currentUser.company_id]
+                `
+                SELECT id
+                FROM public.sucursales
+                WHERE id = ANY($1::bigint[])
+                    AND company_id = $2
+                    AND status = true
+                `,
+                [branchIds, actor.company_id]
             );
 
             if (checkBranchesQuery.rowCount !== branchIds.length) {
-                await client.query('ROLLBACK');
-                return NextResponse.json(
-                    { error: "Una o más sucursales asignadas no pertenecen a tu empresa" },
-                    { status: 403 }
+                throw new HttpError(
+                    403,
+                    "Una o más sucursales no pertenecen a tu empresa o están inactivas"
                 );
             }
 
-            for (const branch of branches) {
+            // Sucursales con stock mínimo especificado
+            const withMinStock = allocations.filter(
+                item => item.min_stock !== null
+            );
+
+            if (withMinStock.length > 0) {
                 const result = await client.query(
-                    `INSERT INTO public.inventario AS stock (
-                        company_id, branch_id, product_id,
-                        quantity, min_stock
+                    `
+                    INSERT INTO public.inventario AS stock (
+                        company_id,
+                        branch_id,
+                        product_id,
+                        quantity,
+                        min_stock
                     )
-                    VALUES ($1, $2, $3, $4, COALESCE($5::integer, 5))
+                    SELECT
+                        $1,
+                        x.branch_id,
+                        $2,
+                        x.quantity,
+                        x.min_stock
+                    FROM UNNEST(
+                        $3::bigint[],
+                        $4::integer[],
+                        $5::integer[]
+                    ) AS x(branch_id, quantity, min_stock)
                     ON CONFLICT (branch_id, product_id)
                     DO UPDATE SET
                         quantity = stock.quantity + EXCLUDED.quantity,
-                        min_stock = COALESCE($5::integer, stock.min_stock),
-                        updated_at = now()
+                        min_stock = EXCLUDED.min_stock,
+                        updated_at = NOW()
                     WHERE stock.company_id = EXCLUDED.company_id
-                    RETURNING *`,
+                    RETURNING
+                        id::text AS id,
+                        company_id::text AS company_id,
+                        branch_id::text AS branch_id,
+                        product_id::text AS product_id,
+                        quantity,
+                        min_stock,
+                        updated_at
+                    `,
                     [
-                        currentUser.company_id,
-                        branch.branch_id,
-                        category_id,
-                        branch.quantity,
-                        branch.min_stock ?? null,
+                        actor.company_id,
+                        productId,
+                        withMinStock.map(item => item.branch_id),
+                        withMinStock.map(item => item.quantity),
+                        withMinStock.map(item => item.min_stock),
                     ]
                 );
 
-                if (!result.rows[0]) {
-                    await client.query('ROLLBACK');
-                    return NextResponse.json(
-                        { error: "La asignación de inventario no corresponde a la empresa" },
-                        { status: 409 }
-                    );
-                }
-
-                updatedInventory.push(result.rows[0]);
+                updatedInventory.push(...result.rows);
             }
 
-            await client.query('COMMIT');
+            // Sucursales sin stock mínimo: conserva el existente al actualizar
+            const withoutMinStock = allocations.filter(
+                item => item.min_stock === null
+            );
 
-        } catch (dbError) {
-            await client.query('ROLLBACK');
-            throw dbError;
+            if (withoutMinStock.length > 0) {
+                const result = await client.query(
+                    `
+                    INSERT INTO public.inventario AS stock (
+                        company_id,
+                        branch_id,
+                        product_id,
+                        quantity,
+                        min_stock
+                    )
+                    SELECT
+                        $1,
+                        x.branch_id,
+                        $2,
+                        x.quantity,
+                        5
+                    FROM UNNEST(
+                        $3::bigint[],
+                        $4::integer[]
+                    ) AS x(branch_id, quantity)
+                    ON CONFLICT (branch_id, product_id)
+                    DO UPDATE SET
+                        quantity = stock.quantity + EXCLUDED.quantity,
+                        updated_at = NOW()
+                    WHERE stock.company_id = EXCLUDED.company_id
+                    RETURNING
+                        id::text AS id,
+                        company_id::text AS company_id,
+                        branch_id::text AS branch_id,
+                        product_id::text AS product_id,
+                        quantity,
+                        min_stock,
+                        updated_at
+                    `,
+                    [
+                        actor.company_id,
+                        productId,
+                        withoutMinStock.map(item => item.branch_id),
+                        withoutMinStock.map(item => item.quantity),
+                    ]
+                );
+
+                updatedInventory.push(...result.rows);
+            }
+
+            if (updatedInventory.length !== allocations.length) {
+                throw new HttpError(
+                    409,
+                    "Una o más asignaciones de inventario no pudieron actualizarse"
+                );
+            }
+
+            await client.query("COMMIT");
+
+        } catch (error) {
+            await client.query("ROLLBACK");
+            throw error;
         } finally {
             client.release();
         }
 
         return NextResponse.json(
-            { message: "Existencias agregadas con éxito", data: updatedInventory },
+            {
+                message: "Existencias agregadas con éxito",
+                data: updatedInventory,
+            },
             { status: 200 }
         );
 
-    } catch (err) {
-        console.error(err);
-        return NextResponse.json(
-            { error: `Error interno en el backend: ${err instanceof Error ? err.message : String(err)}` },
-            { status: 500 }
-        );
+    } catch (error) {
+        return apiError(error);
     }
 }
