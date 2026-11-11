@@ -780,5 +780,11 @@
     "branches": "Sucursales",
     "users": "Usuarios",
     "settings": "Ajustes"
-}
+},
+    "Pagination": {
+        "label": "Paginación",
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "pageInfo": "Página {currentPage} de {totalPages}"
+    }
 }

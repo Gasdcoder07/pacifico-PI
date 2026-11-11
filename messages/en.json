@@ -780,5 +780,11 @@
     "branches": "Branches",
     "users": "Users",
     "settings": "Settings"
-  }
+  },
+    "Pagination": {
+        "label": "Pagination",
+        "previous": "Previous",
+        "next": "Next",
+        "pageInfo": "Page {currentPage} of {totalPages}"
+    }
 }
