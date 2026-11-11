@@ -82,9 +82,7 @@
   "SellPage": {
     "emptyState": {
         "title": "No hay productos disponibles",
-        "description": "Aún no hay productos disponibles para vender. Agrega productos a tu inventario para comenzar a registrar ventas.",
-        "action": "Ir al inventario",
-        "ariaLabel": "Ir a la página de inventario"
+        "description": "Todavía no hay productos registrados en el inventario. Un administrador debe agregarlos para que puedas comenzar a registrar ventas."
     },
     "productCard": {
         "outOfStock": "Sin stock",
@@ -357,7 +355,9 @@
         "notifications": {
           "success": "Sucursal actualizada correctamente",
           "error": "Ocurrió un error al actualizar la sucursal",
-          "requiredFields": "Por favor, completa todos los campos obligatorios."
+          "requiredFields": "Por favor, completa todos los campos obligatorios.",
+          "invalidImageFormat": "Solo se permiten imágenes JPG o PNG.",
+          "imageSizeError": "La imagen no puede pesar más de 2 MB."
         },
         "uploadButton": "Subir imagen",
         "changeButton": "Elegir otra imagen",
@@ -379,8 +379,10 @@
     },
     "container": {
       "emptyState": {
-        "title": "Aún no tienes colaboradores",
-        "description": "Todavía no hay personas registradas en esta sucursal. Crea un usuario para comenzar a formar tu equipo."
+            "title": "Aún no hay usuarios",
+            "description": "Los usuarios que registres aparecerán aquí para que puedas administrar sus datos y permisos.",
+            "descriptionBranches": "Antes de registrar usuarios, necesitas crear al menos una sucursal para poder asignarlos correctamente.",
+            "createBranch": "Crear sucursal"
       }
     }
   },

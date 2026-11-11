@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 
@@ -24,17 +24,33 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     
     const [formData, setFormData] = useState({
-        name: branch?.name,
-        adress: branch?.direction,
-        phone: branch?.phone,
-        contact_info: branch?.contact_info,
-        foto_url: branch?.foto_url,
-        status: branch?.status,
-    })
+        name: branch?.name ?? "",
+        adress: branch?.direction ?? "",
+        phone: branch?.phone ?? "",
+        contact_info: branch?.contact_info ?? "",
+        status: branch?.status ?? true,
+    });
 
-    const [imagePreview, setImagePreview] = useState(
-        branch?.foto_url ?? ""
+    const [imageFile, setImageFile] = useState<File | null>(null);
+
+    const [imagePreview, setImagePreview] = useState<string | null>(
+        branch?.foto_url ?? null
     );
+
+    useEffect(() => {
+        if (!imageFile) {
+            setImagePreview(branch?.foto_url ?? null);
+            return;
+        }
+
+        const previewUrl = URL.createObjectURL(imageFile);
+
+        setImagePreview(previewUrl);
+
+        return () => {
+            URL.revokeObjectURL(previewUrl);
+        };
+    }, [imageFile, branch?.foto_url]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -48,47 +64,34 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
 
-    e.currentTarget.value = "";
+        e.currentTarget.value = "";
 
-    if (!file) return;
+        if (!file) return;
 
-    if (!["image/jpeg", "image/png"].includes(file.type)) {
-        toast.error(t("notifications.invalidImageFormat"));
-        toast.error("Nel");
-        e.target.value = "";
-        return;
-    }
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+            toast.error(t("notifications.invalidImageFormat"));
+            e.target.value = "";
+            return;
+        }
 
-    if (file.size > 2 * 1024 * 1024) {
-        toast.error("nel");
-        e.target.value = "";
-        return;
-    }
+        if (file.size > 2 * 1024 * 1024) {
+            toast.error(t("notifications.invalidSizeError"));
+            e.target.value = "";
+            return;
+        }
 
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-        if (typeof reader.result !== "string") return;
-
-        const imageUrl = reader.result;
-
-        setImagePreview(imageUrl);
-
-        setFormData((prev) => ({
-            ...prev,
-            foto_url: imageUrl
-        }))
-    };
-        reader.readAsDataURL(file);
+        setImageFile(file);
     };
 
     const { mutate: mutateUpdateBranch, isPending } = useMutation({
-        mutationFn: (data: EditBranchPayload) => updateBranch(branch!.id, data),
+        mutationFn: (data: FormData) => updateBranch(branch!.id, data),
 
         onSuccess: async () => {
             toast.success(t("generalData.notifications.success"))
+            setImageFile(null);
 
             await queryClient.invalidateQueries({ queryKey: ["getBranch", Number(branch?.id)] });
+            await queryClient.invalidateQueries({ queryKey: ["branches"] });
 
             onClose()
         },
@@ -102,26 +105,32 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const name = formData.name?.trim();
-        const adress = formData.adress?.trim();
-        const phone = formData.phone?.trim();
-        const contact_info = formData.contact_info?.trim();
-        const imageUrl = formData.foto_url;
+        if (isPending) return;
+
+        const name = formData.name.trim();
+        const address = formData.adress.trim();
+        const phone = formData.phone.trim();
+        const contactInfo = formData.contact_info.trim();
         const status = formData.status;
 
-        if (!name || !adress) {
+        if (!name || !address) {
             toast.error(t("generalData.notifications.requiredFields"));
             return;
         }
 
-        mutateUpdateBranch({
-            nombre: name,
-            direccion: adress,
-            telefono: phone,
-            info_contacto: contact_info,
-            foto_url: imageUrl,
-            estado: status,
-        });
+        const payload = new FormData();
+
+        payload.append("nombre", name);
+        payload.append("direccion", address);
+        payload.append("telefono", phone);
+        payload.append("info_contacto", contactInfo);
+        payload.append("estado", String(status));
+
+        if (imageFile) {
+            payload.append("image", imageFile);
+        }
+
+        mutateUpdateBranch(payload);
     }
 
     return (
@@ -170,7 +179,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
                             type="file"
                             ref={fileInputRef}
                             onChange={handleImageChange}
-                            accept="image/jpeg,image/png"
+                            accept="image/jpeg,image/png,image/webp"
                             className="hidden"/>
                     </div>
 

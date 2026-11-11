@@ -20,7 +20,7 @@ const BusinessContext = ({ role, companyImage, contextName, loading = false }: B
                 <img
                     src={companyImage}
                     alt={isAdmin ? t("companyAlt") : t("userCompanyAlt")}
-                    className="h-full w-full object-contain object-center"
+                    className="h-full w-full object-cover object-center"
                 />
             </div>
 

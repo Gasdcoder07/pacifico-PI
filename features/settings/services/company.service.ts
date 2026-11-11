@@ -6,7 +6,7 @@ export const getCompanyById = async (id: string | number): Promise<Company> => {
     return response.data;
 }
 
-export const updateCompany = async (id: string | number, data: CompanyRequest): Promise<CompanyResponse> => {
+export const updateCompany = async (id: string | number, data: FormData): Promise<CompanyResponse> => {
     const response = await apiClient.put(`/api/empresas/${id}`, data);
     return response.data;
 }

@@ -1,132 +1,138 @@
-import { ModalLayout } from "@/shared/components/ModalLayout";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
-import { createBranch, type CreateBranchPayload } from "@/features/branches/services/branch.service";
+
+import { ModalLayout } from "@/shared/components/ModalLayout";
+import { createBranch } from "@/features/branches/services/branch.service";
 
 interface CreateBranchModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+    isOpen: boolean;
+    onClose: () => void;
 }
 
 const initialForm = {
-  company_name: "",
-  company_address: "",
-  company_contact_info: "",
-  company_phone: "",
-  foto_url: ""
+    company_name: "",
+    company_address: "",
+    company_contact_info: "",
+    company_phone: "",
 };
 
 export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) => {
-  const t = useTranslations("Branches.createModal");
-  const queryClient = useQueryClient();
-  const [formData, setFormData] = useState(initialForm);
+    const t = useTranslations("Branches.createModal");
+    const queryClient = useQueryClient();
+    const [formData, setFormData] = useState(initialForm);
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const resetForm = () => {
-    setFormData(initialForm);
-    setImageFile(null);
-    setImagePreview(null);
+    const resetForm = () => {
+        setFormData(initialForm);
+        setImageFile(null);
+        setImagePreview(null);
 
-    if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-    }
-  };
-
-  const { mutate: mutateCreateBranch, isPending: isCreating } = useMutation({
-    mutationFn: (data: CreateBranchPayload) => createBranch(data),
-
-    onSuccess: async () => {
-      toast.success(t("notifications.success"));
-
-      await queryClient.invalidateQueries({ queryKey: ["branches"] });
-      
-      resetForm();
-      onClose();
-    },
-
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.error || t("notifications.error"));
-    },
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-
-    e.currentTarget.value = "";
-
-    if (!file) return;
-
-    if (!["image/jpeg", "image/png"].includes(file.type)) {
-      toast.error(t("notifications.invalidImageFormat"));
-      return;
-    }
-
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error(t("notifications.imageSizeError"));
-      return;
-    }
-
-    setImageFile(file);
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-        if (typeof reader.result !== "string") return;
-
-        const result = reader.result;
-        setImagePreview(result);
-
-        setFormData((prev) => ({
-            ...prev,
-            foto_url: result
-        }))
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
-    reader.readAsDataURL(file);
-  };
 
-  const triggerFileSelect = () => {
-    fileInputRef.current?.click();
-  };
+    useEffect(() => {
+        if (!imageFile) {
+            setImagePreview(null);
+            return;
+        }
 
-  const handleClose = () => {
-    if (isCreating) return;
-    resetForm();
-    onClose();
-  };
+        const previewUrl = URL.createObjectURL(imageFile);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+        setImagePreview(previewUrl);
 
-    if (isCreating) return;
+        return () => {
+            URL.revokeObjectURL(previewUrl);
+        };
+    }, [imageFile]);
 
-    const name = formData.company_name.trim();
-    const direction = formData.company_address.trim();
-    const phone = formData.company_phone.trim();
-    const contact_info = formData.company_contact_info.trim();
+    const { mutate: mutateCreateBranch, isPending: isCreating } = useMutation({
+        mutationFn: (data: FormData) => createBranch(data),
 
-    if (!name || !direction) {
-        toast.error(t("notifications.requiredFields"));
-        return;
-    }
+        onSuccess: async () => {
+            toast.success(t("notifications.success"));
 
-    mutateCreateBranch({
-      name: name,
-      direction: direction,
-      phone: phone,
-      contact_info: contact_info,
-      foto_url: formData.foto_url || null,
+            await queryClient.invalidateQueries({ queryKey: ["branches"] });
+            
+            resetForm();
+            onClose();
+        },
+
+        onError: (error: any) => {
+            toast.error(error?.response?.data?.error || t("notifications.error"));
+        },
     });
-  };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+
+        e.currentTarget.value = "";
+
+        if (!file) return;
+
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+            toast.error(t("notifications.invalidImageFormat"));
+            return;
+        }
+
+        if (file.size > 2 * 1024 * 1024) {
+            toast.error(t("notifications.imageSizeError"));
+            return;
+        }
+
+        setImageFile(file);
+    };
+
+    const triggerFileSelect = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleClose = () => {
+        if (isCreating) return;
+        resetForm();
+        onClose();
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (isCreating) return;
+
+        const name = formData.company_name.trim();
+        const direction = formData.company_address.trim();
+        const phone = formData.company_phone.trim();
+        const contact_info = formData.company_contact_info.trim();
+
+        if (!name || !direction) {
+            toast.error(t("notifications.requiredFields"));
+            return;
+        }
+
+        const payload = new FormData();
+
+        payload.append("name", name);
+        payload.append("direction", direction);
+        payload.append("phone", phone);
+        payload.append("contact_info", contact_info);
+
+        if (imageFile) {
+            payload.append("image", imageFile);
+        }
+
+        mutateCreateBranch(payload);
+    };
 
   return (
     <ModalLayout isOpen={isOpen} onClose={handleClose} title={t("title")} width="max-w-4xl">
@@ -184,7 +190,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                     type="file"
                     ref={fileInputRef}
                     onChange={handleImageChange}
-                    accept="image/jpeg,image/png"
+                    accept="image/jpeg,image/png,image/webp"
                     className="hidden"
                 />
 

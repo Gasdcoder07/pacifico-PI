@@ -17,7 +17,7 @@ const Navbar = () => {
             <div className="mx-auto flex justify-between items-center py-3 px-4">
                 <BusinessContext
                     role={user?.rol_id}
-                    companyImage="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy45ZDId1LatgF6AFZ32E9FTi90TIyVy7Ag7Y8J9eOQg&s=10"
+                    companyImage={user?.company_image ? user.company_image : '/default_branch.webp'}
                     contextName={user?.context_name}
                     loading={loading}
                 />

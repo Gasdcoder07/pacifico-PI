@@ -68,7 +68,7 @@ export async function GET(
         const branchId = parseInt(resolvedParams.id, 10);
 
         const response = await pool.query(
-            `SELECT id,company_id,admin_id,name,direction,phone,contact_info,status FROM sucursales WHERE id = $1;`, [branchId]
+            `SELECT id,company_id,admin_id,name,direction,phone,contact_info,status,foto_url FROM sucursales WHERE id = $1;`, [branchId]
         );
 
         const branch = response.rows[0];

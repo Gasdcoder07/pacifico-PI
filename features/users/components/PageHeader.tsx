@@ -7,9 +7,10 @@ import { UserProfile } from "@/features/auth/types/authInterfaces";
 
 interface PageHeaderProps {
     currentUser?: UserProfile | null;
+    canCreateUsers: boolean;
 }
 
-const PageHeader = ({ currentUser } : PageHeaderProps) => {
+const PageHeader = ({ currentUser, canCreateUsers = false } : PageHeaderProps) => {
     const t = useTranslations("UsersPage");
 
     const role = currentUser?.rol_id;
@@ -24,7 +25,7 @@ const PageHeader = ({ currentUser } : PageHeaderProps) => {
             </div>
 
             {
-                currentUser && (
+                currentUser && canCreateUsers && (
                     isAdmin ? (
                         <CreateUserButton
                             key={`admin-${currentUser.id}`}

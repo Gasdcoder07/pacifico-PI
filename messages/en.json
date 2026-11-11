@@ -82,9 +82,7 @@
   "SellPage": {
     "emptyState": {
         "title": "No products available",
-        "description": "There are no products available for sale yet. Add products to your inventory to start recording sales.",
-        "action": "Go to inventory",
-        "ariaLabel": "Go to inventory page"
+        "description": "There are no products available in the inventory yet. An administrator must add products before you can start recording sales."
     },
     "productCard": {
         "outOfStock": "Out of stock",
@@ -357,7 +355,9 @@
         "notifications": {
           "success": "Branch updated successfully",
           "error": "An error occurred while updating the branch",
-          "requiredFields": "Please fill in all required fields."
+          "requiredFields": "Please fill in all required fields.",
+          "invalidImageFormat": "Only JPG or PNG images are allowed.",
+          "imageSizeError":"The image size cannot exceed 2 MB."
         },
         "uploadButton": "Upload image",
         "changeButton": "Choose another image",
@@ -379,8 +379,10 @@
     },
     "container": {
       "emptyState": {
-        "title": "No collaborators yet",
-        "description": "There are no users registered in this branch yet. Create a user to start building your team."
+        "title": "No users yet",
+        "description": "The users you register will appear here, where you can manage their information and permissions.",
+        "descriptionBranches": "Before adding users, you need to create at least one branch so they can be assigned correctly.",
+        "createBranch": "Create branch"
       }
     }
   },

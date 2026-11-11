@@ -328,10 +328,10 @@ export async function PUT(request: Request) {
     if (contentType.includes("multipart/form-data")) {
       const formData = await request.formData();
 
-      fotoFile = formData.get("foto");
+      fotoFile = formData.get("image");
 
       body = Object.fromEntries(
-        Array.from(formData.entries()).filter(([key]) => key !== "foto"),
+        Array.from(formData.entries()).filter(([key]) => key !== "image"),
       );
 
       if (typeof body.branches === "string" && body.branches.trim()) {

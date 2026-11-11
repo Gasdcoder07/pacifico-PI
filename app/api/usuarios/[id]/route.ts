@@ -155,6 +155,7 @@ export async function GET(
                 u.email,
                 u.rol_id,
                 u.branch_id,
+                u.company_id,
                 u.status,
                 e.foto_url as company_image,
                 CASE 
