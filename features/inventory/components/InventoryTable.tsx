@@ -25,7 +25,7 @@ const InventoryTable = ({ isLoading, products, isAdmin } : InventoryTableProps) 
 
   if (isLoading) return <InventoryTableSkeleton />;
 
-  if (products.length === 0) return <EmptyState/>
+  if (products.length === 0) return <EmptyState isAdmin={isAdmin}/>
 
   return (
     <div className="flex max-h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white text-neutral-900 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50">

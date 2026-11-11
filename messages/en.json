@@ -82,9 +82,7 @@
   "SellPage": {
     "emptyState": {
         "title": "No products available",
-        "description": "There are no products available for sale yet. Add products to your inventory to start recording sales.",
-        "action": "Go to inventory",
-        "ariaLabel": "Go to inventory page"
+        "description": "There are no products available in the inventory yet. An administrator must add products before you can start recording sales."
     },
     "productCard": {
         "outOfStock": "Out of stock",
@@ -357,7 +355,9 @@
         "notifications": {
           "success": "Branch updated successfully",
           "error": "An error occurred while updating the branch",
-          "requiredFields": "Please fill in all required fields."
+          "requiredFields": "Please fill in all required fields.",
+          "invalidImageFormat": "Only JPG or PNG images are allowed.",
+          "imageSizeError":"The image size cannot exceed 2 MB."
         },
         "uploadButton": "Upload image",
         "changeButton": "Choose another image",
@@ -379,15 +379,60 @@
     },
     "container": {
       "emptyState": {
-        "title": "No collaborators yet",
-        "description": "There are no users registered in this branch yet. Create a user to start building your team."
+        "title": "No users yet",
+        "description": "The users you register will appear here, where you can manage their information and permissions.",
+        "descriptionBranches": "Before adding users, you need to create at least one branch so they can be assigned correctly.",
+        "createBranch": "Create branch"
       }
     }
   },
   "InventoryPage": {
     "emptyState": {
         "title": "Your inventory is empty",
-        "description": "You haven't registered any products yet. Start by adding your first product to manage your stock."
+        "description": "Before adding your first product, you need to set up at least one branch and one category.",
+        "adminOnly": "There are no products available yet. An administrator must set up the inventory.",
+        "branches": "Branches",
+        "categories": "Categories",
+        "createBranch": "Create branch"
+    },
+    "categoriesButton": {
+        "label": "Categories"
+    },
+    "categoriesPanel": {
+        "title": "Manage categories",
+        "createForm": {
+            "title": "Add a new category",
+            "subtitle": "Create a category to organize your products.",
+            "namePlaceholder": "Category name",
+            "descriptionPlaceholder": "Description (optional)",
+            "createButton": "Create",
+            "creatingButton": "Creating...",
+            "notifications": {
+                "success": "Category created successfully",
+                "error": "Failed to create category",
+                "requiredName": "Category name is required"
+            }
+        },
+        "emptyState": {
+            "title": "No categories yet",
+            "description": "The categories you create will appear here, where you can organize, edit, and manage your products."
+        },
+        "editForm": {
+            "title": "Your categories",
+            "editButton": "Edit category",
+            "nameLabel": "Name",
+            "descriptionLabel": "Description (optional)",
+            "namePlaceholder": "Category name",
+            "descriptionPlaceholder": "Description (optional)",
+            "saveButton": "Save changes",
+            "savingButton": "Saving...",
+            "cancelButton": "Cancel",
+            "notifications": {
+                "success": "Category updated successfully",
+                "error": "Failed to update category",
+                "requiredName": "Category name is required"
+            }
+        }
     },
     "addProductButton": {
       "label": "Add Product"
@@ -735,5 +780,11 @@
     "branches": "Branches",
     "users": "Users",
     "settings": "Settings"
-  }
+  },
+    "Pagination": {
+        "label": "Pagination",
+        "previous": "Previous",
+        "next": "Next",
+        "pageInfo": "Page {currentPage} of {totalPages}"
+    }
 }

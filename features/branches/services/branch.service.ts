@@ -42,12 +42,12 @@ export const getBranchById = async (id : string | number) : Promise<BranchRespon
     return response.data;
 }
 
-export const createBranch = async (data: CreateBranchPayload): Promise<Branch> => {
+export const createBranch = async (data: FormData): Promise<Branch> => {
     const response = await apiClient.post("/api/sucursales", data);
     return response.data.data;
 }
 
-export const updateBranch = async (id : string | number, data: EditBranchPayload): Promise<BranchResponse> => {
+export const updateBranch = async (id : string | number, data: FormData): Promise<BranchResponse> => {
     const response = await apiClient.put(`/api/sucursales/${id}`, data);
     return response.data;
 }

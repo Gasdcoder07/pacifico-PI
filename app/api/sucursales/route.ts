@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { pool } from "@/shared/lib/db";
 import { supabase } from "@/shared/lib/supabase";
+import { uploadCloudinaryImage } from "@/shared/utils/cloudinary-upload";
+import cloudinary from "@/shared/lib/cloudinary";
 
 /**
  * @swagger
@@ -199,6 +201,8 @@ export async function GET(request: Request) {
  *         description: Error interno del servidor.
  */
 export async function POST(request: Request) {
+    let uploadedPublicId: string | null = null;
+
     try {
         const authHeader = request.headers.get("Authorization");
         const token = authHeader?.match(/^Bearer\s+(\S+)$/i)?.[1];
@@ -210,7 +214,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token);
+        const { data: { user: authUser }, error: authError, } = await supabase.auth.getUser(token);
 
         if (authError || !authUser) {
             return NextResponse.json(
@@ -220,9 +224,12 @@ export async function POST(request: Request) {
         }
 
         const currentUserQuery = await pool.query(
-            `SELECT id, rol_id, company_id FROM public.usuarios WHERE auth_user_id = $1 AND status = true`,
+            `SELECT id, rol_id, company_id
+             FROM public.usuarios
+             WHERE auth_user_id = $1 AND status = true`,
             [authUser.id]
         );
+
         const currentUser = currentUserQuery.rows[0];
 
         if (!currentUser) {
@@ -239,25 +246,121 @@ export async function POST(request: Request) {
             );
         }
 
-        let body;
+        const contentType = request.headers.get("content-type") ?? "";
+
+        if (!contentType.includes("multipart/form-data")) {
+            return NextResponse.json(
+                { error: "Se requiere multipart/form-data" },
+                { status: 415 }
+            );
+        }
+
+        let formData: FormData;
+
         try {
-            body = await request.json();
+            formData = await request.formData();
         } catch {
             return NextResponse.json(
-                { error: "Formato JSON inválido en la petición" },
+                { error: "Formulario inválido" },
                 { status: 400 }
             );
         }
 
-        const { name, direction, phone, contact_info, foto_public_id, foto_url } = body;
+        const nameValue = formData.get("name");
+        const directionValue = formData.get("direction");
+        const phoneValue = formData.get("phone");
+        const contactInfoValue = formData.get("contact_info");
+        const image = formData.get("image");
 
-        if (!name || !direction) {
+        // Validar nombre y dirección
+        if (
+            typeof nameValue !== "string" ||
+            typeof directionValue !== "string" ||
+            !nameValue.trim() ||
+            !directionValue.trim()
+        ) {
             return NextResponse.json(
                 { error: "El nombre y la dirección son campos obligatorios" },
                 { status: 400 }
             );
         }
 
+        // Validar datos de contacto
+        if (
+            (phoneValue !== null && typeof phoneValue !== "string") ||
+            (contactInfoValue !== null && typeof contactInfoValue !== "string")
+        ) {
+            return NextResponse.json(
+                { error: "Los datos de contacto no son válidos" },
+                { status: 400 }
+            );
+        }
+
+        // Validar archivo
+        if (image !== null && !(image instanceof File)) {
+            return NextResponse.json(
+                { error: "El archivo de imagen no es válido" },
+                { status: 400 }
+            );
+        }
+
+        if (image instanceof File) {
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp",
+            ];
+
+            if (!allowedTypes.includes(image.type)) {
+                return NextResponse.json(
+                    { error: "Solo se permiten imágenes JPG, PNG y WebP" },
+                    { status: 400 }
+                );
+            }
+
+            if (image.size === 0 || image.size > 2 * 1024 * 1024) {
+                return NextResponse.json(
+                    { error: "La imagen debe tener un tamaño máximo de 2 MB" },
+                    { status: 400 }
+                );
+            }
+        }
+
+        // Valores normalizados
+        const name = nameValue.trim();
+        const direction = directionValue.trim();
+
+        const phone =
+            typeof phoneValue === "string"
+                ? phoneValue.trim() || null
+                : null;
+
+        const contactInfo =
+            typeof contactInfoValue === "string"
+                ? contactInfoValue.trim() || null
+                : null;
+
+        let fotoUrl: string | null = null;
+        let fotoPublicId: string | null = null;
+
+        // Subir a Cloudinary si existe una imagen
+        if (image instanceof File) {
+            const uploaded = await uploadCloudinaryImage(
+                image,
+                "sucursales"
+            );
+
+            if (!uploaded) {
+                throw new Error("No se pudo subir la imagen");
+            }
+
+            fotoUrl = uploaded.foto_url;
+            fotoPublicId = uploaded.foto_public_id;
+
+            uploadedPublicId = fotoPublicId;
+        }
+
+        // Crear sucursal
         const insertResult = await pool.query(
             `INSERT INTO public.sucursales (
                 name,
@@ -270,27 +373,55 @@ export async function POST(request: Request) {
                 admin_id,
                 foto_public_id,
                 foto_url
-            ) VALUES ($1, $2, $3, $4, $5, NOW(), NOW(), $6, $7, $8)
-            RETURNING id, company_id, name, direction, phone, contact_info, status, created_at, updated_at, admin_id, foto_public_id,foto_url;`,
+            )
+            VALUES ($1, $2, $3, $4, $5, NOW(), NOW(), $6, $7, $8)
+            RETURNING
+                id,
+                company_id,
+                name,
+                direction,
+                phone,
+                contact_info,
+                status,
+                created_at,
+                updated_at,
+                admin_id,
+                foto_public_id,
+                foto_url`,
             [
                 name,
                 currentUser.company_id,
                 direction,
-                phone || null,
-                contact_info || null,
+                phone,
+                contactInfo,
                 currentUser.id,
-                foto_public_id || null,
-                foto_url || null
+                fotoPublicId,
+                fotoUrl,
             ]
         );
 
         return NextResponse.json(
-            { success: `Sucursal "${name}" creada con éxito`, data: insertResult.rows[0] },
+            {
+                success: `Sucursal "${name}" creada con éxito`,
+                data: insertResult.rows[0],
+            },
             { status: 201 }
         );
 
-    } catch (err) {
-        console.error("Error al crear sucursal:", err);
+    } catch (error) {
+        console.error("Error al crear sucursal:", error);
+
+        if (uploadedPublicId) {
+            await cloudinary.uploader
+                .destroy(uploadedPublicId)
+                .catch((cleanupError) => {
+                    console.error(
+                        "Error al limpiar Cloudinary:",
+                        cleanupError
+                    );
+                });
+        }
+
         return NextResponse.json(
             { error: "Error interno en el servidor al crear la sucursal" },
             { status: 500 }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import pool from "@/shared/lib/db";
 import { supabase } from "@/shared/lib/supabase";
+import {uploadCloudinaryImage,CloudinaryImageError} from "@/shared/utils/cloudinary-upload";
 import cloudinary from "@/shared/lib/cloudinary";
 
 /**
@@ -138,7 +139,8 @@ export async function GET(
         }
 
         const result = await pool.query(
-            `SELECT *
+            `SELECT 
+                id, name, description, address, status, foto_public_id, foto_url, created_at, updated_at
                 FROM public.empresas
                 WHERE id = $1`,
             [companyId]
@@ -186,7 +188,7 @@ export async function GET(
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
@@ -267,6 +269,8 @@ export async function PUT(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    let newFotoPublicId: string | null = null;
+
     try {
         const authHeader = request.headers.get("Authorization");
 
@@ -292,10 +296,12 @@ export async function PUT(
         }
 
         const currentUserQuery = await pool.query(
-            `SELECT id, company_id, rol_id
-                FROM public.usuarios
-                WHERE auth_user_id = $1
-                    AND status = true`,
+            `
+            SELECT id, company_id, rol_id
+            FROM public.usuarios
+            WHERE auth_user_id = $1
+                AND status = true
+            `,
             [authUser.id]
         );
 
@@ -308,7 +314,6 @@ export async function PUT(
             );
         }
 
-
         // Solo el administrador puede modificar la empresa
         if (Number(currentUser.rol_id) !== 1) {
             return NextResponse.json(
@@ -320,28 +325,12 @@ export async function PUT(
         const resolvedParams = await params;
         const companyId = parseInt(resolvedParams.id, 10);
 
-        if (isNaN(companyId)) {
+        if (!Number.isInteger(companyId) || companyId <= 0) {
             return NextResponse.json(
                 { error: "El ID de la empresa no es válido" },
                 { status: 400 }
             );
         }
-
-        const currentCompanyResult = await pool.query(
-            `SELECT foto_public_id
-                FROM public.empresas
-                WHERE id = $1`,
-            [companyId]
-        );
-
-        const currentCompany = currentCompanyResult.rows[0];
-        if (!currentCompany) {
-            return NextResponse.json(
-                { error: "Empresa no encontrada" },
-                { status: 404 }
-            );
-        }
-        const oldFotoPublicId = currentCompany.foto_public_id;
 
         // El administrador solo puede modificar su propia empresa
         if (Number(currentUser.company_id) !== companyId) {
@@ -351,55 +340,81 @@ export async function PUT(
             );
         }
 
-        const body = await request.json();
+        const currentCompanyResult = await pool.query(
+            `
+            SELECT id, foto_public_id
+            FROM public.empresas
+            WHERE id = $1
+            `,
+            [companyId]
+        );
 
-        const {
-            name,
-            description,
-            address,
-            foto_public_id,
-            foto_url,
-        } = body;
+        const currentCompany = currentCompanyResult.rows[0];
 
-        if (name !== undefined && typeof name !== "string") {
+        if (!currentCompany) {
+            return NextResponse.json(
+                { error: "Empresa no encontrada" },
+                { status: 404 }
+            );
+        }
+
+        // Leer JSON o FormData
+        const contentType = request.headers.get("content-type") ?? "";
+
+        let body: Record<string, unknown>;
+        let fotoFile: FormDataEntryValue | null = null;
+
+        if (contentType.includes("multipart/form-data")) {
+            const formData = await request.formData();
+
+            fotoFile = formData.get("foto");
+
+            body = Object.fromEntries(
+                Array.from(formData.entries()).filter(
+                    ([key]) => key !== "foto"
+                )
+            );
+        } else {
+            body = await request.json();
+        }
+
+        // Los datos de Cloudinary no se reciben directamente
+        if (
+            body.foto_public_id !== undefined ||
+            body.foto_url !== undefined
+        ) {
+            return NextResponse.json(
+                { error: "La imagen debe enviarse mediante el campo foto" },
+                { status: 400 }
+            );
+        }
+
+        // Validaciones
+        if (body.name !== undefined && typeof body.name !== "string") {
             return NextResponse.json(
                 { error: "El nombre debe ser texto" },
                 { status: 400 }
             );
         }
 
-        if (description !== undefined && description !== null && typeof description !== "string") {
+        if (
+            body.description !== undefined &&
+            body.description !== null &&
+            typeof body.description !== "string"
+        ) {
             return NextResponse.json(
                 { error: "La descripción debe ser texto" },
                 { status: 400 }
             );
         }
 
-        if (address !== undefined && address !== null && typeof address !== "string") {
+        if (
+            body.address !== undefined &&
+            body.address !== null &&
+            typeof body.address !== "string"
+        ) {
             return NextResponse.json(
                 { error: "La dirección debe ser texto" },
-                { status: 400 }
-            );
-        }
-
-        if (
-            foto_public_id !== undefined &&
-            foto_public_id !== null &&
-            typeof foto_public_id !== "string"
-        ) {
-            return NextResponse.json(
-                { error: "foto_public_id debe ser texto" },
-                { status: 400 }
-            );
-        }
-
-        if (
-            foto_url !== undefined &&
-            foto_url !== null &&
-            typeof foto_url !== "string"
-        ) {
-            return NextResponse.json(
-                { error: "foto_url debe ser texto" },
                 { status: 400 }
             );
         }
@@ -409,11 +424,9 @@ export async function PUT(
         let paramIndex = 1;
 
         const fields = {
-            name,
-            description,
-            address,
-            foto_public_id,
-            foto_url,
+            name: body.name,
+            description: body.description,
+            address: body.address,
         };
 
         for (const [field, value] of Object.entries(fields)) {
@@ -422,6 +435,24 @@ export async function PUT(
                 values.push(value);
                 paramIndex++;
             }
+        }
+
+        // Subir imagen nueva a Cloudinary
+        const uploadedImage = await uploadCloudinaryImage(
+            fotoFile,
+            `empresas/${companyId}`
+        );
+
+        if (uploadedImage) {
+            newFotoPublicId = uploadedImage.foto_public_id;
+
+            updates.push(`foto_url = $${paramIndex}`);
+            values.push(uploadedImage.foto_url);
+            paramIndex++;
+
+            updates.push(`foto_public_id = $${paramIndex}`);
+            values.push(uploadedImage.foto_public_id);
+            paramIndex++;
         }
 
         if (updates.length === 0) {
@@ -436,44 +467,80 @@ export async function PUT(
         values.push(companyId);
 
         const result = await pool.query(
-            `UPDATE public.empresas
-                SET ${updates.join(", ")}
-                WHERE id = $${paramIndex}
-             RETURNING *`,
+            `
+            UPDATE public.empresas
+            SET ${updates.join(", ")}
+            WHERE id = $${paramIndex}
+            RETURNING
+                id,
+                name,
+                description,
+                address,
+                status,
+                foto_public_id,
+                foto_url,
+                created_at,
+                updated_at
+            `,
             values
         );
 
-        if (
-            oldFotoPublicId &&
-            foto_public_id !== undefined &&
-            foto_public_id !== oldFotoPublicId
-        ) {
-            try {
-                await cloudinary.uploader.destroy(oldFotoPublicId);
-            } catch (cloudinaryError) {
-                console.error(
-                    "Error al eliminar la imagen anterior de Cloudinary:",
-                    cloudinaryError
-                );
-            }
-        }
+        const updatedCompany = result.rows[0];
 
-        if (!result.rows[0]) {
+        if (!updatedCompany) {
             return NextResponse.json(
                 { error: "Empresa no encontrada" },
                 { status: 404 }
             );
         }
 
+        // Eliminar imagen anterior después de actualizar PostgreSQL
+        if (
+            newFotoPublicId &&
+            currentCompany.foto_public_id &&
+            currentCompany.foto_public_id !== newFotoPublicId
+        ) {
+            try {
+                await cloudinary.uploader.destroy(
+                    currentCompany.foto_public_id
+                );
+            } catch (cloudinaryError) {
+                console.error(
+                    "Error al eliminar la imagen anterior:",
+                    cloudinaryError
+                );
+            }
+        }
+
         return NextResponse.json(
             {
                 message: "Empresa actualizada con éxito",
-                data: result.rows[0],
+                data: updatedCompany,
             },
             { status: 200 }
         );
-    } catch (error) {
+
+    } catch (error: unknown) {
         console.error("Error en PUT /api/empresas/[id]:", error);
+
+        // Limpiar imagen nueva si falla la actualización
+        if (newFotoPublicId) {
+            try {
+                await cloudinary.uploader.destroy(newFotoPublicId);
+            } catch (cleanupError) {
+                console.error(
+                    "Error al limpiar imagen de Cloudinary:",
+                    cleanupError
+                );
+            }
+        }
+
+        if (error instanceof CloudinaryImageError) {
+            return NextResponse.json(
+                { error: error.message },
+                { status: error.status }
+            );
+        }
 
         return NextResponse.json(
             { error: "Error interno en el servidor" },
@@ -481,7 +548,6 @@ export async function PUT(
         );
     }
 }
-
 /**
  * @swagger
  * /api/empresas/{id}:

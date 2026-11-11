@@ -9,6 +9,7 @@ import {
   transaction,
   validId,
 } from "@/shared/utils/inventory-access";
+import { uploadCloudinaryImage,CloudinaryImageError } from "@/shared/utils/cloudinary-upload";
 import cloudinary from "@/shared/lib/cloudinary";
 
 /**
@@ -313,10 +314,36 @@ export async function POST(request: Request) {
  *         description: Error interno.
  */
 
+
 export async function PUT(request: Request) {
+  let newFotoPublicId: string | null = null;
+
   try {
     const actor = await getActor(request, [1, 2]);
-    const body = await readBody(request);
+
+    const contentType = request.headers.get("content-type") ?? "";
+    let body: Record<string, any>;
+    let fotoFile: FormDataEntryValue | null = null;
+
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await request.formData();
+
+      fotoFile = formData.get("image");
+
+      body = Object.fromEntries(
+        Array.from(formData.entries()).filter(([key]) => key !== "image"),
+      );
+
+      if (typeof body.branches === "string" && body.branches.trim()) {
+        try {
+          body.branches = JSON.parse(body.branches);
+        } catch {
+          throw new HttpError(400, "El formato de branches no es válido");
+        }
+      }
+    } else {
+      body = await readBody(request);
+    }
 
     const productId = validId(body.product_id);
     const branches = body.branches ? readAllocations(body.branches) : [];
@@ -338,19 +365,18 @@ export async function PUT(request: Request) {
       );
     }
 
-    for (const field of ["description", "foto_url", "foto_public_id"]) {
-      if (body[field] != null && typeof body[field] !== "string") {
-        throw new HttpError(400, `El campo ${field} debe ser texto`);
-      }
+    if (
+      body.description != null &&
+      typeof body.description !== "string"
+    ) {
+      throw new HttpError(400, "La descripción debe ser texto");
     }
 
-    if (
-      (body.foto_public_id === undefined) !==
-      (body.foto_url === undefined)
-    ) {
+    // Las URLs e identificadores de Cloudinary no se reciben del cliente.
+    if (body.foto_url !== undefined || body.foto_public_id !== undefined) {
       throw new HttpError(
         400,
-        "Debes enviar foto_public_id y foto_url juntos",
+        "La imagen debe enviarse mediante el campo foto",
       );
     }
 
@@ -365,23 +391,10 @@ export async function PUT(request: Request) {
       );
 
       if (!product.rows[0]) {
-        throw new HttpError(
-          404,
-          "Producto no encontrado en tu empresa",
-        );
+        throw new HttpError(404, "Producto no encontrado en tu empresa");
       }
 
       const oldFotoPublicId = product.rows[0].foto_public_id;
-
-      const fotoPublicId =
-        body.foto_public_id === undefined
-          ? product.rows[0].foto_public_id
-          : body.foto_public_id;
-
-      const fotoUrl =
-        body.foto_url === undefined
-          ? product.rows[0].foto_url
-          : body.foto_url;
 
       const category = await client.query(
         `SELECT id
@@ -398,6 +411,22 @@ export async function PUT(request: Request) {
           "Categoría no encontrada en tu empresa",
         );
       }
+
+      // Subir imagen nueva solamente si se envió una.
+      const uploadedImage = await uploadCloudinaryImage(
+        fotoFile,
+        "productos",
+      );
+
+      if (uploadedImage) {
+        newFotoPublicId = uploadedImage.foto_public_id;
+      }
+
+      const fotoPublicId =
+        uploadedImage?.foto_public_id ?? product.rows[0].foto_public_id;
+
+      const fotoUrl =
+        uploadedImage?.foto_url ?? product.rows[0].foto_url;
 
       const updatedProduct = await client.query(
         `UPDATE public.productos
@@ -424,7 +453,7 @@ export async function PUT(request: Request) {
         ],
       );
 
-      const inventory = [];
+      const inventory: Record<string, unknown>[] = [];
 
       if (branches.length > 0) {
         await checkBranches(
@@ -435,27 +464,46 @@ export async function PUT(request: Request) {
 
         for (const branch of branches) {
           const existingStock = await client.query(
-            `SELECT id FROM public.inventario 
-             WHERE product_id = $1 AND branch_id = $2 AND company_id = $3`,
-            [productId, branch.branch_id, actor.company_id]
+            `SELECT id
+              FROM public.inventario
+              WHERE product_id = $1
+                AND branch_id = $2
+                AND company_id = $3`,
+            [productId, branch.branch_id, actor.company_id],
           );
 
           if (existingStock.rows[0]) {
             const updatedStock = await client.query(
-              `UPDATE public.inventario 
-               SET quantity = $1, min_stock = $2, updated_at = NOW() 
-               WHERE id = $3 
+              `UPDATE public.inventario
+                SET quantity = $1,
+                    min_stock = $2,
+                    updated_at = NOW()
+                WHERE id = $3
                RETURNING *`,
-              [branch.quantity, branch.min_stock ?? 5, existingStock.rows[0].id]
+              [
+                branch.quantity,
+                branch.min_stock ?? 5,
+                existingStock.rows[0].id,
+              ],
             );
+
             inventory.push(updatedStock.rows[0]);
           } else {
             const newStock = await client.query(
-              `INSERT INTO public.inventario (company_id, branch_id, product_id, quantity, min_stock) 
-               VALUES ($1, $2, $3, $4, $5) 
-               RETURNING *`,
-              [actor.company_id, branch.branch_id, productId, branch.quantity, branch.min_stock ?? 5]
+              `INSERT INTO public.inventario (
+                company_id, branch_id, product_id, quantity, min_stock
+              )
+              VALUES ($1, $2, $3, $4, $5)
+              RETURNING *`,
+              [
+                actor.company_id,
+                branch.branch_id,
+                productId,
+                branch.quantity,
+                branch.min_stock ?? 5,
+              ],
             );
+
             inventory.push(newStock.rows[0]);
           }
         }
@@ -464,32 +512,46 @@ export async function PUT(request: Request) {
       return {
         product: updatedProduct.rows[0],
         oldFotoPublicId,
-        inventory
+        inventory,
       };
     });
 
+    // Eliminar imagen anterior después de confirmar la actualización.
     if (
+      newFotoPublicId &&
       result.oldFotoPublicId &&
-      result.product.foto_public_id !== result.oldFotoPublicId
+      result.oldFotoPublicId !== newFotoPublicId
     ) {
-      try {
-        await cloudinary.uploader.destroy(result.oldFotoPublicId);
-      } catch (cloudinaryError) {
-      }
+      await cloudinary.uploader
+        .destroy(result.oldFotoPublicId)
+        .catch(() => {});
     }
 
     return NextResponse.json(
       {
         success: "Producto actualizado correctamente",
         data: result.product,
-        inventory: result.inventory
+        inventory: result.inventory,
       },
       { status: 200 },
     );
   } catch (error) {
+    // Si falla la operación, eliminar la imagen nueva.
+    if (newFotoPublicId) {
+      await cloudinary.uploader.destroy(newFotoPublicId).catch(() => {});
+    }
+
+    if (error instanceof CloudinaryImageError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status },
+      );
+    }
+
     return apiError(error);
   }
 }
+
 
 /**
  * @swagger

@@ -25,6 +25,9 @@ const BranchDetailsCard = ({ id }: { id: string | number }) => {
 
   if (isLoading) return <BrachDetailsCardSkeleton />;
 
+
+  console.log(branch);
+
   return (
     <div className="flex flex-col gap-4">
       <div>

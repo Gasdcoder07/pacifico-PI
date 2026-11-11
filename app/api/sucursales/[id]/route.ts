@@ -2,7 +2,9 @@ import { NextResponse } from "next/server";
 import { pool } from "@/shared/lib/db"
 import { supabase } from "@/shared/lib/supabase";
 import { validarAdmin } from "@/shared/utils/backend-funcs";
+import {uploadCloudinaryImage,CloudinaryImageError} from "@/shared/utils/cloudinary-upload";
 import cloudinary from "@/shared/lib/cloudinary";
+
 /**
  * @swagger
  * /api/sucursales/{id}:
@@ -66,7 +68,7 @@ export async function GET(
         const branchId = parseInt(resolvedParams.id, 10);
 
         const response = await pool.query(
-            `SELECT id,company_id,admin_id,name,direction,phone,contact_info,status FROM sucursales WHERE id = $1;`, [branchId]
+            `SELECT id,company_id,admin_id,name,direction,phone,contact_info,status,foto_url FROM sucursales WHERE id = $1;`, [branchId]
         );
 
         const branch = response.rows[0];
@@ -164,88 +166,149 @@ export async function PUT(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
+    let uploadedImage: { foto_url: string; foto_public_id: string } | null = null;
+
     try {
         const { id } = await params;
         const adminId = await validarAdmin(request, id);
 
-    if (adminId instanceof NextResponse) {
-        return adminId;
-    }
+        if (adminId instanceof NextResponse) {
+            return adminId;
+        }
 
-    const body = await request.json();
+        const formData = await request.formData();
 
-    if (!body || typeof body !== "object" || Array.isArray(body)) {
-        return NextResponse.json(
-            { error: "Debes enviar un objeto JSON" },
-            { status: 400 }
+        const nombre = formData.get("nombre");
+        const direccion = formData.get("direccion");
+        const telefono = formData.get("telefono");
+        const info_contacto = formData.get("info_contacto");
+        const estado = formData.get("estado");
+        const image = formData.get("image");
+
+        if (
+            typeof nombre !== "string" || !nombre.trim() ||
+            typeof direccion !== "string" || !direccion.trim() ||
+            (estado !== "true" && estado !== "false") ||
+            (telefono !== null && typeof telefono !== "string") ||
+            (info_contacto !== null && typeof info_contacto !== "string")
+        ) {
+            return NextResponse.json(
+                { error: "Revisa nombre, dirección, teléfono, contacto y estado" },
+                { status: 400 }
+            );
+        }
+
+        // Recuperar la imagen actual de la sucursal.
+        const currentBranch = await pool.query(
+            `SELECT foto_public_id, foto_url
+                FROM public.sucursales
+                WHERE id = $1 AND admin_id = $2`,
+            [id, adminId]
         );
-    }
 
-    const { nombre, direccion, telefono, info_contacto, foto_url, estado } = body;
+        if (!currentBranch.rows[0]) {
+            return NextResponse.json(
+                { error: "Sucursal no encontrada en tu cuenta" },
+                { status: 404 }
+            );
+        }
 
-    if (
-        typeof nombre !== "string" || !nombre.trim() ||
-        typeof direccion !== "string" || !direccion.trim() ||
-        typeof estado !== "boolean" ||
-        (telefono != null && typeof telefono !== "string") ||
-        (info_contacto != null && typeof info_contacto !== "string")
-    ) {
-        return NextResponse.json(
-            { error: "Revisa nombre, dirección, teléfono, contacto y estado" },
-            { status: 400 }
+        const oldFotoPublicId = currentBranch.rows[0].foto_public_id;
+
+        // Subir nueva imagen solamente si se recibió un archivo.
+        uploadedImage = await uploadCloudinaryImage(
+            image,
+            "sucursales"
         );
-    }
 
-    const response = await pool.query(
-        `UPDATE public.sucursales
-        SET name = $1,
-            direction = $2,
-            phone = $3,
-            contact_info = $4,
-            foto_url = $5,
-            status = $6,
-            updated_at = now()
-        WHERE id = $7 AND admin_id = $8
-        RETURNING *`,
-        [
-            nombre.trim(),
-            direccion.trim(),
-            telefono?.trim() || null,
-            info_contacto?.trim() || null,
-            foto_url || "",
-            estado,
-            id,
-            adminId,
-        ]
-    );
+        const foto_url = uploadedImage
+            ? uploadedImage.foto_url
+            : currentBranch.rows[0].foto_url;
 
-    if (!response.rows[0]) {
-        return NextResponse.json(
-            { error: "Sucursal no encontrada en tu cuenta" },
-            { status: 404 }
+        const foto_public_id = uploadedImage
+            ? uploadedImage.foto_public_id
+            : oldFotoPublicId;
+
+        const response = await pool.query(
+            `UPDATE public.sucursales
+            SET name = $1,
+                direction = $2,
+                phone = $3,
+                contact_info = $4,
+                foto_url = $5,
+                foto_public_id = $6,
+                status = $7,
+                updated_at = NOW()
+            WHERE id = $8 AND admin_id = $9
+             RETURNING *`,
+            [
+                nombre.trim(),
+                direccion.trim(),
+                telefono?.trim() || null,
+                info_contacto?.trim() || null,
+                foto_url,
+                foto_public_id,
+                estado === "true",
+                id,
+                adminId
+            ]
         );
-    }
 
-    return NextResponse.json(
-        {
-            message: "Sucursal actualizada con éxito",
-            data: response.rows[0],
-        },
-        { status: 200 }
-    );
+        if (!response.rows[0]) {
+            throw new Error("No se pudo actualizar la sucursal");
+        }
+
+        // Eliminar imagen anterior después de actualizar PostgreSQL.
+        if (
+            uploadedImage &&
+            oldFotoPublicId &&
+            oldFotoPublicId !== uploadedImage.foto_public_id
+        ) {
+            try {
+                await cloudinary.uploader.destroy(oldFotoPublicId);
+            } catch (cloudinaryError) {
+                console.error(
+                    "Error al eliminar la imagen anterior de Cloudinary:",
+                    cloudinaryError
+                );
+            }
+        }
+
+        return NextResponse.json(
+            {
+                message: "Sucursal actualizada con éxito",
+                data: response.rows[0]
+            },
+            { status: 200 }
+        );
+
     } catch (error) {
-    if (error instanceof SyntaxError) {
+        // Si falló la actualización, eliminar la nueva imagen subida.
+        if (uploadedImage?.foto_public_id) {
+            try {
+                await cloudinary.uploader.destroy(
+                    uploadedImage.foto_public_id
+                );
+            } catch (cleanupError) {
+                console.error(
+                    "Error al limpiar la nueva imagen de Cloudinary:",
+                    cleanupError
+                );
+            }
+        }
+
+        if (error instanceof CloudinaryImageError) {
+            return NextResponse.json(
+                { error: error.message },
+                { status: error.status }
+            );
+        }
+
+        console.error("Error al modificar sucursal:", error);
+
         return NextResponse.json(
-            { error: "El JSON enviado no es válido" },
-            { status: 400 }
-        );
-    }
-
-    console.error("Error al modificar sucursal:", error);
-
-    return NextResponse.json(
-        { error: "No se pudo modificar la sucursal" },
-        { status: 500 }
+            { error: "No se pudo modificar la sucursal" },
+            { status: 500 }
         );
     }
 }

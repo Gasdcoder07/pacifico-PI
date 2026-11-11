@@ -2,22 +2,35 @@ import { Sale } from "@/features/sell/types/sale";
 import { SaleCard } from "./SaleCard";
 import { useTranslations } from "next-intl";
 import { ReceiptText } from "lucide-react";
+import PaginationControls from "@/shared/components/PaginationControls";
 
 interface SalesContainerProps {
     sales?: Sale[];
     isLoading: boolean;
+    isFetching: boolean;
+    currentPage: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
 }
 
-const SalesContainer = ({ sales, isLoading }: SalesContainerProps) => {
+const SalesContainer = ({ sales, isLoading, isFetching, currentPage, totalPages, onPageChange }: SalesContainerProps) => {
     if (isLoading) return <Skeleton />;
 
     if (!sales?.length) return <EmptyState/>
 
     return (
-        <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-2 pb-4 sm:pb-6 lg:pb-8">
-            {sales?.map((sale) => {
-                return <SaleCard key={sale.id} sale={sale} />;
-            })}
+        <div className="flex min-w-0 flex-col gap-4 pb-4 sm:pb-6 lg:pb-8">
+            <div className="grid min-w-0 grid-cols-1 gap-4 pb-4 sm:pb-6 lg:grid-cols-2 lg:pb-8">
+                {sales.map((sale) => (
+                    <SaleCard key={sale.id} sale={sale} />
+                ))}
+            </div>
+
+            <PaginationControls
+                currentPage={currentPage}
+                totalPages={totalPages}
+                isFetching={isFetching}
+                onPageChange={onPageChange}/>
         </div>
     );
 };

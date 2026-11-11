@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { ImagePlus, Save, Trash2, Upload } from "lucide-react";
 import { motion } from "framer-motion";
@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useTranslations } from "next-intl";
 import { UserProfile } from "@/features/auth/types/authInterfaces";
-import { Company, CompanyRequest } from "../types/company";
+import { Company } from "../types/company";
 import { updateCompany } from "../services/company.service";
 
 const MAX_SIZE = 2 * 1024 * 1024; // 2 MB
@@ -29,26 +29,54 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
         name: company.name ?? "",
         address: company.address ?? "",
         description: company.description ?? "",
-        foto_url: company.foto_url ?? "",
     });
 
     const [logoFile, setLogoFile] = useState<File | null>(null);
+    const [logoPreview, setLogoPreview] = useState<string | null>(company.foto_url ?? null);
+
+    useEffect(() => {
+        if (!logoFile) return;
+
+        const previewUrl = URL.createObjectURL(logoFile);
+
+        setLogoPreview(previewUrl);
+
+        return () => {
+            URL.revokeObjectURL(previewUrl);
+        };
+    }, [logoFile]);
 
     const { mutate: mutateUpdateCompany, isPending } = useMutation({
-        mutationFn: (data: CompanyRequest) => updateCompany(company.id, data),
+        mutationFn: (data: FormData) => updateCompany(company.id, data),
 
-        onSuccess: async () => {
+        onSuccess: async (response) => {
+            const updatedCompany = response.data;
+
             queryClient.setQueryData(
             ["authUser"],
             (oldUser: UserProfile | undefined) => {
                 if (!oldUser) return oldUser;
 
                 return {
-                ...oldUser,
-                context_name: formData.name.trim(),
+                    ...oldUser,
+                    context_name: updatedCompany.name,
+                    company_image: updatedCompany.foto_url,
                 };
             },
             );
+
+            setLogoFile(null);
+            setLogoPreview(updatedCompany.foto_url ?? null);
+
+            setFormData({
+                name: updatedCompany.name,
+                address: updatedCompany.address ?? "",
+                description: updatedCompany.description ?? "",
+            });
+
+            void queryClient.invalidateQueries({
+                queryKey: ["getCompany"],
+            });
 
             toast.success(t("notifications.success"));
         },
@@ -80,50 +108,45 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
             return;
         }
 
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            if (typeof reader.result !== "string") return;
-
-            setFormData((prev) => ({
-                ...prev,
-                foto_url: reader.result as string,
-            }));
-
-            setLogoFile(file);
-        };
-
-        reader.readAsDataURL(file);
+        setLogoFile(file);
     };
 
     const handleRemoveLogo = () => {
-        setLogoFile(null);
+        if (isPending) return;
 
-        setFormData((prev) => ({
-            ...prev,
-            foto_url: "",
-        }));
+        setLogoFile(null);
+        setLogoPreview(company.foto_url ?? null);
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        if (isPending) return;
+
         const name = formData.name.trim();
         const address = formData.address.trim();
         const description = formData.description.trim();
-        const foto_url = formData.foto_url;
 
         if (!name || !address) {
             toast.error(t("notifications.requiredFields"));
             return;
         }
 
-        mutateUpdateCompany({
-            name: name,
-            address: address,
-            description: description,
-            foto_url: foto_url
-        });
+        const payload = new FormData();
+
+        payload.append("name", name);
+        payload.append("address", address);
+        payload.append("description", description);
+
+        if (logoFile) {
+            payload.append("foto", logoFile);
+        }
+
+        mutateUpdateCompany(payload);
     };
 
   return (
@@ -146,21 +169,26 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
           </div>
 
           <div className="relative flex h-40 w-full items-center justify-center overflow-hidden rounded-xl border border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900">
-            {formData.foto_url ? (
+            {logoPreview ? (
               <>
                 <img
-                  src={formData.foto_url}
+                  src={logoPreview}
                   alt={t("logo.alt")}
                   className="h-full w-full object-contain p-2"
                 />
 
-                <button
-                  type="button"
-                  onClick={handleRemoveLogo}
-                  className="absolute top-2 right-2 flex size-9 cursor-pointer items-center justify-center rounded-full border border-red-50 dark:border-slate-800 bg-white dark:bg-slate-900 text-red-500 dark:text-red-400 shadow-sm transition-all duration-200 ease-in-out hover:bg-red-500 dark:hover:bg-red-500/10 hover:text-white"
-                >
-                  <Trash2 size={16} />
-                </button>
+                {
+                    logoFile && (
+                        <button
+                        type="button"
+                        disabled={isPending}
+                        onClick={handleRemoveLogo}
+                        className="absolute top-2 right-2 flex size-9 disabled:cursor-not-allowed cursor-pointer items-center justify-center rounded-full border border-red-50 dark:border-slate-800 bg-white dark:bg-slate-900 text-red-500 dark:text-red-400 shadow-sm transition-all duration-200 ease-in-out hover:bg-red-500 dark:hover:bg-red-500/10 hover:text-white"
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                    )
+                }
               </>
             ) : (
               <div className="flex flex-col items-center gap-2 px-4 text-center">

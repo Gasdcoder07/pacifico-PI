@@ -82,9 +82,7 @@
   "SellPage": {
     "emptyState": {
         "title": "No hay productos disponibles",
-        "description": "Aún no hay productos disponibles para vender. Agrega productos a tu inventario para comenzar a registrar ventas.",
-        "action": "Ir al inventario",
-        "ariaLabel": "Ir a la página de inventario"
+        "description": "Todavía no hay productos registrados en el inventario. Un administrador debe agregarlos para que puedas comenzar a registrar ventas."
     },
     "productCard": {
         "outOfStock": "Sin stock",
@@ -357,7 +355,9 @@
         "notifications": {
           "success": "Sucursal actualizada correctamente",
           "error": "Ocurrió un error al actualizar la sucursal",
-          "requiredFields": "Por favor, completa todos los campos obligatorios."
+          "requiredFields": "Por favor, completa todos los campos obligatorios.",
+          "invalidImageFormat": "Solo se permiten imágenes JPG o PNG.",
+          "imageSizeError": "La imagen no puede pesar más de 2 MB."
         },
         "uploadButton": "Subir imagen",
         "changeButton": "Elegir otra imagen",
@@ -379,15 +379,60 @@
     },
     "container": {
       "emptyState": {
-        "title": "Aún no tienes colaboradores",
-        "description": "Todavía no hay personas registradas en esta sucursal. Crea un usuario para comenzar a formar tu equipo."
+            "title": "Aún no hay usuarios",
+            "description": "Los usuarios que registres aparecerán aquí para que puedas administrar sus datos y permisos.",
+            "descriptionBranches": "Antes de registrar usuarios, necesitas crear al menos una sucursal para poder asignarlos correctamente.",
+            "createBranch": "Crear sucursal"
       }
     }
   },
   "InventoryPage": {
     "emptyState": {
         "title": "Tu inventario está vacío",
-        "description": "Todavía no tienes productos registrados. Comienza agregando tu primer producto para gestionar tus existencias."
+        "description": "Antes de agregar tu primer producto, necesitas configurar al menos una sucursal y una categoría.",
+        "adminOnly": "Todavía no hay productos disponibles. Un administrador debe configurar el inventario.",
+        "branches": "Sucursales",
+        "categories": "Categorías",
+        "createBranch": "Crear sucursal"
+    },
+    "categoriesButton": {
+        "label": "Categorías"
+    },
+    "categoriesPanel": {
+        "title": "Gestionar categorías",
+        "createForm": {
+            "title": "Agregar nueva categoría",
+            "subtitle": "Crea una categoría para organizar tus productos.",
+            "namePlaceholder": "Nombre de la categoría",
+            "descriptionPlaceholder": "Descripción (opcional)",
+            "createButton": "Crear",
+            "creatingButton": "Creando...",
+            "notifications": {
+                "success": "Categoría creada correctamente",
+                "error": "No se pudo crear la categoría",
+                "requiredName": "El nombre de la categoría es obligatorio"
+            }
+        },
+        "emptyState": {
+            "title": "Aún no hay categorías",
+            "description": "Las categorías que crees aparecerán aquí para que puedas organizarlas, editarlas y administrar tus productos."
+        },
+        "editForm": {
+            "title": "Tus categorías",
+            "editButton": "Editar categoría",
+            "nameLabel": "Nombre",
+            "descriptionLabel": "Descripción (opcional)",
+            "namePlaceholder": "Nombre de la categoría",
+            "descriptionPlaceholder": "Descripción (opcional)",
+            "saveButton": "Guardar cambios",
+            "savingButton": "Guardando...",
+            "cancelButton": "Cancelar",
+            "notifications": {
+                "success": "Categoría actualizada correctamente",
+                "error": "No se pudo actualizar la categoría",
+                "requiredName": "El nombre de la categoría es obligatorio"
+            }
+        }
     },
     "addProductButton": {
       "label": "Agregar Producto"
@@ -735,5 +780,11 @@
     "branches": "Sucursales",
     "users": "Usuarios",
     "settings": "Ajustes"
-}
+},
+    "Pagination": {
+        "label": "Paginación",
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "pageInfo": "Página {currentPage} de {totalPages}"
+    }
 }

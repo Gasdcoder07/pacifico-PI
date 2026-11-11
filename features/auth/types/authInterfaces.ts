@@ -18,6 +18,7 @@ export interface UserProfile {
     status: boolean;
     foto_url?: string;
     context_name?: string | null;
+    company_image: string | null;
 }
 
 export interface LoginResponse {
