@@ -783,8 +783,14 @@
   },
     "Pagination": {
         "label": "Pagination",
+        "page": "Page",
+        "of": "of",
         "previous": "Previous",
-        "next": "Next",
-        "pageInfo": "Page {currentPage} of {totalPages}"
+        "next": "Next"
+    },
+    "SearchEmptyState": {
+        "title": "No results found",
+        "description": "We couldn't find any matches for your search. Try another term.",
+        "clearSearch": "Clear search"
     }
 }

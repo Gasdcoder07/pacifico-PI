@@ -78,20 +78,58 @@ export async function GET(
             )
         }
 
-        const { input } = await params
-        const decodedInput = decodeURIComponent(input || "")
+        const { input } = await params;
+        const search = input.trim();
 
         const productsQuery = await pool.query(
-            `SELECT * FROM productos 
-             WHERE company_id = $1 
-               AND branch_id = $2 
-               AND name ILIKE $3`, 
-            [currentUser.company_id, currentUser.branch_id, `%${decodedInput}%`]
-        );
+        `
+            SELECT
+                p.id AS product_id,
+                i.id AS inventario_id,
+
+                p.name,
+                p.description,
+                p.price::DOUBLE PRECISION AS price,
+                p.foto_url,
+
+                p.category_id,
+                c.name AS category_name,
+
+                i.branch_id,
+                s.name AS branch_name,
+
+                i.quantity,
+                i.min_stock,
+
+                i.updated_at
+
+            FROM public.productos p
+
+            INNER JOIN public.inventario i
+                ON i.product_id = p.id
+
+            INNER JOIN public.sucursales s
+                ON s.id = i.branch_id
+
+            LEFT JOIN public.categorias c
+                ON c.id = p.category_id
+
+            WHERE p.company_id = $1
+            AND i.branch_id = $2
+            AND p.name ILIKE $3
+
+            ORDER BY p.name ASC, p.id ASC
+        `,
+        [
+            currentUser.company_id,
+            currentUser.branch_id,
+            `%${search}%`,
+        ]
+    );
 
         return NextResponse.json(
             { data: productsQuery.rows },
-            { status: 2022 }
+            { status: 200 }
         )
 
     }catch(err) {

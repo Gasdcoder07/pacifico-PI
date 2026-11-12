@@ -6,6 +6,11 @@ export const getProducts = async () : Promise<BranchProducts[]> => {
     return response.data;
 }
 
+export const searchProductsByName = async (name: string) => {
+    const response = await apiClient.get(`/api/products/${encodeURIComponent(name)}`);
+    return response.data;
+};
+
 export const editProduct = async (data: FormData) : Promise<EditProductResponse> => {
     const response = await apiClient.put("/api/products", data);
     return response.data;

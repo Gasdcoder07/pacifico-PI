@@ -1,7 +1,12 @@
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-const ProductSearch = () => {
+interface ProductSearchProps {
+    value?: string;
+    onChange?: (value: string) => void;
+}
+
+const ProductSearch = ({ value, onChange } : ProductSearchProps) => {
     const t = useTranslations("ProductSearch");
 
     return (
@@ -14,6 +19,8 @@ const ProductSearch = () => {
 
                 <input
                     type="search"
+                    value={value}
+                    onChange={(e) => onChange?.(e.target.value)}
                     placeholder={t("placeholder")}
                     aria-label={t("ariaLabel")}
                     className="w-full bg-white dark:bg-slate-900 rounded-full py-2.5 pl-11 pr-4 text-sm text-neutral-800 dark:text-slate-50 shadow-sm placeholder:text-neutral-400 dark:placeholder:text-slate-400 focus:outline-none"

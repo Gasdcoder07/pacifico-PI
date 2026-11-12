@@ -114,7 +114,7 @@ export const SaleCard = ({ sale }: SaleCardProps) => {
                             onClick={() => viewTicket(sale.id)}
                             disabled={isLoading}
                             type="button"
-                            className="inline-flex w-fit cursor-pointer items-center justify-center gap-2 rounded-full border border-red-100 bg-red-50 px-3.5 py-1.5 text-xs font-semibold text-red-600 transition-colors disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-400">
+                            className="inline-flex w-fit items-center justify-center gap-2 rounded-lg bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 px-3.5 py-1.5 text-xs font-medium text-white cursor-pointer disabled:cursor-not-allowed disabled:opacity-50">
                                 {
                                     isLoading ? (
                                         <LoaderCircle size={16} className="shrink-0 animate-spin transition-all duration-200 ease-in-out" />

@@ -15,8 +15,11 @@ const PAGE_SIZE = 10;
 
 const InventoryLayout = () => {
     const { user: currentUser } = useAuth();
-    const [page, setPage] = useState(1);
 
+    const [page, setPage] = useState(1);
+    const [search, setSearch] = useState("");
+
+    const isSearching = search.trim().length > 0;
 
     const { data, isLoading } = useQuery({
         queryKey: ["products"],
@@ -28,13 +31,17 @@ const InventoryLayout = () => {
     const hasProducts = products.length > 0;
     const isAdmin = currentUser?.rol_id === 1;
 
-    const totalPages = Math.max(1, Math.ceil(products.length / PAGE_SIZE));
+    const filteredProducts = products.filter((product) =>
+        product.name.toLowerCase().includes(search.trim().toLowerCase())
+    );
+
+    const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
     const currentPage = Math.min(page, totalPages);
 
     const startIndex = (currentPage - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
 
-    const paginatedProducts = products.slice(startIndex, endIndex);
+    const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
 
     const handlePageChange = (nextPage: number) => {
         if (nextPage < 1 || nextPage > totalPages) return;
@@ -42,12 +49,26 @@ const InventoryLayout = () => {
         setPage(nextPage);
     };
 
+    const handleClearSearch = () => {
+        setSearch("");
+        setPage(1);
+    }
+
+    const handleSearchChange = (value: string) => {
+        setSearch(value);
+        setPage(1);
+    };
+
     return (
         <section className="flex flex-col h-full min-h-0 overflow-hidden p-4 gap-4">
             {
                 hasProducts && (
                 <div className="flex w-full min-w-0 items-center justify-between gap-4">
-                    <ProductSearch/>
+                    <div className="w-full">
+                        <ProductSearch
+                            value={search}
+                            onChange={handleSearchChange}/>
+                    </div>
 
                     <div className="flex shrink-0 items-center gap-4">
                         <CategoryButton/>
@@ -61,6 +82,8 @@ const InventoryLayout = () => {
                 <InventoryTable
                     isLoading={isLoading}
                     products={paginatedProducts}
+                    isSearching={isSearching}
+                    onClearSearch={handleClearSearch}
                     isAdmin={isAdmin}/>
             </div>
             {

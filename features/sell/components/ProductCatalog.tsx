@@ -4,17 +4,24 @@ import { Product } from "../types/product";
 
 import ProductCard from "./ProductCard";
 import EmptyState from "./EmptyState";
+import SearchEmptyState from "@/shared/components/SearchEmptyState";
 
 interface ProductCatalogProps {
     isCartPanelShowed: boolean;
     products: Product[];
+    isSearching: boolean;
+    onClearSearch: () => void;
     isLoading: boolean;
 }
 
-const ProductCatalog = ({ isCartPanelShowed, products, isLoading } : ProductCatalogProps) => {
+const ProductCatalog = ({ isCartPanelShowed, products, isSearching, onClearSearch, isLoading } : ProductCatalogProps) => {
     if (isLoading) return <Skeleton/>
 
-    if (products.length === 0) return <EmptyState/>
+    if (products.length === 0) {
+        return isSearching
+            ? <SearchEmptyState onClearSearch={onClearSearch}/>
+            : <EmptyState/>
+    }
 
     return (
         <section className="flex flex-1 min-h-0 min-w-0 w-full flex-col gap-4">

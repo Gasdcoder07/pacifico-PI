@@ -783,8 +783,14 @@
 },
     "Pagination": {
         "label": "Paginación",
+        "page": "Página",
+        "of": "de",
         "previous": "Anterior",
-        "next": "Siguiente",
-        "pageInfo": "Página {currentPage} de {totalPages}"
+        "next": "Siguiente"
+    },
+    "SearchEmptyState": {
+        "title": "No se encontraron resultados",
+        "description": "No encontramos coincidencias con tu búsqueda. Intenta con otro término.",
+        "clearSearch": "Limpiar búsqueda"
     }
 }
