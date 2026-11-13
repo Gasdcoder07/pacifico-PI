@@ -67,19 +67,19 @@ const DashboardContainer = ({ data, isAdmin }: DashboardContainerProps) => {
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <div className="min-w-0">
-                    {/* 4. Pasamos los datos a la gráfica general */}
+                    
                     <OverviewChart data={sales_overview} />
                 </div>
                 
-                {/* 5. Condicionamos la gráfica de sucursales según el rol */}
+              
                 {isAdmin && (
                     <div className="min-w-0">
                         <SalesByBranchChart data={sales_branches} />
                     </div>
                 )}
 
-                <div className="min-w-0 lg:col-span-2">
-                    {/* 6. Pasamos los datos a la gráfica de productos */}
+                
+                <div className={`min-w-0 ${isAdmin ? "lg:col-span-2" : ""}`}>
                     <TopProductsChart data={top_products} />
                 </div>
             </div>
