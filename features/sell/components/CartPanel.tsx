@@ -93,7 +93,6 @@ const CartPanel = () => {
         mutationFn: createSale,
 
         onSuccess: async (response) => {
-            // console.log("Sale created: ", response);
             const saleId = response.venta.id;
 
             toast.success(t("saleCreated"));
@@ -104,6 +103,11 @@ const CartPanel = () => {
             void queryClient.invalidateQueries({
                 queryKey: ["products"]
             });
+
+            void queryClient.invalidateQueries({
+                queryKey: ["searchProductsByName"],
+            });
+
             void queryClient.invalidateQueries({
                 queryKey: ["getSales"]
             });

@@ -12,20 +12,27 @@ import { DeleteProductModal } from "./DeleteProductModal";
 import { EditProductModal } from "./EditProductModal";
 
 import EmptyState from "./EmptyState";
+import SearchEmptyState from "@/shared/components/SearchEmptyState";
 
 interface InventoryTableProps {
     isLoading: boolean;
     products: Product[];
+    isSearching: boolean;
+    onClearSearch: () => void;
     isAdmin: boolean;
 }
 
-const InventoryTable = ({ isLoading, products, isAdmin } : InventoryTableProps) => {
+const InventoryTable = ({ isLoading, products, isSearching, onClearSearch, isAdmin } : InventoryTableProps) => {
   const t = useTranslations("InventoryPage.table");
   const scrollbarStyles = "[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-neutral-200 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-neutral-300 dark:[&::-webkit-scrollbar-thumb:hover]:bg-slate-600";
 
   if (isLoading) return <InventoryTableSkeleton />;
 
-  if (products.length === 0) return <EmptyState isAdmin={isAdmin}/>
+    if (products.length === 0) {
+        return isSearching
+            ? <SearchEmptyState onClearSearch={onClearSearch}/>
+            : <EmptyState isAdmin={isAdmin}/>
+    }
 
   return (
     <div className="flex max-h-full min-h-0 min-w-0 flex-col overflow-hidden rounded-lg border border-neutral-200 bg-white text-neutral-900 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50">
