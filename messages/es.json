@@ -50,12 +50,39 @@
     "loading": "Cargando...",
     "user": "Usuario"
   },
-  "LogoutModal": {
-    "title": "Cerrar sesión",
-    "message": "¿Estás seguro de que quieres cerrar sesión?",
-    "confirm": "Sí, cerrar sesión",
-    "cancel": "No, continuar aquí"
-  },
+    "ProfilePfp": {
+        "roles": {
+            "admin": "Administrador",
+            "manager": "Gerente",
+            "cashier": "Cajero"
+        },
+        "editProfilePanel": {
+            "title": "Editar perfil",
+            "generalData": "Datos generales",
+            "credentials": "Credenciales",
+            "fields": {
+                "name": "Nombre",
+                "lastName": "Apellido",
+                "email": "Correo electrónico"
+            },
+            "notifications": {
+                "success": "Perfil actualizado con éxito",
+                "error": "Ocurrió un error al actualizar el perfil",
+                "requiredFields": "Por favor, completa todos los campos obligatorios."
+            },
+            "actions": {
+                "cancel": "Cancelar",
+                "submit": "Guardar cambios",
+                "submitting": "Guardando cambios..."
+            }
+        },
+        "LogoutModal": {
+          "title": "Cerrar sesión",
+          "message": "¿Estás seguro de que quieres cerrar sesión?",
+          "confirm": "Sí, cerrar sesión",
+          "cancel": "No, continuar aquí"
+        }
+    },
   "theme": {
     "enableLightMode": "Activar modo claro",
     "enableDarkMode": "Activar modo oscuro"

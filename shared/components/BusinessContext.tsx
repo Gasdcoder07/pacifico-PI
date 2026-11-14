@@ -16,13 +16,19 @@ const BusinessContext = ({ role, companyImage, contextName, loading = false }: B
 
     return (
         <div className="flex items-center gap-4 min-w-0">
-            <div className="overflow-hidden rounded-md border border-neutral-200 dark:border-slate-800 shadow-sm h-10 w-14 shrink-0">
-                <img
-                    src={companyImage}
-                    alt={isAdmin ? t("companyAlt") : t("userCompanyAlt")}
-                    className="h-full w-full object-cover object-center"
-                />
-            </div>
+            {
+                loading ? (
+                    <div className="bg-neutral-200 dark:bg-slate-800 animate-pulse rounded-md h-10 w-14 shrink-0 transition-all duration-200 ease-in-out"/>
+                ) : (      
+                    <div className="overflow-hidden rounded-md border border-neutral-200 dark:border-slate-800 shadow-sm h-10 w-14 shrink-0">
+                        <img
+                            src={companyImage}
+                            alt={isAdmin ? t("companyAlt") : t("userCompanyAlt")}
+                            className="h-full w-full object-cover object-center"
+                        />
+                    </div>
+                )
+            }
 
             <div className="flex flex-col min-w-0">
                 {

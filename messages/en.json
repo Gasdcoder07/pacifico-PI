@@ -50,12 +50,40 @@
     "loading": "Loading...",
     "user": "User"
   },
-  "LogoutModal": {
-    "title": "Log out",
-    "message": "Are you sure you want to log out?",
-    "confirm": "Yes, log out",
-    "cancel": "No, stay here"
-  },
+    "ProfilePfp": {
+        "roles": {
+            "admin": "Admin",
+            "manager": "Manager",
+            "cashier": "Cashier"
+        },
+        "editProfilePanel": {
+            "title": "Edit profile",
+            "generalData": "General Information",
+            "credentials": "Credentials",
+            "fields": {
+                "name": "First Name",
+                "lastName": "Last Name",
+                "email": "Email Address",
+                "role": "Role"
+            },
+            "notifications": {
+                "success": "Profile updated successfully",
+                "error": "An error occurred while updating the profile",
+                "requiredFields": "Please fill in all required fields."
+            },
+            "actions": {
+                "cancel": "Cancel",
+                "submit": "Save Changes",
+                "submitting": "Saving Changes..."
+            }
+        },
+        "LogoutModal": {
+          "title": "Log out",
+          "message": "Are you sure you want to log out?",
+          "confirm": "Yes, log out",
+          "cancel": "No, stay here"
+        }
+    },
   "theme": {
     "enableLightMode": "Enable light mode",
     "enableDarkMode": "Enable dark mode"
