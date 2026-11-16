@@ -299,9 +299,31 @@
             }
         },
       "actions": {
+        "changeToCashier": "Change to cashier",
+        "promoteToManager": "Promote to manager",
         "viewBranch": "View branch",
         "delete": "Delete"
-      }
+      },
+    "changeRoleModal": {
+        "title": {
+            "promote": "Promote to Manager",
+            "demote": "Change to Cashier"
+        },
+        "description": {
+            "promote": "Are you sure you want to promote <highlight>{userName}</highlight> to Manager?",
+            "demote": "Are you sure you want to change <highlight>{userName}</highlight> from Manager to Cashier?"
+        },
+        "actions": {
+            "cancel": "Cancel",
+            "confirm": "Confirm Change",
+            "updating": "Updating..."
+        },
+        "toast": {
+            "success": "User role updated successfully",
+            "error": "Failed to update user role",
+            "requiredFields": "Required user information is missing"
+        }
+    }
     },
     "createUserModal": {
       "titleAdmin": "Create account",
@@ -605,7 +627,8 @@
         "inStock": "In stock"
       },
       "actions": {
-        "edit": "Edit",
+        "editManager": "Edit stock",
+        "editAdmin": "Edit",
         "delete": "Delete"
       }
     }
@@ -661,6 +684,9 @@
   },
   "SalesPage": {
     "title": "Sales",
+    "titleAdmin": "Company overview",
+    "titleManager": "Branch overview",
+    "loading": "Loading metrics...",
     "history": {
       "subtitleManager": "Sales history for the branch.",
       "subtitleAdmin": "Sales history for the company.",

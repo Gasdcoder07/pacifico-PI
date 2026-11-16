@@ -61,7 +61,6 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
         ? String(currentUser.branch_id)
         : null;
 
-
     const [formData, setFormData] = useState(() => ({
         name: product.name,
         description: product.description ?? "",
@@ -69,7 +68,10 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
         category_id: String(product.category_id),
     }));
 
-    const [currentStep, setCurrentStep] = useState(1);
+    const [currentStep, setCurrentStep] = useState<1 | 2>(1);
+
+    const activeStep: 1 | 2 = isManager ? 2 : currentStep;
+    const canEdit = isAdmin || isManager;
 
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(
@@ -386,7 +388,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (currentStep !== 2 || isPending) return;
+    if (!canEdit || activeStep !== 2 || isPending) return;
 
     const payload = buildPayload();
 
@@ -399,7 +401,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
     <ModalLayout isOpen={isOpen} onClose={handleClose} title={t("title")} width="max-w-4xl">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-sm">
         {
-            currentStep === 1 && (
+            isAdmin && currentStep === 1 && (
             <div className="flex gap-6 min-h-80">
                 <div className="w-2/5 flex flex-col items-center gap-2">
                     <span className="self-start font-medium text-neutral-600 dark:text-slate-400">
@@ -540,7 +542,7 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
             )
         }
         {
-            currentStep === 2 && (
+            canEdit && activeStep === 2 && (
                 <div className="flex flex-col gap-4 min-h-80">
                     <div className="grid grid-cols-1 gap-2">
                         <label className="font-medium text-neutral-600 dark:text-slate-400">
@@ -647,38 +649,46 @@ const EditProductModalContent = ({ isOpen, onClose, product }: EditProductModalP
 
         <div className="flex justify-end items-center gap-4">
             <button
-            type="button"
-            disabled={isPending}
-            onClick={currentStep === 1 ? handleClose : handlePreviousStep}
-            className="cursor-pointer disabled:cursor-not-allowed rounded-lg border border-neutral-200 dark:border-slate-800 px-4 py-2 text-neutral-600 dark:text-slate-400 transition-colors duration-200 ease-in-out hover:bg-neutral-50 dark:hover:bg-slate-800 disabled:opacity-50"
+                type="button"
+                disabled={isPending}
+                onClick={
+                isAdmin && activeStep === 2
+                    ? handlePreviousStep
+                    : handleClose
+                }
+                className="cursor-pointer disabled:cursor-not-allowed rounded-lg border border-neutral-200 dark:border-slate-800 px-4 py-2 text-neutral-600 dark:text-slate-400 transition-colors duration-200 ease-in-out hover:bg-neutral-50 dark:hover:bg-slate-800 disabled:opacity-50"
             >
-                {currentStep === 1 ? t("actions.cancel") : t("actions.back")}
+                {isAdmin && activeStep === 2
+                ? t("actions.back")
+                : t("actions.cancel")}
             </button>
-            
-            {
-                currentStep === 1 ? (
-                    <button
-                        key="next-step"
-                        type="button"
-                        onClick={handleNextStep}
-                        className="rounded-lg px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500 cursor-pointer">
-                            {t("actions.continue")}
-                    </button>
-                ) : (
-                    <button
-                    key="edit-product"
-                    type="submit"
-                    disabled={isPending}
-                    className={`rounded-lg px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out ${isPending
-                        ? "cursor-not-allowed bg-neutral-400 dark:bg-slate-700 dark:text-slate-500"
-                        : "cursor-pointer bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500"
-                    }`}
-                    >   
-                        { isPending ? t("actions.submitting") : t("actions.submit") }
-                    </button>
-                )
-            }
-        </div>
+
+            {isAdmin && activeStep === 1 ? (
+                <button
+                key="next-step"
+                type="button"
+                onClick={handleNextStep}
+                className="rounded-lg px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500 cursor-pointer"
+                >
+                {t("actions.continue")}
+                </button>
+            ) : (
+                <button
+                key="edit-product"
+                type="submit"
+                disabled={isPending || !canEdit}
+                className={`rounded-lg px-4 py-2 font-medium text-white transition-colors duration-200 ease-in-out ${
+                    isPending || !canEdit
+                    ? "cursor-not-allowed bg-neutral-400 dark:bg-slate-700 dark:text-slate-500"
+                    : "cursor-pointer bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 hover:bg-cyan-500"
+                }`}
+                >
+                {isPending
+                    ? t("actions.submitting")
+                    : t("actions.submit")}
+                </button>
+            )}
+            </div>
       </form>
     </ModalLayout>
   );

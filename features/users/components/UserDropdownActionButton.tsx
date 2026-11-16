@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Trash, Ellipsis, Building2 } from "lucide-react";
+import { Trash, Ellipsis, Building2, BriefcaseBusiness } from "lucide-react";
 
 import Link from "next/link";
 import { DeleteUserModal } from "./DeleteUserModal";
@@ -12,11 +12,14 @@ import { User } from "../types/user";
 import { BranchId } from "@/features/branches/types/branch";
 import { menuVariants, itemVariants } from "@/shared/animations/dropdown.animations";
 import { createSlug } from "@/shared/utils/create.slug";
+import ChangeRoleModal from "@/features/branch-details/components/ChangeRoleModal";
 
 interface UserDropdownActionButtonProps {
   user: User;
   branchId: BranchId;
   isAdminView: boolean;
+  isBranchDetailsView?: boolean;
+  haveManager?: boolean;
 }
 
 const MotionLink = motion.create(Link);
@@ -24,13 +27,24 @@ const MotionLink = motion.create(Link);
 const UserDropdownActionButton = ({
   user,
   branchId,
-  isAdminView
+  isAdminView,
+  isBranchDetailsView = false,
+  haveManager,
 }: UserDropdownActionButtonProps) => {
   const t = useTranslations("BranchDetails.usersContainer.actions");
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [open, setOpen] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [open, setOpen] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showChangeRoleModal, setShowChangeRoleModal] = useState(false);
+
+    const isManager = Number(user.rol_id) === 2;
+    const isCashier = Number(user.rol_id) === 3;
+
+    const canPromote = isCashier && haveManager === false;
+    const canDemote = isManager;
+
+    const canChangeRole = canPromote || canDemote;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -72,11 +86,11 @@ const UserDropdownActionButton = ({
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="absolute right-2 z-10 flex w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 shadow-lg">
+            className="absolute right-2 z-10 flex w-max min-w-44 -translate-x-1/5 origin-top-right flex-col items-stretch gap-2 rounded-2xl border border-neutral-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-2 shadow-lg">
           <motion.div variants={itemVariants} className="flex flex-col gap-2">
 
             {
-                isAdminView && (
+                !isBranchDetailsView && isAdminView && user.branch_name && (
                     <MotionLink
                         href={`/branch/${branchId}/${encodeURIComponent(createSlug(user.branch_name))}`}
                         whileHover={{ scale: 1.02 }}
@@ -90,6 +104,26 @@ const UserDropdownActionButton = ({
                         <Building2 size={18} />
                         <span className="font-medium">{t("viewBranch")}</span>
                     </MotionLink>
+                )
+            }
+
+            {
+                isBranchDetailsView && isAdminView && canChangeRole && (
+                    <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: "spring", bounce: 0.5 }}
+                        onClick={() => {
+                            setShowChangeRoleModal(true);
+                            setOpen(false);
+                        }}
+                        className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 transition-colors duration-200 ease-in-out text-neutral-900 dark:text-slate-50 hover:bg-gray-100 dark:hover:bg-slate-700"
+                    >
+                        <BriefcaseBusiness size={18} />
+                        <span className="font-medium">
+                            {isManager ? t("changeToCashier") : t("promoteToManager")}
+                        </span>
+                    </motion.button>
                 )
             }
             <motion.button
@@ -120,6 +154,17 @@ const UserDropdownActionButton = ({
           branchId={branchId}
         />
       )}
+
+      {
+        showChangeRoleModal && haveManager !== undefined && branchId !== undefined && (
+            <ChangeRoleModal
+                isOpen={showChangeRoleModal}
+                onClose={() => setShowChangeRoleModal(false)}
+                user={user}
+                branchId={branchId}
+                haveManager={haveManager}/>
+        )
+      }
     </div>
   );
 };

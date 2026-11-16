@@ -64,6 +64,7 @@ const BranchUsersContainer = ({ id }: { id: string | number }) => {
                                     user={user}
                                     branchId={Number(id)}
                                     isAdmin={isAdmin}
+                                    haveManager={haveManager}
                                 />
                             </div>
                         );
