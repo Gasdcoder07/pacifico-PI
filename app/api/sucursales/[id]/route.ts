@@ -64,27 +64,45 @@ export async function GET(
             )
         }
 
+        const currenyUserQuery = await pool.query(`SELECT rol_id, company_id FROM usuarios WHERE auth_user_id = $1`, [user.id]);
+
+        const currentUser = currenyUserQuery.rows[0]
+
+        if (!currentUser) {
+            return NextResponse.json(
+                { error: "No se encontró el usuario que realiza la petición" },
+                { status: 404 }
+            )
+        }
+
         const resolvedParams = await params;
         const branchId = parseInt(resolvedParams.id, 10);
 
         const response = await pool.query(
-            `SELECT id,company_id,admin_id,name,direction,phone,contact_info,status,foto_url FROM sucursales WHERE id = $1;`, [branchId]
+            `SELECT id,company_id,admin_id,name,direction,phone,contact_info,status,foto_url FROM sucursales WHERE id = $1 AND company_id = $2;`, [branchId, currentUser.company_id]
         );
 
         const branch = response.rows[0];
 
+        if (!branch) {
+            return NextResponse.json(
+                { error: "No existe esa sucursal" },
+                { status: 403 }
+            )
+        }
+
         const managerResponse = await pool.query(
             `SELECT id, name, last_name, foto_url
             FROM usuarios
-            WHERE branch_id = $1 AND rol_id = 2`,
-            [branchId]
+            WHERE branch_id = $1 AND rol_id = 2 AND company_id = $2`,
+            [branchId, currentUser.company_id]
         );
 
         const usersResponse = await pool.query(
             `SELECT id, name, last_name, email, foto_url, rol_id
             FROM usuarios
-            WHERE branch_id = $1`,
-            [branchId]
+            WHERE branch_id = $1 AND company_id = $2`,
+            [branchId, currentUser.company_id]
         );
 
         return NextResponse.json(
