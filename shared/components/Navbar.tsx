@@ -10,7 +10,6 @@ import ThemeToggle from "@/shared/components/ThemeToggle";
 const Navbar = () => {
     const t = useTranslations("Navbar");
     const { user, loading } = useAuth();
-    const fullName = user ? `${user.name} ${user.last_name}` : t("loading");
 
     return (
         <nav className="bg-white text-neutral-900 border border-neutral-300 dark:bg-slate-900 dark:text-slate-50 dark:border-slate-800">
@@ -24,11 +23,12 @@ const Navbar = () => {
 
                 <div className="flex justify-center items-center gap-4">
                     <LanguageSwitcher />
+
                     <ThemeToggle />
+
                     <ProfilePfp
-                        name={fullName || t("user")}
-                        role={user?.rol_id || null}
-                        avatar={user?.foto_url ? user.foto_url : "/default_profile.webp"}
+                        user={user}
+                        isLoading={loading}
                     />
                 </div>
             </div>

@@ -71,7 +71,8 @@ const InventoryLayout = () => {
                     </div>
 
                     <div className="flex shrink-0 items-center gap-4">
-                        <CategoryButton/>
+                        { isAdmin && <CategoryButton/>}
+                        
                         <AddProductButton/>
                     </div>
                 </div>

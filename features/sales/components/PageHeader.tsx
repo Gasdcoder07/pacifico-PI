@@ -3,11 +3,14 @@ import { useTranslations } from "next-intl";
 
 interface PageHeaderProps {
     currentUser?: UserProfile | null;
+    isLoading: boolean;
 }
 
-const PageHeader = ({ currentUser }: PageHeaderProps) => {
+const PageHeader = ({ currentUser, isLoading }: PageHeaderProps) => {
     const t = useTranslations("SalesPage");
     const isAdmin = currentUser?.rol_id === 1;
+
+    if (isLoading) return <Skeleton/>
 
     return (
         <div className="flex flex-col gap-2">
@@ -18,3 +21,13 @@ const PageHeader = ({ currentUser }: PageHeaderProps) => {
 };
 
 export default PageHeader;
+
+const Skeleton = () => {
+    return (
+        <div className="flex flex-col gap-2">
+            <div className="bg-neutral-200 dark:bg-slate-800 rounded-md h-10 max-w-xs animate-pulse"/>
+
+            <div className="bg-neutral-200 dark:bg-slate-800 rounded-md h-9 max-w-md animate-pulse"/>
+        </div>
+    )
+}

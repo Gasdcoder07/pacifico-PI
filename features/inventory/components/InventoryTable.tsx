@@ -125,7 +125,8 @@ export const InventoryTableRow = ({ product, isAdmin }: InventoryTableRowProps) 
       <td className="px-4 py-3">
         <div className="flex items-center justify-center gap-2">
           <DropdownActionButton
-            product={product}/>
+            product={product}
+            isAdmin={isAdmin}/>
         </div>
       </td>
     </tr>
@@ -165,22 +166,23 @@ export const StockBadge = ({ quantity }: StockBadgeProps) => {
 };
 
 interface DropdownActionButtonProps {
-    product: Product
+    product: Product;
+    isAdmin: boolean;
 }
 
-export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) => {
-  const t = useTranslations("InventoryPage.table.actions");
-  const containerRef = useRef<HTMLDivElement>(null);
+export const DropdownActionButton = ({ product, isAdmin } : DropdownActionButtonProps ) => {
+    const t = useTranslations("InventoryPage.table.actions");
+    const containerRef = useRef<HTMLDivElement>(null);
 
-  const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
 
     const menuRef = useRef<HTMLDivElement>(null);
 
     const [menuPosition, setMenuPosition] = useState({
-    top: 0,
-    left: 0,
+        top: 0,
+        left: 0,
     });
 
     const handleToggleMenu = () => {
@@ -304,7 +306,7 @@ export const DropdownActionButton = ({ product } : DropdownActionButtonProps ) =
                     className="flex w-full cursor-pointer items-center gap-4 rounded-xl px-3 py-2 text-neutral-900 transition-colors duration-200 hover:bg-gray-100 dark:text-slate-50 dark:hover:bg-slate-700"
                     >
                     <Edit size={18} />
-                    <span>{t("edit")}</span>
+                    <span>{ isAdmin ? t("editAdmin") : t("editManager") }</span>
                     </motion.button>
 
                     <motion.button

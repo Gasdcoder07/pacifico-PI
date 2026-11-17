@@ -50,12 +50,39 @@
     "loading": "Cargando...",
     "user": "Usuario"
   },
-  "LogoutModal": {
-    "title": "Cerrar sesión",
-    "message": "¿Estás seguro de que quieres cerrar sesión?",
-    "confirm": "Sí, cerrar sesión",
-    "cancel": "No, continuar aquí"
-  },
+    "ProfilePfp": {
+        "roles": {
+            "admin": "Administrador",
+            "manager": "Gerente",
+            "cashier": "Cajero"
+        },
+        "editProfilePanel": {
+            "title": "Editar perfil",
+            "generalData": "Datos generales",
+            "credentials": "Credenciales",
+            "fields": {
+                "name": "Nombre",
+                "lastName": "Apellido",
+                "email": "Correo electrónico"
+            },
+            "notifications": {
+                "success": "Perfil actualizado con éxito",
+                "error": "Ocurrió un error al actualizar el perfil",
+                "requiredFields": "Por favor, completa todos los campos obligatorios."
+            },
+            "actions": {
+                "cancel": "Cancelar",
+                "submit": "Guardar cambios",
+                "submitting": "Guardando cambios..."
+            }
+        },
+        "LogoutModal": {
+          "title": "Cerrar sesión",
+          "message": "¿Estás seguro de que quieres cerrar sesión?",
+          "confirm": "Sí, cerrar sesión",
+          "cancel": "No, continuar aquí"
+        }
+    },
   "theme": {
     "enableLightMode": "Activar modo claro",
     "enableDarkMode": "Activar modo oscuro"
@@ -271,9 +298,31 @@
         }
       },
       "actions": {
+        "changeToCashier": "Cambiar a cajero",
+        "promoteToManager": "Ascender a gerente",
         "viewBranch": "Ver sucursal",
         "delete": "Eliminar"
-      }
+      },
+    "changeRoleModal": {
+        "title": {
+            "promote": "Ascender a gerente",
+            "demote": "Cambiar a cajero"
+        },
+        "description": {
+            "promote": "¿Estás seguro de que deseas ascender a <highlight>{userName}</highlight> al puesto de gerente?",
+            "demote": "¿Estás seguro de que deseas cambiar a <highlight>{userName}</highlight> de gerente a cajero?"
+        },
+        "actions": {
+            "cancel": "Cancelar",
+            "confirm": "Confirmar cambio",
+            "updating": "Actualizando..."
+        },
+        "toast": {
+            "success": "Rol actualizado correctamente",
+            "error": "No se pudo actualizar el rol",
+            "requiredFields": "Faltan datos del usuario"
+        }
+    }
     },
     "createUserModal": {
       "titleAdmin": "Crear cuenta",
@@ -577,7 +626,8 @@
         "inStock": "En stock"
       },
       "actions": {
-        "edit": "Editar",
+        "editManager": "Editar stock",
+        "editAdmin": "Editar",
         "delete": "Eliminar"
       }
     }
@@ -633,6 +683,9 @@
   },
   "SalesPage": {
     "title": "Ventas",
+    "titleAdmin": "Resumen de la compañía",
+    "titleManager": "Resumen de la sucursal",
+    "loading": "Cargando métricas...",
     "history": {
       "subtitleManager": "Historial de ventas realizadas en la sucursal.",
       "subtitleAdmin": "Historial de ventas realizadas en la compañía.",
@@ -775,7 +828,7 @@
     "register": "Crear cuenta",
     "sell": "Vender",
     "sales": "Ventas",
-    "dashboard": "Dashboard",
+    "dashboard": "Panel",
     "inventory": "Inventario",
     "branches": "Sucursales",
     "users": "Usuarios",

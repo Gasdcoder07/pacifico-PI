@@ -13,9 +13,10 @@ interface BranchUsersCardProps {
     user: User;
     branchId: BranchId;
     isAdmin: boolean;
+    haveManager?: boolean;
 }
 
-const BranchUsersCard = ({ user, branchId, isAdmin }: BranchUsersCardProps) => {
+const BranchUsersCard = ({ user, branchId, isAdmin, haveManager = false }: BranchUsersCardProps) => {
     const fullName = `${user.name} ${user.last_name}`;
 
     return (
@@ -64,7 +65,9 @@ const BranchUsersCard = ({ user, branchId, isAdmin }: BranchUsersCardProps) => {
                     <UserDropdownActionButton
                         user={user}
                         branchId={branchId}
-                        isAdminView={false}
+                        isAdminView={isAdmin}
+                        isBranchDetailsView={true}
+                        haveManager={haveManager}
                     />
                 </div>
             </div>

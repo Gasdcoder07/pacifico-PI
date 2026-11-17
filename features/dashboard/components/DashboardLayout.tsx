@@ -19,10 +19,10 @@ const DashboardLayout = () => {
 
     return (
         <section className="h-full flex min-w-0 flex-col gap-4 sm:gap-6 lg:gap-8 p-4 sm:p-6 lg:p-8">
-            <h3 className="text-2xl font-bold">{t("title")}</h3>
+            <h3 className="text-2xl font-semibold">{ isAdmin ? t("titleAdmin") : t("titleManager") }</h3>
 
             {isLoading ? (
-                <div className="text-gray-400">Cargando métricas...</div>
+                <div className="text-gray-400">{t("loading")}</div>
             ) : (
                 data?.data && <DashboardContainer data={data.data} isAdmin={isAdmin} />
             )}

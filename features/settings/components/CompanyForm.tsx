@@ -152,7 +152,7 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex w-full max-w-4xl flex-col gap-6 rounded-lg border border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-8 py-6 shadow-sm"
+      className="flex w-full max-w-6xl flex-col gap-6 rounded-lg border border-neutral-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-8 py-6 shadow-sm"
     >
       {/* Encabezado de la tarjeta */}
       <div className="flex flex-col gap-2 border-b border-neutral-200 dark:border-slate-800 pb-6">
@@ -248,7 +248,7 @@ const CompanyForm = ({ company } : CompanyFormProps ) => {
         </div>
 
         {/* Columna derecha: nombre y domicilio */}
-        <div className="flex flex-col gap-6 pl-8">
+        <div className="w-full flex-1 min-w-0 flex flex-col gap-6 pl-8">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <label htmlFor="name" className="font-medium">
