@@ -10,6 +10,7 @@ import LandingReviews from "./LandingReviews";
 import LandingFaq from "./LandingFaq";
 import LandingContact from "./LandingContact";
 import LandingAnimator from "./LandingAnimator";
+import LandingPricing from "./LandingPricing";
 
 const LandingPage = () => {
   const t = useTranslations("LandingPage");
@@ -65,6 +66,7 @@ const LandingPage = () => {
         </section>
 
         <div data-anim="after" className="flex flex-col gap-4">
+          <LandingPricing />
           <LandingHero />
           <LandingFeatures />
           <LandingReviews />
