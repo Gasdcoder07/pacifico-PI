@@ -846,5 +846,59 @@
         "title": "No results found",
         "description": "We couldn't find any matches for your search. Try another term.",
         "clearSearch": "Clear search"
+    },
+    "LandingPricing": {
+    "badge": "Transparent plans for your business",
+    "titleStart": "Choose the ideal plan to",
+    "titleHighlight": "grow",
+    "subtitle": "Set it up in minutes and scale as your sales and branches increase.",
+    "popularBadge": "Most popular",
+    "perMonth": "MXN / mo",
+    "billedAnnually": "Billed annually ({total} MXN/year)",
+    "noCommitment": "No long-term contracts, cancel anytime",
+    "whatsappMessage": "Hi, I'm interested in subscribing to the {plan} plan ({cycle} - {price} MXN/mo) for Pacífico POS. Could you share more details?",
+    "billing": {
+      "monthly": "Monthly",
+      "annual": "Annual",
+      "discountBadge": "Save 20%"
+    },
+    "plans": {
+      "starter": {
+        "name": "Starter",
+        "description": "Ideal for small businesses and single points of sale.",
+        "cta": "Get started",
+        "features": {
+          "f1": "1 active branch",
+          "f2": "Up to 3 concurrent users",
+          "f3": "Basic inventory control",
+          "f4": "Daily sales report",
+          "f5": "Email support"
+        }
+      },
+      "pro": {
+        "name": "Professional",
+        "description": "For growing businesses looking for complete control.",
+        "cta": "Choose Professional",
+        "features": {
+          "f1": "Up to 3 simultaneous branches",
+          "f2": "Unlimited users and roles",
+          "f3": "Real-time analytics dashboard",
+          "f4": "Low-stock alerts and supplier management",
+          "f5": "24/7 priority support"
+        }
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "description": "Tailored solution for retail chains and multiple franchises.",
+        "cta": "Contact sales",
+        "features": {
+          "f1": "Unlimited branches",
+          "f2": "Advanced financial reports and export",
+          "f3": "Employee audit history",
+          "f4": "Custom onboarding for your team",
+          "f5": "Dedicated account manager"
+        }
+      }
     }
+  }
 }
