@@ -130,7 +130,7 @@ const ChangeRoleModal = ({
                         type="button"
                         onClick={onClose}
                         disabled={isUpdating}
-                        className="px-4 py-2 rounded-lg border border-neutral-200 dark:border-slate-800 text-neutral-600 dark:text-slate-400 hover:bg-neutral-50 dark:hover:bg-slate-800 transition-colors ease-in-out duration-200 cursor-pointer disabled:opacity-50"
+                        className="px-4 py-2 rounded-lg border border-neutral-200 dark:border-slate-800 text-neutral-600 dark:text-slate-400 hover:bg-neutral-50 dark:hover:bg-slate-800 transition-colors ease-in-out duration-200 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         {t("actions.cancel")}
                     </button>
