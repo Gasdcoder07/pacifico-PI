@@ -34,6 +34,9 @@ import cloudinary from "@/shared/lib/cloudinary";
  *         id:
  *           type: integer
  *           example: 1
+ *         company_id:
+ *           type: integer
+ *           example: 1
  *         name:
  *           type: string
  *           example: "Sucursal Centro"
@@ -51,6 +54,12 @@ import cloudinary from "@/shared/lib/cloudinary";
  *         status:
  *           type: boolean
  *           example: true
+ *         foto_public_id:
+ *           type: string
+ *           nullable: true
+ *         foto_url:
+ *           type: string
+ *           nullable: true
  *         created_at:
  *           type: string
  *           format: date-time
@@ -60,6 +69,10 @@ import cloudinary from "@/shared/lib/cloudinary";
  *         admin_id:
  *           type: integer
  *           nullable: true
+ *         ganancias:
+ *           type: number
+ *           format: float
+ *           example: 15420.50
  *         gerentes:
  *           type: array
  *           items:
@@ -70,7 +83,7 @@ import cloudinary from "@/shared/lib/cloudinary";
  * @swagger
  * /api/sucursales:
  *   get:
- *     summary: Obtener todas las sucursales con sus gerentes
+ *     summary: Obtener todas las sucursales con sus gerentes y ganancias totales
  *     tags:
  *       - Sucursales
  *     security:
@@ -78,10 +91,35 @@ import cloudinary from "@/shared/lib/cloudinary";
  *     responses:
  *       200:
  *         description: Lista de sucursales recuperada exitosamente.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Sucursal'
  *       401:
  *         description: No autorizado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Usuario no encontrado o inactivo.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
  *         description: Error interno del servidor.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 export async function GET(request: Request) {
     try {
@@ -120,7 +158,16 @@ export async function GET(request: Request) {
         const sucursalesResult = await pool.query(
             `SELECT s.*,
                 COALESCE(
-                    (   
+                    (
+                        SELECT SUM(v.total)::numeric::float8
+                        FROM public.ventas v
+                        WHERE v.branch_id = s.id
+                        AND v.company_id = $1
+                    ),
+                    0
+                ) AS ganancias,
+                COALESCE(
+                    (
                         SELECT json_agg(
                             json_build_object(
                                 'id', u.id,
@@ -173,7 +220,7 @@ export async function GET(request: Request) {
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -188,17 +235,48 @@ export async function GET(request: Request) {
  *                 type: string
  *               contact_info:
  *                 type: string
+ *               image:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       201:
  *         description: Sucursal creada con éxito.
  *       400:
- *         description: Datos requeridos faltantes.
+ *         description: Datos requeridos faltantes o inválidos.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       401:
  *         description: No autorizado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       403:
  *         description: Permisos insuficientes.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Usuario no encontrado o inactivo.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       415:
+ *         description: Tipo de contenido no soportado.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
  *         description: Error interno del servidor.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
 export async function POST(request: Request) {
     let uploadedPublicId: string | null = null;
@@ -214,7 +292,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const { data: { user: authUser }, error: authError, } = await supabase.auth.getUser(token);
+        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser(token);
 
         if (authError || !authUser) {
             return NextResponse.json(
@@ -272,7 +350,6 @@ export async function POST(request: Request) {
         const contactInfoValue = formData.get("contact_info");
         const image = formData.get("image");
 
-        // Validar nombre y dirección
         if (
             typeof nameValue !== "string" ||
             typeof directionValue !== "string" ||
@@ -285,7 +362,6 @@ export async function POST(request: Request) {
             );
         }
 
-        // Validar datos de contacto
         if (
             (phoneValue !== null && typeof phoneValue !== "string") ||
             (contactInfoValue !== null && typeof contactInfoValue !== "string")
@@ -296,7 +372,6 @@ export async function POST(request: Request) {
             );
         }
 
-        // Validar archivo
         if (image !== null && !(image instanceof File)) {
             return NextResponse.json(
                 { error: "El archivo de imagen no es válido" },
@@ -326,7 +401,6 @@ export async function POST(request: Request) {
             }
         }
 
-        // Valores normalizados
         const name = nameValue.trim();
         const direction = directionValue.trim();
 
@@ -343,7 +417,6 @@ export async function POST(request: Request) {
         let fotoUrl: string | null = null;
         let fotoPublicId: string | null = null;
 
-        // Subir a Cloudinary si existe una imagen
         if (image instanceof File) {
             const uploaded = await uploadCloudinaryImage(
                 image,
@@ -360,7 +433,6 @@ export async function POST(request: Request) {
             uploadedPublicId = fotoPublicId;
         }
 
-        // Crear sucursal
         const insertResult = await pool.query(
             `INSERT INTO public.sucursales (
                 name,
@@ -387,7 +459,8 @@ export async function POST(request: Request) {
                 updated_at,
                 admin_id,
                 foto_public_id,
-                foto_url`,
+                foto_url,
+                0::float8 AS ganancias`,
             [
                 name,
                 currentUser.company_id,
