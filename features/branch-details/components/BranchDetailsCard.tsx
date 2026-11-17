@@ -18,6 +18,7 @@ const BranchDetailsCard = ({ id }: { id: string | number }) => {
     queryKey: ["getBranch", Number(id)],
     queryFn: () => getBranchById(id),
     enabled: !!id,
+    staleTime: 60_000,
   });
 
   const branch = data?.data;

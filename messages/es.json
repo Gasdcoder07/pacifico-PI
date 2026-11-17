@@ -314,8 +314,8 @@
         },
         "actions": {
             "cancel": "Cancelar",
-            "confirm": "Confirmar cambio",
-            "updating": "Actualizando..."
+            "confirm": "Confirmar cambio de rol",
+            "updating": "Actualizando rol..."
         },
         "toast": {
             "success": "Rol actualizado correctamente",

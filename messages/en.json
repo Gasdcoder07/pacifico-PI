@@ -315,8 +315,8 @@
         },
         "actions": {
             "cancel": "Cancel",
-            "confirm": "Confirm Change",
-            "updating": "Updating..."
+            "confirm": "Confirm Role Change",
+            "updating": "Updating role..."
         },
         "toast": {
             "success": "User role updated successfully",
