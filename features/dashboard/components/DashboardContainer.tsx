@@ -65,9 +65,8 @@ const DashboardContainer = ({ data, isAdmin }: DashboardContainerProps) => {
                 />
             </div>
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 items-stretch">
                 <div className="min-w-0">
-                    
                     <OverviewChart data={sales_overview} />
                 </div>
                 

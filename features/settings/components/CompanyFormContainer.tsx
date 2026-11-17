@@ -1,34 +1,21 @@
 "use client";
 
-import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useQuery } from "@tanstack/react-query";
-import { getCompanyById } from "../services/company.service";
-
 import CompanyForm from "./CompanyForm";
+import { Company } from "../types/company";
 
-const CompanyFormContainer = () => {
-    const { user } = useAuth();
-    const companyId = user?.company_id;
+interface CompanyFormContainerProps {
+    isLoading: boolean;
+    company?: Company;
+}
 
-    const { data: company, isPending } = useQuery({
-        queryKey: ["getCompany"],
-        queryFn: () => {
-            if (companyId === undefined || companyId === null) {
-                throw new Error("Company ID is required");
-            }
+const CompanyFormContainer = ({ isLoading, company }: CompanyFormContainerProps) => {
+    if (isLoading) return (<CompanyFormSkeleton/>)
 
-            return getCompanyById(companyId);
-        },
-        enabled: !!companyId
-    });
-
-    if (isPending) return (<CompanyFormSkeleton/>)
-
-    if (!company) return <p>Company not found.</p>
-
-    return (
-        <CompanyForm company={company}/>
-    );
+    if (company) {
+        return (
+            <CompanyForm company={company}/>
+        );
+    }
 };
 
 export default CompanyFormContainer;

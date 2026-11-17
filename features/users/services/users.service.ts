@@ -1,6 +1,6 @@
 import { apiClient } from "@/shared/lib/axios";
 import { AxiosResponse } from "axios";
-import { CreateUserRequest, EditUserPayload, UsersResponse } from "../types/user";
+import { CreateUserRequest, EditUserPayload, UpdateProfileRequest, UpdateProfileResponse, UsersResponse } from "../types/user";
 
 type DeleteUserResponse = {
     message: string;
@@ -28,5 +28,10 @@ export const createManager = async (data : CreateUserRequest) : Promise<any> => 
 
 export const createCashier = async (data: CreateUserRequest) : Promise<any> => {
     const response = await apiClient.post("/api/auth/register/cashier", data);
+    return response.data;
+}
+
+export const updateProfile = async (id: string | number, data: UpdateProfileRequest) : Promise<UpdateProfileResponse> => {
+    const response = await apiClient.put(`/api/usuarios/${id}`, data);
     return response.data;
 }
