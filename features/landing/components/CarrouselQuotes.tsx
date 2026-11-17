@@ -15,36 +15,36 @@ interface QuoteRowProps {
 const QUOTES: QuoteItem[] = [
   {
     author: "Elon Musk",
-    quote: "SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX SpaceX ",
+    quote: "Wow. This POS is the best POS I have ever used. It is amazing. I love it.",
     position: "CEO of SpaceX"
   }, {
     author: "Cristiano Ronaldo",
-    quote: "Incredible.The best POS in the history. SIUUUUU ",
+    quote: "Just amazing. This POS is the reason why my business is growing so fast. ",
     position: "Football Player"
   }, {
     author: "V. Vaca",
-    quote: "Amazing. Papeleria Lily will grow up a lot with this new POS.",
+    quote: "Amazing. Papeleria Lily will grow a lot with this new POS.",
     position: "Software Engineer"
   }, {
     author: "N. Frías",
-    quote: "I love this POS. It is the best POS I have ever used.",
+    quote: "I love this POS. It is the best POS I have ever used, my sales have increased significantly.",
     position: "DB manager."
   },{
     author: "Kanye West",
-    quote: "This POS is the best POS I have ever used. It is amazing. I love it.",
+    quote: "Everyone should use this. Im surprised that this POS is not more popular.",
     position: "Singer"
   }, {
     author: "Greco Serna",
-    quote: "Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex Ciber aeromex ",
+    quote: "Since Ciber aeromex implemented this POS, my sales and organization have improved significantly. I highly recommend it.",
     position: "Singer"
   }, {
     author: "V. Vaca",
-    quote: "PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY PAPELERIA LILY ",
+    quote:  "My business papeleria lily just leveled up with this.",
     position: "Software Engineer"
   }, {
-    author: "N. Frías",
-    quote: "VALORANT ",
-    position: "DB manager."
+    author: "C. Heredia",
+    quote: "I recommend this to everyone. ",
+    position: "CEO of Nike."
   },
 ];
 
