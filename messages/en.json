@@ -927,5 +927,40 @@
         "backToBranches": "Back to my branches"
       }
     }
+  },
+  "ForgotPassword": {
+    "logoAlt": "Pacífico Logo",
+    "step1": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email, and we will send you an 8-digit code to reset your password.",
+      "emailLabel": "Email*",
+      "emailPlaceholder": "email@example.com",
+      "submit": "Send Code",
+      "sending": "Sending...",
+      "rememberPassword": "Remember Password?",
+      "signIn": "Sign in"
+    },
+    "step2": {
+      "title": "Set a new Password",
+      "subtitle": "Enter the code sent to {email}",
+      "codeLabel": "8-Digit Code*",
+      "newPasswordLabel": "New Password*",
+      "confirmPasswordLabel": "Confirm Password*",
+      "submit": "Change Password",
+      "updating": "Updating...",
+      "resendCode": "Resend code"
+    },
+    "toasts": {
+      "codeSent": "Code sent to your email",
+      "passwordUpdated": "Password updated successfully"
+    },
+    "errors": {
+      "invalidEmail": "Please enter a valid email address",
+      "sendCodeFailed": "Failed to send verification code",
+      "updateFailed": "Failed to update password",
+      "invalidCodeLength": "The code must be 8 digits long",
+      "passwordMismatch": "Passwords do not match",
+      "weakPassword": "Must have at least 6 characters, one uppercase letter, and one symbol"
+    }
   }
 }
