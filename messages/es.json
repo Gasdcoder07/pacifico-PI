@@ -901,5 +901,30 @@
         }
       }
     }
+  },
+  "BranchAccessGuard": {
+    "loadError": {
+      "title": "No se pudo cargar la sucursal",
+      "description": "Ocurrió un error al obtener la información.",
+      "retry": "Reintentar"
+    },
+    "errors": {
+      "401": {
+        "title": "Sesión expirada",
+        "description": "Inicia sesión nuevamente para continuar."
+      },
+      "403": {
+        "title": "Acceso denegado",
+        "description": "No tienes permisos para consultar esta sucursal."
+      },
+      "404": {
+        "title": "Sucursal no disponible",
+        "description": "La sucursal no existe o no tienes acceso a ella."
+      },
+      "actions": {
+        "login": "Iniciar sesión",
+        "backToBranches": "Volver a mis sucursales"
+      }
+    }
   }
 }

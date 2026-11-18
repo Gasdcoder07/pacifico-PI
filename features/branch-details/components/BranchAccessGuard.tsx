@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { getBranchById } from "@/features/branches/services/branch.service";
 
@@ -15,6 +16,7 @@ interface BranchAccessGuardProps {
 }
 
 const BranchAccessGuard = ({ id, children }: BranchAccessGuardProps) => {
+    const t = useTranslations("BranchAccessGuard");
     const { user, loading } = useAuth();
 
     const branchId = Number(id);
@@ -28,22 +30,18 @@ const BranchAccessGuard = ({ id, children }: BranchAccessGuardProps) => {
         retry: false,
     });
 
-    // ID inválido
     if (!isValidId) {
         return <BranchErrorPage status={404} />;
     }
 
-    // Esperar autenticación
     if (loading || !user) {
         return <BranchPageSkeleton />;
     }
 
-    // Skeleton mientras carga
     if (isPending) {
         return <BranchPageSkeleton />;
     }
 
-    // Manejar errores de la API
     if (isError) {
         const status = axios.isAxiosError(error)
             ? error.response?.status
@@ -66,11 +64,11 @@ const BranchAccessGuard = ({ id, children }: BranchAccessGuardProps) => {
 
                     <div className="flex max-w-md flex-col gap-2">
                         <h3 className="text-2xl font-semibold text-neutral-900 dark:text-slate-50">
-                            No se pudo cargar la sucursal
+                            {t("loadError.title")}
                         </h3>
 
                         <p className="text-sm leading-relaxed text-neutral-500 dark:text-slate-400">
-                            Ocurrió un error al obtener la información.
+                            {t("loadError.description")}
                         </p>
                     </div>
 
@@ -79,34 +77,24 @@ const BranchAccessGuard = ({ id, children }: BranchAccessGuardProps) => {
                         onClick={() => refetch()}
                         className="rounded-lg bg-cyan-400 px-4 py-2 font-medium text-white transition-colors ease-in-out duration-200 hover:bg-cyan-500 dark:text-slate-950 cursor-pointer"
                     >
-                        Reintentar
+                        {t("loadError.retry")}
                     </button>
                 </div>
             </div>
         );
     }
 
-    // La consulta fue exitosa
     return <>{children}</>;
 };
 
 export default BranchAccessGuard;
 
-// Página de error
 const BranchErrorPage = ({ status }: { status: 401 | 403 | 404 }) => {
+    const t = useTranslations("BranchAccessGuard.errors");
     const isUnauthorized = status === 401;
 
-    const title = isUnauthorized
-        ? "Sesión expirada"
-        : status === 403
-          ? "Acceso denegado"
-          : "Sucursal no disponible";
-
-    const description = isUnauthorized
-        ? "Inicia sesión nuevamente para continuar."
-        : status === 403
-          ? "No tienes permisos para consultar esta sucursal."
-          : "La sucursal no existe o no tienes acceso a ella.";
+    const title = t(`${status}.title`);
+    const description = t(`${status}.description`);
 
     return (
         <div className="flex min-h-full w-full flex-col items-center justify-center gap-6 p-8 text-center">
@@ -129,7 +117,7 @@ const BranchErrorPage = ({ status }: { status: 401 | 403 | 404 }) => {
                     href={isUnauthorized ? "/login" : "/branches"}
                     className="rounded-lg bg-cyan-400 px-4 py-2 font-medium text-white transition-colors ease-in-out duration-200 hover:bg-cyan-500 dark:text-slate-950"
                 >
-                    {isUnauthorized ? "Iniciar sesión" : "Volver a mis sucursales"}
+                    {isUnauthorized ? t("actions.login") : t("actions.backToBranches")}
                 </Link>
             </div>
         </div>

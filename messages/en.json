@@ -902,5 +902,30 @@
         }
       }
     }
+  },
+  "BranchAccessGuard": {
+    "loadError": {
+      "title": "Could not load branch",
+      "description": "An error occurred while fetching the information.",
+      "retry": "Retry"
+    },
+    "errors": {
+      "401": {
+        "title": "Session expired",
+        "description": "Please log in again to continue."
+      },
+      "403": {
+        "title": "Access denied",
+        "description": "You do not have permission to view this branch."
+      },
+      "404": {
+        "title": "Branch unavailable",
+        "description": "This branch does not exist or you do not have access to it."
+      },
+      "actions": {
+        "login": "Log in",
+        "backToBranches": "Back to my branches"
+      }
+    }
   }
 }
