@@ -684,6 +684,7 @@
   },
   "SalesPage": {
     "title": "Sales",
+    "export": "Export report",
     "titleAdmin": "Company overview",
     "titleManager": "Branch overview",
     "loading": "Loading metrics...",

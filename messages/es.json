@@ -683,6 +683,7 @@
   },
   "SalesPage": {
     "title": "Ventas",
+    "export": "Exportar reporte",
     "titleAdmin": "Resumen de la compañía",
     "titleManager": "Resumen de la sucursal",
     "loading": "Cargando métricas...",

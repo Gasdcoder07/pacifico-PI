@@ -4,6 +4,7 @@ import { SalesByBranchChart } from "@/features/dashboard/components/sales/SalesB
 import { TopProductsChart } from "@/features/dashboard/components/sales/TopProductsChart";
 import { DollarSign, Receipt, TrendingUp, Package } from "lucide-react";
 import { useFormatter, useTranslations } from "next-intl";
+import { useEffect } from "react";
 
 // 1. Definimos la estructura de los datos que vienen del backend
 export interface DashboardData {
@@ -27,6 +28,10 @@ interface DashboardContainerProps {
 const DashboardContainer = ({ data, isAdmin }: DashboardContainerProps) => {
     const t = useTranslations("SalesPage");
     const format = useFormatter();
+
+    useEffect(() => {
+        console.log(data)
+    }, [data])
 
     // Extraemos las secciones de data para usarlas más fácilmente
     const { raw_data, sales_overview, sales_branches, top_products } = data;
