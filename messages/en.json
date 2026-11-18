@@ -97,7 +97,7 @@
   },
   "Sidebar": {
     "hide": "Hide",
-    "sectionBranch": "Branch",
+    "sectionBranch": "Operations",
     "sectionAdmin": "Administration",
     "sell": "Sell",
     "sales": "Sales",
@@ -138,6 +138,11 @@
             "cash": "Cash",
             "card": "Card",
             "transfer": "Bank transfer"
+        },
+        "cash": {
+            "total": "Total to pay",
+            "received": "Cash received",
+            "change": "Change due"
         },
         "buttons": {
             "cancel": "Cancel",
