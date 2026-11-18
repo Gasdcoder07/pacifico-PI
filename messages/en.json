@@ -856,7 +856,9 @@
     "perMonth": "MXN / mo",
     "billedAnnually": "Billed annually ({total} MXN/year)",
     "noCommitment": "No long-term contracts, cancel anytime",
-    "whatsappMessage": "Hi, I'm interested in subscribing to the {plan} plan ({cycle} - {price} MXN/mo) for Pacífico POS. Could you share more details?",
+    "whatsappMonthlyDetail": "{price} MXN / mo (Monthly billing)",
+    "whatsappAnnualDetail": "{price} MXN / mo (Single annual payment of {total} MXN — 20% off)",
+    "whatsappMessage": "Hello, *Pacífico POS* team.\n\nI would like to request more information and subscribe to the service for my business with the following details:\n\n• *Selected plan:* {plan}\n• *Billing cycle:* {cycle}\n• *Investment:* {billingDetail}\n\nLooking forward to the next steps to activate my account. Thank you!",
     "billing": {
       "monthly": "Monthly",
       "annual": "Annual",

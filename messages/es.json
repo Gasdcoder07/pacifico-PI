@@ -855,7 +855,9 @@
     "perMonth": "MXN / mes",
     "billedAnnually": "Facturado anualmente ({total} MXN/año)",
     "noCommitment": "Sin plazos forzosos, cancela cuando quieras",
-    "whatsappMessage": "Hola, me interesa contratar el plan {plan} ({cycle} - {price} MXN/mes) del sistema POS Pacífico. ¿Me pueden dar más información?",
+    "whatsappMessage": "Hola, equipo de *Pacífico POS*.\n\nMe gustaría solicitar información y contratar el servicio para mi negocio con la siguiente configuración:\n\n• *Plan seleccionado:* {plan}\n• *Modalidad:* {cycle}\n• *Inversión:* {billingDetail}\n\nQuedo atento a los pasos para activar mi cuenta. ¡Muchas gracias!",
+    "whatsappMonthlyDetail": "{price} MXN/mes",
+    "whatsappAnnualDetail": "{price} MXN/mes (Pago anual único de {total} MXN — 20% de descuento)",
     "billing": {
       "monthly": "Mensual",
       "annual": "Anual",

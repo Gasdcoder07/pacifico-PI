@@ -5,7 +5,8 @@ import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import gsap from "gsap";
 
-const WHATSAPP_NUMBER = "523141192170"; 
+const WHATSAPP_NUMBER = "523141192170";
+
 interface PricingPlanConfig {
   id: "starter" | "pro" | "enterprise";
   monthlyPrice: number;
@@ -200,10 +201,20 @@ export default function LandingPricing() {
                 ? t("billing.monthly")
                 : t("billing.annual");
 
+            const billingDetail =
+              billingCycle === "annual"
+                ? t("whatsappAnnualDetail", {
+                    price: formatPrice(currentPrice),
+                    total: formatPrice(currentPrice * 12),
+                  })
+                : t("whatsappMonthlyDetail", {
+                    price: formatPrice(currentPrice),
+                  });
+
             const whatsappMessage = t("whatsappMessage", {
               plan: planName,
               cycle: cycleLabel,
-              price: formatPrice(currentPrice),
+              billingDetail,
             });
 
             const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
