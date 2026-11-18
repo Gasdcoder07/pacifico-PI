@@ -72,6 +72,15 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+
+        if (name === "company_phone") {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value.replace(/\D/g, "")
+            }));
+            return;
+        }
+
         setFormData({ ...formData, [name]: value });
     };
 
@@ -258,6 +267,7 @@ export const CreateBranchModal = ({ isOpen, onClose }: CreateBranchModalProps) =
                         name="company_phone"
                         value={formData.company_phone}
                         onChange={handleInputChange}
+                        inputMode="numeric"
                         placeholder={t("fields.phone.placeholder")}
                         className="w-full rounded-lg border border-neutral-200 dark:border-slate-800 p-3 outline-none transition-colors duration-200 ease-in-out focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20"
                     />

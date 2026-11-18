@@ -29,6 +29,7 @@ export interface Branch {
     status: boolean
     created_at: string
     updated_at: string
+    ganancias: number;
     gerentes: BranchManager[]
 }
 

@@ -101,8 +101,8 @@ export async function POST(request: Request) {
                 u.*,
                 e.foto_url as company_image,
                 CASE
-                    WHEN u.rol_id IN (1, 2, 3) THEN e.name
-                    ELSE s.name
+                    WHEN u.rol_id = 1 THEN e.name
+                    WHEN u.rol_id IN (2, 3) THEN s.name
                 END AS context_name
             FROM public.usuarios u
             LEFT JOIN public.empresas e

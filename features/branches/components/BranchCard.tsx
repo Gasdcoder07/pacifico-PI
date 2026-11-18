@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Mail, MoveRight, Phone, Pin } from "lucide-react";
+import { Mail, MoveRight, Phone, Pin, TrendingUp } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { formatPhoneNumber } from "@/shared/utils/formatters";
 import { createSlug } from "@/shared/utils/create.slug";
@@ -18,11 +18,12 @@ interface BranchCardProps {
   direction: string;
   phone: string;
   email: string;
+  earnings: string | number;
 }
 
 const MotionLink = motion.create(Link);
 
-const BranchCard = ({ id, name, managerName, managerPhoto, photo, status, direction, phone, email }: BranchCardProps) => {
+const BranchCard = ({ id, name, managerName, managerPhoto, photo, status, direction, phone, email, earnings }: BranchCardProps) => {
   const t = useTranslations("Branches.card");
 
   return (
@@ -83,19 +84,53 @@ const BranchCard = ({ id, name, managerName, managerPhoto, photo, status, direct
             </div>
           </div>
         </div>
+        
+        <div className="flex items-stretch gap-2">
+            {/* Ganancias */}
+            <div className="flex min-w-0 flex-1 items-center justify-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 dark:border-emerald-500/20 dark:bg-emerald-500/10">
+                <TrendingUp
+                    size={18}
+                    className="shrink-0 text-emerald-600 dark:text-emerald-400"
+                />
 
-        <div className="flex justify-end">
-          <MotionLink
-            href={`/branch/${id}/${encodeURIComponent(createSlug(name))}`}
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-cyan-400 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400 px-4 py-2 text-sm font-medium text-white sm:w-3/5"
-          >
-            <span>{t("viewDetails")}</span>
-            <MoveRight size={20} className="shrink-0" />
-          </MotionLink>
+                <span
+                    className="truncate text-base font-bold tracking-tight tabular-nums text-neutral-900 dark:text-slate-50"
+                    title={
+                        earnings != null
+                            ? new Intl.NumberFormat("es-MX", {
+                                style: "currency",
+                                currency: "MXN",
+                            }).format(Number(earnings))
+                            : undefined
+                    }
+                >
+                    {earnings != null
+                        ? new Intl.NumberFormat("es-MX", {
+                            style: "currency",
+                            currency: "MXN",
+                            maximumFractionDigits: 0,
+                        }).format(Number(earnings))
+                        : "—"}
+                </span>
+            </div>
+
+            {/* Ver detalles */}
+            <MotionLink
+                href={`/branch/${id}/${encodeURIComponent(createSlug(name))}`}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 20,
+                }}
+                className="inline-flex min-w-0 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-cyan-400 px-2 py-2 text-sm font-medium text-white hover:bg-cyan-500 dark:bg-cyan-500 dark:text-slate-950 dark:hover:bg-cyan-400"
+            >
+                <span>{t("viewDetails")}</span>
+                <MoveRight size={20} className="shrink-0" />
+            </MotionLink>
         </div>
+
       </div>
     </div>
   );
