@@ -633,6 +633,7 @@
   },
   "SalesPage": {
     "title": "Sales",
+    "export": "Export report",
     "history": {
       "subtitleManager": "Sales history for the branch.",
       "subtitleAdmin": "Sales history for the company.",

@@ -633,6 +633,7 @@
   },
   "SalesPage": {
     "title": "Ventas",
+    "export": "Exportar reporte",
     "history": {
       "subtitleManager": "Historial de ventas realizadas en la sucursal.",
       "subtitleAdmin": "Historial de ventas realizadas en la compañía.",
