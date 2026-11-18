@@ -927,5 +927,14 @@
         "backToBranches": "Volver a mis sucursales"
       }
     }
-  }
+  },
+    "filters": {
+        "branches": "Filtrar por sucursal",
+        "categories": "Filtrar por categoría",
+        "allBranches": "Todas las sucursales",
+        "allCategories": "Todas las categorías",
+        "loading": "Cargando...",
+        "noOptions": "No hay opciones disponibles",
+        "search": "Buscar..."
+    }
 }

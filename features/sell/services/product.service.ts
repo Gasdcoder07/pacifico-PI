@@ -1,12 +1,35 @@
 import { apiClient } from "@/shared/lib/axios"
-import { BranchProducts, DeleteProductPayload, DeleteProductResponse, EditProductPayload, EditProductResponse } from "../types/product";
+import { BranchProducts, DeleteProductPayload, DeleteProductResponse, EditProductPayload, EditProductResponse, Product } from "../types/product";
 
-export const getProducts = async () : Promise<BranchProducts[]> => {
-    const response = await apiClient.get("/api/inventory");
+interface ProductFilters {
+    branch?: string;
+    category?: string;
+}
+
+interface SearchProductsResponse {
+    data: Product[];
+}
+
+export const getProducts = async (filters: ProductFilters = {}) : Promise<BranchProducts[]> => {
+    const params = new URLSearchParams();
+
+    if (filters.branch) {
+        params.set("branch", filters.branch);
+    }
+
+    if (filters.category) {
+        params.set("category", filters.category);
+    }
+
+    const query = params.toString();
+
+    const response = await apiClient.get(
+        `/api/inventory${query ? `?${query}` : ""}`
+    );
     return response.data;
 }
 
-export const searchProductsByName = async (name: string) => {
+export const searchProductsByName = async (name: string) : Promise<SearchProductsResponse> => {
     const response = await apiClient.get(`/api/products/${encodeURIComponent(name)}`);
     return response.data;
 };

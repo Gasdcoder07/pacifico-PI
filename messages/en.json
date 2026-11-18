@@ -928,5 +928,14 @@
         "backToBranches": "Back to my branches"
       }
     }
-  }
+  },
+    "filters": {
+        "branches": "Filter by branch",
+        "categories": "Filter by category",
+        "allBranches": "All branches",
+        "allCategories": "All categories",
+        "loading": "Loading...",
+        "noOptions": "No options available",
+        "search": "Search..."
+    }
 }
