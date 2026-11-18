@@ -50,12 +50,39 @@
     "loading": "Cargando...",
     "user": "Usuario"
   },
-  "LogoutModal": {
-    "title": "Cerrar sesión",
-    "message": "¿Estás seguro de que quieres cerrar sesión?",
-    "confirm": "Sí, cerrar sesión",
-    "cancel": "No, continuar aquí"
-  },
+    "ProfilePfp": {
+        "roles": {
+            "admin": "Administrador",
+            "manager": "Gerente",
+            "cashier": "Cajero"
+        },
+        "editProfilePanel": {
+            "title": "Editar perfil",
+            "generalData": "Datos generales",
+            "credentials": "Credenciales",
+            "fields": {
+                "name": "Nombre",
+                "lastName": "Apellido",
+                "email": "Correo electrónico"
+            },
+            "notifications": {
+                "success": "Perfil actualizado con éxito",
+                "error": "Ocurrió un error al actualizar el perfil",
+                "requiredFields": "Por favor, completa todos los campos obligatorios."
+            },
+            "actions": {
+                "cancel": "Cancelar",
+                "submit": "Guardar cambios",
+                "submitting": "Guardando cambios..."
+            }
+        },
+        "LogoutModal": {
+          "title": "Cerrar sesión",
+          "message": "¿Estás seguro de que quieres cerrar sesión?",
+          "confirm": "Sí, cerrar sesión",
+          "cancel": "No, continuar aquí"
+        }
+    },
   "theme": {
     "enableLightMode": "Activar modo claro",
     "enableDarkMode": "Activar modo oscuro"
@@ -271,9 +298,31 @@
         }
       },
       "actions": {
+        "changeToCashier": "Cambiar a cajero",
+        "promoteToManager": "Ascender a gerente",
         "viewBranch": "Ver sucursal",
         "delete": "Eliminar"
-      }
+      },
+    "changeRoleModal": {
+        "title": {
+            "promote": "Ascender a gerente",
+            "demote": "Cambiar a cajero"
+        },
+        "description": {
+            "promote": "¿Estás seguro de que deseas ascender a <highlight>{userName}</highlight> al puesto de gerente?",
+            "demote": "¿Estás seguro de que deseas cambiar a <highlight>{userName}</highlight> de gerente a cajero?"
+        },
+        "actions": {
+            "cancel": "Cancelar",
+            "confirm": "Confirmar cambio de rol",
+            "updating": "Actualizando rol..."
+        },
+        "toast": {
+            "success": "Rol actualizado correctamente",
+            "error": "No se pudo actualizar el rol",
+            "requiredFields": "Faltan datos del usuario"
+        }
+    }
     },
     "createUserModal": {
       "titleAdmin": "Crear cuenta",
@@ -577,7 +626,8 @@
         "inStock": "En stock"
       },
       "actions": {
-        "edit": "Editar",
+        "editManager": "Editar stock",
+        "editAdmin": "Editar",
         "delete": "Eliminar"
       }
     }
@@ -634,6 +684,9 @@
   "SalesPage": {
     "title": "Ventas",
     "export": "Exportar reporte",
+    "titleAdmin": "Resumen de la compañía",
+    "titleManager": "Resumen de la sucursal",
+    "loading": "Cargando métricas...",
     "history": {
       "subtitleManager": "Historial de ventas realizadas en la sucursal.",
       "subtitleAdmin": "Historial de ventas realizadas en la compañía.",
@@ -776,7 +829,7 @@
     "register": "Crear cuenta",
     "sell": "Vender",
     "sales": "Ventas",
-    "dashboard": "Dashboard",
+    "dashboard": "Panel",
     "inventory": "Inventario",
     "branches": "Sucursales",
     "users": "Usuarios",
@@ -793,5 +846,86 @@
         "title": "No se encontraron resultados",
         "description": "No encontramos coincidencias con tu búsqueda. Intenta con otro término.",
         "clearSearch": "Limpiar búsqueda"
+    },
+    "LandingPricing": {
+    "badge": "Planes transparentes para tu negocio",
+    "titleStart": "Elige el plan ideal para",
+    "titleHighlight": "crecer",
+    "subtitle": "Configúralo en minutos y escala conforme aumenten tus ventas y sucursales.",
+    "popularBadge": "Más popular",
+    "perMonth": "MXN / mes",
+    "billedAnnually": "Facturado anualmente ({total} MXN/año)",
+    "noCommitment": "Sin plazos forzosos, cancela cuando quieras",
+    "whatsappMessage": "Hola, equipo de *Pacífico POS*.\n\nMe gustaría solicitar información y contratar el servicio para mi negocio con la siguiente configuración:\n\n• *Plan seleccionado:* {plan}\n• *Modalidad:* {cycle}\n• *Inversión:* {billingDetail}\n\nQuedo atento a los pasos para activar mi cuenta. ¡Muchas gracias!",
+    "whatsappMonthlyDetail": "{price} MXN/mes",
+    "whatsappAnnualDetail": "{price} MXN/mes (Pago anual único de {total} MXN — 20% de descuento)",
+    "billing": {
+      "monthly": "Mensual",
+      "annual": "Anual",
+      "discountBadge": "Ahorra 20%"
+    },
+    "plans": {
+      "starter": {
+        "name": "Inicial",
+        "description": "Ideal para pequeños negocios y puntos de venta individuales.",
+        "cta": "Comenzar ahora",
+        "features": {
+          "f1": "1 sucursal activa",
+          "f2": "Hasta 3 usuarios simultáneos",
+          "f3": "Control de inventario básico",
+          "f4": "Reporte diario de ventas",
+          "f5": "Soporte por correo electrónico"
+        }
+      },
+      "pro": {
+        "name": "Profesional",
+        "description": "Para negocios en crecimiento que buscan control total.",
+        "cta": "Elegir Profesional",
+        "features": {
+          "f1": "Hasta 3 sucursales simultáneas",
+          "f2": "Usuarios y roles ilimitados",
+          "f3": "Dashboard analítico en tiempo real",
+          "f4": "Alertas de stock bajo y gestión de proveedores",
+          "f5": "Soporte prioritario 24/7"
+        }
+      },
+      "enterprise": {
+        "name": "Empresarial",
+        "description": "Solución a la medida para cadenas y múltiples franquicias.",
+        "cta": "Contactar ventas",
+        "features": {
+          "f1": "Sucursales ilimitadas",
+          "f2": "Reportes financieros avanzados y exportación",
+          "f3": "Historial de auditoría por empleado",
+          "f4": "Capacitación personalizada para tu equipo",
+          "f5": "Gestor de cuenta dedicado"
+        }
+      }
     }
+  },
+  "BranchAccessGuard": {
+    "loadError": {
+      "title": "No se pudo cargar la sucursal",
+      "description": "Ocurrió un error al obtener la información.",
+      "retry": "Reintentar"
+    },
+    "errors": {
+      "401": {
+        "title": "Sesión expirada",
+        "description": "Inicia sesión nuevamente para continuar."
+      },
+      "403": {
+        "title": "Acceso denegado",
+        "description": "No tienes permisos para consultar esta sucursal."
+      },
+      "404": {
+        "title": "Sucursal no disponible",
+        "description": "La sucursal no existe o no tienes acceso a ella."
+      },
+      "actions": {
+        "login": "Iniciar sesión",
+        "backToBranches": "Volver a mis sucursales"
+      }
+    }
+  }
 }

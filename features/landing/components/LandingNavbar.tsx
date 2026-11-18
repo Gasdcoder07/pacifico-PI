@@ -23,9 +23,9 @@ const LandingNavbar = () => {
         priority
         width={1000}
         height={1000}
-        src="/pacifico-logo-email.png"
+        src="/pacifico-logo-email.svg"
         alt="Logo de Pacífico"
-        className="h-16 w-auto -translate-x-1.5 object-contain"
+        className="h-16 w-42 -translate-x-1.5 object-contain content-left"
       />
 
       <nav aria-label={t("ariaLabel")} className="hidden gap-8 md:flex">

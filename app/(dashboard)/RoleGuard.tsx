@@ -9,35 +9,66 @@ export default function RoleGuard({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
 
+    const roleId = Number(user?.rol_id);
+
+    const isBranchRoute = pathname === "/branch" || pathname.startsWith("/branch/");
+
+    // Cajero: solo puede entrar a /sell
+    const isCashierBlocked = roleId === 3 && pathname !== "/sell";
+
+    // Administrador: no puede entrar a /sell
+    const isAdminBlocked = roleId === 1 && pathname === "/sell";
+
+    // Gerente: no puede entrar a configuración, listado ni detalles de sucursales
+    const isManagerBlocked =
+        roleId === 2 &&
+        (
+            pathname.startsWith("/settings") ||
+            pathname.startsWith("/branches") ||
+            pathname === "/branch" ||
+            pathname.startsWith("/branch/")
+        );
+
+    const isUnknownRole = !!user && ![1, 2, 3].includes(roleId);
+
     useEffect(() => {
-        if (loading || !user) return;
+        if (loading) return;
 
-        const roleId = Number(user.rol_id);
+        if (!user) {
+            router.replace("/login");
+            return;
+        }
 
-        // 1. CAJERO (Rol 3): Solo acceso a /sell
-        if (roleId === 3 && pathname !== "/sell") {
+        if (isCashierBlocked) {
             router.replace("/sell");
             return;
         }
 
-        // 2. ADMINISTRADOR (Rol 1): Acceso a todo excepto /sell -> Redirige a /sales
-        if (roleId === 1 && pathname === "/sell") {
-            router.replace("/sales");
-            return;
-        }
-
-        // 3. GERENTE (Rol 2): Acceso a todo excepto /settings y /branches -> Redirige a /sales
         if (
-            roleId === 2 &&
-            (pathname.startsWith("/settings") || pathname.startsWith("/branches"))
+            isAdminBlocked ||
+            isManagerBlocked ||
+            isUnknownRole
         ) {
             router.replace("/sales");
             return;
         }
-    }, [user, loading, pathname, router]);
+    }, [user,
+        loading,
+        router,
+        isCashierBlocked,
+        isAdminBlocked,
+        isManagerBlocked,
+        isUnknownRole,]);
 
     // Retorna null mientras verifica la sesión para evitar parpadeos de vistas no permitidas
-    if (loading) {
+    if (
+        loading ||
+        !user ||
+        isCashierBlocked ||
+        isAdminBlocked ||
+        isManagerBlocked ||
+        isUnknownRole
+    ) {
         return null;
     }
 

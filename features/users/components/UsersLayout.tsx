@@ -40,6 +40,7 @@ const UsersLayout = () => {
     return (
         <section className="h-full min-h-0 flex flex-col p-8 gap-8">
             <PageHeader
+                isLoading={isLoading}
                 currentUser={currentUser}
                 canCreateUsers={canCreateUser}/>
 

@@ -14,6 +14,7 @@ export interface Branch {
     admin_id: string;
     company_id: string;
     foto_url: string;
+    ganancias: number;
     usuarios: User[];
     gerente: User | null;
     gerentes: User[]

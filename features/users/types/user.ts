@@ -1,3 +1,5 @@
+import { UserProfile } from "@/features/auth/types/authInterfaces";
+
 export interface User {
     id: string;
     name: string;
@@ -28,4 +30,15 @@ export interface EditUserPayload {
     last_name: string;
     email: string;
     rol_id: string | number;
+}
+
+export interface UpdateProfileRequest {
+    name: string;
+    last_name: string;
+    email: string;
+}
+
+export interface UpdateProfileResponse {
+    message: string;
+    data: UserProfile;
 }

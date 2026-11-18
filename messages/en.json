@@ -50,12 +50,40 @@
     "loading": "Loading...",
     "user": "User"
   },
-  "LogoutModal": {
-    "title": "Log out",
-    "message": "Are you sure you want to log out?",
-    "confirm": "Yes, log out",
-    "cancel": "No, stay here"
-  },
+    "ProfilePfp": {
+        "roles": {
+            "admin": "Admin",
+            "manager": "Manager",
+            "cashier": "Cashier"
+        },
+        "editProfilePanel": {
+            "title": "Edit profile",
+            "generalData": "General Information",
+            "credentials": "Credentials",
+            "fields": {
+                "name": "First Name",
+                "lastName": "Last Name",
+                "email": "Email Address",
+                "role": "Role"
+            },
+            "notifications": {
+                "success": "Profile updated successfully",
+                "error": "An error occurred while updating the profile",
+                "requiredFields": "Please fill in all required fields."
+            },
+            "actions": {
+                "cancel": "Cancel",
+                "submit": "Save Changes",
+                "submitting": "Saving Changes..."
+            }
+        },
+        "LogoutModal": {
+          "title": "Log out",
+          "message": "Are you sure you want to log out?",
+          "confirm": "Yes, log out",
+          "cancel": "No, stay here"
+        }
+    },
   "theme": {
     "enableLightMode": "Enable light mode",
     "enableDarkMode": "Enable dark mode"
@@ -271,9 +299,31 @@
             }
         },
       "actions": {
+        "changeToCashier": "Change to cashier",
+        "promoteToManager": "Promote to manager",
         "viewBranch": "View branch",
         "delete": "Delete"
-      }
+      },
+    "changeRoleModal": {
+        "title": {
+            "promote": "Promote to Manager",
+            "demote": "Change to Cashier"
+        },
+        "description": {
+            "promote": "Are you sure you want to promote <highlight>{userName}</highlight> to Manager?",
+            "demote": "Are you sure you want to change <highlight>{userName}</highlight> from Manager to Cashier?"
+        },
+        "actions": {
+            "cancel": "Cancel",
+            "confirm": "Confirm Role Change",
+            "updating": "Updating role..."
+        },
+        "toast": {
+            "success": "User role updated successfully",
+            "error": "Failed to update user role",
+            "requiredFields": "Required user information is missing"
+        }
+    }
     },
     "createUserModal": {
       "titleAdmin": "Create account",
@@ -577,7 +627,8 @@
         "inStock": "In stock"
       },
       "actions": {
-        "edit": "Edit",
+        "editManager": "Edit stock",
+        "editAdmin": "Edit",
         "delete": "Delete"
       }
     }
@@ -634,6 +685,9 @@
   "SalesPage": {
     "title": "Sales",
     "export": "Export report",
+    "titleAdmin": "Company overview",
+    "titleManager": "Branch overview",
+    "loading": "Loading metrics...",
     "history": {
       "subtitleManager": "Sales history for the branch.",
       "subtitleAdmin": "Sales history for the company.",
@@ -793,5 +847,86 @@
         "title": "No results found",
         "description": "We couldn't find any matches for your search. Try another term.",
         "clearSearch": "Clear search"
+    },
+    "LandingPricing": {
+    "badge": "Transparent plans for your business",
+    "titleStart": "Choose the ideal plan to",
+    "titleHighlight": "grow",
+    "subtitle": "Set it up in minutes and scale as your sales and branches increase.",
+    "popularBadge": "Most popular",
+    "perMonth": "MXN / mo",
+    "billedAnnually": "Billed annually ({total} MXN/year)",
+    "noCommitment": "No long-term contracts, cancel anytime",
+    "whatsappMonthlyDetail": "{price} MXN / mo (Monthly billing)",
+    "whatsappAnnualDetail": "{price} MXN / mo (Single annual payment of {total} MXN — 20% off)",
+    "whatsappMessage": "Hello, *Pacífico POS* team.\n\nI would like to request more information and subscribe to the service for my business with the following details:\n\n• *Selected plan:* {plan}\n• *Billing cycle:* {cycle}\n• *Investment:* {billingDetail}\n\nLooking forward to the next steps to activate my account. Thank you!",
+    "billing": {
+      "monthly": "Monthly",
+      "annual": "Annual",
+      "discountBadge": "Save 20%"
+    },
+    "plans": {
+      "starter": {
+        "name": "Starter",
+        "description": "Ideal for small businesses and single points of sale.",
+        "cta": "Get started",
+        "features": {
+          "f1": "1 active branch",
+          "f2": "Up to 3 concurrent users",
+          "f3": "Basic inventory control",
+          "f4": "Daily sales report",
+          "f5": "Email support"
+        }
+      },
+      "pro": {
+        "name": "Professional",
+        "description": "For growing businesses looking for complete control.",
+        "cta": "Choose Professional",
+        "features": {
+          "f1": "Up to 3 simultaneous branches",
+          "f2": "Unlimited users and roles",
+          "f3": "Real-time analytics dashboard",
+          "f4": "Low-stock alerts and supplier management",
+          "f5": "24/7 priority support"
+        }
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "description": "Tailored solution for retail chains and multiple franchises.",
+        "cta": "Contact sales",
+        "features": {
+          "f1": "Unlimited branches",
+          "f2": "Advanced financial reports and export",
+          "f3": "Employee audit history",
+          "f4": "Custom onboarding for your team",
+          "f5": "Dedicated account manager"
+        }
+      }
     }
+  },
+  "BranchAccessGuard": {
+    "loadError": {
+      "title": "Could not load branch",
+      "description": "An error occurred while fetching the information.",
+      "retry": "Retry"
+    },
+    "errors": {
+      "401": {
+        "title": "Session expired",
+        "description": "Please log in again to continue."
+      },
+      "403": {
+        "title": "Access denied",
+        "description": "You do not have permission to view this branch."
+      },
+      "404": {
+        "title": "Branch unavailable",
+        "description": "This branch does not exist or you do not have access to it."
+      },
+      "actions": {
+        "login": "Log in",
+        "backToBranches": "Back to my branches"
+      }
+    }
+  }
 }

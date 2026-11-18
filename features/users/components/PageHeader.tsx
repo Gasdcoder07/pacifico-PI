@@ -8,14 +8,17 @@ import { UserProfile } from "@/features/auth/types/authInterfaces";
 interface PageHeaderProps {
     currentUser?: UserProfile | null;
     canCreateUsers: boolean;
+    isLoading: boolean;
 }
 
-const PageHeader = ({ currentUser, canCreateUsers = false } : PageHeaderProps) => {
+const PageHeader = ({ isLoading, currentUser, canCreateUsers = false } : PageHeaderProps) => {
     const t = useTranslations("UsersPage");
 
     const role = currentUser?.rol_id;
     const isAdmin = role === 1;
     const isManager = role === 2;
+
+    if (isLoading) return <Skeleton/>
 
     return (
         <div className="flex gap-2 justify-between items-center">
@@ -52,3 +55,17 @@ const PageHeader = ({ currentUser, canCreateUsers = false } : PageHeaderProps) =
 };
 
 export default PageHeader;
+
+const Skeleton = () => {
+    return (
+        <div className="flex gap-2 justify-between items-center">
+            <div className="flex flex-col gap-2 w-full">
+                <div className="bg-neutral-200 dark:bg-slate-800 rounded-md h-8 w-full max-w-xs animate-pulse"/>
+
+                <div className="bg-neutral-200 dark:bg-slate-800 rounded-md h-7 w-full max-w-sm animate-pulse"/>
+            </div>
+
+            <div className="bg-neutral-200 dark:bg-slate-800 rounded-md h-10 w-40 animate-pulse"/>
+        </div>
+    )
+}

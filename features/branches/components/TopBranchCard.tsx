@@ -19,18 +19,13 @@ const TopBranchCard = ({ isLoading, branch }: TopBranchCardProps) => {
     return <TopBranchCardEmptyState />;
   }
 
-  // Nombre por defecto si la sucursal de la DB no trae un nombre válido
-  const branchName = branch.name ?? "Sucursal Manzanillo";
-  // Ganancias por defecto si vienen en 0 o undefined
-  const branchSales = branch.totalSales ?? 128000;
-
   // Formato limpio sin siglas "USD" o "MXN"
   const formattedSales = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     currencyDisplay: "narrowSymbol",
     maximumFractionDigits: 0,
-  }).format(branchSales);
+  }).format(branch.ganancias);
 
   return (
     <div className="relative flex w-3/5 items-center overflow-hidden rounded-lg p-6 text-white shadow-sm">
@@ -77,7 +72,7 @@ const TopBranchCard = ({ isLoading, branch }: TopBranchCardProps) => {
           </div>
           <div className="flex flex-col">
             <span className="text-xl font-semibold leading-relaxed drop-shadow-sm">
-              {branchName}
+              {branch.name}
             </span>
           </div>
         </div>

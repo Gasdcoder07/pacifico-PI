@@ -14,7 +14,7 @@ interface LogoutModalProps {
 }
 
 export const LogoutModal = ({ isOpen, onClose, onConfirm }: LogoutModalProps) => {
-    const t = useTranslations("LogoutModal");
+    const t = useTranslations("ProfilePfp.LogoutModal");
     const cancelButtonRef = useRef<HTMLButtonElement>(null);
     const [isConfirming, setIsConfirming] = useState(false);
 
