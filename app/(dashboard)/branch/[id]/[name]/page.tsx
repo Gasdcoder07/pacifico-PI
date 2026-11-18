@@ -1,3 +1,4 @@
+import BranchAccessGuard from "@/features/branch-details/components/BranchAccessGuard";
 import BranchDetailsCard from "@/features/branch-details/components/BranchDetailsCard";
 import BranchUsersContainer from "@/features/branch-details/components/BranchUsersContainer";
 
@@ -9,11 +10,13 @@ const Page = async ({ params } : PageProps) => {
     const { id } = await params; 
 
     return (
-        <section className="flex flex-col min-h-full p-8 gap-8">
-            <BranchDetailsCard id={id}/>
+        <BranchAccessGuard id={id}>
+            <section className="flex min-h-full flex-col gap-8 p-8">
+                <BranchDetailsCard id={id} />
 
-            <BranchUsersContainer id={id}/>
-        </section>
+                <BranchUsersContainer id={id} />
+            </section>
+        </BranchAccessGuard>
     )
 };
 

@@ -159,8 +159,8 @@ export async function GET(
                 u.status,
                 e.foto_url as company_image,
                 CASE 
-                    WHEN u.rol_id IN (1, 3) THEN e.name
-                    ELSE s.name
+                    WHEN u.rol_id = 1 THEN e.name
+                    WHEN u.rol_id IN (2, 3) THEN s.name
                 END AS context_name
             FROM usuarios u
             LEFT JOIN empresas e ON e.id = u.company_id

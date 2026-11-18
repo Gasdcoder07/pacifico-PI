@@ -32,7 +32,7 @@ const TopBranchesCard = ({ isLoading, branches }: TopBranchesCardProps) => {
       currency: "USD",
       currencyDisplay: "narrowSymbol",
       maximumFractionDigits: 0,
-    }).format(amount);
+    }).format(Number(amount ?? 0));
   };
 
   return (
@@ -58,7 +58,7 @@ const TopBranchesCard = ({ isLoading, branches }: TopBranchesCardProps) => {
               </div>
 
               <p className="shrink-0 text-sm font-bold text-neutral-900 dark:text-slate-50">
-                {formatMoney(branch.totalSales ?? 0)}
+                {formatMoney(branch.ganancias)}
               </p>
             </div>
           );

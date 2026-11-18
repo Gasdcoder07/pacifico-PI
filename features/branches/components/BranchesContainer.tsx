@@ -51,6 +51,7 @@ const BranchesContainer = () => {
                         direction={branch.direction}
                         phone={branch.phone}
                         email={branch.contact_info}
+                        earnings={branch.ganancias}
                     />
                 ))}
             </>
