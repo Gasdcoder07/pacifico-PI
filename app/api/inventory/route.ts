@@ -6,11 +6,148 @@ import {
     HttpError,
     validId,
 } from "@/shared/utils/inventory-access";
-import { supabase } from "@/shared/lib/supabase";
 
+/**
+ * @swagger
+ * /api/inventory:
+ *   get:
+ *     summary: Obtener el inventario agrupado por sucursal
+ *     description: >
+ *       Retorna el listado de inventario agrupado por sucursal.
+ *       Los usuarios con rol 1 (Admin) pueden consultar todas las sucursales o filtrar por una específica mediante el parámetro `branch`.
+ *       Los usuarios con roles 2 y 3 quedan restringidos automáticamente a su propia sucursal asignada.
+ *     tags:
+ *       - Inventario
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: branch
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: "1"
+ *         description: ID de la sucursal para filtrar resultados (solo tiene efecto para rol 1; roles 2 y 3 usan su propia sucursal).
+ *       - in: query
+ *         name: category
+ *         required: false
+ *         schema:
+ *           type: string
+ *           example: "4"
+ *         description: ID de la categoría para filtrar los productos del inventario.
+ *     responses:
+ *       200:
+ *         description: Inventario agrupado por sucursal obtenido con éxito.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   branch_id:
+ *                     type: string
+ *                     example: "1"
+ *                   branch_name:
+ *                     type: string
+ *                     example: "Sucursal Centro"
+ *                   productos:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         inventario_id:
+ *                           type: string
+ *                           example: "10"
+ *                         product_id:
+ *                           type: string
+ *                           example: "25"
+ *                         name:
+ *                           type: string
+ *                           example: "Laptop Dell Inspiron 15"
+ *                         foto_url:
+ *                           type: string
+ *                           nullable: true
+ *                           example: "https://ejemplo.com/foto.jpg"
+ *                         description:
+ *                           type: string
+ *                           nullable: true
+ *                           example: "Laptop 16GB RAM, 512GB SSD"
+ *                         price:
+ *                           type: number
+ *                           example: 14500.00
+ *                         category_id:
+ *                           type: string
+ *                           example: "4"
+ *                         category_name:
+ *                           type: string
+ *                           example: "Cómputo"
+ *                         branch_id:
+ *                           type: string
+ *                           example: "1"
+ *                         branch_name:
+ *                           type: string
+ *                           example: "Sucursal Centro"
+ *                         quantity:
+ *                           type: integer
+ *                           example: 12
+ *                         min_stock:
+ *                           type: integer
+ *                           example: 5
+ *                         updated_at:
+ *                           type: string
+ *                           format: date-time
+ *                           example: "2026-11-18T10:00:00.000Z"
+ *                         sucursales:
+ *                           type: array
+ *                           description: Disponibilidad del producto en las sucursales visibles para el usuario.
+ *                           items:
+ *                             type: object
+ *                             properties:
+ *                               inventario_id:
+ *                                 type: string
+ *                                 example: "10"
+ *                               branch_id:
+ *                                 type: string
+ *                                 example: "1"
+ *                               branch_name:
+ *                                 type: string
+ *                                 example: "Sucursal Centro"
+ *                               quantity:
+ *                                 type: integer
+ *                                 example: 12
+ *                               min_stock:
+ *                                 type: integer
+ *                                 example: 5
+ *       400:
+ *         description: Parámetro `branch` o `category` con formato de ID inválido.
+ *       401:
+ *         description: No autorizado (token faltante o inválido).
+ *       403:
+ *         description: Rol sin permisos para consultar este recurso.
+ *       500:
+ *         description: Error interno del servidor.
+ */
 export async function GET(request: Request) {
     try {
         const actor = await getActor(request, [1, 2, 3]);
+
+        const { searchParams } = new URL(request.url);
+        const branchParam = searchParams.get("branch");
+        const categoryParam = searchParams.get("category");
+
+        const requestedBranchId =
+            branchParam !== null && branchParam !== ""
+                ? validId(branchParam)
+                : null;
+
+        const categoryId =
+            categoryParam !== null && categoryParam !== ""
+                ? validId(categoryParam)
+                : null;
+
+        const effectiveBranchId =
+            actor.rol_id === 1 ? requestedBranchId : actor.branch_id;
 
         const { rows } = await pool.query(
             `SELECT
@@ -52,7 +189,7 @@ export async function GET(request: Request) {
                                 WHERE inv2.product_id = p.id 
                                   AND inv2.company_id = p.company_id
                                   AND suc2.status = true
-                                  AND ($2::bigint is NULL OR inv2.branch_id = $2)
+                                  AND ($2::bigint IS NULL OR inv2.branch_id = $2)
                             )
                         )
                         ORDER BY p.name, p.id
@@ -73,9 +210,10 @@ export async function GET(request: Request) {
                 AND p.status = true
                 AND s.status = true
                 AND ($2::bigint IS NULL OR i.branch_id = $2)
+                AND ($3::bigint IS NULL OR p.category_id = $3)
             GROUP BY i.branch_id, s.name
             ORDER BY i.branch_id`,
-            [actor.company_id, actor.rol_id === 1 ? null : actor.branch_id]
+            [actor.company_id, effectiveBranchId, categoryId]
         );
 
         return NextResponse.json(rows, {
@@ -86,6 +224,111 @@ export async function GET(request: Request) {
     }
 }
 
+/**
+ * @swagger
+ * /api/inventory:
+ *   post:
+ *     summary: Agregar o incrementar existencias de un producto por sucursal
+ *     description: >
+ *       Asigna o suma existencias de un producto activo en una o varias sucursales activas de la empresa.
+ *       Si el registro ya existe para la combinación `(branch_id, product_id)`, suma `quantity` al stock actual.
+ *       Si se envía `min_stock`, actualiza el stock mínimo; si se omite o es `null`, conserva el existente (o asigna `5` si es un registro nuevo).
+ *       Permitido para rol 1 (cualquier sucursal de la empresa) y rol 2 (únicamente su propia sucursal).
+ *     tags:
+ *       - Inventario
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - category_id
+ *               - branches
+ *             properties:
+ *               category_id:
+ *                 type: string
+ *                 description: ID del producto al que se le asignarán existencias.
+ *                 example: "25"
+ *               branches:
+ *                 type: array
+ *                 minItems: 1
+ *                 description: Lista de sucursales con las cantidades a agregar. No permite `branch_id` duplicados.
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - branch_id
+ *                     - quantity
+ *                   properties:
+ *                     branch_id:
+ *                       type: string
+ *                       example: "1"
+ *                     quantity:
+ *                       type: integer
+ *                       minimum: 0
+ *                       maximum: 2147483647
+ *                       description: Cantidad de unidades a sumar al inventario.
+ *                       example: 15
+ *                     min_stock:
+ *                       type: integer
+ *                       nullable: true
+ *                       minimum: 0
+ *                       maximum: 2147483647
+ *                       description: Stock mínimo opcional para alertas.
+ *                       example: 5
+ *     responses:
+ *       200:
+ *         description: Existencias agregadas o actualizadas con éxito.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Existencias agregadas con éxito"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: "10"
+ *                       company_id:
+ *                         type: string
+ *                         example: "1"
+ *                       branch_id:
+ *                         type: string
+ *                         example: "1"
+ *                       product_id:
+ *                         type: string
+ *                         example: "25"
+ *                       quantity:
+ *                         type: integer
+ *                         example: 27
+ *                       min_stock:
+ *                         type: integer
+ *                         example: 5
+ *                       updated_at:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2026-11-18T10:15:00.000Z"
+ *       400:
+ *         description: Datos inválidos (arreglo vacío, sucursales duplicadas, cantidad o stock mínimo fuera de rango).
+ *       401:
+ *         description: No autorizado.
+ *       403:
+ *         description: Sin permisos para actualizar una o más sucursales enviadas.
+ *       404:
+ *         description: Producto activo no encontrado en la empresa.
+ *       409:
+ *         description: Conflicto al actualizar una o más asignaciones de inventario.
+ *       500:
+ *         description: Error interno del servidor.
+ */
 export async function POST(request: Request) {
     try {
         const actor = await getActor(request, [1, 2]);
@@ -201,7 +444,6 @@ export async function POST(request: Request) {
                 );
             }
 
-            // Sucursales con stock mínimo especificado
             const withMinStock = allocations.filter(
                 item => item.min_stock !== null
             );

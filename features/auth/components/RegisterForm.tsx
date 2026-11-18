@@ -52,12 +52,19 @@ const RegisterForm = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const regexPass = /^(?=.*[A-Z])(?=.*[\W_]).{6,}$/;
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (step === 1) {
             if (!formData.name || !formData.last_name || !formData.email || !formData.password || !formData.confirmPassword) {
                 toast.error(t("fillAll"));
+                return;
+            }
+
+            if (!regexPass.test(formData.password)) {
+                toast.error(t("passwordRequirements"));
                 return;
             }
 
@@ -70,7 +77,7 @@ const RegisterForm = () => {
             return;
         }
 
-        if (!formData.company_name.trim() || !formData.company_description.trim() || !formData.company_address.trim()) {
+        if (!formData.company_name.trim() || !formData.company_address.trim()) {
             toast.error(t("fillCompany"));
             return;
         }
@@ -187,8 +194,8 @@ const RegisterForm = () => {
             )}
 
             {step === 2 && (
-                <section className="flex flex-col gap-2">
-                    <div className="flex flex-col gap-1.5">
+                <section className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
                         <label htmlFor="company_name" className="text-xs text-neutral-600 dark:text-slate-400">{t("companyName")}</label>
                         <input
                             onChange={handleChange}
@@ -201,50 +208,20 @@ const RegisterForm = () => {
                         />
                     </div>
 
-                    <div className="flex flex-col gap-1.5">
+                    <div className="flex flex-col gap-2">
                         <label htmlFor="company_address" className="text-xs text-neutral-600 dark:text-slate-400">{t("companyAddress")}</label>
-                        <input
-                            onChange={handleChange}
-                            id="company_address"
-                            type="text"
-                            name="company_address"
-                            value={formData.company_address}
-                            suppressHydrationWarning
-                            className={inputClass}
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                        <label htmlFor="company_phone" className="text-xs text-neutral-600 dark:text-slate-400">{t("companyPhone")}</label>
-                        <input
-                            onChange={handleChange}
-                            id="company_phone"
-                            type="text"
-                            name="company_phone"
-                            value={formData.company_phone}
-                            suppressHydrationWarning
-                            className={inputClass}
-                        />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5">
-                        <label htmlFor="company_description" className="text-xs text-neutral-600 dark:text-slate-400">{t("companyDescription")}</label>
                         <textarea
                             onChange={handleChange}
-                            id="company_description"
-                            name="company_description"
-                            value={formData.company_description}
+                            id="company_address"
+                            name="company_address"
+                            value={formData.company_address}
                             rows={3}
-                            maxLength={250}
-                            placeholder={t("descriptionPlaceholder")}
                             suppressHydrationWarning
                             className={`${inputClass} resize-none`}
                         />
-                        <span className="text-xs text-neutral-400 dark:text-slate-400 text-right">
-                            {formData.company_description.length}/250
-                        </span>
                     </div>
-                    <div className="flex flex-row justify-center">
+
+                    <div className="flex flex-row justify-center mt-4">
                         <button type="button" className="cursor-pointer" onClick={() => setShowModal(true)}>
                             <p className="text-neutral-500 dark:text-[#8493A8] text-xs hover:text-cyan-600 transition-all duration-200 ease-in-out font-medium">{t("viewTermsAndConditions")}</p>
                         </button>
