@@ -23,6 +23,7 @@
     "login": "Log in.",
     "fillAll": "Please fill in all fields.",
     "passwordsMismatch": "Passwords do not match.",
+    "passwordRequirements": "The password must contain at least 6 characters, one uppercase letter, and one special character.",
     "fillCompany": "Please fill in all company details.",
     "success": "Account created successfully",
     "defaultError": "An error occurred during registration.",

@@ -23,6 +23,7 @@
     "login": "Inicia sesión.",
     "fillAll": "Por favor, completa todos los campos.",
     "passwordsMismatch": "Las contraseñas no coinciden.",
+    "passwordRequirements": "La contraseña debe tener al menos 6 caracteres, una mayúscula y un símbolo especial.",
     "fillCompany": "Completa todos los datos de la empresa.",
     "success": "Cuenta creada exitosamente",
     "defaultError": "Ocurrió un error durante el registro.",
