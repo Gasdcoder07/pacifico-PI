@@ -4,11 +4,13 @@ import CursorFollower from "@/features/landing/components/CursorFollower";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react";
 
 export const ForgotPasswordForm = () => {
+    const t = useTranslations("ForgotPassword");
     const router = useRouter();
     
     const [step, setStep] = useState<1 | 2>(1);
@@ -24,7 +26,7 @@ export const ForgotPasswordForm = () => {
         mutationFn: async (userEmail: string) => {
             const normalizedEmail = userEmail.trim();
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
-                throw new Error('Ingresa un correo válido');
+                throw new Error(t("errors.invalidEmail"));
             }
 
             const res = await fetch('/api/auth/forgot-password', {
@@ -34,11 +36,11 @@ export const ForgotPasswordForm = () => {
             });
 
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Error al enviar el código');
+            if (!res.ok) throw new Error(data.error || t("errors.sendCodeFailed"));
             return true;
         },
         onSuccess: () => {
-            toast.success("Código enviado a tu correo");
+            toast.success(t("toasts.codeSent"));
             setStep(2); 
         },
         onError: (error: Error) => {
@@ -59,11 +61,11 @@ export const ForgotPasswordForm = () => {
             });
             
             const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Error al actualizar la contraseña');
+            if (!res.ok) throw new Error(data.error || t("errors.updateFailed"));
             return data;
         },
         onSuccess: () => {
-            toast.success("Contraseña actualizada con éxito");
+            toast.success(t("toasts.passwordUpdated"));
             router.push('/login');
         },
         onError: (error: Error) => {
@@ -80,15 +82,15 @@ export const ForgotPasswordForm = () => {
         e.preventDefault();
         
         if (token.length !== 8) {
-            toast.error("El código debe tener 8 dígitos");
+            toast.error(t("errors.invalidCodeLength"));
             return;
         }
         if (newPassword !== confirmPassword) {
-            toast.error("Las contraseñas no coinciden");
+            toast.error(t("errors.passwordMismatch"));
             return;
         }
         if (!/^(?=.*[A-Z])(?=.*[\W_]).{6,}$/.test(newPassword)) {
-            toast.error("Debe tener al menos 6 caracteres, una mayúscula y un símbolo");
+            toast.error(t("errors.weakPassword"));
             return;
         }
 
@@ -101,7 +103,7 @@ export const ForgotPasswordForm = () => {
             <header className="w-full flex justify-center">
                 <img
                     src="/pacifico-logo-horizontal.svg"
-                    alt="Logotipo de Pacifico"
+                    alt={t("logoAlt")}
                     className="w-1/2"
                 />
             </header>
@@ -110,16 +112,16 @@ export const ForgotPasswordForm = () => {
                 <form className="flex flex-col items-center gap-4 w-full" onSubmit={handleSendCode}>
                     <div className="text-center flex flex-col gap-2">
                         <h1 className="text-2xl font-semibold text-gray-900 dark:text-slate-100">
-                            Reset your password
+                            {t("step1.title")}
                         </h1>
                         <p className="text-sm text-gray-600 dark:text-slate-400">
-                            Enter your email, and we will send you a 6-digit code to reset your password.
+                            {t("step1.subtitle")}
                         </p>
                     </div>
 
                     <div className="w-full flex flex-col gap-1.5">
                         <label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-slate-300">
-                            Email*
+                            {t("step1.emailLabel")}
                         </label>
                         <input
                             id="email"
@@ -128,7 +130,7 @@ export const ForgotPasswordForm = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             className="p-3 bg-white border border-gray-300 dark:bg-slate-950 dark:border-slate-700 dark:text-slate-200 dark:placeholder-slate-500 rounded-2xl w-full focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow"
-                            placeholder="email@example.com"
+                            placeholder={t("step1.emailPlaceholder")}
                         />
                     </div>
 
@@ -137,13 +139,13 @@ export const ForgotPasswordForm = () => {
                         disabled={sendCodeMutation.isPending}
                         className="py-3 mt-2 bg-cyan-500 hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-cyan-600 dark:hover:bg-cyan-500 text-white font-medium rounded-2xl px-4 w-full transition-colors"
                     >
-                        {sendCodeMutation.isPending ? 'Enviando...' : 'Enviar Código'}
+                        {sendCodeMutation.isPending ? t("step1.sending") : t("step1.submit")}
                     </button>
 
                     <p className="text-sm text-gray-600 dark:text-slate-400 mt-2">
-                        Remember Password?{' '}
+                        {t("step1.rememberPassword")}{' '}
                         <Link href="/login" className="text-cyan-700 dark:text-cyan-400 font-semibold hover:underline">
-                            Sign in
+                            {t("step1.signIn")}
                         </Link>
                     </p>
                 </form>
@@ -151,17 +153,17 @@ export const ForgotPasswordForm = () => {
                 <form className="flex flex-col items-center gap-4 w-full" onSubmit={handleVerifyAndUpdate}>
                     <div className="text-center flex flex-col gap-2">
                         <h1 className="text-2xl font-semibold text-gray-900 dark:text-slate-100">
-                            Set a new Password
+                            {t("step2.title")}
                         </h1>
                         <p className="text-sm text-gray-600 dark:text-slate-400">
-                            Enter the code sent to {email}
+                            {t("step2.subtitle", { email })}
                         </p>
                     </div>
 
                     <div className="w-full flex flex-col gap-3">
                         <div className="flex flex-col gap-1.5 w-full">
                             <label htmlFor="token" className="text-sm font-medium text-gray-700 dark:text-slate-300">
-                                6-Digit Code*
+                                {t("step2.codeLabel")}
                             </label>
                             <input 
                                 id="token"
@@ -171,13 +173,13 @@ export const ForgotPasswordForm = () => {
                                 value={token}
                                 onChange={(e) => setToken(e.target.value.replace(/\D/g, ''))} 
                                 className="p-3 bg-white border border-gray-300 dark:bg-slate-950 dark:border-slate-700 dark:text-slate-200 text-center tracking-widest text-lg font-semibold rounded-2xl w-full focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow" 
-                                placeholder="000000"
+                                placeholder="00000000"
                             />
                         </div>
 
                         <div className="flex flex-col gap-1.5 w-full">
                             <label htmlFor="newPassword" className="text-sm font-medium text-gray-700 dark:text-slate-300">
-                                New Password*
+                                {t("step2.newPasswordLabel")}
                             </label>
                             <div className="relative w-full">
                                 <input 
@@ -201,7 +203,7 @@ export const ForgotPasswordForm = () => {
 
                         <div className="flex flex-col gap-1.5 w-full">
                             <label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700 dark:text-slate-300">
-                                Confirm Password*
+                                {t("step2.confirmPasswordLabel")}
                             </label>
                             <div className="relative w-full">
                                 <input 
@@ -229,7 +231,7 @@ export const ForgotPasswordForm = () => {
                         disabled={verifyAndUpdateMutation.isPending}
                         className="py-3 mt-2 bg-cyan-500 hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-cyan-600 dark:hover:bg-cyan-500 text-white font-medium rounded-2xl px-4 w-full transition-colors"
                     >
-                        {verifyAndUpdateMutation.isPending ? 'Actualizando...' : 'Cambiar Contraseña'}
+                        {verifyAndUpdateMutation.isPending ? t("step2.updating") : t("step2.submit")}
                     </button>
                     
                     <button 
@@ -237,7 +239,7 @@ export const ForgotPasswordForm = () => {
                         onClick={() => setStep(1)}
                         className="text-sm text-cyan-700 dark:text-cyan-400 font-semibold hover:underline mt-2"
                     >
-                        Volver a enviar código
+                        {t("step2.resendCode")}
                     </button>
                 </form>
             )}

@@ -10,26 +10,38 @@ import AddProductButton from "./AddProductButton";
 import InventoryTable from "./InventoryTable";
 import { CategoryButton } from "../../categories/components/CategoriesButton";
 import PaginationControls from "@/shared/components/PaginationControls";
+import BranchFilter from "@/shared/components/BranchFilter";
+import CategoryFilter from "@/shared/components/CategoryFilter";
 
 const PAGE_SIZE = 10;
 
 const InventoryLayout = () => {
     const { user: currentUser } = useAuth();
+    const isAdmin = currentUser?.rol_id === 1;
 
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
 
+    const [selectedBranch, setSelectedBranch] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("");
+
     const isSearching = search.trim().length > 0;
 
     const { data, isLoading } = useQuery({
-        queryKey: ["products"],
-        queryFn: getProducts
-    })
+        queryKey: [
+            "products",
+            { branch: selectedBranch, category: selectedCategory }
+        ],
+        queryFn: () => getProducts({
+            branch: selectedBranch || undefined,
+            category: selectedCategory || undefined,
+        }),
+        staleTime: 60_000,
+    });
 
     const products = data?.flatMap((branch) => branch.productos) ?? [];
 
     const hasProducts = products.length > 0;
-    const isAdmin = currentUser?.rol_id === 1;
 
     const filteredProducts = products.filter((product) =>
         product.name.toLowerCase().includes(search.trim().toLowerCase())
@@ -61,23 +73,39 @@ const InventoryLayout = () => {
 
     return (
         <section className="flex flex-col h-full min-h-0 overflow-hidden p-4 gap-4">
-            {
-                hasProducts && (
-                <div className="flex w-full min-w-0 items-center justify-between gap-4">
-                    <div className="w-full">
-                        <ProductSearch
-                            value={search}
-                            onChange={handleSearchChange}/>
-                    </div>
-
-                    <div className="flex shrink-0 items-center gap-4">
-                        { isAdmin && <CategoryButton/>}
-                        
-                        <AddProductButton/>
-                    </div>
+            <div className="flex w-full min-w-0 flex-wrap items-center justify-between gap-4">
+                <div className="min-w-46 flex-1">
+                    <ProductSearch
+                        value={search}
+                        onChange={handleSearchChange}
+                    />
                 </div>
-                )
-            }
+
+                {/* Filtros y acciones */}
+                <div className="flex flex-wrap items-center gap-2">
+                    {isAdmin && (
+                        <BranchFilter
+                            value={selectedBranch}
+                            onChange={(value) => {
+                                setSelectedBranch(value);
+                                setPage(1);
+                            }}
+                        />
+                    )}
+
+                    <CategoryFilter
+                        value={selectedCategory}
+                        onChange={(value) => {
+                            setSelectedCategory(value);
+                            setPage(1);
+                        }}
+                    />
+
+                    {isAdmin && <CategoryButton />}
+
+                    <AddProductButton />
+                </div>
+            </div>
 
             <div className="min-h-0 min-w-0 flex-1">
                 <InventoryTable
