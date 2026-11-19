@@ -33,13 +33,17 @@ La interfaz está disponible en **español e inglés** e incluye **modo claro y 
 | :---: | :---: |
 | ![Pantalla de inicio de sesión](https://github.com/user-attachments/assets/5df01788-e316-4e05-99ce-9b9fecd38b9a) | ![Formulario de registro](https://github.com/user-attachments/assets/a8f3ee2b-ab0f-4e92-89be-113509ddc74f) |
 
-| 🛒 Punto de venta | 🧾 Historial de ventas |
+| 🛒 Ventas | 🧾 Historial de ventas |
 | :---: | :---: |
-| ![Catálogo y carrito del punto de venta](https://github.com/user-attachments/assets/27478e0c-3ba8-43ac-a2b9-80fe940bc616) | ![Pantalla de consulta de ventas](https://github.com/user-attachments/assets/0ba099ee-a8f1-40e0-9f8d-0481b543f2c7) |
+| ![Catálogo y carrito del punto de venta](https://github.com/user-attachments/assets/3edd92d9-c433-4b00-a8e8-2ae5518b4fc8) | ![Pantalla de consulta de ventas](https://github.com/user-attachments/assets/333dbbf4-2d31-4c9e-a52e-19d4e5645b72) |
 
 | 📦 Inventario | 📊 Panel de indicadores |
 | :---: | :---: |
-| ![Pantalla de inventario y existencias](https://github.com/user-attachments/assets/0665a27a-3c04-4dbc-8e27-d933610e2e87) | ![Panel con métricas y gráficas de ventas](https://github.com/user-attachments/assets/42278c61-d8ad-49e7-85be-ec85c8ddc9d0) |
+| ![Pantalla de inventario y existencias](https://github.com/user-attachments/assets/0da3088c-40d6-4662-8464-1c5c26218b7c) | ![Panel con métricas y gráficas de ventas](https://github.com/user-attachments/assets/c68e2ea5-e7d8-418a-8050-4e8739e76484) |
+
+| 🧑‍💻 Usuarios | ⚙️ Ajustes de empresa |
+| :---: | :---: |
+| ![Pantalla de gestión de usuarios](https://github.com/user-attachments/assets/8e987763-9165-405e-936a-5d6e848386de) | ![Pantalla de ajustes de empresa](https://github.com/user-attachments/assets/ee8f9130-f654-4f07-a07b-5f75f097d6ea) |
 
 <a name="funciones"></a>
 
