@@ -113,7 +113,7 @@ const EditProfilePanel = ({ isOpen, onClose, user } : EditUserPanelProps) => {
                         </div>
                     </div>
 
-                    <span className="mt-2 text-[10px] text-neutral-400 dark:text-slate-400 uppercase font-medium">{t("credentials")}</span>
+                    {/* <span className="mt-2 text-[10px] text-neutral-400 dark:text-slate-400 uppercase font-medium">{t("credentials")}</span>
 
                     <div className="flex flex-col gap-2">
                         <label className="font-medium text-neutral-600 dark:text-slate-400">{t("fields.email")}</label>
@@ -124,7 +124,7 @@ const EditProfilePanel = ({ isOpen, onClose, user } : EditUserPanelProps) => {
                             name="email"
                             className="w-full p-3 rounded-lg border border-neutral-200 dark:border-slate-800 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
                         />
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="border-t border-neutral-200 dark:border-slate-800 flex justify-end items-center gap-4 p-6">
