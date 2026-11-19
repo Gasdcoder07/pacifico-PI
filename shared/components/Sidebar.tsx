@@ -35,30 +35,31 @@ const Sidebar = () => {
     const roleId = user ? Number(user.rol_id) : null;
 
     // Filtrar secciones e ítems según el rol del usuario
-    const filteredSections = sidebarSections
-        .map((section) => {
-            const filteredItems = section.items.filter((item) => {
-                // Rol 1: Administrador -> Todo excepto /sell
-                if (roleId === 1) {
-                    return item.href !== "/sell";
-                }
-                // Rol 2: Gerente -> Todo excepto /settings y /branches
-                if (roleId === 2) {
-                    return item.href !== "/settings" && item.href !== "/branches";
-                }
-                // Rol 3: Cajero -> No ve nada en la sidebar
-                if (roleId === 3) {
-                    return false;
-                }
-                return true;
-            });
-
-            return {
+    const filteredSections = (
+        roleId === 1
+            ? sidebarSections.map((section) => ({
                 ...section,
-                items: filteredItems,
-            };
-        })
-        .filter((section) => section.items.length > 0);
+                items: section.items.filter(
+                    (item) => item.href !== "/sell"
+                ),
+            }))
+
+            : roleId === 2
+            ? [
+                    {
+                        titleKey: "sectionBranch",
+                        items: sidebarSections
+                            .flatMap((section) => section.items)
+                            .filter(
+                                (item) =>
+                                    item.href !== "/settings" &&
+                                    item.href !== "/branches"
+                            ),
+                    },
+                ]
+
+            : []
+    ).filter((section) => section.items.length > 0);
 
     return (
         <motion.aside
@@ -73,7 +74,7 @@ const Sidebar = () => {
             <div className="flex-1 flex flex-col gap-8">
                 {filteredSections.map((section, index) => (
                     <div key={index} className="flex flex-col gap-4">
-                        {isOpen ? (
+                        {roleId === 1 && isOpen ? (
                             <h3 className="px-3 font-bold text-neutral-500 dark:text-[#8493A8] uppercase text-xs tracking-wider">
                                 {t(section.titleKey)}
                             </h3>

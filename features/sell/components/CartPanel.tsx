@@ -294,7 +294,8 @@ const CartPanel = () => {
                 isOpen={showPaymentMethod}
                 onClose={() => setShowPaymentMethod(false)}
                 onConfirm={handleConfirmOrder}
-                isPending={isPending}/>
+                isPending={isPending}
+                total={total}/>
         )
       }
     </section>

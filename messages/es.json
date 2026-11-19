@@ -23,6 +23,7 @@
     "login": "Inicia sesión.",
     "fillAll": "Por favor, completa todos los campos.",
     "passwordsMismatch": "Las contraseñas no coinciden.",
+    "passwordRequirements": "La contraseña debe tener al menos 6 caracteres, una mayúscula y un símbolo especial.",
     "fillCompany": "Completa todos los datos de la empresa.",
     "success": "Cuenta creada exitosamente",
     "defaultError": "Ocurrió un error durante el registro.",
@@ -96,7 +97,7 @@
   },
   "Sidebar": {
     "hide": "Ocultar",
-    "sectionBranch": "Sucursal",
+    "sectionBranch": "Operaciones",
     "sectionAdmin": "Administración",
     "sell": "Vender",
     "sales": "Ventas",
@@ -137,6 +138,11 @@
             "cash": "Efectivo",
             "card": "Tarjeta",
             "transfer": "Transferencia bancaria"
+        },
+        "cash": {
+            "total": "Total a pagar",
+            "received": "Dinero recibido",
+            "change": "Cambio a entregar"
         },
         "buttons": {
             "cancel": "Cancelar",
@@ -928,6 +934,42 @@
       }
     }
   },
+  "ForgotPassword": {
+    "logoAlt": "Logotipo de Pacífico",
+    "step1": {
+      "title": "Restablece tu contraseña",
+      "subtitle": "Ingresa tu correo electrónico y te enviaremos un código de 8 dígitos para restablecer tu contraseña.",
+      "emailLabel": "Correo electrónico*",
+      "emailPlaceholder": "correo@ejemplo.com",
+      "submit": "Enviar código",
+      "sending": "Enviando...",
+      "rememberPassword": "¿Recordaste tu contraseña?",
+      "signIn": "Inicia sesión"
+    },
+    "step2": {
+      "title": "Establece una nueva contraseña",
+      "subtitle": "Ingresa el código enviado a {email}",
+      "codeLabel": "Código de 8 dígitos*",
+      "newPasswordLabel": "Nueva contraseña*",
+      "confirmPasswordLabel": "Confirmar contraseña*",
+      "submit": "Cambiar contraseña",
+      "updating": "Actualizando...",
+      "resendCode": "Volver a enviar código"
+    },
+    "toasts": {
+      "codeSent": "Código enviado a tu correo",
+      "passwordUpdated": "Contraseña actualizada con éxito"
+    },
+    "errors": {
+      "invalidEmail": "Ingresa un correo válido",
+      "sendCodeFailed": "Error al enviar el código",
+      "updateFailed": "Error al actualizar la contraseña",
+      "invalidCodeLength": "El código debe tener 8 dígitos",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "weakPassword": "Debe tener al menos 6 caracteres, una mayúscula y un símbolo"
+    }
+  },
+
     "filters": {
         "branches": "Filtrar por sucursal",
         "categories": "Filtrar por categoría",
