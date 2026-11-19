@@ -135,6 +135,9 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url);
         const branchParam = searchParams.get("branch");
         const categoryParam = searchParams.get("category");
+        const pageParam = searchParams.get("page");
+        const limitParam = searchParams.get("limit");
+        const search = searchParams.get("search")?.trim() ?? "";
 
         const requestedBranchId =
             branchParam !== null && branchParam !== ""
@@ -149,26 +152,106 @@ export async function GET(request: Request) {
         const effectiveBranchId =
             actor.rol_id === 1 ? requestedBranchId : actor.branch_id;
 
-        const { rows } = await pool.query(
-            `SELECT
-                i.branch_id::text AS branch_id,
-                s.name AS branch_name,
-                COALESCE(
+        const rawPage = pageParam ?? "1";
+        const rawLimit = limitParam ?? "10";
+
+        if (
+            !/^[1-9]\d*$/.test(rawPage) ||
+            !/^[1-9]\d*$/.test(rawLimit)
+        ) {
+            return NextResponse.json(
+                { error: "Parámetros de paginación inválidos" },
+                { status: 400 }
+            );
+        }
+
+        const page = Number(rawPage);
+        const limit = Number(rawLimit);
+        const offset = (page - 1) * limit;
+
+        if (
+            !Number.isSafeInteger(page) ||
+            !Number.isSafeInteger(limit) ||
+            limit > 100 ||
+            !Number.isSafeInteger(offset)
+        ) {
+            return NextResponse.json(
+                { error: "Parámetros de paginación inválidos" },
+                { status: 400 }
+            );
+        }
+        
+        const { rows: paginatedRows } = await pool.query(
+            `
+            WITH filtered AS (
+                SELECT
+                    i.id AS inventory_id,
+                    i.company_id,
+                    i.branch_id,
+                    s.name AS branch_name,
+                    p.id AS product_id,
+                    p.name AS product_name,
+                    p.foto_url,
+                    p.description,
+                    p.price,
+                    c.id AS category_id,
+                    c.name AS category_name,
+                    i.quantity,
+                    i.min_stock,
+                    i.updated_at
+                FROM public.inventario i
+                JOIN public.productos p
+                    ON p.id = i.product_id
+                    AND p.company_id = i.company_id
+                JOIN public.categorias c
+                    ON c.id = p.category_id
+                    AND c.company_id = p.company_id
+                JOIN public.sucursales s
+                    ON s.id = i.branch_id
+                    AND s.company_id = i.company_id
+                WHERE i.company_id = $1
+                    AND p.status = true
+                    AND s.status = true
+                    AND ($2::bigint IS NULL OR i.branch_id = $2)
+                    AND ($3::bigint IS NULL OR p.category_id = $3)
+                    AND (
+                        $6::text = ''
+                        OR p.name ILIKE '%' || $6::text || '%'
+                    )
+            ),
+
+            total_count AS (
+                SELECT COUNT(*)::int AS total
+                FROM filtered
+            ),
+
+            paged AS (
+                SELECT *
+                FROM filtered
+                ORDER BY product_name, product_id, inventory_id
+                LIMIT $4::int
+                OFFSET $5::bigint
+            ),
+
+            grouped AS (
+                SELECT
+                    f.branch_id::text AS branch_id,
+                    f.branch_name,
                     jsonb_agg(
                         jsonb_build_object(
-                            'inventario_id', i.id::text,
-                            'product_id', p.id::text,
-                            'name', p.name,
-                            'foto_url', p.foto_url,
-                            'description', p.description,
-                            'price', p.price,
-                            'category_id', c.id::text,
-                            'category_name', c.name,
-                            'branch_id', i.branch_id::text,
-                            'branch_name', s.name,
-                            'quantity', i.quantity,
-                            'min_stock', i.min_stock,
-                            'updated_at', i.updated_at,
+                            'inventario_id', f.inventory_id::text,
+                            'product_id', f.product_id::text,
+                            'name', f.product_name,
+                            'foto_url', f.foto_url,
+                            'description', f.description,
+                            'price', f.price,
+                            'category_id', f.category_id::text,
+                            'category_name', f.category_name,
+                            'branch_id', f.branch_id::text,
+                            'branch_name', f.branch_name,
+                            'quantity', f.quantity,
+                            'min_stock', f.min_stock,
+                            'updated_at', f.updated_at,
                             'sucursales', (
                                 SELECT COALESCE(
                                     jsonb_agg(
@@ -179,46 +262,73 @@ export async function GET(request: Request) {
                                             'quantity', inv2.quantity,
                                             'min_stock', inv2.min_stock
                                         )
-                                    ), 
+                                    ),
                                     '[]'::jsonb
                                 )
                                 FROM public.inventario inv2
                                 JOIN public.sucursales suc2
                                     ON suc2.id = inv2.branch_id
                                     AND suc2.company_id = inv2.company_id
-                                WHERE inv2.product_id = p.id 
-                                  AND inv2.company_id = p.company_id
-                                  AND suc2.status = true
-                                  AND ($2::bigint IS NULL OR inv2.branch_id = $2)
+                                WHERE inv2.product_id = f.product_id
+                                    AND inv2.company_id = f.company_id
+                                    AND suc2.status = true
+                                    AND (
+                                        $2::bigint IS NULL
+                                        OR inv2.branch_id = $2
+                                    )
                             )
                         )
-                        ORDER BY p.name, p.id
+                        ORDER BY f.product_name, f.product_id
+                    ) AS productos
+                FROM paged f
+                GROUP BY f.branch_id, f.branch_name
+            )
+
+            SELECT
+                t.total,
+                COALESCE(
+                    (
+                        SELECT jsonb_agg(
+                            jsonb_build_object(
+                                'branch_id', g.branch_id,
+                                'branch_name', g.branch_name,
+                                'productos', g.productos
+                            )
+                            ORDER BY g.branch_id
+                        )
+                        FROM grouped g
                     ),
                     '[]'::jsonb
-                ) AS productos
-            FROM public.inventario i
-            JOIN public.productos p
-                ON p.id = i.product_id
-                AND p.company_id = i.company_id
-            JOIN public.categorias c
-                ON c.id = p.category_id
-                AND c.company_id = p.company_id
-            JOIN public.sucursales s
-                ON s.id = i.branch_id
-                AND s.company_id = i.company_id
-            WHERE i.company_id = $1
-                AND p.status = true
-                AND s.status = true
-                AND ($2::bigint IS NULL OR i.branch_id = $2)
-                AND ($3::bigint IS NULL OR p.category_id = $3)
-            GROUP BY i.branch_id, s.name
-            ORDER BY i.branch_id`,
-            [actor.company_id, effectiveBranchId, categoryId]
+                ) AS data
+            FROM total_count t
+            `,
+            [
+                actor.company_id,
+                effectiveBranchId,
+                categoryId,
+                limit,
+                offset,
+                search
+            ]
         );
 
-        return NextResponse.json(rows, {
-            headers: { "Cache-Control": "no-store" },
-        });
+        const result = paginatedRows[0];
+        const total = Number(result.total);
+
+        return NextResponse.json(
+            {
+                data: result.data,
+                pagination: {
+                    page,
+                    limit,
+                    total,
+                    totalPages: Math.ceil(total / limit),
+                },
+            },
+            {
+                headers: { "Cache-Control": "no-store" },
+            }
+        );
     } catch (error) {
         return apiError(error);
     }

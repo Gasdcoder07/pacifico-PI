@@ -54,6 +54,15 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
+
+        if (name === "phone") {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value.replace(/\D/g, "")
+            }));
+            return;
+        }
+
         setFormData({ ...formData, [name]: value });
     };
 
@@ -191,7 +200,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
-                            placeholder="Nombre de la sucursal"
+                            placeholder={t("generalData.fields.name")}
                             className="w-full p-3 rounded-lg border border-neutral-200 dark:border-slate-800 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
                         />
                     </div>
@@ -203,7 +212,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
                             name="adress"
                             value={formData.adress}
                             onChange={handleInputChange}
-                            placeholder="Dirección de la sucursal"
+                            placeholder={t("generalData.fields.address")}
                             rows={3}
                             className="w-full min-h-24 resize-y p-3 rounded-lg border border-neutral-200 dark:border-slate-800 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
                         />
@@ -217,7 +226,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            placeholder="Número de teléfono"
+                            placeholder={t("generalData.fields.contact")}
                             className="w-full p-3 rounded-lg border border-neutral-200 dark:border-slate-800 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
                         />
                     </div>
@@ -230,7 +239,7 @@ const EditBranchPanel = ({ isOpen, onClose, branch }: EditBranchPanelProps) => {
                             name="contact_info"
                             onChange={handleInputChange}
                             value={formData.contact_info}
-                            placeholder="Correo electrónico"
+                            placeholder={t("generalData.fields.email")}
                             className="w-full p-3 rounded-lg border border-neutral-200 dark:border-slate-800 focus:border-cyan-400 dark:focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/5 dark:focus:ring-cyan-400/20 outline-none transition-colors duration-200 ease-in-out"
                         />
                     </div>

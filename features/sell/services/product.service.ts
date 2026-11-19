@@ -4,13 +4,27 @@ import { BranchProducts, DeleteProductPayload, DeleteProductResponse, EditProduc
 interface ProductFilters {
     branch?: string;
     category?: string;
+    page?: number;
+    limit?: number;
+    search?: string;
+}
+
+interface PaginatedInventoryResponse {
+    data: BranchProducts[];
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+    };
 }
 
 interface SearchProductsResponse {
     data: Product[];
 }
 
-export const getProducts = async (filters: ProductFilters = {}) : Promise<BranchProducts[]> => {
+
+export const getProducts = async (filters: ProductFilters = {}): Promise<PaginatedInventoryResponse> => {
     const params = new URLSearchParams();
 
     if (filters.branch) {
@@ -21,13 +35,19 @@ export const getProducts = async (filters: ProductFilters = {}) : Promise<Branch
         params.set("category", filters.category);
     }
 
-    const query = params.toString();
+    if (filters.search) {
+        params.set("search", filters.search);
+    }
 
-    const response = await apiClient.get(
-        `/api/inventory${query ? `?${query}` : ""}`
+    params.set("page", String(filters.page ?? 1));
+    params.set("limit", String(filters.limit ?? 10));
+
+    const response = await apiClient.get<PaginatedInventoryResponse>(
+        `/api/inventory?${params.toString()}`
     );
+
     return response.data;
-}
+};
 
 export const searchProductsByName = async (name: string) : Promise<SearchProductsResponse> => {
     const response = await apiClient.get(`/api/products/${encodeURIComponent(name)}`);
