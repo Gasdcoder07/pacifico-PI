@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { getProducts } from "@/features/sell/services/product.service";
@@ -21,39 +21,49 @@ const InventoryLayout = () => {
 
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
 
     const [selectedBranch, setSelectedBranch] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
 
     const isSearching = search.trim().length > 0;
 
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setDebouncedSearch(search.trim());
+        }, 350);
+
+        return () => clearTimeout(timeout);
+    }, [search]);
+
+    const isDebouncing = search.trim() !== debouncedSearch;
+
     const { data, isLoading } = useQuery({
         queryKey: [
             "products",
-            { branch: selectedBranch, category: selectedCategory }
+            {
+                page,
+                branch: selectedBranch,
+                category: selectedCategory,
+                search: debouncedSearch,
+            },
         ],
-        queryFn: () => getProducts({
-            branch: selectedBranch || undefined,
-            category: selectedCategory || undefined,
-        }),
+        queryFn: () =>
+            getProducts({
+                page,
+                limit: PAGE_SIZE,
+                branch: selectedBranch || undefined,
+                category: selectedCategory || undefined,
+                search: debouncedSearch || undefined,
+            }),
+        enabled: !!currentUser,
         staleTime: 60_000,
     });
 
-    const products = data?.flatMap((branch) => branch.productos) ?? [];
+    const products =
+        data?.data.flatMap((branch) => branch.productos) ?? [];
 
-    const hasProducts = products.length > 0;
-
-    const filteredProducts = products.filter((product) =>
-        product.name.toLowerCase().includes(search.trim().toLowerCase())
-    );
-
-    const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
-    const currentPage = Math.min(page, totalPages);
-
-    const startIndex = (currentPage - 1) * PAGE_SIZE;
-    const endIndex = startIndex + PAGE_SIZE;
-
-    const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+    const totalPages = data?.pagination.totalPages ?? 0;
 
     const handlePageChange = (nextPage: number) => {
         if (nextPage < 1 || nextPage > totalPages) return;
@@ -63,8 +73,9 @@ const InventoryLayout = () => {
 
     const handleClearSearch = () => {
         setSearch("");
+        setDebouncedSearch("");
         setPage(1);
-    }
+    };
 
     const handleSearchChange = (value: string) => {
         setSearch(value);
@@ -109,20 +120,21 @@ const InventoryLayout = () => {
 
             <div className="min-h-0 min-w-0 flex-1">
                 <InventoryTable
-                    isLoading={isLoading}
-                    products={paginatedProducts}
+                    isLoading={isLoading || isDebouncing}
+                    products={products}
                     isSearching={isSearching}
                     onClearSearch={handleClearSearch}
-                    isAdmin={isAdmin}/>
+                    isAdmin={isAdmin}
+                />
             </div>
-            {
-                !isLoading && hasProducts && (
-                    <PaginationControls
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={handlePageChange}/>
-                )
-            }
+
+            {!isLoading && !isDebouncing && totalPages > 1 && (
+                <PaginationControls
+                    currentPage={page}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                />
+            )}
         </section>
     );
 };
