@@ -690,6 +690,7 @@
   },
   "SalesPage": {
     "title": "Sales",
+    "export": "Export report",
     "titleAdmin": "Company overview",
     "titleManager": "Branch overview",
     "loading": "Loading metrics...",
@@ -968,5 +969,14 @@
       "passwordMismatch": "Passwords do not match",
       "weakPassword": "Must have at least 6 characters, one uppercase letter, and one symbol"
     }
-  }
+  },
+    "filters": {
+        "branches": "Filter by branch",
+        "categories": "Filter by category",
+        "allBranches": "All branches",
+        "allCategories": "All categories",
+        "loading": "Loading...",
+        "noOptions": "No options available",
+        "search": "Search..."
+    }
 }

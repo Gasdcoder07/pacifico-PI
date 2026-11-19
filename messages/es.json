@@ -689,6 +689,7 @@
   },
   "SalesPage": {
     "title": "Ventas",
+    "export": "Exportar reporte",
     "titleAdmin": "Resumen de la compañía",
     "titleManager": "Resumen de la sucursal",
     "loading": "Cargando métricas...",
@@ -967,5 +968,15 @@
       "passwordMismatch": "Las contraseñas no coinciden",
       "weakPassword": "Debe tener al menos 6 caracteres, una mayúscula y un símbolo"
     }
-  }
+  },
+
+    "filters": {
+        "branches": "Filtrar por sucursal",
+        "categories": "Filtrar por categoría",
+        "allBranches": "Todas las sucursales",
+        "allCategories": "Todas las categorías",
+        "loading": "Cargando...",
+        "noOptions": "No hay opciones disponibles",
+        "search": "Buscar..."
+    }
 }
